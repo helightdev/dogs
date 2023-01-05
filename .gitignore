@@ -1,0 +1,10 @@
+.fleet/
+.idea/
+.dart_tool/
+
+# Exclude generated dart files
+*.g.dart
+
+# Exclude project files
+*.iml
+

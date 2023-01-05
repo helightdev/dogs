@@ -1,0 +1,21 @@
+name: dogs_project
+repostory: https://github.com/DarwinFramework/dogs
+packages:
+  - packages/**
+scripts:
+  copy-readme:
+    name: copy-readme
+    description: 'Copies the root-Readme to the dogs package'
+    run: cp README.md packages/dogs/README.md
+  analyze:
+    name: analyze
+    description: 'Runs the dart analyzer'
+    run: dart analyze .
+    exec:
+      concurrency: 1
+  format:
+    name: format
+    description: 'Runs the dart formatter'
+    run: dart format .
+    exec:
+      concurrency: 1
