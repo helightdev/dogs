@@ -21,7 +21,6 @@ import 'package:dogs/dogs.dart';
 
 /// Graph node of the serialized DOG graph.
 abstract class DogGraphValue {
-
   const DogGraphValue();
 
   /// Returns a string representation of this dog value.

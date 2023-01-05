@@ -61,7 +61,8 @@ class DogsDarwinCollectionMapper extends DarwinMapper<dynamic> {
 
   @override
   List<int> serialize(dynamic obj, SerializationContext context) {
-    var mapped = (obj as Iterable).map((e) => engine.convertObjectToGraph(e, type));
+    var mapped =
+        (obj as Iterable).map((e) => engine.convertObjectToGraph(e, type));
     var graphValue = DogList(mapped.toList());
     return utf8.encode(engine.jsonSerializer.serialize(graphValue));
   }
