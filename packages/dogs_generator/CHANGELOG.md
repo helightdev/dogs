@@ -1,3 +1,7 @@
+## 1.0.0-alpha.1
+
+ - fix generator
+
 ## 1.0.0-alpha
 
  - Bump "dogs_generator" to `1.0.0-alpha`.
