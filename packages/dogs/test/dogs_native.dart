@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 import 'package:test/test.dart';
 
 void main() {

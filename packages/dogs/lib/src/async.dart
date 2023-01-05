@@ -15,7 +15,7 @@
  */
 
 import 'package:aqueduct_isolates/aqueduct_isolates.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 class DogsSerializerAqueduct extends Aqueduct {
   final DogEngine engine;

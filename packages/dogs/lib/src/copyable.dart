@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 mixin Copyable<T> on DogConverter<T> {
   T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);

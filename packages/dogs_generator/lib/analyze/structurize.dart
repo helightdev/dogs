@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';

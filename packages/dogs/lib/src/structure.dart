@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 class DogStructure {
   final Type type;

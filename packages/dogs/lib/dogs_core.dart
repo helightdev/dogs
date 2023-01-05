@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-library dogs;
+library dogs_core;
 
 export 'src/async.dart';
 export 'src/converter.dart';

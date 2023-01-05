@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 extension DogValueExtension on DogGraphValue {
   bool get isNull => this is DogNull;

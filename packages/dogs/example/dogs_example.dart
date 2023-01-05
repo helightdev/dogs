@@ -1,4 +1,4 @@
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 void main() {
   var value = DogMap({

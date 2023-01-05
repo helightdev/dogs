@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.

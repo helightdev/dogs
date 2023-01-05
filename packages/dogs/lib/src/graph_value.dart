@@ -17,7 +17,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 /// Graph node of the serialized DOG graph.
 abstract class DogGraphValue {

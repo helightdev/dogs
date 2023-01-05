@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 import 'package:example/dogs.g.dart';
 import 'package:example/models.dart';
 

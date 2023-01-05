@@ -1,5 +1,5 @@
 import 'package:darwin_marshal/darwin_marshal.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_darwin/dogs_darwin.dart';
 
 void main() {

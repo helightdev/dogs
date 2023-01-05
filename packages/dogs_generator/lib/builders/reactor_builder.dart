@@ -14,7 +14,7 @@ class DogReactorBuilder extends Builder {
     var componentIds = await buildStep.findAssets(Glob("**.dogs")).toList();
     List<String> importValues = List<String>.empty(growable: true);
     List<String> converterNames = List<String>.empty(growable: true);
-    importValues.add("package:dogs/dogs.dart");
+    importValues.add("package:dogs_core/dogs_core.dart");
 
     for (var value in componentIds) {
       var bindingString = await buildStep.readAsString(value);

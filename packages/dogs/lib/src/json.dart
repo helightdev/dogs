@@ -16,7 +16,7 @@
 
 import 'dart:convert';
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 class DogJsonSerializer extends DogSerializer {
   @override

@@ -17,7 +17,7 @@
 import 'dart:convert';
 
 import 'package:darwin_marshal/darwin_marshal.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 class DogsDarwinSingleMapper extends DarwinMapper<dynamic> {
   final Type type;

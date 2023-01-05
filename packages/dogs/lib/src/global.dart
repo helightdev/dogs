@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 /// Encodes this [value] to json, using the [DogConverter] associated with [T].
 String toJson<T>(T value) => DogEngine.internalSingleton.jsonEncode<T>(value);

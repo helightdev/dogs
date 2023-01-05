@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
-import 'package:dogs/dogs.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';
 
@@ -21,7 +21,7 @@ class ConverterBuilder extends DogsAdapter {
       DogGenContext genContext, DogsCodeContext codeContext) async {
     StructurizeCounter counter = StructurizeCounter();
     codeContext.additionalImports
-        .add(AliasImport.gen("package:dogs/dogs.dart"));
+        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
     for (var value in genContext.elements) {
       var element = value.element;
       if (element is ClassElement) {

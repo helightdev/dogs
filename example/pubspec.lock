@@ -148,20 +148,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.4"
-  dogs:
+  dogs_core:
     dependency: "direct main"
     description:
       path: "../packages/dogs"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "1.0.0-alpha"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../packages/dogs_generator"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "1.0.0-alpha"
   file:
     dependency: transitive
     description:
