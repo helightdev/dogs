@@ -1,5 +1,5 @@
 name: dogs_project
-repostory: https://github.com/DarwinFramework/dogs
+repository: https://github.com/DarwinFramework/dogs
 packages:
   - packages/**
 scripts:
