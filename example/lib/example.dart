@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:dogs_cbor/dogs_cbor.dart';
 import 'package:dogs_toml/dogs_toml.dart';
 import 'package:dogs_yaml/dogs_yaml.dart';
-import 'package:example/dogs.g.dart';
+import 'dogs.g.dart';
+export 'dogs.g.dart';
 
 void main() async {
   await initialiseDogs();

@@ -115,13 +115,15 @@ class DogEngine {
   /// has the [StructureEmitter] mixin, the supplied structure will be linked.
   /// If this converter also has the [Copyable] mixin, it will also be linked.
   void registerConverter(DogConverter converter, [bool rebuildPool = true]) {
-    if (converter is StructureEmitter) {
-      structures[converter.structure.type] = converter.structure;
+    if (converter.isAssociated)  {
+      if (converter is StructureEmitter) {
+        structures[converter.structure.type] = converter.structure;
+      }
+      if (converter is Copyable) {
+        copyable[converter.typeArgument] = converter;
+      }
+      associatedConverters[converter.typeArgument] = converter;
     }
-    if (converter is Copyable) {
-      copyable[converter.typeArgument] = converter;
-    }
-    associatedConverters[converter.typeArgument] = converter;
     converters.add(converter);
     if (rebuildPool && _asyncEnabled) rebuildAsyncPool();
   }
