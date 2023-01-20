@@ -1,6 +1,6 @@
 name: dogs_generator
 description: Code generator for the dogs serialization library.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/DarwinFramework/dogs
 
 environment:
