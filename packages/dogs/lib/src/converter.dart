@@ -17,8 +17,8 @@
 import 'package:dogs_core/dogs_core.dart';
 
 abstract class DogConverter<T> with TypeCaptureMixin<T> {
-  Type get valueType => T;
-  bool canConvertValue(dynamic value) => value is T;
+  final bool isAssociated;
+  DogConverter([this.isAssociated = true]);
 
   DogGraphValue convertToGraph(T value, DogEngine engine);
   T convertFromGraph(DogGraphValue value, DogEngine engine);
@@ -55,8 +55,11 @@ abstract class GeneratedDogConverter<T> extends DogConverter<T>
         throw Exception(
             "Expected a value of serial type ${field.serialType} at ${field.name} but got ${fieldValue.coerceString()}");
       }
-
-      if (field.structure) {
+      if (field.converterType != null) {
+        values.add(engine
+            .findConverter(field.converterType!)!
+            .convertFromGraph(fieldValue, engine));
+      } else if (field.structure) {
         values.add(adjustIterable(
             engine.convertObjectFromGraph(fieldValue, field.serialType),
             field.iterableKind));
@@ -74,7 +77,12 @@ abstract class GeneratedDogConverter<T> extends DogConverter<T>
     var values = getters.map((e) => e(value)).toList();
     for (var field in structure.fields) {
       var fieldValue = values.removeAt(0);
-      if (field.structure) {
+
+      if (field.converterType != null) {
+        map[DogString(field.name)] = engine
+            .findConverter(field.converterType!)!
+            .convertToGraph(fieldValue, engine);
+      } else if (field.structure) {
         map[DogString(field.name)] =
             engine.convertObjectToGraph(fieldValue, field.serialType);
       } else {

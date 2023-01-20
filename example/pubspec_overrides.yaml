@@ -3,3 +3,9 @@ dependency_overrides:
     path: ../packages/dogs
   dogs_generator:
     path: ../packages/dogs_generator
+  dogs_yaml:
+    path: ../packages/dogs_yaml
+  dogs_cbor:
+    path: ../packages/dogs_cbor
+  dogs_toml:
+    path: ../packages/dogs_toml

@@ -16,7 +16,10 @@
 
 library dogs_core;
 
+import 'dogs_core.dart';
+
 export 'src/async.dart';
+export 'src/builder.dart';
 export 'src/converter.dart';
 export 'src/copyable.dart';
 export 'src/engine.dart';
@@ -24,10 +27,16 @@ export 'src/extensions.dart';
 export 'src/global.dart';
 export 'src/graph_value.dart';
 export 'src/json.dart';
+export 'src/null_exclusion.dart';
 export 'src/polymorphic.dart';
 export 'src/serializer.dart';
+export 'src/string_keyed.dart';
 export 'src/structure.dart';
 export 'src/visitor.dart';
+
+/// Static instance of [DogEngine] that will be initialised by invoking
+/// the generated initialiseDogs() method.
+late DogEngine dogs;
 
 /// Marks an object as serializable.
 /// The dogs_generator will then generate an [GeneratedDogConverter] emitting
@@ -52,6 +61,19 @@ class LinkSerializer {
 class PropertyName {
   final String name;
   const PropertyName(this.name);
+}
+
+/// Overrides the serializer that will be used by the [GeneratedDogConverter]
+/// for this specific property. By default, the field will be serialized using
+/// the convert associated with its type.
+class PropertySerializer {
+  final Type type;
+  const PropertySerializer(this.type);
+}
+
+/// Marks a property as polymorphic, meaning its value can vary
+class Polymorphic {
+  const Polymorphic();
 }
 
 /// Common iterable kinds which are compatible with dogs.

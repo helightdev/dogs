@@ -22,13 +22,18 @@ class ConverterBuilder extends DogsAdapter {
     StructurizeCounter counter = StructurizeCounter();
     codeContext.additionalImports
         .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
-    for (var value in genContext.elements) {
-      var element = value.element;
-      if (element is ClassElement) {
-        await generateForClass(element, counter, genContext, codeContext);
-      } else if (element is EnumElement) {
-        await generateForEnum(element, genContext, codeContext);
+
+    try {
+      for (var value in genContext.elements) {
+        var element = value.element;
+        if (element is ClassElement) {
+          await generateForClass(element, counter, genContext, codeContext);
+        } else if (element is EnumElement) {
+          await generateForEnum(element, genContext, codeContext);
+        }
       }
+    } catch (e, s) {
+      print("$e: $s");
     }
   }
 
@@ -65,8 +70,28 @@ class ConverterBuilder extends DogsAdapter {
 
   Future generateForClass(ClassElement element, StructurizeCounter counter,
       DogGenContext genContext, DogsCodeContext codeContext) async {
-    var structurized = await structurize(element.thisType, genContext, counter);
+    var constructorName = "";
+    var constructor = element.unnamedConstructor!;
+    if (element.getNamedConstructor("dog") != null) {
+      constructorName = ".dog";
+      constructor = element.getNamedConstructor("dog")!;
+    }
+    var structurized =
+        await structurize(element.thisType, constructor, genContext, counter);
     codeContext.additionalImports.addAll(structurized.imports);
+
+    writeGeneratedConverter(
+        element, structurized, constructorName, codeContext);
+    writeGeneratedBuilder(element, structurized, constructorName, codeContext);
+    writeGeneratedExtension(
+        element, structurized, constructorName, codeContext);
+  }
+
+  void writeGeneratedConverter(
+      ClassElement element,
+      StructurizeResult structurized,
+      String constructorName,
+      DogsCodeContext codeContext) {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
     var clazz = Class((builder) {
@@ -99,11 +124,67 @@ class ConverterBuilder extends DogsAdapter {
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code(
-            "(list) => ${element.name}(${structurized.structure.fields.mapIndexed((i, y) {
+            "(list) => ${element.name}$constructorName(${structurized.structure.fields.mapIndexed((i, y) {
           if (y.iterableKind == IterableKind.none) return "list[$i]";
           if (y.optional) return "list[$i]?.cast<${y.serialType}>()";
           return "list[$i].cast<${y.serialType}>()";
         }).join(", ")})")));
+    });
+    codeContext.codeBuffer.writeln(clazz.accept(emitter));
+  }
+
+  void writeGeneratedBuilder(
+      ClassElement element,
+      StructurizeResult structurized,
+      String constructorName,
+      DogsCodeContext codeContext) {
+    var emitter = DartEmitter();
+    var builderName = "${element.name}Builder";
+    var clazz = Class((builder) {
+      builder.name = builderName;
+
+      builder.extend = Reference("$genAlias.Builder<${element.name}>");
+
+      builder.constructors.add(Constructor((builder) => builder
+        ..requiredParameters.add(Parameter((builder) => builder
+          ..toSuper = true
+          ..name = "\$src"))));
+
+      for (var element in structurized.structure.fields) {
+        builder.methods.add(Method((builder) => builder
+          ..name = element.name
+          ..type = MethodType.setter
+          ..requiredParameters.add(Parameter((builder) => builder
+            ..name = "value"
+            ..type = Reference(element.type)))
+          ..body = Code("\$overrides['${element.name}'] = value;")));
+      }
+    });
+    codeContext.codeBuffer.writeln(clazz.accept(emitter));
+  }
+
+  void writeGeneratedExtension(
+      ClassElement element,
+      StructurizeResult structurized,
+      String constructorName,
+      DogsCodeContext codeContext) {
+    var emitter = DartEmitter();
+    var extensionName = "${element.name}DogsExtension";
+    var builderName = "${element.name}Builder";
+    var clazz = Extension((builder) {
+      builder.name = extensionName;
+      builder.on = Reference(element.name);
+      builder.methods.add(Method((builder) => builder
+        ..name = "builder"
+        ..returns = Reference(element.name)
+        ..requiredParameters.add(Parameter((builder) => builder
+          ..name = "func"
+          ..type = Reference("Function($builderName builder)")))
+        ..body = Code("""
+          var builder = $builderName(this);
+          func(builder);
+          return builder.build();
+          """)));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }

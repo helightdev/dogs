@@ -19,7 +19,10 @@ import 'package:dogs_core/dogs_core.dart';
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.
 class PolymorphicConverter extends DogConverter {
+  PolymorphicConverter();
+
   static final typePropertyKey = DogString("_type");
+  static final valuePropertyKey = DogString("_value");
   bool serializeNativeValues = true;
 
   @override
@@ -31,8 +34,14 @@ class PolymorphicConverter extends DogConverter {
     var typeValue = map.value[typePropertyKey]!.asString!;
     var structure = engine.findSerialName(typeValue)!;
     var converter = engine.associatedConverters[structure.type]!;
-    map.value.remove(typePropertyKey);
-    return converter.convertFromGraph(map, engine);
+    if (map.value.length == 2 && map.value.containsKey(valuePropertyKey)) {
+      var simpleValue = map.value[valuePropertyKey]!;
+      return converter.convertFromGraph(simpleValue, engine);
+    } else {
+      var clone = map.clone().asMap!;
+      clone.value.remove(typePropertyKey);
+      return converter.convertFromGraph(clone, engine);
+    }
   }
 
   @override
@@ -44,9 +53,16 @@ class PolymorphicConverter extends DogConverter {
     var converter = engine.associatedConverters[type]!;
     var structure = engine.structures[type]!;
     var graphValue = converter.convertToGraph(value, engine);
-    var valueMap = graphValue.asMap!;
-    valueMap.value[typePropertyKey] = DogString(structure.serialName);
-    return valueMap;
+    if (graphValue is DogMap) {
+      var valueMap = graphValue.asMap!;
+      valueMap.value[typePropertyKey] = DogString(structure.serialName);
+      return valueMap;
+    } else {
+      return DogMap({
+        typePropertyKey: DogString(structure.serialName),
+        valuePropertyKey: graphValue
+      });
+    }
   }
 
   DogGraphValue iterableToGraph(Iterable iterable, DogEngine engine) {
@@ -65,6 +81,49 @@ class PolymorphicConverter extends DogConverter {
   Map mapFromGraph(DogMap map, DogEngine engine) {
     return map.value.map((key, value) => MapEntry(
         convertFromGraph(key, engine), convertFromGraph(value, engine)));
+  }
+}
+
+class DefaultListConverter extends DogConverter<List> {
+  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+  @override
+  List convertFromGraph(DogGraphValue value, DogEngine engine) {
+    return polymorphicConverter
+        .iterableFromGraph(value.asList!, engine)
+        .toList();
+  }
+
+  @override
+  DogGraphValue convertToGraph(List value, DogEngine engine) {
+    return polymorphicConverter.iterableToGraph(value, engine);
+  }
+}
+
+class DefaultSetConverter extends DogConverter<Set> {
+  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+  @override
+  Set convertFromGraph(DogGraphValue value, DogEngine engine) {
+    return polymorphicConverter
+        .iterableFromGraph(value.asList!, engine)
+        .toSet();
+  }
+
+  @override
+  DogGraphValue convertToGraph(Set value, DogEngine engine) {
+    return polymorphicConverter.iterableToGraph(value, engine);
+  }
+}
+
+class DefaultIterableConverter extends DogConverter<Iterable> {
+  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+  @override
+  Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
+    return polymorphicConverter.iterableFromGraph(value.asList!, engine);
+  }
+
+  @override
+  DogGraphValue convertToGraph(Iterable value, DogEngine engine) {
+    return polymorphicConverter.iterableToGraph(value, engine);
   }
 }
 

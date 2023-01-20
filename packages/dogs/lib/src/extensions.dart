@@ -104,8 +104,20 @@ extension DogEngineUsability on DogEngine {
   T fromGraph<T>(DogGraphValue value) => convertObjectFromGraph(value, T);
 }
 
-mixin DogsMixin on Object {
-  dynamic copy([Map<String, dynamic>? overrides]) {
+mixin DogsMixin<T> on Object implements TypeCaptureMixin<T> {
+  @override
+  Type get typeArgument => T;
+
+  @override
+  Type get deriveListType => List<T>;
+
+  @override
+  Type get deriveSetType => Set<T>;
+
+  @override
+  Type get deriveIterableType => Iterable<T>;
+
+  T copy([Map<String, dynamic>? overrides]) {
     return DogEngine.internalSingleton.copyObject(this, overrides, runtimeType);
   }
 

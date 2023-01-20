@@ -21,16 +21,24 @@ class CompiledStructureField {
   String accessor;
   String type;
   String serialType;
+  String converterType;
   IterableKind iterableKind;
   String name;
   bool optional;
   bool structure;
 
-  CompiledStructureField(this.accessor, this.type, this.serialType,
-      this.iterableKind, this.name, this.optional, this.structure);
+  CompiledStructureField(
+      this.accessor,
+      this.type,
+      this.converterType,
+      this.serialType,
+      this.iterableKind,
+      this.name,
+      this.optional,
+      this.structure);
 
   String get code =>
-      "$genAlias.DogStructureField($type, $serialType, $iterableKind, '$name', $optional, $structure)";
+      "$genAlias.DogStructureField($type, $serialType, $converterType, $iterableKind, '$name', $optional, $structure)";
 }
 
 class StructurizeResult {
@@ -50,14 +58,20 @@ class StructurizeCounter {
 
 String szPrefix = "sz";
 TypeChecker propertyNameChecker = TypeChecker.fromRuntime(PropertyName);
+TypeChecker propertySerializerChecker =
+    TypeChecker.fromRuntime(PropertySerializer);
+TypeChecker polymorphicChecker = TypeChecker.fromRuntime(Polymorphic);
 
 Future<StructurizeResult> structurize(
-    DartType type, DogGenContext context, StructurizeCounter counter) async {
+    DartType type,
+    ConstructorElement constructorElement,
+    DogGenContext context,
+    StructurizeCounter counter) async {
   List<AliasImport> imports = [];
   List<CompiledStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
-  for (var e in element.unnamedConstructor!.parameters) {
+  for (var e in constructorElement.parameters) {
     var cszp = "$szPrefix${counter.getAndIncrement()}";
     var fieldName = e.name.replaceFirst("this.", "");
     var field = element.getField(fieldName);
@@ -69,6 +83,7 @@ Future<StructurizeResult> structurize(
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);
     var optional = field.type.nullabilitySuffix == NullabilitySuffix.question;
+    if (fieldType.isDynamic) optional = true;
 
     var propertyName = fieldName;
     if (propertyNameChecker.hasAnnotationOf(field)) {
@@ -76,13 +91,44 @@ Future<StructurizeResult> structurize(
       propertyName = annotation.getField("name")!.toStringValue()!;
     }
 
-    imports.add(AliasImport.type(fieldType, cszp));
-    imports.add(AliasImport.type(serialType, cszp));
+    var propertySerializer = "null";
+    if (propertySerializerChecker.hasAnnotationOf(field)) {
+      var serializerAnnotation =
+          propertySerializerChecker.annotationsOf(field).first;
+      propertySerializer = serializerAnnotation
+          .getField("type")!
+          .toTypeValue()!
+          .getDisplayString(withNullability: false);
+    }
+    if (polymorphicChecker.hasAnnotationOf(field)) {
+      if (field.type.isDartCoreMap) {
+        propertySerializer = "DefaultMapConverter";
+      } else if (field.type.isDartCoreIterable) {
+        propertySerializer = "DefaultIterableConverter";
+      } else if (field.type.isDartCoreList) {
+        propertySerializer = "DefaultListConverter";
+      } else if (field.type.isDartCoreSet) {
+        propertySerializer = "DefaultSetConverter";
+      } else {
+        propertySerializer = "PolymorphicConverter";
+      }
+    }
+
+    var isLanguageType = fieldType.isVoid || fieldType.isDynamic;
+    if (!isLanguageType) {
+      imports.add(AliasImport.type(fieldType, cszp));
+      imports.add(AliasImport.type(serialType, cszp));
+    }
 
     fields.add(CompiledStructureField(
         "(obj) => obj.$fieldName",
-        "$cszp.${fieldType.getDisplayString(withNullability: false)}",
-        "$cszp.${serialType.getDisplayString(withNullability: false)}",
+        isLanguageType
+            ? fieldType.getDisplayString(withNullability: false)
+            : "$cszp.${fieldType.getDisplayString(withNullability: false)}",
+        propertySerializer,
+        isLanguageType
+            ? serialType.getDisplayString(withNullability: false)
+            : "$cszp.${serialType.getDisplayString(withNullability: false)}",
         iterableType,
         propertyName,
         optional,

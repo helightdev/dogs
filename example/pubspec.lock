@@ -99,6 +99,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "8.4.2"
+  cbor:
+    dependency: transitive
+    description:
+      name: cbor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.1.2"
   checked_yaml:
     dependency: transitive
     description:
@@ -148,6 +155,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.4"
+  dogs_cbor:
+    dependency: "direct main"
+    description:
+      path: "../packages/dogs_cbor"
+      relative: true
+    source: path
+    version: "1.0.0"
   dogs_core:
     dependency: "direct main"
     description:
@@ -161,7 +175,21 @@ packages:
       path: "../packages/dogs_generator"
       relative: true
     source: path
-    version: "1.0.0-alpha"
+    version: "1.0.0-alpha.1"
+  dogs_toml:
+    dependency: "direct main"
+    description:
+      path: "../packages/dogs_toml"
+      relative: true
+    source: path
+    version: "1.0.0"
+  dogs_yaml:
+    dependency: "direct main"
+    description:
+      path: "../packages/dogs_yaml"
+      relative: true
+    source: path
+    version: "1.0.0"
   file:
     dependency: transitive
     description:
@@ -197,6 +225,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  hex:
+    dependency: transitive
+    description:
+      name: hex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -211,6 +246,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
+  ieee754:
+    dependency: transitive
+    description:
+      name: ieee754
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   io:
     dependency: transitive
     description:
@@ -225,6 +267,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.5"
+  json2yaml:
+    dependency: transitive
+    description:
+      name: json2yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   json_annotation:
     dependency: transitive
     description:
@@ -288,6 +337,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.3"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.1.0"
   pool:
     dependency: transitive
     description:
@@ -428,6 +484,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  toml:
+    dependency: transitive
+    description:
+      name: toml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.1"
   typed_data:
     dependency: transitive
     description:

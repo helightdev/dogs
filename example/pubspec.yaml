@@ -9,6 +9,9 @@ environment:
 dependencies:
   path: ^1.8.0
   dogs_core: any
+  dogs_yaml: any
+  dogs_cbor: any
+  dogs_toml: any
   aqueduct_isolates: 1.0.1
 
 dev_dependencies:

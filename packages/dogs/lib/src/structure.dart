@@ -22,67 +22,84 @@ class DogStructure {
   final List<DogStructureField> fields;
 
   const DogStructure(this.type, this.serialName, this.fields);
+
+  factory DogStructure.named(Type type, String name) =>
+      DogStructure(type, name, []);
 }
 
 class DogStructureField {
   final Type type;
   final Type serialType;
+  final Type? converterType;
   final IterableKind iterableKind;
   final String name;
   final bool optional;
   final bool structure;
 
-  const DogStructureField(this.type, this.serialType, this.iterableKind,
-      this.name, this.optional, this.structure);
+  const DogStructureField(this.type, this.serialType, this.converterType,
+      this.iterableKind, this.name, this.optional, this.structure);
 
   factory DogStructureField.string(String name,
-      {bool optional = false, IterableKind iterable = IterableKind.none}) {
+      {bool optional = false,
+      IterableKind iterable = IterableKind.none,
+      Type? converterType}) {
     var type = String;
     if (iterable == IterableKind.list) {
       type = List<String>;
     } else if (iterable == IterableKind.set) {
       type = Set<String>;
     }
-    return DogStructureField(type, String, iterable, name, optional, false);
+    return DogStructureField(
+        type, String, converterType, iterable, name, optional, false);
   }
 
   factory DogStructureField.int(String name,
-      {bool optional = false, IterableKind iterable = IterableKind.none}) {
+      {bool optional = false,
+      IterableKind iterable = IterableKind.none,
+      Type? converterType}) {
     var type = int;
     if (iterable == IterableKind.list) {
       type = List<int>;
     } else if (iterable == IterableKind.set) {
       type = Set<int>;
     }
-    return DogStructureField(type, int, iterable, name, optional, false);
+    return DogStructureField(
+        type, int, converterType, iterable, name, optional, false);
   }
 
   factory DogStructureField.double(String name,
-      {bool optional = false, IterableKind iterable = IterableKind.none}) {
+      {bool optional = false,
+      IterableKind iterable = IterableKind.none,
+      Type? converterType}) {
     var type = double;
     if (iterable == IterableKind.list) {
       type = List<double>;
     } else if (iterable == IterableKind.set) {
       type = Set<double>;
     }
-    return DogStructureField(type, double, iterable, name, optional, false);
+    return DogStructureField(
+        type, double, converterType, iterable, name, optional, false);
   }
 
   factory DogStructureField.bool(String name,
-      {bool optional = false, IterableKind iterable = IterableKind.none}) {
+      {bool optional = false,
+      IterableKind iterable = IterableKind.none,
+      Type? converterType}) {
     var type = bool;
     if (iterable == IterableKind.list) {
       type = List<bool>;
     } else if (iterable == IterableKind.set) {
       type = Set<bool>;
     }
-    return DogStructureField(type, bool, iterable, name, optional, false);
+    return DogStructureField(
+        type, bool, converterType, iterable, name, optional, false);
   }
 
   factory DogStructureField.structure(
       String name, Type serial, Type type, IterableKind iterable,
-      {bool optional = false}) {
-    return DogStructureField(type, serial, iterable, name, optional, false);
+      {bool optional = false, Type? converterType}) {
+    return DogStructureField(
+        type, serial, converterType, iterable, name, optional, false);
   }
 }
 

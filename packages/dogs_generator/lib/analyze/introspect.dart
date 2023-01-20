@@ -43,6 +43,7 @@ Future tryInitialize(DogGenContext context) async {
 
 Future<DartType> getSerialType(DartType target, DogGenContext context) async {
   await tryInitialize(context);
+  if (target.isDynamic || target.isVoid) return target;
   if (_iterableChecker.isAssignableFromType(target)) {
     return target.asInstanceOf(iterableType)!.typeArguments.first;
   }

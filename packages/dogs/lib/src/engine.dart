@@ -31,7 +31,7 @@ class DogEngine {
   bool _asyncEnabled = false;
   bool get asyncEnabled => _asyncEnabled;
 
-  /// Enables/Disables the async capability.
+  /// Enables/Disables the async capability. (Experimental)
   set asyncEnabled(bool asyncEnabled) {
     _asyncEnabled = asyncEnabled;
     if (asyncEnabled) {
@@ -42,12 +42,16 @@ class DogEngine {
   }
 
   /// Creates a new [DogEngine] with optional async capabilities which can
-  /// be enabled via [enableAsync]
+  /// be enabled via [enableAsync]. (Experimental)
   DogEngine([bool enableAsync = true]) {
     if (enableAsync) {
       asyncEnabled = true;
     }
+    registerConverter(PolymorphicConverter());
     registerConverter(DefaultMapConverter());
+    registerConverter(DefaultIterableConverter());
+    registerConverter(DefaultListConverter());
+    registerConverter(DefaultSetConverter());
   }
 
   /// Sets this current instance as [internalSingleton].
@@ -87,12 +91,18 @@ class DogEngine {
 
   /// Returns the [DogConverter] that is associated with [type] or
   /// null if not present.
-  DogConverter? findConverter(Type type) => associatedConverters[type];
+  DogConverter? findAssociatedConverter(Type type) {
+    return associatedConverters[type];
+  }
+
+  /// Returns the first registered [DogConverter] of the given [type].
+  DogConverter? findConverter(Type type) =>
+      converters.firstWhereOrNull((element) => element.runtimeType == type);
 
   /// Returns the [DogConverter] that is associated with [type] or
   /// throws an exception if not present.
   DogConverter findConverterOrThrow(Type type) {
-    var converter = findConverter(type);
+    var converter = findAssociatedConverter(type);
     if (converter == null) {
       throw ArgumentError.value(
           type, "type", "No converter for given type found");
@@ -109,9 +119,9 @@ class DogEngine {
       structures[converter.structure.type] = converter.structure;
     }
     if (converter is Copyable) {
-      copyable[converter.valueType] = converter;
+      copyable[converter.typeArgument] = converter;
     }
-    associatedConverters[converter.valueType] = converter;
+    associatedConverters[converter.typeArgument] = converter;
     converters.add(converter);
     if (rebuildPool && _asyncEnabled) rebuildAsyncPool();
   }

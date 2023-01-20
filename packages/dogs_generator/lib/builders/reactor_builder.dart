@@ -25,10 +25,15 @@ class DogReactorBuilder extends Builder {
     }
 
     buffer.writeln(importValues.map((e) => "import '$e';").join("\n"));
+    buffer.writeln(importValues.map((e) => "export '$e';").join("\n"));
+
     buffer.writeln("""
-var dogs = DogEngine(false)
-  ..registerAllConverters([${converterNames.map((e) => "$e()").join(", ")}])
-  ..setSingleton();
+
+Future initialiseDogs() async {
+  dogs = DogEngine(false)
+    ..registerAllConverters([${converterNames.map((e) => "$e()").join(", ")}])
+    ..setSingleton();
+}
 """);
     buildStep.writeAsString(
         AssetId(buildStep.inputId.package, "lib/dogs.g.dart"),

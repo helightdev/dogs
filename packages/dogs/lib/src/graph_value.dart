@@ -35,6 +35,9 @@ abstract class DogGraphValue {
     visitor.visit(this);
   }
 
+  /// (Deep-)Clones this graph value.
+  DogGraphValue clone();
+
   /// Returns a [DogGraphValue] for the native value [value].
   /// All values that can be serialised by [jsonEncode] are considered native.
   /// Only values which fulfill [isNative] or [Iterable] and [Map] instances
@@ -75,7 +78,7 @@ class DogString extends DogGraphValue {
   String coerceString() => value;
 
   @override
-  dynamic coerceNative() => value;
+  String coerceNative() => value;
 
   @override
   bool operator ==(Object other) =>
@@ -86,6 +89,9 @@ class DogString extends DogGraphValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() => DogString(value);
 }
 
 class DogInt extends DogGraphValue {
@@ -96,7 +102,7 @@ class DogInt extends DogGraphValue {
   String coerceString() => value.toString();
 
   @override
-  dynamic coerceNative() => value;
+  int coerceNative() => value;
 
   @override
   bool operator ==(Object other) =>
@@ -107,6 +113,9 @@ class DogInt extends DogGraphValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() => DogInt(value);
 }
 
 class DogDouble extends DogGraphValue {
@@ -117,7 +126,7 @@ class DogDouble extends DogGraphValue {
   String coerceString() => value.toString();
 
   @override
-  dynamic coerceNative() => value;
+  double coerceNative() => value;
 
   @override
   bool operator ==(Object other) =>
@@ -128,6 +137,9 @@ class DogDouble extends DogGraphValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() => DogDouble(value);
 }
 
 class DogBool extends DogGraphValue {
@@ -138,7 +150,7 @@ class DogBool extends DogGraphValue {
   String coerceString() => value.toString();
 
   @override
-  dynamic coerceNative() => value;
+  bool coerceNative() => value;
 
   @override
   bool operator ==(Object other) =>
@@ -149,6 +161,9 @@ class DogBool extends DogGraphValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() => DogBool(value);
 }
 
 class DogNull extends DogGraphValue {
@@ -167,6 +182,9 @@ class DogNull extends DogGraphValue {
 
   @override
   int get hashCode => 0;
+
+  @override
+  DogGraphValue clone() => DogNull();
 }
 
 class DogList extends DogGraphValue {
@@ -177,7 +195,7 @@ class DogList extends DogGraphValue {
   String coerceString() => "[${value.map((e) => e.coerceString()).join(", ")}]";
 
   @override
-  dynamic coerceNative() => value.map((e) => e.coerceNative()).toList();
+  List<dynamic> coerceNative() => value.map((e) => e.coerceNative()).toList();
 
   @override
   bool operator ==(Object other) =>
@@ -188,6 +206,9 @@ class DogList extends DogGraphValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() => DogList(value.map((e) => e.clone()).toList());
 }
 
 class DogMap extends DogGraphValue {
@@ -199,7 +220,7 @@ class DogMap extends DogGraphValue {
       "{${value.entries.map((e) => "${e.key.coerceString()}: ${e.value.coerceString()}").join(", ")}}";
 
   @override
-  dynamic coerceNative() => value
+  Map<dynamic, dynamic> coerceNative() => value
       .map((key, value) => MapEntry(key.coerceNative(), value.coerceNative()));
 
   @override
@@ -211,4 +232,8 @@ class DogMap extends DogGraphValue {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() =>
+      DogMap(value.map((key, value) => MapEntry(key.clone(), value.clone())));
 }
