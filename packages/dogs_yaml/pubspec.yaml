@@ -6,7 +6,7 @@ environment:
   sdk: '>=2.18.6 <3.0.0'
 
 dependencies:
-  dogs_core: ^1.0.0-alpha
+  dogs_core: ^1.0.0
   yaml: ^3.1.1
   json2yaml: ^3.0.0
 

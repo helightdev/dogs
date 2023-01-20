@@ -7,8 +7,7 @@ environment:
 
 dependencies:
   cbor: ^5.1.2
-  dogs_core: ^1.0.0-alpha
-
+  dogs_core: ^1.0.0
 dev_dependencies:
   lints: ^2.0.0
   test: ^1.16.0
