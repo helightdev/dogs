@@ -1,3 +1,7 @@
+## 1.0.1-alpha
+
+ - change version to alpha
+
 ## 1.0.0-alpha
 
  - Bump "dogs_darwin" to `1.0.0-alpha`.

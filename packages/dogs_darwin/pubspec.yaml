@@ -1,6 +1,6 @@
 name: dogs_darwin
 description: Darwin marshal linker for the dogs serialization library.
-version: 1.0.0
+version: 1.0.1-alpha
 repository: https://github.com/DarwinFramework/dogs
 
 environment:
