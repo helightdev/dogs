@@ -3,7 +3,7 @@
     <a href="https://discord.gg/6HKuGSzYKJ">
         <img src="https://img.shields.io/discord/1060355106522017924?label=discord" alt="discord">
     </a>
-    <a href="https://helightdev.gitbook.io/darwin">
+    <a href="https://helightdev.gitbook.io/dogs">
         <img src="https://img.shields.io/badge/docs-gitbook.com-346ddb.svg" alt="gitbook">
     </a>
     <a href="https://github.com/invertase/melos">
@@ -15,6 +15,23 @@ DOGs, short for Dart Object Graphs, is a universal serialization library for
 dart making strong use of code generation to reduce boilerplate massively.
 Dogs can be easily extended to support a wide array of encodings and comes
 with json support out of the box.
+
+```dart
+@Serializable()
+class Person {
+  String name;
+  int age;
+  Set<String>? tags;
+  
+  Person(this.name, this.age, this.tags);
+}
+```
+
+## Format Support
+- **JSON** (included in dogs_core)
+- **YAML** (package dogs_yaml)
+- **TOML** (package dogs_toml)
+- **CBOR** (package dogs_cbor)
 
 ## Silent Code Generation
 A neat point about dogs 'darwin like' **non-intrusive** code generation is,
