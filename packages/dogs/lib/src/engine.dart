@@ -101,7 +101,7 @@ class DogEngine {
 
   /// Returns the [DogConverter] that is associated with [type] or
   /// throws an exception if not present.
-  DogConverter findConverterOrThrow(Type type) {
+  DogConverter findAssociatedConverterOrThrow(Type type) {
     var converter = findAssociatedConverter(type);
     if (converter == null) {
       throw ArgumentError.value(
