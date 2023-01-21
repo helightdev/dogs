@@ -1,3 +1,7 @@
+## 1.0.1-alpha.1
+
+ - valid prerelease syntax
+
 ## 1.0.1-alpha
 
  - change version to alpha
