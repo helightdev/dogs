@@ -14,22 +14,15 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-abstract class DogConverter<T> with TypeCaptureMixin<T> {
+abstract class Builder<T> with TypeCaptureMixin<T> {
+  final T $src;
+  final Map<String, dynamic> $overrides = {};
+  Builder(this.$src);
 
-  final bool isAssociated;
-  DogConverter([this.isAssociated = true]);
-
-  APISchemaObject get output => APISchemaObject.empty();
-
-  DogGraphValue convertToGraph(T value, DogEngine engine);
-  T convertFromGraph(DogGraphValue value, DogEngine engine);
-}
-
-dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
-  if (kind == IterableKind.list) return (value as Iterable).toList();
-  if (kind == IterableKind.set) return (value as Iterable).toSet();
-  return value;
+  T build() {
+    return DogEngine.internalSingleton!.copyable[typeArgument]!
+        .copy($src, DogEngine.internalSingleton!, $overrides);
+  }
 }

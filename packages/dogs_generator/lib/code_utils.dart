@@ -16,6 +16,9 @@ class AliasImport {
   factory AliasImport.type(DartType type, [String? alias]) {
     return AliasImport(type.element!.library!.identifier, alias);
   }
+  factory AliasImport.library(LibraryElement element, [String? alias]) {
+    return AliasImport(element.identifier, alias);
+  }
   String get code => "import '$import'${alias == null ? "" : " as $alias"};";
 
   @override

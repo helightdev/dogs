@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import 'dart:convert';
+
 import 'package:dogs_core/dogs_core.dart';
 
 extension DogValueExtension on DogGraphValue {
@@ -99,9 +101,9 @@ extension DogEngineUsability on DogEngine {
     return copyObject(value, overrides, T);
   }
 
-  DogGraphValue toGraph<T>(T value) => convertObjectToGraph(value, T);
+  DogGraphValue toGraph<T>(T value, {IterableKind kind = IterableKind.none, Type? type}) => convertIterableToGraph(value, type ?? T, kind);
 
-  T fromGraph<T>(DogGraphValue value) => convertObjectFromGraph(value, T);
+  T fromGraph<T>(DogGraphValue value, {IterableKind kind = IterableKind.none, Type? type}) => convertIterableFromGraph(value, type ?? T, kind);
 }
 
 mixin DogsMixin<T> on Object implements TypeCaptureMixin<T> {
@@ -118,11 +120,11 @@ mixin DogsMixin<T> on Object implements TypeCaptureMixin<T> {
   Type get deriveIterableType => Iterable<T>;
 
   T copy([Map<String, dynamic>? overrides]) {
-    return DogEngine.internalSingleton.copyObject(this, overrides, runtimeType);
+    return DogEngine.internalSingleton!.copyObject(this, overrides, runtimeType);
   }
 
   @override
   String toString() {
-    return "$runtimeType ${DogEngine.internalSingleton.convertObjectToGraph(this, runtimeType).coerceString()}";
+    return "$runtimeType ${DogEngine.internalSingleton!.convertObjectToGraph(this, runtimeType).coerceString()}";
   }
 }

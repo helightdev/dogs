@@ -14,6 +14,7 @@
  *    limitations under the License.
  */
 
+import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 /// Polymorphic converter for simple polymorphic datastructures.
@@ -33,7 +34,7 @@ class PolymorphicConverter extends DogConverter {
     var map = value.asMap!;
     var typeValue = map.value[typePropertyKey]!.asString!;
     var structure = engine.findSerialName(typeValue)!;
-    var converter = engine.associatedConverters[structure.type]!;
+    var converter = engine.associatedConverters[structure.typeArgument]!;
     if (map.value.length == 2 && map.value.containsKey(valuePropertyKey)) {
       var simpleValue = map.value[valuePropertyKey]!;
       return converter.convertFromGraph(simpleValue, engine);
@@ -82,10 +83,19 @@ class PolymorphicConverter extends DogConverter {
     return map.value.map((key, value) => MapEntry(
         convertFromGraph(key, engine), convertFromGraph(value, engine)));
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.object({
+        "_type": APISchemaObject.string(),
+      })
+        ..title = "Any"
+        ..description =
+            "A polymorphic object discriminated using the _type field.";
 }
 
 class DefaultListConverter extends DogConverter<List> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+
   @override
   List convertFromGraph(DogGraphValue value, DogEngine engine) {
     return polymorphicConverter
@@ -97,10 +107,16 @@ class DefaultListConverter extends DogConverter<List> {
   DogGraphValue convertToGraph(List value, DogEngine engine) {
     return polymorphicConverter.iterableToGraph(value, engine);
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.array(ofSchema: polymorphicConverter.output)
+      ..title = "Dynamic List";
+
 }
 
 class DefaultSetConverter extends DogConverter<Set> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+
   @override
   Set convertFromGraph(DogGraphValue value, DogEngine engine) {
     return polymorphicConverter
@@ -112,10 +128,15 @@ class DefaultSetConverter extends DogConverter<Set> {
   DogGraphValue convertToGraph(Set value, DogEngine engine) {
     return polymorphicConverter.iterableToGraph(value, engine);
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.array(ofSchema: polymorphicConverter.output)
+    ..title = "Dynamic Set";
 }
 
 class DefaultIterableConverter extends DogConverter<Iterable> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+
   @override
   Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
     return polymorphicConverter.iterableFromGraph(value.asList!, engine);
@@ -125,6 +146,10 @@ class DefaultIterableConverter extends DogConverter<Iterable> {
   DogGraphValue convertToGraph(Iterable value, DogEngine engine) {
     return polymorphicConverter.iterableToGraph(value, engine);
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.array(ofSchema: polymorphicConverter.output)
+    ..title = "Dynamic List";
 }
 
 class DefaultMapConverter extends DogConverter<Map> {

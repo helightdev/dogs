@@ -61,3 +61,25 @@ Future<IterableKind> getIterableType(
   }
   return IterableKind.none;
 }
+
+
+String getStructureMetadataSourceArray(Element element) {
+  var conditionChecker = TypeChecker.fromRuntime(StructureMetadata);
+  var annotations = <String>[];
+  for (var value in element.metadata.whereTypeChecker(conditionChecker)) {
+    annotations.add(value.toSource().substring(1));
+  }
+  return "[${annotations.join(", ")}]";
+}
+
+String getStructureMetadataSourceArrayAliased(Element element, List<AliasImport> imports, StructurizeCounter counter) {
+  var conditionChecker = TypeChecker.fromRuntime(StructureMetadata);
+  var annotations = <String>[];
+  for (var value in element.metadata.whereTypeChecker(conditionChecker)) {
+    var cszp = "$szPrefix${counter.getAndIncrement()}";
+    var import = AliasImport.library((value.element as ConstructorElement).library, cszp);
+    imports.add(import);
+    annotations.add("$cszp.${value.toSource().substring(1)}");
+  }
+  return "[${annotations.join(", ")}]";
+}

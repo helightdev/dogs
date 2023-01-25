@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -10,11 +11,12 @@ class CompiledStructure {
   String type;
   String serialName;
   List<CompiledStructureField> fields;
+  String metadataSource;
 
-  CompiledStructure(this.type, this.serialName, this.fields);
+  CompiledStructure(this.type, this.serialName, this.fields, this.metadataSource);
 
-  String get code =>
-      "$genAlias.DogStructure($type, '$serialName', [${fields.map((e) => e.code).join(", ")}])";
+  String code(List<String> getters) =>
+      "$genAlias.DogStructure<$type>($type, '$serialName', [${fields.map((e) => e.code).join(", ")}], $metadataSource, $genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}]))";
 }
 
 class CompiledStructureField {
@@ -26,6 +28,7 @@ class CompiledStructureField {
   String name;
   bool optional;
   bool structure;
+  String metadataSource;
 
   CompiledStructureField(
       this.accessor,
@@ -35,17 +38,20 @@ class CompiledStructureField {
       this.iterableKind,
       this.name,
       this.optional,
-      this.structure);
+      this.structure,
+      this.metadataSource);
 
   String get code =>
-      "$genAlias.DogStructureField($type, $serialType, $converterType, $iterableKind, '$name', $optional, $structure)";
+      "$genAlias.DogStructureField($type, $serialType, $converterType, $iterableKind, '$name', $optional, $structure, $metadataSource)";
 }
 
 class StructurizeResult {
   List<AliasImport> imports;
   CompiledStructure structure;
+  List<String> fieldNames;
+  String activator;
 
-  StructurizeResult(this.imports, this.structure);
+  StructurizeResult(this.imports, this.structure, this.fieldNames, this.activator);
 }
 
 class StructurizeCounter {
@@ -121,7 +127,7 @@ Future<StructurizeResult> structurize(
     }
 
     fields.add(CompiledStructureField(
-        "(obj) => obj.$fieldName",
+        fieldName,
         isLanguageType
             ? fieldType.getDisplayString(withNullability: false)
             : "$cszp.${fieldType.getDisplayString(withNullability: false)}",
@@ -132,13 +138,34 @@ Future<StructurizeResult> structurize(
         iterableType,
         propertyName,
         optional,
-        !isDogPrimitiveType(serialType)));
+        !isDogPrimitiveType(serialType),
+        getStructureMetadataSourceArrayAliased(field, imports, counter)
+    ));
   }
+
+  // Determine used constructor
+  var constructorName = "";
+  var constructor = element.unnamedConstructor!;
+  if (element.getNamedConstructor("dog") != null) {
+    constructorName = ".dog";
+    constructor = element.getNamedConstructor("dog")!;
+  }
+
+  // Create proxy arguments
+  var getters = fields.map((e) => e.accessor).toList();
+  var activator = "${element.name}$constructorName(${fields.mapIndexed((i, y) {
+    if (y.iterableKind == IterableKind.none) return "list[$i]";
+    if (y.optional) return "list[$i]?.cast<${y.serialType}>()";
+    return "list[$i].cast<${y.serialType}>()";
+  }).join(", ")})";
+
   var rootTypePrefix = "$szPrefix${counter.getAndIncrement()}";
   imports.add(AliasImport.type(type, rootTypePrefix));
   var structure = CompiledStructure(
       "$rootTypePrefix.${type.getDisplayString(withNullability: false)}",
       serialName,
-      fields);
-  return StructurizeResult(imports, structure);
+      fields,
+      getStructureMetadataSourceArrayAliased(element, imports, counter)
+  );
+  return StructurizeResult(imports, structure, getters, activator);
 }

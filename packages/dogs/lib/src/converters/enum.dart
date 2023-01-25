@@ -17,19 +17,31 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-abstract class DogConverter<T> with TypeCaptureMixin<T> {
+typedef EnumFromString<T> = T? Function(String);
+typedef EnumToString<T> = String Function(T?);
 
-  final bool isAssociated;
-  DogConverter([this.isAssociated = true]);
+abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T> {
+  EnumToString<T?> get toStr;
+  EnumFromString<T?> get fromStr;
+  List<String> get values;
 
-  APISchemaObject get output => APISchemaObject.empty();
+  @override
+  T convertFromGraph(DogGraphValue value, DogEngine engine) {
+    var s = (value as DogString).value;
+    return fromStr(s)!;
+  }
 
-  DogGraphValue convertToGraph(T value, DogEngine engine);
-  T convertFromGraph(DogGraphValue value, DogEngine engine);
-}
+  @override
+  DogGraphValue convertToGraph(T value, DogEngine engine) {
+    var s = toStr(value);
+    return DogString(s);
+  }
 
-dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
-  if (kind == IterableKind.list) return (value as Iterable).toList();
-  if (kind == IterableKind.set) return (value as Iterable).toSet();
-  return value;
+  @override
+  APISchemaObject get output {
+    return APISchemaObject.string()
+      ..title = T.toString()
+      ..enumerated = values
+    ;
+  }
 }

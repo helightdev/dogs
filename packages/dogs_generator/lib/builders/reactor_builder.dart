@@ -30,9 +30,10 @@ class DogReactorBuilder extends Builder {
     buffer.writeln("""
 
 Future initialiseDogs() async {
-  dogs = DogEngine(false)
-    ..registerAllConverters([${converterNames.map((e) => "$e()").join(", ")}])
-    ..setSingleton();
+  DogEngine.internalSingleton ??= DogEngine(false);
+  var engine = dogs;
+  engine.registerAllConverters([${converterNames.map((e) => "$e()").join(", ")}]);
+  engine.setSingleton();
 }
 """);
     buildStep.writeAsString(

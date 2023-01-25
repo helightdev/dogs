@@ -14,15 +14,10 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import 'package:conduit_open_api/v3.dart';
 
-abstract class Builder<T> with TypeCaptureMixin<T> {
-  final T $src;
-  final Map<String, dynamic> $overrides = {};
-  Builder(this.$src);
+abstract class APISchemaObjectMetaVisitor {
+  const APISchemaObjectMetaVisitor();
 
-  T build() {
-    return DogEngine.internalSingleton.copyable[typeArgument]!
-        .copy($src, DogEngine.internalSingleton, $overrides);
-  }
+  void visit(APISchemaObject object);
 }

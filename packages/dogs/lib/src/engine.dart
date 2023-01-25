@@ -19,7 +19,7 @@ import 'package:dogs_core/dogs_core.dart';
 
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
 class DogEngine {
-  static late DogEngine internalSingleton;
+  static DogEngine? internalSingleton;
 
   List<DogConverter> converters = [];
   Map<Type, DogConverter> associatedConverters = {};
@@ -47,11 +47,18 @@ class DogEngine {
     if (enableAsync) {
       asyncEnabled = true;
     }
+    // Register polymorphic converters
     registerConverter(PolymorphicConverter());
     registerConverter(DefaultMapConverter());
     registerConverter(DefaultIterableConverter());
     registerConverter(DefaultListConverter());
     registerConverter(DefaultSetConverter());
+
+    // Register common converters
+    registerConverter(DateTimeConverter());
+    registerConverter(DurationConverter());
+    registerConverter(UriConverter());
+    registerConverter(Uint8ListConverter());
   }
 
   /// Sets this current instance as [internalSingleton].
@@ -148,18 +155,25 @@ class DogEngine {
     return cloneable.copy(value, this, overrides);
   }
 
-  /// Converts an [value] to its [DogGraphValue] representation using the
+  /// Converts a [value] to its [DogGraphValue] representation using the
   /// converter associated with [serialType].
   DogGraphValue convertObjectToGraph(dynamic value, Type serialType) {
-    if (value is Iterable) {
-      return DogList(
-          value.map((e) => convertObjectToGraph(e, serialType)).toList());
-    }
     var converter = associatedConverters[serialType];
     if (converter == null) {
       throw Exception("Couldn't find an converter for $serialType");
     }
     return converter.convertToGraph(value, this);
+  }
+
+  /// Converts a [value] to its [DogGraphValue] representation using the
+  /// converter associated with [serialType].
+  dynamic convertIterableToGraph(dynamic value, Type type, IterableKind kind) {
+    if (kind == IterableKind.none) {
+      return convertObjectToGraph(value, type);
+    } else {
+      if (value is! Iterable) throw Exception("Expected an iterable");
+      return DogList(value.map((e) => convertObjectToGraph(e, type)).toList());
+    }
   }
 
   /// Async version of [convertObjectToGraph].
@@ -174,11 +188,20 @@ class DogEngine {
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
   dynamic convertObjectFromGraph(DogGraphValue value, Type serialType) {
-    if (value is DogList) {
-      return value.value.map((e) => convertObjectFromGraph(e, serialType));
-    }
     var converter = associatedConverters[serialType]!;
     return converter.convertFromGraph(value, this);
+  }
+
+  /// Converts [DogGraphValue] supplied via [value] to its normal representation
+  /// by using the converter associated with [serialType].
+  dynamic convertIterableFromGraph(DogGraphValue value, Type type, IterableKind kind) {
+    if (kind == IterableKind.none) {
+      return convertObjectFromGraph(value, type);
+    } else {
+      if (value is! DogList) throw Exception("Expected a list");
+      var items = value.value.map((e) => convertObjectFromGraph(e, type));
+      return adjustIterable(items, kind);
+    }
   }
 
   /// Async version of [convertObjectFromGraph].

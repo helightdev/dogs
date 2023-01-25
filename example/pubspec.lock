@@ -127,6 +127,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.17.0"
+  conduit_codable:
+    dependency: transitive
+    description:
+      name: conduit_codable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.8"
+  conduit_open_api:
+    dependency: transitive
+    description:
+      name: conduit_open_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.8"
   convert:
     dependency: transitive
     description:

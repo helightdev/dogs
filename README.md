@@ -1,43 +1,39 @@
-<h1 align="left">
-    DOGs
-    <a href="https://discord.gg/6HKuGSzYKJ">
-        <img src="https://img.shields.io/discord/1060355106522017924?label=discord" alt="discord">
-    </a>
-    <a href="https://helightdev.gitbook.io/dogs">
-        <img src="https://img.shields.io/badge/docs-gitbook.com-346ddb.svg" alt="gitbook">
-    </a>
-    <a href="https://github.com/invertase/melos">
-        <img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg" alt="melos">
-    </a>
-</h1>
+<!-- 
+This README describes the package. If you publish this package to pub.dev,
+this README's contents appear on the landing page for your package.
 
-DOGs, short for Dart Object Graphs, is a universal serialization library for
-dart making strong use of code generation to reduce boilerplate massively.
-Dogs can be easily extended to support a wide array of encodings and comes
-with json support out of the box.
+For information about how to write a good package README, see the guide for
+[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+
+For general information about developing packages, see the Dart guide for
+[creating packages](https://dart.dev/guides/libraries/create-library-packages)
+and the Flutter guide for
+[developing packages and plugins](https://flutter.dev/developing-packages). 
+-->
+
+TODO: Put a short description of the package here that helps potential users
+know whether this package might be useful for them.
+
+## Features
+
+TODO: List what your package can do. Maybe include images, gifs, or videos.
+
+## Getting started
+
+TODO: List prerequisites and provide or point to information on how to
+start using the package.
+
+## Usage
+
+TODO: Include short and useful examples for package users. Add longer examples
+to `/example` folder. 
 
 ```dart
-@Serializable()
-class Person {
-  String name;
-  int age;
-  Set<String>? tags;
-  
-  Person(this.name, this.age, this.tags);
-}
+const like = 'sample';
 ```
 
-## Format Support
-- **JSON** (included in dogs_core)
-- **YAML** (package dogs_yaml)
-- **TOML** (package dogs_toml)
-- **CBOR** (package dogs_cbor)
+## Additional information
 
-## Silent Code Generation
-A neat point about dogs 'darwin like' **non-intrusive** code generation is,
-that it has almost **zero boilerplate** and generally **doesn't require
-importing or referencing generated source code**, except for just a few
-cases. This allows you to keep on working on your code, without having to
-wait for the build runner to create your required files for every new service
-you create and plan to use. This also **minimizes conflicts** with other
-external generators and helps to prevent unexpected build runner crashes.
+TODO: Tell users more about the package: where to find more information, how to 
+contribute to the package, how to file issues, what response they can expect 
+from the package authors, and more.

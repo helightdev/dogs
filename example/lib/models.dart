@@ -1,28 +1,15 @@
 import 'package:dogs_core/dogs_core.dart';
 
-@LinkSerializer()
-class DateTimeConverter extends DogConverter<DateTime> with StructureEmitter<DateTime> {
-
-  @override
-  DateTime convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var str = value as DogString;
-    return DateTime.parse(str.value);
-  }
-
-  @override
-  DogGraphValue convertToGraph(DateTime value, DogEngine engine) {
-    return DogString(value.toIso8601String());
-  }
-
-  @override
-  DogStructure get structure => DogStructure.named(DateTime, "date");
-}
-
 @Serializable()
+@ApiDescription("A random unique person")
 class Person with DogsMixin<Person> {
 
+  @ApiDescription("The name of the person")
+  @LengthRange(min: 1, max: 128)
   String name;
+  @Range(min: 0, max: 130)
   int age;
+  @LengthRange(max: 64)
   Set<String>? tags;
   List<Note> notes;
   Gender gender;
@@ -44,8 +31,11 @@ class Person with DogsMixin<Person> {
 }
 
 @Serializable()
+@TestStructureAnnotation("Note Outer")
 class Note with DogsMixin {
   String text;
+
+  @TestStructureAnnotation("Note Innner")
   int id;
 
   @Polymorphic()

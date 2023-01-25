@@ -18,25 +18,39 @@ library dogs_core;
 
 import 'dogs_core.dart';
 
+export 'src/converters/common.dart';
+export 'src/converters/enum.dart';
+export 'src/converters/polymorphic.dart';
+export 'src/converters/structure.dart';
+
+export 'src/dataclass/builder.dart';
+export 'src/dataclass/copyable.dart';
+
+export 'src/schema/annotations.dart';
+export 'src/schema/schema.dart';
+export 'src/schema/visitor.dart';
+
+export 'src/structure/extensions.dart';
+export 'src/structure/field.dart';
+export 'src/structure/proxy.dart';
+export 'src/structure/structure.dart';
+
+export 'src/visitors/null_exclusion.dart';
+export 'src/visitors/string_keyed.dart';
+
 export 'src/async.dart';
-export 'src/builder.dart';
 export 'src/converter.dart';
-export 'src/copyable.dart';
 export 'src/engine.dart';
 export 'src/extensions.dart';
 export 'src/global.dart';
 export 'src/graph_value.dart';
 export 'src/json.dart';
-export 'src/null_exclusion.dart';
-export 'src/polymorphic.dart';
 export 'src/serializer.dart';
-export 'src/string_keyed.dart';
-export 'src/structure.dart';
 export 'src/visitor.dart';
 
 /// Static instance of [DogEngine] that will be initialised by invoking
 /// the generated initialiseDogs() method.
-late DogEngine dogs;
+DogEngine get dogs => DogEngine.internalSingleton!;
 
 /// Marks an object as serializable.
 /// The dogs_generator will then generate an [GeneratedDogConverter] emitting

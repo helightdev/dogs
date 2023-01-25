@@ -16,33 +16,41 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
-class DogStructure {
+class DogStructureField extends StructureNode {
+
+  /// Declared type of the structure.
   final Type type;
-  final String serialName;
-  final List<DogStructureField> fields;
 
-  const DogStructure(this.type, this.serialName, this.fields);
-
-  factory DogStructure.named(Type type, String name) =>
-      DogStructure(type, name, []);
-}
-
-class DogStructureField {
-  final Type type;
+  /// Serial type of the structure.
+  /// If the declared type is [Iterable], [List] or [Set], the type argument
+  /// of the iterable will be the serial type.
   final Type serialType;
+
+  /// Optional converter type override.
   final Type? converterType;
+
+  /// Type of the iterable, if this field is iterable.
   final IterableKind iterableKind;
+
+  /// The name of the field.
   final String name;
+
+  /// Defines the nullability of the field.
   final bool optional;
+
+  /// Defines if the fields serial type is a structure.
   final bool structure;
 
+  /// Retained metadata annotations of this field.
+  final List<StructureMetadata> metadata;
+
   const DogStructureField(this.type, this.serialType, this.converterType,
-      this.iterableKind, this.name, this.optional, this.structure);
+      this.iterableKind, this.name, this.optional, this.structure, this.metadata);
 
   factory DogStructureField.string(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType}) {
     var type = String;
     if (iterable == IterableKind.list) {
       type = List<String>;
@@ -50,13 +58,13 @@ class DogStructureField {
       type = Set<String>;
     }
     return DogStructureField(
-        type, String, converterType, iterable, name, optional, false);
+        type, String, converterType, iterable, name, optional, false, []);
   }
 
   factory DogStructureField.int(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType}) {
     var type = int;
     if (iterable == IterableKind.list) {
       type = List<int>;
@@ -64,13 +72,13 @@ class DogStructureField {
       type = Set<int>;
     }
     return DogStructureField(
-        type, int, converterType, iterable, name, optional, false);
+        type, int, converterType, iterable, name, optional, false, []);
   }
 
   factory DogStructureField.double(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType}) {
     var type = double;
     if (iterable == IterableKind.list) {
       type = List<double>;
@@ -78,13 +86,13 @@ class DogStructureField {
       type = Set<double>;
     }
     return DogStructureField(
-        type, double, converterType, iterable, name, optional, false);
+        type, double, converterType, iterable, name, optional, false, []);
   }
 
   factory DogStructureField.bool(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType}) {
     var type = bool;
     if (iterable == IterableKind.list) {
       type = List<bool>;
@@ -92,17 +100,13 @@ class DogStructureField {
       type = Set<bool>;
     }
     return DogStructureField(
-        type, bool, converterType, iterable, name, optional, false);
+        type, bool, converterType, iterable, name, optional, false, []);
   }
 
   factory DogStructureField.structure(
       String name, Type serial, Type type, IterableKind iterable,
       {bool optional = false, Type? converterType}) {
     return DogStructureField(
-        type, serial, converterType, iterable, name, optional, false);
+        type, serial, converterType, iterable, name, optional, true, []);
   }
-}
-
-mixin StructureEmitter<T> on DogConverter<T> {
-  DogStructure get structure;
 }

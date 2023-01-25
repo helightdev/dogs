@@ -41,11 +41,21 @@ class ConverterBuilder extends DogsAdapter {
       DogsCodeContext codeContext) async {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
+    var parentEnum = element;
     var clazz = Class((builder) {
       builder.name = converterName;
 
       builder.extend =
           Reference("$genAlias.GeneratedEnumDogConverter<${element.name}>");
+
+      builder.methods.add(Method((builder) => builder
+        ..name = "values"
+        ..type = MethodType.getter
+        ..returns = Reference("List<String>")
+        ..annotations.add(CodeExpression(Code("override")))
+        ..lambda = true
+        ..body =
+        Code("${element.name}.values.map((e) => e.name).toList()")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toStr"
@@ -54,7 +64,7 @@ class ConverterBuilder extends DogsAdapter {
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body =
-            Code("(e) => e.toString().replaceFirst('${element.name}.', '')")));
+            Code("(e) => e!.name")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "fromStr"
@@ -97,38 +107,39 @@ class ConverterBuilder extends DogsAdapter {
     var clazz = Class((builder) {
       builder.name = converterName;
 
-      builder.extend =
-          Reference("$genAlias.GeneratedDogConverter<${element.name}>");
+      builder.extend = Reference("$genAlias.DefaultStructureConverter<${element.name}>");
 
-      builder.methods.add(Method((builder) => builder
+      builder.fields.add(Field((builder) => builder
         ..name = "structure"
-        ..type = MethodType.getter
-        ..returns = Reference("$genAlias.DogStructure")
+        ..type = Reference("$genAlias.DogStructure<${element.name}>")
         ..annotations.add(CodeExpression(Code("override")))
-        ..lambda = true
-        ..body = Code("const ${structurized.structure.code}")));
+        ..assignment = Code("const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())}")
+        ..modifier = FieldModifier.final$
+      ));
+
+      for (var value in structurized.fieldNames) {
+        builder.methods.add(Method((builder) => builder
+          ..name = "_$value"
+          ..returns = Reference("dynamic")
+          ..requiredParameters.add(Parameter((builder) => builder
+            ..type = Reference(element.name)
+            ..name = "obj"
+          ))
+          ..static = true
+          ..lambda = true
+          ..body = Code("obj.$value")));
+      }
 
       builder.methods.add(Method((builder) => builder
-        ..name = "getters"
-        ..type = MethodType.getter
-        ..returns = Reference("List<$genAlias.FieldGetter>")
-        ..annotations.add(CodeExpression(Code("override")))
+        ..name = "_activator"
+        ..returns = Reference(element.name)
+        ..requiredParameters.add(Parameter((builder) => builder
+          ..type = Reference("List")
+          ..name = "list"
+        ))
+        ..static = true
         ..lambda = true
-        ..body = Code(
-            "[${structurized.structure.fields.map((e) => e.accessor).join(", ")}]")));
-
-      builder.methods.add(Method((builder) => builder
-        ..name = "constructorAccessor"
-        ..type = MethodType.getter
-        ..returns = Reference("$genAlias.ConstructorAccessor")
-        ..annotations.add(CodeExpression(Code("override")))
-        ..lambda = true
-        ..body = Code(
-            "(list) => ${element.name}$constructorName(${structurized.structure.fields.mapIndexed((i, y) {
-          if (y.iterableKind == IterableKind.none) return "list[$i]";
-          if (y.optional) return "list[$i]?.cast<${y.serialType}>()";
-          return "list[$i].cast<${y.serialType}>()";
-        }).join(", ")})")));
+        ..body = Code(structurized.activator)));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
