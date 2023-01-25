@@ -1,10 +1,9 @@
-# Files and directories created by pub.
+.fleet/
+.idea/
 .dart_tool/
-.packages
 
-# Conventional directory for build outputs.
-build/
+# Exclude generated dart files
+*.g.dart
 
-# Omit committing pubspec.lock for library packages; see
-# https://dart.dev/guides/libraries/private-files#pubspeclock.
-pubspec.lock
+# Exclude project files
+*.iml
