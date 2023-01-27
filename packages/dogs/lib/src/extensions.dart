@@ -84,7 +84,7 @@ extension DogsIterableExtension<T> on Iterable<T> {
   }
 }
 
-abstract class TypeCaptureMixin<T> {
+mixin TypeCaptureMixin<T> {
   Type get typeArgument => T;
   Type get deriveListType => List<T>;
   Type get deriveSetType => Set<T>;
@@ -94,6 +94,11 @@ abstract class TypeCaptureMixin<T> {
 extension DogsMapExtension<K, V> on Map<K, V> {
   Type get keyTypeArgument => K;
   Type get valueTypeArgument => V;
+  DogGraphValue get asGraph => DogGraphValue.fromNative(this);
+}
+
+extension DogsListExtension<T> on List<T> {
+  DogGraphValue get asGraph => DogGraphValue.fromNative(this);
 }
 
 extension DogEngineUsability on DogEngine {
