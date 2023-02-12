@@ -1,17 +1,21 @@
-// Notice: This code is pretty much copied from darwin, where it is used to
-// enable third party generators. Since it's a bit hard to abstract into a
-// package and not really time efficient, I basically 'Ctrl C + Ctrl V'ed
-// it and reused it here. So no copyright problems here.
-// ~ Christoph
-import 'dart:async';
-import 'dart:convert';
-import 'package:analyzer/dart/element/element.dart';
-import 'package:build/build.dart';
-import 'package:dart_style/dart_style.dart';
-import 'package:lyell_gen/lyell_gen.dart';
-import 'package:source_gen/source_gen.dart';
+/*
+ *    Copyright 2022, the DOGs authors
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 
-import 'package:dogs_generator/dogs_generator.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:lyell_gen/lyell_gen.dart';
 
 abstract class DogsAdapter<TAnnotation>
     extends SubjectAdapter<TAnnotation, Element> {

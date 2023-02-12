@@ -15,7 +15,6 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:lyell/lyell.dart';

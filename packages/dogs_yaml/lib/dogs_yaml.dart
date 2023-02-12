@@ -1,10 +1,6 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
 library dogs_yaml;
 
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:json2yaml/json2yaml.dart';

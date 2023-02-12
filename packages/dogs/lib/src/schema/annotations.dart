@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/src/v3/schema.dart';
+import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 class ApiDescription extends StructureMetadata

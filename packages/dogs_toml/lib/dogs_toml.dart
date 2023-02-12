@@ -1,6 +1,3 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
 library dogs_toml;
 
 import 'package:dogs_core/dogs_core.dart';

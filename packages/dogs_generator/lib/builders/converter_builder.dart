@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
-import 'package:lyell_gen/src/subject.dart';
 
 class ConverterBuilder extends DogsAdapter<Serializable> {
   ConverterBuilder() : super(archetype: "conv", annotation: Serializable);
@@ -27,7 +25,6 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
-    var parentEnum = element;
     var clazz = Class((builder) {
       builder.name = converterName;
 
