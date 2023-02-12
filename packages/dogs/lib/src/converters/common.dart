@@ -20,8 +20,8 @@ import 'dart:typed_data';
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-class DateTimeConverter extends DogConverter<DateTime> with StructureEmitter<DateTime> {
-
+class DateTimeConverter extends DogConverter<DateTime>
+    with StructureEmitter<DateTime> {
   @override
   DateTime convertFromGraph(DogGraphValue value, DogEngine engine) {
     var stringValue = value.asString!;
@@ -42,8 +42,8 @@ class DateTimeConverter extends DogConverter<DateTime> with StructureEmitter<Dat
   DogStructure get structure => DogStructure<DateTime>.synthetic("DateTime");
 }
 
-class DurationConverter extends DogConverter<Duration> with StructureEmitter<Duration> {
-
+class DurationConverter extends DogConverter<Duration>
+    with StructureEmitter<Duration> {
   @override
   Duration convertFromGraph(DogGraphValue value, DogEngine engine) {
     var intValue = value.asInt!;
@@ -56,8 +56,8 @@ class DurationConverter extends DogConverter<Duration> with StructureEmitter<Dur
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.integer();  @override
-
+  APISchemaObject get output => APISchemaObject.integer();
+  @override
   DogStructure get structure => DogStructure<Duration>.synthetic("Duration");
 }
 
@@ -80,8 +80,8 @@ class UriConverter extends DogConverter<Uri> with StructureEmitter<Uri> {
   DogStructure get structure => DogStructure<Uri>.synthetic("Uri");
 }
 
-class Uint8ListConverter extends DogConverter<Uint8List> with StructureEmitter<Uint8List> {
-
+class Uint8ListConverter extends DogConverter<Uint8List>
+    with StructureEmitter<Uint8List> {
   @override
   Uint8List convertFromGraph(DogGraphValue value, DogEngine engine) {
     var stringValue = value.asString!;

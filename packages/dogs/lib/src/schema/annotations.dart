@@ -17,7 +17,8 @@
 import 'package:conduit_open_api/src/v3/schema.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-class ApiDescription extends StructureMetadata implements APISchemaObjectMetaVisitor {
+class ApiDescription extends StructureMetadata
+    implements APISchemaObjectMetaVisitor {
   final String description;
   const ApiDescription(this.description);
 
@@ -81,14 +82,12 @@ class Maximum extends StructureMetadata implements APISchemaObjectMetaVisitor {
   }
 }
 
-class SizeRange extends StructureMetadata implements APISchemaObjectMetaVisitor {
+class SizeRange extends StructureMetadata
+    implements APISchemaObjectMetaVisitor {
   final int? min;
   final int? max;
 
-  const SizeRange({
-    this.min,
-    this.max
-  });
+  const SizeRange({this.min, this.max});
 
   @override
   void visit(APISchemaObject object) {
@@ -97,14 +96,12 @@ class SizeRange extends StructureMetadata implements APISchemaObjectMetaVisitor 
   }
 }
 
-class LengthRange extends StructureMetadata implements APISchemaObjectMetaVisitor {
+class LengthRange extends StructureMetadata
+    implements APISchemaObjectMetaVisitor {
   final int? min;
   final int? max;
 
-  const LengthRange({
-    this.min,
-    this.max
-  });
+  const LengthRange({this.min, this.max});
 
   @override
   void visit(APISchemaObject object) {

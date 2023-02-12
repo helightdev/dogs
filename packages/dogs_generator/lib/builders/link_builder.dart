@@ -1,22 +1,26 @@
+import 'dart:async';
+
+import 'package:analyzer/dart/element/element.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';
+import 'package:lyell_gen/lyell_gen.dart';
 
-class LinkBuilder extends DogsAdapter {
+class LinkBuilder extends DogsAdapter<LinkSerializer> {
   LinkBuilder() : super(archetype: "link", annotation: LinkSerializer);
 
   @override
-  Future<DogBinding> generateBinding(DogGenContext context) async {
-    var binding = context.defaultBinding(this);
-    binding.converterPackage = context.library.element.identifier;
-    binding.converterNames =
-        context.elements.map((e) => e.element.name!).toList();
+  Future<SubjectDescriptor> generateBinding(
+      SubjectGenContext<Element> context) async {
+    var binding = context.defaultBinding();
+    binding.meta["converterNames"] =
+        context.matches.map((e) => e.name).toList();
     return binding;
   }
 
   @override
-  Future<void> generateConverters(
-      DogGenContext genContext, DogsCodeContext codeContext) async {
+  FutureOr<void> generateSubject(
+      SubjectGenContext<Element> genContext, SubjectCodeContext codeContext) {
     codeContext.noGenerate = true;
   }
 }

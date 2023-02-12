@@ -17,8 +17,8 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-abstract class DefaultStructureConverter<T> extends DogConverter<T> with StructureEmitter<T>, Copyable<T> {
-
+abstract class DefaultStructureConverter<T> extends DogConverter<T>
+    with StructureEmitter<T>, Copyable<T> {
   @override
   DogStructure<T> get structure;
 
@@ -28,9 +28,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> with Structu
   APISchemaObject get output {
     if (structure.isSynthetic) return APISchemaObject.empty();
     return APISchemaObject()
-      ..referenceURI = Uri(
-          path: "/components/schemas/${structure.serialName}"
-      );
+      ..referenceURI = Uri(path: "/components/schemas/${structure.serialName}");
   }
 
   @override
@@ -50,7 +48,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> with Structu
           continue;
         }
         throw Exception(
-            "Expected a value of serial type ${field.serialType} at ${field.name} but got ${fieldValue.coerceString()}");
+            "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got ${fieldValue.coerceString()}");
       }
       if (field.converterType != null) {
         var convertFromGraph = engine
@@ -58,9 +56,11 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> with Structu
             .convertFromGraph(fieldValue, engine);
         values.add(convertFromGraph);
       } else if (field.structure) {
-        values.add(engine.convertIterableFromGraph(fieldValue, field.serialType, field.iterableKind));
+        values.add(engine.convertIterableFromGraph(
+            fieldValue, field.serial.typeArgument, field.iterableKind));
       } else {
-        values.add(adjustIterable(fieldValue.coerceNative(), field.iterableKind));
+        values
+            .add(adjustIterable(fieldValue.coerceNative(), field.iterableKind));
       }
     }
     return structure.proxy.instantiate(values);
@@ -78,8 +78,8 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> with Structu
             .findConverter(field.converterType!)!
             .convertToGraph(fieldValue, engine);
       } else if (field.structure) {
-        map[DogString(field.name)] =
-            engine.convertIterableToGraph(fieldValue, field.serialType, field.iterableKind);
+        map[DogString(field.name)] = engine.convertIterableToGraph(
+            fieldValue, field.serial.typeArgument, field.iterableKind);
       } else {
         map[DogString(field.name)] = DogGraphValue.fromNative(fieldValue);
       }
@@ -90,9 +90,11 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> with Structu
   @override
   T copy(T src, DogEngine engine, Map<String, dynamic>? overrides) {
     if (overrides == null) {
-      return structure.proxy.instantiate(structure.getters.map((e) => e(src)).toList());
+      return structure.proxy
+          .instantiate(structure.getters.map((e) => e(src)).toList());
     } else {
-      var map = overrides.map((key, value) => MapEntry(structure.indexOfFieldName(key)!, value));
+      var map = overrides.map(
+          (key, value) => MapEntry(structure.indexOfFieldName(key)!, value));
       var values = [];
       for (var i = 0; i < structure.fields.length; i++) {
         if (map.containsKey(i)) {

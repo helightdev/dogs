@@ -5,4 +5,5 @@ library dogs_darwin;
 
 export 'src/collection.dart';
 export 'src/marshal.dart';
+export 'src/plugin.dart';
 export 'src/single.dart';

@@ -109,9 +109,9 @@ class DefaultListConverter extends DogConverter<List> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.array(ofSchema: polymorphicConverter.output)
-      ..title = "Dynamic List";
-
+  APISchemaObject get output =>
+      APISchemaObject.array(ofSchema: polymorphicConverter.output)
+        ..title = "Dynamic List";
 }
 
 class DefaultSetConverter extends DogConverter<Set> {
@@ -130,8 +130,9 @@ class DefaultSetConverter extends DogConverter<Set> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.array(ofSchema: polymorphicConverter.output)
-    ..title = "Dynamic Set";
+  APISchemaObject get output =>
+      APISchemaObject.array(ofSchema: polymorphicConverter.output)
+        ..title = "Dynamic Set";
 }
 
 class DefaultIterableConverter extends DogConverter<Iterable> {
@@ -148,8 +149,9 @@ class DefaultIterableConverter extends DogConverter<Iterable> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.array(ofSchema: polymorphicConverter.output)
-    ..title = "Dynamic List";
+  APISchemaObject get output =>
+      APISchemaObject.array(ofSchema: polymorphicConverter.output)
+        ..title = "Dynamic List";
 }
 
 class DefaultMapConverter extends DogConverter<Map> {

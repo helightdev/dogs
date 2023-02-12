@@ -20,7 +20,8 @@ import 'package:dogs_core/dogs_core.dart';
 typedef EnumFromString<T> = T? Function(String);
 typedef EnumToString<T> = String Function(T?);
 
-abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T> {
+abstract class GeneratedEnumDogConverter<T extends Enum>
+    extends DogConverter<T> {
   EnumToString<T?> get toStr;
   EnumFromString<T?> get fromStr;
   List<String> get values;
@@ -41,7 +42,6 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
   APISchemaObject get output {
     return APISchemaObject.string()
       ..title = T.toString()
-      ..enumerated = values
-    ;
+      ..enumerated = values;
   }
 }

@@ -14,9 +14,11 @@
  *    limitations under the License.
  */
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:lyell/lyell.dart';
 
 extension DogValueExtension on DogGraphValue {
   bool get isNull => this is DogNull;
@@ -84,13 +86,6 @@ extension DogsIterableExtension<T> on Iterable<T> {
   }
 }
 
-mixin TypeCaptureMixin<T> {
-  Type get typeArgument => T;
-  Type get deriveListType => List<T>;
-  Type get deriveSetType => Set<T>;
-  Type get deriveIterableType => Iterable<T>;
-}
-
 extension DogsMapExtension<K, V> on Map<K, V> {
   Type get keyTypeArgument => K;
   Type get valueTypeArgument => V;
@@ -106,26 +101,34 @@ extension DogEngineUsability on DogEngine {
     return copyObject(value, overrides, T);
   }
 
-  DogGraphValue toGraph<T>(T value, {IterableKind kind = IterableKind.none, Type? type}) => convertIterableToGraph(value, type ?? T, kind);
+  DogGraphValue toGraph<T>(T value,
+          {IterableKind kind = IterableKind.none, Type? type}) =>
+      convertIterableToGraph(value, type ?? T, kind);
 
-  T fromGraph<T>(DogGraphValue value, {IterableKind kind = IterableKind.none, Type? type}) => convertIterableFromGraph(value, type ?? T, kind);
+  T fromGraph<T>(DogGraphValue value,
+          {IterableKind kind = IterableKind.none, Type? type}) =>
+      convertIterableFromGraph(value, type ?? T, kind);
 }
 
-mixin DogsMixin<T> on Object implements TypeCaptureMixin<T> {
+mixin DogsMixin<T> on Object implements TypeCapture<T> {
   @override
   Type get typeArgument => T;
-
   @override
-  Type get deriveListType => List<T>;
-
+  Type get deriveList => List<T>;
   @override
-  Type get deriveSetType => Set<T>;
-
+  Type get deriveSet => Set<T>;
   @override
-  Type get deriveIterableType => Iterable<T>;
+  Type get deriveIterable => Iterable<T>;
+  @override
+  Type get deriveFuture => Future<T>;
+  @override
+  Type get deriveFutureOr => FutureOr<T>;
+  @override
+  Type get deriveStream => Stream<T>;
 
   T copy([Map<String, dynamic>? overrides]) {
-    return DogEngine.internalSingleton!.copyObject(this, overrides, runtimeType);
+    return DogEngine.internalSingleton!
+        .copyObject(this, overrides, runtimeType);
   }
 
   @override

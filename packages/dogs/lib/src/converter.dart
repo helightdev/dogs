@@ -16,9 +16,9 @@
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:lyell/lyell.dart';
 
-abstract class DogConverter<T> with TypeCaptureMixin<T> {
-
+abstract class DogConverter<T> extends TypeCapture<T> {
   final bool isAssociated;
   DogConverter([this.isAssociated = true]);
 
@@ -26,10 +26,4 @@ abstract class DogConverter<T> with TypeCaptureMixin<T> {
 
   DogGraphValue convertToGraph(T value, DogEngine engine);
   T convertFromGraph(DogGraphValue value, DogEngine engine);
-}
-
-dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
-  if (kind == IterableKind.list) return (value as Iterable).toList();
-  if (kind == IterableKind.set) return (value as Iterable).toSet();
-  return value;
 }

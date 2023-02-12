@@ -20,8 +20,3 @@ abstract class DogSerializer {
   dynamic serialize(DogGraphValue value);
   DogGraphValue deserialize(dynamic value);
 }
-
-abstract class DogStructuredSerializer {
-  dynamic serialize(DogGraphValue value, DogStructure structure);
-  DogGraphValue deserialize(dynamic value, DogStructure structure);
-}

@@ -35,7 +35,7 @@ class Person with DogsMixin<Person> {
 class Note with DogsMixin {
   String text;
 
-  @TestStructureAnnotation("Note Innner")
+  @TestStructureAnnotation("Note Inner")
   int id;
 
   @Polymorphic()

@@ -15,20 +15,19 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:lyell/lyell.dart';
 
 abstract class StructureMetadata {
   const StructureMetadata();
 }
 
 class TestStructureAnnotation extends StructureMetadata {
-
   final String value;
 
   const TestStructureAnnotation(this.value);
 }
 
-class DogStructure<T> extends StructureNode with TypeCaptureMixin<T> {
-
+class DogStructure<T> extends TypeCapture<T> implements StructureNode {
   /// Type of the structure.
   @Deprecated("Use typeArgument instead")
   final Type type;
@@ -46,8 +45,9 @@ class DogStructure<T> extends StructureNode with TypeCaptureMixin<T> {
   final DogStructureProxy proxy;
 
   bool get isSynthetic => fields.isEmpty;
-  
-  const DogStructure(this.type, this.serialName, this.fields, this.metadata, this.proxy);
+
+  const DogStructure(
+      this.type, this.serialName, this.fields, this.metadata, this.proxy);
 
   factory DogStructure.synthetic(String name) =>
       DogStructure<T>(T, name, [], [], const MemoryDogStructureProxy());

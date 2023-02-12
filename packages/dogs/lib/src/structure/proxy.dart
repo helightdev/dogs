@@ -14,9 +14,7 @@
  *    limitations under the License.
  */
 
-
 abstract class DogStructureProxy {
-
   const DogStructureProxy();
 
   /// Creates a new instance of the structure.
@@ -24,11 +22,9 @@ abstract class DogStructureProxy {
 
   /// Accesses a field of the structure.
   dynamic getField(dynamic obj, int index);
-
 }
 
 class MemoryDogStructureProxy extends DogStructureProxy {
-
   const MemoryDogStructureProxy();
 
   @override
@@ -41,7 +37,6 @@ class MemoryDogStructureProxy extends DogStructureProxy {
 }
 
 class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
-
   final T Function(List args) activator;
   final List<dynamic Function(T obj)> getters;
 

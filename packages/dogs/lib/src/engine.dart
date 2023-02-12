@@ -122,9 +122,9 @@ class DogEngine {
   /// has the [StructureEmitter] mixin, the supplied structure will be linked.
   /// If this converter also has the [Copyable] mixin, it will also be linked.
   void registerConverter(DogConverter converter, [bool rebuildPool = true]) {
-    if (converter.isAssociated)  {
+    if (converter.isAssociated) {
       if (converter is StructureEmitter) {
-        structures[converter.structure.type] = converter.structure;
+        structures[converter.structure.typeArgument] = converter.structure;
       }
       if (converter is Copyable) {
         copyable[converter.typeArgument] = converter;
@@ -194,7 +194,8 @@ class DogEngine {
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
-  dynamic convertIterableFromGraph(DogGraphValue value, Type type, IterableKind kind) {
+  dynamic convertIterableFromGraph(
+      DogGraphValue value, Type type, IterableKind kind) {
     if (kind == IterableKind.none) {
       return convertObjectFromGraph(value, type);
     } else {
@@ -213,4 +214,10 @@ class DogEngine {
     return pool!
         .task((p0) async => await p0.convertFromGraph(value, serialType));
   }
+}
+
+dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
+  if (kind == IterableKind.list) return (value as Iterable).toList();
+  if (kind == IterableKind.set) return (value as Iterable).toSet();
+  return value;
 }

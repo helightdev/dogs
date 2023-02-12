@@ -29,8 +29,8 @@ class DogsDarwinCollectionMapper extends DarwinMapper<dynamic> {
   late Type iterableType;
 
   DogsDarwinCollectionMapper(this.type, this.converter, this.engine) {
-    listType = converter.deriveListType;
-    setType = converter.deriveSetType;
+    listType = converter.deriveList;
+    setType = converter.deriveSet;
   }
 
   IterableKind getIterableKind(Type type) {

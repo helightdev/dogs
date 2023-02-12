@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';
@@ -13,7 +14,8 @@ class CompiledStructure {
   List<CompiledStructureField> fields;
   String metadataSource;
 
-  CompiledStructure(this.type, this.serialName, this.fields, this.metadataSource);
+  CompiledStructure(
+      this.type, this.serialName, this.fields, this.metadataSource);
 
   String code(List<String> getters) =>
       "$genAlias.DogStructure<$type>($type, '$serialName', [${fields.map((e) => e.code).join(", ")}], $metadataSource, $genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}]))";
@@ -42,7 +44,7 @@ class CompiledStructureField {
       this.metadataSource);
 
   String get code =>
-      "$genAlias.DogStructureField($type, $serialType, $converterType, $iterableKind, '$name', $optional, $structure, $metadataSource)";
+      "$genAlias.DogStructureField($type, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, $iterableKind, '$name', $optional, $structure, $metadataSource)";
 }
 
 class StructurizeResult {
@@ -51,7 +53,8 @@ class StructurizeResult {
   List<String> fieldNames;
   String activator;
 
-  StructurizeResult(this.imports, this.structure, this.fieldNames, this.activator);
+  StructurizeResult(
+      this.imports, this.structure, this.fieldNames, this.activator);
 }
 
 class StructurizeCounter {
@@ -71,7 +74,7 @@ TypeChecker polymorphicChecker = TypeChecker.fromRuntime(Polymorphic);
 Future<StructurizeResult> structurize(
     DartType type,
     ConstructorElement constructorElement,
-    DogGenContext context,
+    SubjectGenContext<Element> context,
     StructurizeCounter counter) async {
   List<AliasImport> imports = [];
   List<CompiledStructureField> fields = [];
@@ -88,6 +91,7 @@ Future<StructurizeResult> structurize(
     var fieldType = field.type;
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);
+
     var optional = field.type.nullabilitySuffix == NullabilitySuffix.question;
     if (fieldType.isDynamic) optional = true;
 
@@ -139,8 +143,7 @@ Future<StructurizeResult> structurize(
         propertyName,
         optional,
         !isDogPrimitiveType(serialType),
-        getStructureMetadataSourceArrayAliased(field, imports, counter)
-    ));
+        getStructureMetadataSourceArrayAliased(field, imports, counter)));
   }
 
   // Determine used constructor
@@ -165,7 +168,6 @@ Future<StructurizeResult> structurize(
       "$rootTypePrefix.${type.getDisplayString(withNullability: false)}",
       serialName,
       fields,
-      getStructureMetadataSourceArrayAliased(element, imports, counter)
-  );
+      getStructureMetadataSourceArrayAliased(element, imports, counter));
   return StructurizeResult(imports, structure, getters, activator);
 }

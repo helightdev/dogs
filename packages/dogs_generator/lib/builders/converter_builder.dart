@@ -1,44 +1,30 @@
+import 'dart:async';
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';
+import 'package:lyell_gen/lyell_gen.dart';
+import 'package:lyell_gen/src/subject.dart';
 
-class ConverterBuilder extends DogsAdapter {
+class ConverterBuilder extends DogsAdapter<Serializable> {
   ConverterBuilder() : super(archetype: "conv", annotation: Serializable);
 
   @override
-  Future<DogBinding> generateBinding(DogGenContext context) async {
-    var binding = context.defaultBinding(this);
-    binding.converterNames =
-        context.elements.map((e) => "${e.element.name}Converter").toList();
+  Future<SubjectDescriptor> generateBinding(
+      SubjectGenContext<Element> context) async {
+    var binding = context.defaultBinding();
+    binding.meta["converterNames"] =
+        context.matches.map((e) => "${e.name}Converter").toList();
     return binding;
   }
 
-  @override
-  Future<void> generateConverters(
-      DogGenContext genContext, DogsCodeContext codeContext) async {
-    StructurizeCounter counter = StructurizeCounter();
-    codeContext.additionalImports
-        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
-
-    try {
-      for (var value in genContext.elements) {
-        var element = value.element;
-        if (element is ClassElement) {
-          await generateForClass(element, counter, genContext, codeContext);
-        } else if (element is EnumElement) {
-          await generateForEnum(element, genContext, codeContext);
-        }
-      }
-    } catch (e, s) {
-      print("$e: $s");
-    }
-  }
-
-  Future generateForEnum(EnumElement element, DogGenContext genContext,
-      DogsCodeContext codeContext) async {
+  Future generateForEnum(
+      EnumElement element,
+      SubjectGenContext<Element> genContext,
+      SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
     var parentEnum = element;
@@ -54,8 +40,7 @@ class ConverterBuilder extends DogsAdapter {
         ..returns = Reference("List<String>")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body =
-        Code("${element.name}.values.map((e) => e.name).toList()")));
+        ..body = Code("${element.name}.values.map((e) => e.name).toList()")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toStr"
@@ -63,8 +48,7 @@ class ConverterBuilder extends DogsAdapter {
         ..returns = Reference("$genAlias.EnumToString<${element.name}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body =
-            Code("(e) => e!.name")));
+        ..body = Code("(e) => e!.name")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "fromStr"
@@ -78,8 +62,14 @@ class ConverterBuilder extends DogsAdapter {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  Future generateForClass(ClassElement element, StructurizeCounter counter,
-      DogGenContext genContext, DogsCodeContext codeContext) async {
+  Future generateForClass(
+      ClassElement element,
+      StructurizeCounter counter,
+      SubjectGenContext<Element> genContext,
+      SubjectCodeContext codeContext) async {
+    codeContext.additionalImports
+        .add(AliasImport.gen("package:lyell/lyell.dart"));
+
     var constructorName = "";
     var constructor = element.unnamedConstructor!;
     if (element.getNamedConstructor("dog") != null) {
@@ -101,21 +91,22 @@ class ConverterBuilder extends DogsAdapter {
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
-      DogsCodeContext codeContext) {
+      SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
     var clazz = Class((builder) {
       builder.name = converterName;
 
-      builder.extend = Reference("$genAlias.DefaultStructureConverter<${element.name}>");
+      builder.extend =
+          Reference("$genAlias.DefaultStructureConverter<${element.name}>");
 
       builder.fields.add(Field((builder) => builder
         ..name = "structure"
         ..type = Reference("$genAlias.DogStructure<${element.name}>")
         ..annotations.add(CodeExpression(Code("override")))
-        ..assignment = Code("const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())}")
-        ..modifier = FieldModifier.final$
-      ));
+        ..assignment = Code(
+            "const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())}")
+        ..modifier = FieldModifier.final$));
 
       for (var value in structurized.fieldNames) {
         builder.methods.add(Method((builder) => builder
@@ -123,8 +114,7 @@ class ConverterBuilder extends DogsAdapter {
           ..returns = Reference("dynamic")
           ..requiredParameters.add(Parameter((builder) => builder
             ..type = Reference(element.name)
-            ..name = "obj"
-          ))
+            ..name = "obj"))
           ..static = true
           ..lambda = true
           ..body = Code("obj.$value")));
@@ -135,8 +125,7 @@ class ConverterBuilder extends DogsAdapter {
         ..returns = Reference(element.name)
         ..requiredParameters.add(Parameter((builder) => builder
           ..type = Reference("List")
-          ..name = "list"
-        ))
+          ..name = "list"))
         ..static = true
         ..lambda = true
         ..body = Code(structurized.activator)));
@@ -148,7 +137,7 @@ class ConverterBuilder extends DogsAdapter {
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
-      DogsCodeContext codeContext) {
+      SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var builderName = "${element.name}Builder";
     var clazz = Class((builder) {
@@ -178,7 +167,7 @@ class ConverterBuilder extends DogsAdapter {
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
-      DogsCodeContext codeContext) {
+      SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var extensionName = "${element.name}DogsExtension";
     var builderName = "${element.name}Builder";
@@ -198,5 +187,25 @@ class ConverterBuilder extends DogsAdapter {
           """)));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
+  }
+
+  @override
+  FutureOr<void> generateSubject(SubjectGenContext<Element> genContext,
+      SubjectCodeContext codeContext) async {
+    StructurizeCounter counter = StructurizeCounter();
+    codeContext.additionalImports
+        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+
+    try {
+      for (var element in genContext.matches) {
+        if (element is ClassElement) {
+          await generateForClass(element, counter, genContext, codeContext);
+        } else if (element is EnumElement) {
+          await generateForEnum(element, genContext, codeContext);
+        }
+      }
+    } catch (e, s) {
+      print("$e: $s");
+    }
   }
 }
