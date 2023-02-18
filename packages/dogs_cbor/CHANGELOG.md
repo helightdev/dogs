@@ -1,3 +1,11 @@
+## 2.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: added validation, refactored library.
+ - **BREAKING** **FEAT**: switch to lyell generator utilities.
+ - **BREAKING** **FEAT**: extend structure, openapi schema, rework structure converter.
+
 ## 1.0.0
 
 > Note: This release has breaking changes.

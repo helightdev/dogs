@@ -1,3 +1,13 @@
+## 2.0.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: Fix lints and reformatted code.
+ - **REFACTOR**: fix some linter warnings.
+ - **BREAKING** **FEAT**: added validation, refactored library.
+ - **BREAKING** **FEAT**: switch to lyell generator utilities.
+ - **BREAKING** **FEAT**: extend structure, openapi schema, rework structure converter.
+
 ## 1.0.1
 
 > Note: This release has breaking changes.
