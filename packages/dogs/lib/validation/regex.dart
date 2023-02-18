@@ -17,14 +17,16 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-class Regex extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+class Regex extends StructureMetadata
+    implements APISchemaObjectMetaVisitor, FieldValidator {
   final String pattern;
 
   const Regex(this.pattern);
 
   @override
   getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
-    return _RegexCacheEntry(RegExp(pattern), field.iterableKind != IterableKind.none);
+    return _RegexCacheEntry(
+        RegExp(pattern), field.iterableKind != IterableKind.none);
   }
 
   @override
@@ -52,7 +54,9 @@ class Regex extends StructureMetadata implements APISchemaObjectMetaVisitor, Fie
     // Return if first match is right and don't check for other matches
     if (firstMatch.start == 0 && firstMatch.end == str.length) return true;
     // Check all matches for a full match.
-    return matcher.allMatches(str).any((element) => element.start == 0 && element.end == str.length);
+    return matcher
+        .allMatches(str)
+        .any((element) => element.start == 0 && element.end == str.length);
   }
 
   @override

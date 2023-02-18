@@ -17,7 +17,8 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-class Range extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+class Range extends StructureMetadata
+    implements APISchemaObjectMetaVisitor, FieldValidator {
   final num? min;
   final num? max;
   final bool minExclusive;
@@ -46,7 +47,8 @@ class Range extends StructureMetadata implements APISchemaObjectMetaVisitor, Fie
 
   @override
   bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == int || field.serial.typeArgument == double;
+    return field.serial.typeArgument == int ||
+        field.serial.typeArgument == double;
   }
 
   @override
@@ -82,12 +84,14 @@ class Range extends StructureMetadata implements APISchemaObjectMetaVisitor, Fie
   }
 }
 
-class Minimum extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+class Minimum extends StructureMetadata
+    implements APISchemaObjectMetaVisitor, FieldValidator {
   final num? min;
   final bool minExclusive;
 
   /// Restricts the maximum size for a numeric type to [min].
-  const Minimum(this.min, {
+  const Minimum(
+    this.min, {
     this.minExclusive = false,
   });
 
@@ -104,7 +108,8 @@ class Minimum extends StructureMetadata implements APISchemaObjectMetaVisitor, F
 
   @override
   bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == int || field.serial.typeArgument == double;
+    return field.serial.typeArgument == int ||
+        field.serial.typeArgument == double;
   }
 
   @override
@@ -116,7 +121,7 @@ class Minimum extends StructureMetadata implements APISchemaObjectMetaVisitor, F
       return validateSingle(value);
     }
   }
-  
+
   bool validateSingle(dynamic value) {
     if (value == null) return true;
     var n = value as num;
@@ -129,16 +134,16 @@ class Minimum extends StructureMetadata implements APISchemaObjectMetaVisitor, F
   }
 }
 
-class Maximum extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+class Maximum extends StructureMetadata
+    implements APISchemaObjectMetaVisitor, FieldValidator {
   final num? max;
   final bool maxExclusive;
 
   /// Restricts the maximum size for a numeric type to [max].
-  const Maximum(this.max, {
+  const Maximum(
+    this.max, {
     this.maxExclusive = false,
   });
-
-
 
   @override
   void visit(APISchemaObject object) {
@@ -153,7 +158,8 @@ class Maximum extends StructureMetadata implements APISchemaObjectMetaVisitor, F
 
   @override
   bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == int || field.serial.typeArgument == double;
+    return field.serial.typeArgument == int ||
+        field.serial.typeArgument == double;
   }
 
   @override

@@ -120,9 +120,8 @@ Future<StructurizeResult> structurize(
     if (propertySerializerChecker.hasAnnotationOf(field)) {
       var serializerAnnotation =
           propertySerializerChecker.annotationsOf(field).first;
-      propertySerializer = counter.get(serializerAnnotation
-          .getField("type")!
-          .toTypeValue()!);
+      propertySerializer =
+          counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
     }
     if (polymorphicChecker.hasAnnotationOf(field)) {
       if (field.type.isDartCoreMap) {
@@ -164,10 +163,7 @@ Future<StructurizeResult> structurize(
     return "list[$i].cast<${y.serialType}>()";
   }).join(", ")})";
 
-  var structure = CompiledStructure(
-      counter.get(type),
-      serialName,
-      fields,
+  var structure = CompiledStructure(counter.get(type), serialName, fields,
       getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
 }

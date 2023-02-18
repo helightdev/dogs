@@ -17,7 +17,8 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:lyell/lyell.dart';
 
-class DogStructureField extends RetainedAnnotationHolder implements StructureNode {
+class DogStructureField extends RetainedAnnotationHolder
+    implements StructureNode {
   /// Declared type of the structure.
   final Type type;
 
@@ -53,7 +54,6 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
       this.optional,
       this.structure,
       this.annotations);
-
 
   @override
   String toString() {

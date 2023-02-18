@@ -2,8 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:test/test.dart';
 
-class _PlaceholderType {}
-
 void main() {
   test('from native coercion', () {
     expect(DogString("string"), DogGraphValue.fromNative("string"));

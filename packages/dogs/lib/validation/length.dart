@@ -17,7 +17,8 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-class LengthRange extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+class LengthRange extends StructureMetadata
+    implements APISchemaObjectMetaVisitor, FieldValidator {
   final int? min;
   final int? max;
 

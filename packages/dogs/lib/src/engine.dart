@@ -16,7 +16,6 @@
 
 import 'package:aqueduct_isolates/aqueduct_isolates.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/src/dataclass/validatable.dart';
 import 'package:meta/meta.dart';
 
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.

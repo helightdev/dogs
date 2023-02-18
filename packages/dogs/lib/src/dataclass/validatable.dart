@@ -15,7 +15,5 @@
  */
 
 abstract class Validatable<T> {
-
   bool validate(T src);
-
 }

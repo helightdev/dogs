@@ -23,7 +23,6 @@ abstract class FieldValidator {
   bool isApplicable(DogStructure structure, DogStructureField field) => true;
   dynamic getCachedValue(DogStructure structure, DogStructureField field);
   bool validate(dynamic cached, dynamic value);
-
 }
 
 /// Class level validator for annotations of [ClassValidator]s.

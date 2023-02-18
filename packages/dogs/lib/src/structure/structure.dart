@@ -27,8 +27,9 @@ class TestStructureAnnotation extends StructureMetadata {
   const TestStructureAnnotation(this.value);
 }
 
-class DogStructure<T> extends RetainedAnnotationHolder with TypeCaptureMixin<T> implements StructureNode {
-
+class DogStructure<T> extends RetainedAnnotationHolder
+    with TypeCaptureMixin<T>
+    implements StructureNode {
   /// Serial name of the structure.
   final String serialName;
 
@@ -43,7 +44,8 @@ class DogStructure<T> extends RetainedAnnotationHolder with TypeCaptureMixin<T> 
 
   bool get isSynthetic => fields.isEmpty;
 
-  const DogStructure(this.serialName, this.fields, this.annotations, this.proxy);
+  const DogStructure(
+      this.serialName, this.fields, this.annotations, this.proxy);
 
   @override
   String toString() {

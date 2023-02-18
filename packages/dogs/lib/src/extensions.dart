@@ -96,7 +96,6 @@ extension DogsListExtension<T> on List<T> {
 }
 
 extension DogEngineShortcuts on DogEngine {
-
   /// Validates the supplied [value] using the [Validatable] mapped to [T].
   /// Throws a [ValidationException] if [validateObject] returns false.
   void validate<T>(T value) {
@@ -109,6 +108,7 @@ extension DogEngineShortcuts on DogEngine {
   T copy<T>(T value, [Map<String, dynamic>? overrides]) {
     return copyObject(value, overrides, T);
   }
+
   /// Converts a [value] to its [DogGraphValue] representation using the
   /// converter associated with [T].
   DogGraphValue toGraph<T>(T value,

@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+// ignore_for_file: invalid_use_of_internal_member
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:darwin_http/darwin_http.dart';

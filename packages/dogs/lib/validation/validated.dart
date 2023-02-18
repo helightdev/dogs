@@ -23,9 +23,7 @@ import 'package:dogs_core/dogs_core.dart';
 /// your container.
 const validated = Validated();
 
-
 class Validated extends StructureMetadata implements FieldValidator {
-
   /// Requires a field to be deeply validated.
   /// Example: You have a class Group with a field `List<Person> members` as well as
   /// a type Person which is validatable. You can then annotate your field
@@ -35,7 +33,8 @@ class Validated extends StructureMetadata implements FieldValidator {
 
   @override
   getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
-    return _ValidatedCacheEntry(field.serial.typeArgument, field.iterableKind != IterableKind.none);
+    return _ValidatedCacheEntry(
+        field.serial.typeArgument, field.iterableKind != IterableKind.none);
   }
 
   @override

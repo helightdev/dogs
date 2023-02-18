@@ -127,9 +127,11 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   bool validate(T value) {
     if (!_hasValidation) return true;
     return !_cachedFieldValidators.entries.any((pair) {
-      var fieldValue = structure.proxy.getField(value, pair.key);
-      return pair.value.any((e) => !e.key.validate(e.value, fieldValue));
-    }) && !_cachedClassValidators.entries.any((e) => !e.key.validate(e.value, value));
+          var fieldValue = structure.proxy.getField(value, pair.key);
+          return pair.value.any((e) => !e.key.validate(e.value, fieldValue));
+        }) &&
+        !_cachedClassValidators.entries
+            .any((e) => !e.key.validate(e.value, value));
   }
 
   @override
@@ -154,7 +156,6 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
 }
 
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
-
   @override
   final DogStructure<T> structure;
 

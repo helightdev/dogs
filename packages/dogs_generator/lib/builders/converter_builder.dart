@@ -29,8 +29,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var clazz = Class((builder) {
       builder.name = converterName;
 
-      builder.extend =
-          Reference("$genAlias.GeneratedEnumDogConverter<${counter.get(element.thisType)}>");
+      builder.extend = Reference(
+          "$genAlias.GeneratedEnumDogConverter<${counter.get(element.thisType)}>");
 
       builder.methods.add(Method((builder) => builder
         ..name = "values"
@@ -38,12 +38,14 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..returns = Reference("List<String>")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body = Code("${counter.get(element.thisType)}.values.map((e) => e.name).toList()")));
+        ..body = Code(
+            "${counter.get(element.thisType)}.values.map((e) => e.name).toList()")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toStr"
         ..type = MethodType.getter
-        ..returns = Reference("$genAlias.EnumToString<${counter.get(element.thisType)}> ")
+        ..returns = Reference(
+            "$genAlias.EnumToString<${counter.get(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code("(e) => e!.name")));
@@ -51,7 +53,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.methods.add(Method((builder) => builder
         ..name = "fromStr"
         ..type = MethodType.getter
-        ..returns = Reference("$genAlias.EnumFromString<${counter.get(element.thisType)}> ")
+        ..returns = Reference(
+            "$genAlias.EnumFromString<${counter.get(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code(
@@ -80,7 +83,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
     writeGeneratedConverter(
         element, structurized, constructorName, counter, codeContext);
-    writeGeneratedBuilder(element, structurized, constructorName, counter, codeContext);
+    writeGeneratedBuilder(
+        element, structurized, constructorName, counter, codeContext);
     writeGeneratedExtension(
         element, structurized, constructorName, codeContext);
   }
@@ -96,11 +100,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var clazz = Class((builder) {
       builder.name = converterName;
 
-      builder.extend = Reference("$genAlias.DefaultStructureConverter<${counter.get(element.thisType)}>");
+      builder.extend = Reference(
+          "$genAlias.DefaultStructureConverter<${counter.get(element.thisType)}>");
 
       builder.fields.add(Field((builder) => builder
         ..name = "structure"
-        ..type = Reference("$genAlias.DogStructure<${counter.get(element.thisType)}>")
+        ..type = Reference(
+            "$genAlias.DogStructure<${counter.get(element.thisType)}>")
         ..annotations.add(CodeExpression(Code("override")))
         ..assignment = Code(
             "const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())}")
@@ -142,7 +148,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var clazz = Class((builder) {
       builder.name = builderName;
 
-      builder.extend = Reference("$genAlias.Builder<${counter.get(element.thisType)}>");
+      builder.extend =
+          Reference("$genAlias.Builder<${counter.get(element.thisType)}>");
 
       builder.constructors.add(Constructor((builder) => builder
         ..requiredParameters.add(Parameter((builder) => builder
@@ -193,7 +200,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       SubjectCodeContext codeContext) async {
     AliasCounter aliasCounter = AliasCounter();
     CachedAliasCounter counter = CachedAliasCounter(aliasCounter);
-    codeContext.additionalImports.add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+    codeContext.additionalImports
+        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
 
     try {
       for (var element in genContext.matches) {
