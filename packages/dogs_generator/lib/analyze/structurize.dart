@@ -34,7 +34,7 @@ class CompiledStructure {
       this.type, this.serialName, this.fields, this.metadataSource);
 
   String code(List<String> getters) =>
-      "$genAlias.DogStructure<$type>($type, '$serialName', [${fields.map((e) => e.code).join(", ")}], $metadataSource, $genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}]))";
+      "$genAlias.DogStructure<$type>('$serialName', [${fields.map((e) => e.code).join(", ")}], $metadataSource, $genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}]))";
 }
 
 class CompiledStructureField {
@@ -60,7 +60,7 @@ class CompiledStructureField {
       this.metadataSource);
 
   String get code =>
-      "$genAlias.DogStructureField($type, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, $iterableKind, '$name', $optional, $structure, $metadataSource)";
+      "$genAlias.DogStructureField($type, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '$name', $optional, $structure, $metadataSource)";
 }
 
 class StructurizeResult {
@@ -91,13 +91,12 @@ Future<StructurizeResult> structurize(
     DartType type,
     ConstructorElement constructorElement,
     SubjectGenContext<Element> context,
-    StructurizeCounter counter) async {
+    CachedAliasCounter counter) async {
   List<AliasImport> imports = [];
   List<CompiledStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
   for (var e in constructorElement.parameters) {
-    var cszp = "$szPrefix${counter.getAndIncrement()}";
     var fieldName = e.name.replaceFirst("this.", "");
     var field = element.getField(fieldName);
     if (field == null) {
@@ -121,45 +120,34 @@ Future<StructurizeResult> structurize(
     if (propertySerializerChecker.hasAnnotationOf(field)) {
       var serializerAnnotation =
           propertySerializerChecker.annotationsOf(field).first;
-      propertySerializer = serializerAnnotation
+      propertySerializer = counter.get(serializerAnnotation
           .getField("type")!
-          .toTypeValue()!
-          .getDisplayString(withNullability: false);
+          .toTypeValue()!);
     }
     if (polymorphicChecker.hasAnnotationOf(field)) {
       if (field.type.isDartCoreMap) {
-        propertySerializer = "DefaultMapConverter";
+        propertySerializer = genPrefix.str("DefaultMapConverter");
       } else if (field.type.isDartCoreIterable) {
-        propertySerializer = "DefaultIterableConverter";
+        propertySerializer = genPrefix.str("DefaultIterableConverter");
       } else if (field.type.isDartCoreList) {
-        propertySerializer = "DefaultListConverter";
+        propertySerializer = genPrefix.str("DefaultListConverter");
       } else if (field.type.isDartCoreSet) {
-        propertySerializer = "DefaultSetConverter";
+        propertySerializer = genPrefix.str("DefaultSetConverter");
       } else {
-        propertySerializer = "PolymorphicConverter";
+        propertySerializer = genPrefix.str("PolymorphicConverter");
       }
-    }
-
-    var isLanguageType = fieldType.isVoid || fieldType.isDynamic;
-    if (!isLanguageType) {
-      imports.add(AliasImport.type(fieldType, cszp));
-      imports.add(AliasImport.type(serialType, cszp));
     }
 
     fields.add(CompiledStructureField(
         fieldName,
-        isLanguageType
-            ? fieldType.getDisplayString(withNullability: false)
-            : "$cszp.${fieldType.getDisplayString(withNullability: false)}",
+        counter.get(fieldType),
         propertySerializer,
-        isLanguageType
-            ? serialType.getDisplayString(withNullability: false)
-            : "$cszp.${serialType.getDisplayString(withNullability: false)}",
+        counter.get(serialType),
         iterableType,
         propertyName,
         optional,
         !isDogPrimitiveType(serialType),
-        getStructureMetadataSourceArrayAliased(field, imports, counter)));
+        getRetainedAnnotationSourceArray(field, counter)));
   }
 
   // Determine used constructor
@@ -176,12 +164,10 @@ Future<StructurizeResult> structurize(
     return "list[$i].cast<${y.serialType}>()";
   }).join(", ")})";
 
-  var rootTypePrefix = "$szPrefix${counter.getAndIncrement()}";
-  imports.add(AliasImport.type(type, rootTypePrefix));
   var structure = CompiledStructure(
-      "$rootTypePrefix.${type.getDisplayString(withNullability: false)}",
+      counter.get(type),
       serialName,
       fields,
-      getStructureMetadataSourceArrayAliased(element, imports, counter));
+      getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
 }

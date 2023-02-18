@@ -14,9 +14,18 @@
  *    limitations under the License.
  */
 
+import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-/// Interface for providing [DogEngine.internalSingleton.copy]
-abstract class Copyable<T> {
-  T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);
+class Description extends StructureMetadata
+    implements APISchemaObjectMetaVisitor {
+  final String description;
+
+  /// Creates a field description containing the supplied [description].
+  const Description(this.description);
+
+  @override
+  void visit(APISchemaObject object) {
+    object.description = description;
+  }
 }

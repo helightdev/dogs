@@ -56,7 +56,7 @@ extension DogYamlExtension on DogEngine {
   DogYamlSerializer get yamlSerializer => _yamlSerializer;
 
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  String yamlEncode<T>(dynamic value) {
+  String yamlEncode<T>(T value) {
     var graph = convertObjectToGraph(value, T);
     return _yamlSerializer.serialize(graph);
   }

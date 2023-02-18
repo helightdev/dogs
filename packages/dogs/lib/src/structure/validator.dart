@@ -16,7 +16,23 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
-/// Interface for providing [DogEngine.internalSingleton.copy]
-abstract class Copyable<T> {
-  T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);
+/// Property level validator for annotations of [DogStructureField]s.
+abstract class FieldValidator {
+  const FieldValidator();
+
+  bool isApplicable(DogStructure structure, DogStructureField field) => true;
+  dynamic getCachedValue(DogStructure structure, DogStructureField field);
+  bool validate(dynamic cached, dynamic value);
+
 }
+
+/// Class level validator for annotations of [ClassValidator]s.
+abstract class ClassValidator {
+  const ClassValidator();
+
+  bool isApplicable(DogStructure structure) => true;
+  dynamic getCachedValue(DogStructure structure);
+  bool validate(dynamic cached, dynamic value);
+}
+
+class ValidationException implements Exception {}

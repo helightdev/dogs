@@ -14,9 +14,11 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+library dogs_validation;
 
-/// Interface for providing [DogEngine.internalSingleton.copy]
-abstract class Copyable<T> {
-  T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);
-}
+export 'validation/description.dart';
+export 'validation/length.dart';
+export 'validation/range.dart';
+export 'validation/regex.dart';
+export 'validation/size.dart';
+export 'validation/validated.dart';

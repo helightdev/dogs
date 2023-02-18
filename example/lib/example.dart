@@ -9,11 +9,11 @@ export 'dogs.g.dart';
 void main() async {
   await initialiseDogs();
   print(DogSchema.create().getApiJson());
-
+  print("---");
   var person = Person(
       name: "Christoph",
       age: 19,
-      notes: [Note("I love dart!", 0, DateTime.now())],
+      notes: [Note("I love dart!", 0, DateTime.now(), [])],
       gender: Gender.male,
       birthdayDate: DateTime(2003, 11, 11)
   );
@@ -23,39 +23,60 @@ void main() async {
   );
 
   print(built);
+  print("---");
 
   testJson(person);
+  print("---");
   testYaml(person);
+  print("---");
   testCbor(person);
+  print("---");
   testToml(person);
+  print("---");
+  testValidate();
 
   dogs.shutdown();
 }
 
+void testValidate() {
+  print("TRUE ===");
+  print(Person(name: "Gunter", age: 17, notes: [], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+  print(Person(name: "Gunter", age: 17, notes: [Note("Test", 1, [], [1, 5, 7])], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+
+  print("FALSE ===");
+  print(Person(name: "", age: 17, notes: [], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+  print(Person(name: "Gunter Mann", age: 17, notes: [], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+  print(Person(name: "Gunter", age: 17, notes: [Note("Test", 1, [], [-1, 5, 7])], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+}
+
 void testJson(Person person) {
-  var encoded = dogs.jsonEncode<Person>(person);
+  var encoded = dogs.jsonEncode(person);
   print(encoded);
-  var decoded = dogs.jsonDecode<Person>(encoded);
+  Person decoded = dogs.jsonDecode(encoded);
   print(decoded);
 }
 
 void testYaml(Person person) {
-  var encoded = dogs.yamlEncode<Person>(person);
+  var encoded = dogs.yamlEncode(person);
   print(encoded);
-  var decoded = dogs.yamlDecode<Person>(encoded);
+  Person decoded = dogs.yamlDecode(encoded);
   print(decoded);
 }
 
 void testCbor(Person person) {
-  var encoded = dogs.cborEncode<Person>(person);
+  var encoded = dogs.cborEncode(person);
   print(encoded.map((e) => e.toRadixString(16)).join(" "));
-  var decoded = dogs.cborDecode<Person>(encoded);
+  Person decoded = dogs.cborDecode(encoded);
   print(decoded);
 }
 
 void testToml(Person person) {
-  var encoded = dogs.tomlEncode<Person>(person);
+  var encoded = dogs.tomlEncode(person);
   print(encoded);
-  var decoded = dogs.tomlDecode<Person>(encoded);
+  Person decoded = dogs.tomlDecode(encoded);
   print(decoded);
+}
+
+class TestValue {
+
 }

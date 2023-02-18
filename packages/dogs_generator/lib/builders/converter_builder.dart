@@ -21,6 +21,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
   Future generateForEnum(
       EnumElement element,
+      CachedAliasCounter counter,
       SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
@@ -29,7 +30,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.name = converterName;
 
       builder.extend =
-          Reference("$genAlias.GeneratedEnumDogConverter<${element.name}>");
+          Reference("$genAlias.GeneratedEnumDogConverter<${counter.get(element.thisType)}>");
 
       builder.methods.add(Method((builder) => builder
         ..name = "values"
@@ -37,12 +38,12 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..returns = Reference("List<String>")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body = Code("${element.name}.values.map((e) => e.name).toList()")));
+        ..body = Code("${counter.get(element.thisType)}.values.map((e) => e.name).toList()")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toStr"
         ..type = MethodType.getter
-        ..returns = Reference("$genAlias.EnumToString<${element.name}> ")
+        ..returns = Reference("$genAlias.EnumToString<${counter.get(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code("(e) => e!.name")));
@@ -50,18 +51,18 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.methods.add(Method((builder) => builder
         ..name = "fromStr"
         ..type = MethodType.getter
-        ..returns = Reference("$genAlias.EnumFromString<${element.name}> ")
+        ..returns = Reference("$genAlias.EnumFromString<${counter.get(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code(
-            "(e) => ${element.name}.values.firstWhereOrNull((element) => element.name == e)")));
+            "(e) => ${counter.get(element.thisType)}.values.firstWhereOrNull((element) => element.name == e)")));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
   Future generateForClass(
       ClassElement element,
-      StructurizeCounter counter,
+      CachedAliasCounter counter,
       SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
     codeContext.additionalImports
@@ -78,8 +79,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.additionalImports.addAll(structurized.imports);
 
     writeGeneratedConverter(
-        element, structurized, constructorName, codeContext);
-    writeGeneratedBuilder(element, structurized, constructorName, codeContext);
+        element, structurized, constructorName, counter, codeContext);
+    writeGeneratedBuilder(element, structurized, constructorName, counter, codeContext);
     writeGeneratedExtension(
         element, structurized, constructorName, codeContext);
   }
@@ -88,18 +89,18 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
+      CachedAliasCounter counter,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
     var clazz = Class((builder) {
       builder.name = converterName;
 
-      builder.extend =
-          Reference("$genAlias.DefaultStructureConverter<${element.name}>");
+      builder.extend = Reference("$genAlias.DefaultStructureConverter<${counter.get(element.thisType)}>");
 
       builder.fields.add(Field((builder) => builder
         ..name = "structure"
-        ..type = Reference("$genAlias.DogStructure<${element.name}>")
+        ..type = Reference("$genAlias.DogStructure<${counter.get(element.thisType)}>")
         ..annotations.add(CodeExpression(Code("override")))
         ..assignment = Code(
             "const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())}")
@@ -110,7 +111,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
           ..name = "_$value"
           ..returns = Reference("dynamic")
           ..requiredParameters.add(Parameter((builder) => builder
-            ..type = Reference(element.name)
+            ..type = Reference(counter.get(element.thisType))
             ..name = "obj"))
           ..static = true
           ..lambda = true
@@ -119,7 +120,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
       builder.methods.add(Method((builder) => builder
         ..name = "_activator"
-        ..returns = Reference(element.name)
+        ..returns = Reference(counter.get(element.thisType))
         ..requiredParameters.add(Parameter((builder) => builder
           ..type = Reference("List")
           ..name = "list"))
@@ -134,13 +135,14 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
+      CachedAliasCounter counter,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var builderName = "${element.name}Builder";
     var clazz = Class((builder) {
       builder.name = builderName;
 
-      builder.extend = Reference("$genAlias.Builder<${element.name}>");
+      builder.extend = Reference("$genAlias.Builder<${counter.get(element.thisType)}>");
 
       builder.constructors.add(Constructor((builder) => builder
         ..requiredParameters.add(Parameter((builder) => builder
@@ -189,20 +191,22 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
   @override
   FutureOr<void> generateSubject(SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
-    StructurizeCounter counter = StructurizeCounter();
-    codeContext.additionalImports
-        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+    AliasCounter aliasCounter = AliasCounter();
+    CachedAliasCounter counter = CachedAliasCounter(aliasCounter);
+    codeContext.additionalImports.add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
 
     try {
       for (var element in genContext.matches) {
         if (element is ClassElement) {
           await generateForClass(element, counter, genContext, codeContext);
         } else if (element is EnumElement) {
-          await generateForEnum(element, genContext, codeContext);
+          await generateForEnum(element, counter, genContext, codeContext);
         }
       }
     } catch (e, s) {
       print("$e: $s");
     }
+
+    codeContext.additionalImports.addAll(counter.imports);
   }
 }

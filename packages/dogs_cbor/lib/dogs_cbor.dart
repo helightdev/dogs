@@ -68,7 +68,7 @@ extension DogCborExtension on DogEngine {
   DogCborSerializer get cborSerializer => _cborSerializer;
 
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  List<int> cborEncode<T>(dynamic value) {
+  List<int> cborEncode<T>(T value) {
     var graph = convertObjectToGraph(value, T);
     return _cborSerializer.serialize(graph);
   }

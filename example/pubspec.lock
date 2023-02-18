@@ -352,18 +352,18 @@ packages:
     dependency: transitive
     description:
       name: lyell
-      sha256: "427b909550e346f12ac6865db91e0e522c77acb3585ce3a723571f1b9be1cbb0"
+      sha256: "52c4fcf74cd05474c2696ec4abc5ee419211498b2ab2121f6556c5e0f640910e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   lyell_gen:
     dependency: transitive
     description:
       name: lyell_gen
-      sha256: "679d59874dcd2a6953dd4faadb2c19b89f7e2476aa8a5a3126fe1d8485021eef"
+      sha256: be785e7c9bbd098238a5e9ac0debed3547caa5dfa72393d2f37dcd9f6b46d25c
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1+2"
+    version: "0.0.2"
   matcher:
     dependency: transitive
     description:

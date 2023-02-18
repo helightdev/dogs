@@ -10,7 +10,8 @@ dependencies:
   conduit_open_api: ^4.2.2
   aqueduct_isolates: ^1.0.1
   collection: ^1.17.1
-  lyell: ^0.0.1
+  lyell: ^0.0.2
+  meta: ^1.9.0
 
 dev_dependencies:
   lints: ^2.0.1

@@ -16,19 +16,35 @@
 
 import 'package:aqueduct_isolates/aqueduct_isolates.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/src/dataclass/validatable.dart';
+import 'package:meta/meta.dart';
 
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
 class DogEngine {
+  @internal
   static DogEngine? internalSingleton;
 
-  List<DogConverter> converters = [];
-  Map<Type, DogConverter> associatedConverters = {};
-  Map<Type, DogStructure> structures = {};
-  Map<Type, Copyable> copyable = {};
+  /// Checks if a valid instance of [DogEngine] is statically available.
+  static bool get hasValidInstance => internalSingleton != null;
 
+  /// Returns the current statically linked [DogEngine].
+  static DogEngine get instance => internalSingleton!;
+
+  @internal
+  List<DogConverter> converters = [];
+  @internal
+  Map<Type, DogConverter> associatedConverters = {};
+  @internal
+  Map<Type, DogStructure> structures = {};
+  @internal
+  Map<Type, Copyable> copyable = {};
+  @internal
+  Map<Type, Validatable> validatables = {};
+  @internal
   AqueductPool<DogsSerializerAqueduct>? pool;
 
   bool _asyncEnabled = false;
+
   bool get asyncEnabled => _asyncEnabled;
 
   /// Enables/Disables the async capability. (Experimental)
@@ -43,7 +59,7 @@ class DogEngine {
 
   /// Creates a new [DogEngine] with optional async capabilities which can
   /// be enabled via [enableAsync]. (Experimental)
-  DogEngine([bool enableAsync = true]) {
+  DogEngine([bool enableAsync = false]) {
     if (enableAsync) {
       asyncEnabled = true;
     }
@@ -127,7 +143,10 @@ class DogEngine {
         structures[converter.structure.typeArgument] = converter.structure;
       }
       if (converter is Copyable) {
-        copyable[converter.typeArgument] = converter;
+        copyable[converter.typeArgument] = converter as Copyable;
+      }
+      if (converter is Validatable) {
+        validatables[converter.typeArgument] = converter as Validatable;
       }
       associatedConverters[converter.typeArgument] = converter;
     }
@@ -153,6 +172,14 @@ class DogEngine {
     var queryType = type ?? value;
     var cloneable = copyable[queryType]!;
     return cloneable.copy(value, this, overrides);
+  }
+
+  /// Validates the supplied [value] using the [Validatable] mapped to the
+  /// [value]s runtime type or [type] if specified.
+  bool validateObject(dynamic value, [Type? type]) {
+    var queryType = type ?? value.runtimeType;
+    var validatable = validatables[queryType]!;
+    return validatable.validate(value);
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the
@@ -216,6 +243,9 @@ class DogEngine {
   }
 }
 
+/// Converts a [value] to the given [IterableKind]. If the value is a [Iterable]
+/// implementation, it will converted to the desired [IterableKind]. Trying to
+/// convert singular values to a iterable will result in an exception.
 dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
   if (kind == IterableKind.list) return (value as Iterable).toList();
   if (kind == IterableKind.set) return (value as Iterable).toSet();

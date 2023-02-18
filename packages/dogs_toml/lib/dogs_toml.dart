@@ -24,7 +24,7 @@ extension DogTomlExtension on DogEngine {
   DogTomlSerializer get tomlSerializer => _tomlSerializer;
 
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  String tomlEncode<T>(dynamic value) {
+  String tomlEncode<T>(T value) {
     var graph = convertObjectToGraph(value, T);
     return _tomlSerializer.serialize(graph);
   }

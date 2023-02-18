@@ -38,13 +38,13 @@ extension DogJsonExtension on DogEngine {
   DogJsonSerializer get jsonSerializer => _jsonSerializer;
 
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  String jsonEncode<T>(dynamic value) {
+  String jsonEncode<T>(T value) {
     var graph = convertObjectToGraph(value, T);
     return _jsonSerializer.serialize(graph);
   }
 
   /// Async version of [jsonEncode].
-  Future<String> jsonEncodeAsync<T>(dynamic value) {
+  Future<String> jsonEncodeAsync<T>(T value) {
     if (!asyncEnabled) return Future.value(jsonEncode<T>(value));
     return pool!.task((p0) async => await p0.encodeJson(value, T));
   }

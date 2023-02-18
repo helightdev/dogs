@@ -15,7 +15,9 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:lyell/lyell.dart';
 
+/// Abstract base for generated class builders.
 abstract class Builder<T> with TypeCaptureMixin<T> {
   final T $src;
   final Map<String, dynamic> $overrides = {};

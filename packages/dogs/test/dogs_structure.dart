@@ -15,8 +15,23 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:test/expect.dart';
+import 'package:test/scaffolding.dart';
 
-/// Interface for providing [DogEngine.internalSingleton.copy]
-abstract class Copyable<T> {
-  T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);
+void main() {
+  test("Proxy", () {
+    var structure = DogStructure(
+        "TestStruct",
+        [
+          DogStructureField.string("name"),
+          DogStructureField.int("age"),
+          DogStructureField.string("note", optional: true)
+        ],
+        [],
+        MemoryDogStructureProxy());
+    var obj = structure.proxy.instantiate(["Christoph", 19, null]);
+    expect("Christoph", structure.proxy.getField(obj, 0));
+    expect(19, structure.proxy.getField(obj, 1));
+    expect(null, structure.proxy.getField(obj, 2));
+  });
 }

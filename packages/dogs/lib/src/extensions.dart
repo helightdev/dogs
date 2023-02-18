@@ -95,15 +95,28 @@ extension DogsListExtension<T> on List<T> {
   DogGraphValue get asGraph => DogGraphValue.fromNative(this);
 }
 
-extension DogEngineUsability on DogEngine {
+extension DogEngineShortcuts on DogEngine {
+
+  /// Validates the supplied [value] using the [Validatable] mapped to [T].
+  /// Throws a [ValidationException] if [validateObject] returns false.
+  void validate<T>(T value) {
+    var isValid = validateObject(value, T);
+    if (!isValid) throw ValidationException();
+  }
+
+  /// Creates a copy of the supplied [value] using the [Copyable] associated
+  /// with [T]. All given [overrides] will be applied on the resulting object.
   T copy<T>(T value, [Map<String, dynamic>? overrides]) {
     return copyObject(value, overrides, T);
   }
-
+  /// Converts a [value] to its [DogGraphValue] representation using the
+  /// converter associated with [T].
   DogGraphValue toGraph<T>(T value,
           {IterableKind kind = IterableKind.none, Type? type}) =>
       convertIterableToGraph(value, type ?? T, kind);
 
+  /// Converts [DogGraphValue] supplied via [value] to its normal representation
+  /// by using the converter associated with [t].
   T fromGraph<T>(DogGraphValue value,
           {IterableKind kind = IterableKind.none, Type? type}) =>
       convertIterableFromGraph(value, type ?? T, kind);
@@ -130,8 +143,43 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
         .copyObject(this, overrides, runtimeType);
   }
 
+  bool get isValid => DogEngine.internalSingleton!.validateObject(this, T);
+  void validate() => DogEngine.internalSingleton!.validate<T>(this as T);
+
   @override
   String toString() {
     return "$runtimeType ${DogEngine.internalSingleton!.convertObjectToGraph(this, runtimeType).coerceString()}";
+  }
+}
+
+extension StructureExtensions on DogStructure {
+  List<dynamic Function(dynamic)> get getters => List.generate(
+      fields.length, (index) => (obj) => this.proxy.getField(obj, index));
+
+  List<T> metadataOf<T>() {
+    return annotations.whereType<T>().toList();
+  }
+
+  int? indexOfFieldName(String name) {
+    for (var i = 0; i < fields.length; i++) {
+      if (fields[i].name == name) {
+        return i;
+      }
+    }
+    return null;
+  }
+}
+
+extension FieldExtension on DogStructureField {
+  List<T> metadataOf<T>() {
+    return annotations.whereType<T>().toList();
+  }
+
+  DogConverter? findConverter() {
+    if (converterType == null) {
+      return dogs.findAssociatedConverter(serial.typeArgument);
+    } else {
+      return dogs.findConverter(converterType!);
+    }
   }
 }

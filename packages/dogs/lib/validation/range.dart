@@ -1,0 +1,179 @@
+/*
+ *    Copyright 2022, the DOGs authors
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+import 'package:conduit_open_api/v3.dart';
+import 'package:dogs_core/dogs_core.dart';
+
+class Range extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+  final num? min;
+  final num? max;
+  final bool minExclusive;
+  final bool maxExclusive;
+
+  /// Restricts the maximum size for a numeric type to [min] and/or [max].
+  const Range({
+    this.min,
+    this.max,
+    this.minExclusive = false,
+    this.maxExclusive = false,
+  });
+
+  @override
+  void visit(APISchemaObject object) {
+    object.minimum = min;
+    object.maximum = max;
+    object.exclusiveMinimum = minExclusive;
+    object.exclusiveMaximum = maxExclusive;
+  }
+
+  @override
+  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+    return field.iterableKind != IterableKind.none;
+  }
+
+  @override
+  bool isApplicable(DogStructure structure, DogStructureField field) {
+    return field.serial.typeArgument == int || field.serial.typeArgument == double;
+  }
+
+  @override
+  bool validate(cached, value) {
+    if (cached as bool) {
+      if (value == null) return true;
+      return (value as Iterable).every((e) => validateSingle(e));
+    } else {
+      return validateSingle(value);
+    }
+  }
+
+  bool validateSingle(dynamic value) {
+    if (value == null) return true;
+    var n = value as num;
+    if (min != null) {
+      if (minExclusive) {
+        if (n <= min!) return false;
+      } else {
+        if (n < min!) return false;
+      }
+    }
+
+    if (max != null) {
+      if (maxExclusive) {
+        if (n >= max!) return false;
+      } else {
+        if (n > max!) return false;
+      }
+    }
+
+    return true;
+  }
+}
+
+class Minimum extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+  final num? min;
+  final bool minExclusive;
+
+  /// Restricts the maximum size for a numeric type to [min].
+  const Minimum(this.min, {
+    this.minExclusive = false,
+  });
+
+  @override
+  void visit(APISchemaObject object) {
+    object.minimum = min;
+    object.exclusiveMinimum = minExclusive;
+  }
+
+  @override
+  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+    return field.iterableKind != IterableKind.none;
+  }
+
+  @override
+  bool isApplicable(DogStructure structure, DogStructureField field) {
+    return field.serial.typeArgument == int || field.serial.typeArgument == double;
+  }
+
+  @override
+  bool validate(cached, value) {
+    if (cached as bool) {
+      if (value == null) return true;
+      return (value as Iterable).every((e) => validateSingle(e));
+    } else {
+      return validateSingle(value);
+    }
+  }
+  
+  bool validateSingle(dynamic value) {
+    if (value == null) return true;
+    var n = value as num;
+    if (min == null) return true;
+    if (minExclusive) {
+      return n > min!;
+    } else {
+      return n >= min!;
+    }
+  }
+}
+
+class Maximum extends StructureMetadata implements APISchemaObjectMetaVisitor, FieldValidator {
+  final num? max;
+  final bool maxExclusive;
+
+  /// Restricts the maximum size for a numeric type to [max].
+  const Maximum(this.max, {
+    this.maxExclusive = false,
+  });
+
+
+
+  @override
+  void visit(APISchemaObject object) {
+    object.maximum = max;
+    object.exclusiveMaximum = maxExclusive;
+  }
+
+  @override
+  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+    return field.iterableKind != IterableKind.none;
+  }
+
+  @override
+  bool isApplicable(DogStructure structure, DogStructureField field) {
+    return field.serial.typeArgument == int || field.serial.typeArgument == double;
+  }
+
+  @override
+  bool validate(cached, value) {
+    if (cached as bool) {
+      if (value == null) return true;
+      return (value as Iterable).every((e) => validateSingle(e));
+    } else {
+      return validateSingle(value);
+    }
+  }
+
+  bool validateSingle(dynamic value) {
+    if (value == null) return true;
+    var n = value as num;
+    if (max == null) return true;
+    if (maxExclusive) {
+      return n < max!;
+    } else {
+      return n <= max!;
+    }
+  }
+}

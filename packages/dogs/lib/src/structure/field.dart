@@ -17,7 +17,7 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:lyell/lyell.dart';
 
-class DogStructureField implements StructureNode {
+class DogStructureField extends RetainedAnnotationHolder implements StructureNode {
   /// Declared type of the structure.
   final Type type;
 
@@ -41,8 +41,8 @@ class DogStructureField implements StructureNode {
   /// Defines if the fields serial type is a structure.
   final bool structure;
 
-  /// Retained metadata annotations of this field.
-  final List<StructureMetadata> metadata;
+  @override
+  final List<RetainedAnnotation> annotations;
 
   const DogStructureField(
       this.type,
@@ -52,7 +52,13 @@ class DogStructureField implements StructureNode {
       this.name,
       this.optional,
       this.structure,
-      this.metadata);
+      this.annotations);
+
+
+  @override
+  String toString() {
+    return 'DogStructureField $type${optional ? '?' : ''} $name';
+  }
 
   factory DogStructureField.string(String name,
       {bool optional = false,

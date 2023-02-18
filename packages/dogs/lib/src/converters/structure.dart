@@ -14,15 +14,51 @@
  *    limitations under the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 abstract class DefaultStructureConverter<T> extends DogConverter<T>
-    with StructureEmitter<T>, Copyable<T> {
+    with StructureEmitter<T>
+    implements Copyable<T>, Validatable<T> {
   @override
   DogStructure<T> get structure;
 
-  DefaultStructureConverter();
+  bool _hasValidation = false;
+  late Map<ClassValidator, dynamic> _cachedClassValidators;
+  late Map<int, List<MapEntry<FieldValidator, dynamic>>> _cachedFieldValidators;
+
+  DefaultStructureConverter() {
+    // Create and cache validators eagerly
+    _cachedClassValidators =
+        Map.fromEntries(structure.annotationsOf<ClassValidator>().where((e) {
+      var applicable = e.isApplicable(structure);
+      if (applicable) {
+        _hasValidation = true;
+      } else {
+        print("$e is not applicable in $structure");
+      }
+      return applicable;
+    }).map((e) => MapEntry(e, e.getCachedValue(structure))));
+
+    _cachedFieldValidators =
+        Map.fromEntries(structure.fields.mapIndexed((index, field) {
+      var validators = field
+          .annotationsOf<FieldValidator>()
+          .where((e) {
+            var applicable = e.isApplicable(structure, field);
+            if (applicable) {
+              _hasValidation = true;
+            } else {
+              print("$e is not applicable for $field in $structure");
+            }
+            return applicable;
+          })
+          .map((e) => MapEntry(e, e.getCachedValue(structure, field)))
+          .toList();
+      return MapEntry(index, validators);
+    }));
+  }
 
   @override
   APISchemaObject get output {
@@ -88,6 +124,15 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   }
 
   @override
+  bool validate(T value) {
+    if (!_hasValidation) return true;
+    return !_cachedFieldValidators.entries.any((pair) {
+      var fieldValue = structure.proxy.getField(value, pair.key);
+      return pair.value.any((e) => !e.key.validate(e.value, fieldValue));
+    }) && !_cachedClassValidators.entries.any((e) => !e.key.validate(e.value, value));
+  }
+
+  @override
   T copy(T src, DogEngine engine, Map<String, dynamic>? overrides) {
     if (overrides == null) {
       return structure.proxy
@@ -106,4 +151,12 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       return structure.proxy.instantiate(values);
     }
   }
+}
+
+class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
+
+  @override
+  final DogStructure<T> structure;
+
+  DogStructureConverterImpl(this.structure);
 }

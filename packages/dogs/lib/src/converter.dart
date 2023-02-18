@@ -26,4 +26,5 @@ abstract class DogConverter<T> extends TypeCapture<T> {
 
   DogGraphValue convertToGraph(T value, DogEngine engine);
   T convertFromGraph(DogGraphValue value, DogEngine engine);
+  bool validate(T value) => true;
 }

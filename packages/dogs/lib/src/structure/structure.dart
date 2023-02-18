@@ -17,7 +17,7 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:lyell/lyell.dart';
 
-abstract class StructureMetadata {
+abstract class StructureMetadata extends RetainedAnnotation {
   const StructureMetadata();
 }
 
@@ -27,10 +27,7 @@ class TestStructureAnnotation extends StructureMetadata {
   const TestStructureAnnotation(this.value);
 }
 
-class DogStructure<T> extends TypeCapture<T> implements StructureNode {
-  /// Type of the structure.
-  @Deprecated("Use typeArgument instead")
-  final Type type;
+class DogStructure<T> extends RetainedAnnotationHolder with TypeCaptureMixin<T> implements StructureNode {
 
   /// Serial name of the structure.
   final String serialName;
@@ -38,19 +35,23 @@ class DogStructure<T> extends TypeCapture<T> implements StructureNode {
   /// Collection of the structure's properties.
   final List<DogStructureField> fields;
 
-  /// Retained metadata annotations of this structure.
-  final List<StructureMetadata> metadata;
-
   /// Proxy for accessing structure data.
   final DogStructureProxy proxy;
 
+  @override
+  final List<RetainedAnnotation> annotations;
+
   bool get isSynthetic => fields.isEmpty;
 
-  const DogStructure(
-      this.type, this.serialName, this.fields, this.metadata, this.proxy);
+  const DogStructure(this.serialName, this.fields, this.annotations, this.proxy);
+
+  @override
+  String toString() {
+    return 'DogStructure $typeArgument';
+  }
 
   factory DogStructure.synthetic(String name) =>
-      DogStructure<T>(T, name, [], [], const MemoryDogStructureProxy());
+      DogStructure<T>(name, [], [], const MemoryDogStructureProxy());
 }
 
 abstract class StructureNode {
