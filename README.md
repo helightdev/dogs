@@ -17,15 +17,30 @@ Dogs can be easily extended to support a wide array of encodings and comes
 with json support out of the box.
 
 ```dart
-@Serializable()
+@serializable
 class Person {
-  String name;
-  int age;
-  Set<String>? tags;
+  
+  @LengthRange(max: 128)
+  final String name;
+  
+  @Minimum(18)
+  final int age;
+
+  @SizeRange(max: 16)
+  @Regex("((_)?[a-z]+[A-Za-z0-9]*)+")
+  final Set<String>? tags;
   
   Person(this.name, this.age, this.tags);
+
 }
 ```
+
+## Features
+* **Builder extensions** (supporting nullability)
+* **Copyable** types (supporting map overrides)
+* **OpenApi Schema** Generation (using conduit_open_api)
+* **Validation** API (similar to javax.validation)
+* **Generator-less external extensibility**
 
 ## Format Support
 - **JSON** (included in dogs_core)
