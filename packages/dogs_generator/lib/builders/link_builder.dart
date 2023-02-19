@@ -7,12 +7,12 @@ import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 
 class LinkBuilder extends DogsAdapter<LinkSerializer> {
-  LinkBuilder() : super(archetype: "link", annotation: LinkSerializer);
+  LinkBuilder() : super(archetype: "link");
 
   @override
-  Future<SubjectDescriptor> generateBinding(
+  Future<SubjectDescriptor> generateDescriptor(
       SubjectGenContext<Element> context) async {
-    var binding = context.defaultBinding();
+    var binding = context.defaultDescriptor();
     binding.meta["converterNames"] =
         context.matches.map((e) => e.name).toList();
     return binding;

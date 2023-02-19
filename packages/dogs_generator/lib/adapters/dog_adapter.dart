@@ -20,7 +20,6 @@ import 'package:lyell_gen/lyell_gen.dart';
 abstract class DogsAdapter<TAnnotation>
     extends SubjectAdapter<TAnnotation, Element> {
   DogsAdapter({
-    required super.archetype,
-    required super.annotation,
-  }) : super(descriptorExtension: 'dogs');
+    required super.archetype
+  }) : super(descriptorExtension: 'dogs', annotation: TAnnotation);
 }
