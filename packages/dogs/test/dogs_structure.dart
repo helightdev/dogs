@@ -19,9 +19,9 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
-  test("Proxy", () {
+  test("Person", () {
     var structure = DogStructure(
-        "TestStruct",
+        "Person",
         [
           DogStructureField.string("name"),
           DogStructureField.int("age"),
@@ -33,5 +33,30 @@ void main() {
     expect("Christoph", structure.proxy.getField(obj, 0));
     expect(19, structure.proxy.getField(obj, 1));
     expect(null, structure.proxy.getField(obj, 2));
+  });
+  test("Note", () {
+    var structure = DogStructure(
+        "Note",
+        [
+          DogStructureField.string("title", optional: true),
+          DogStructureField.string("description"),
+          DogStructureField.bool("favourite"),
+          DogStructureField.string("tags", iterable: IterableKind.set),
+        ],
+        [],
+        MemoryDogStructureProxy());
+    var a = structure.proxy.instantiate(["Workout", "Lets get fit", true, {"sport", "lifestyle"}]);
+    expect(structure.proxy.getField(a, 0), "Workout");
+    expect(structure.proxy.getField(a, 1), "Lets get fit");
+    expect(structure.proxy.getField(a, 2), true);
+    expect(structure.proxy.getField(a, 3), containsAllInOrder(["sport", "lifestyle"]));
+    expect(structure.proxy.getField(a, 3), isA<Set>());
+
+    var b = structure.proxy.instantiate([null, "Some Data", false, {"info"}]);
+    expect(structure.proxy.getField(b, 0), null);
+    expect(structure.proxy.getField(b, 1), "Some Data");
+    expect(structure.proxy.getField(b, 2), false);
+    expect(structure.proxy.getField(b, 3), containsAllInOrder(["info"]));
+    expect(structure.proxy.getField(b, 3), isA<Set>());
   });
 }
