@@ -17,12 +17,12 @@
 import 'package:dogs_core/dogs_core.dart';
 
 /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-String toJson<T>(T value) => DogEngine.internalSingleton!.jsonEncode<T>(value);
+String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
 
 /// Decodes this [json] to an [T] instance, using the [DogConverter] associated with [T].
-T fromJson<T>(String json) => DogEngine.internalSingleton!.jsonDecode(json);
+T fromJson<T>(String json) => DogEngine.instance.jsonDecode(json);
 
 /// Copies the [src] object and applies [overrides] to the created instance
 /// using the [Copyable] mixin associated with [T].
 T copy<T>(T src, [Map<String, dynamic>? overrides]) =>
-    DogEngine.internalSingleton!.copy(src, overrides);
+    DogEngine.instance.copy(src, overrides);

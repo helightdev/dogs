@@ -139,16 +139,16 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
   Type get deriveStream => Stream<T>;
 
   T copy([Map<String, dynamic>? overrides]) {
-    return DogEngine.internalSingleton!
+    return DogEngine.instance
         .copyObject(this, overrides, runtimeType);
   }
 
-  bool get isValid => DogEngine.internalSingleton!.validateObject(this, T);
-  void validate() => DogEngine.internalSingleton!.validate<T>(this as T);
+  bool get isValid => DogEngine.instance.validateObject(this, T);
+  void validate() => DogEngine.instance.validate<T>(this as T);
 
   @override
   String toString() {
-    return "$runtimeType ${DogEngine.internalSingleton!.convertObjectToGraph(this, runtimeType).coerceString()}";
+    return "$runtimeType ${DogEngine.instance.convertObjectToGraph(this, runtimeType).coerceString()}";
   }
 }
 

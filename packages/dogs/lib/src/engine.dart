@@ -20,14 +20,14 @@ import 'package:meta/meta.dart';
 
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
 class DogEngine {
-  @internal
-  static DogEngine? internalSingleton;
+
+  static DogEngine? _instance;
 
   /// Checks if a valid instance of [DogEngine] is statically available.
-  static bool get hasValidInstance => internalSingleton != null;
+  static bool get hasValidInstance => _instance != null;
 
   /// Returns the current statically linked [DogEngine].
-  static DogEngine get instance => internalSingleton!;
+  static DogEngine get instance => _instance!;
 
   @internal
   List<DogConverter> converters = [];
@@ -76,8 +76,8 @@ class DogEngine {
     registerConverter(Uint8ListConverter());
   }
 
-  /// Sets this current instance as [internalSingleton].
-  void setSingleton() => internalSingleton = this;
+  /// Sets this current instance as [_instance].
+  void setSingleton() => _instance = this;
 
   /// Rebuilds the isolate pool to reflect changes to the engine,
   /// if [asyncEnabled] is set to true. Otherwise throws an exception.

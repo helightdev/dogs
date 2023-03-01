@@ -24,7 +24,7 @@ abstract class Builder<T> with TypeCaptureMixin<T> {
   Builder(this.$src);
 
   T build() {
-    return DogEngine.internalSingleton!.copyable[typeArgument]!
-        .copy($src, DogEngine.internalSingleton!, $overrides);
+    return DogEngine.instance.copyable[typeArgument]!
+        .copy($src, DogEngine.instance, $overrides);
   }
 }
