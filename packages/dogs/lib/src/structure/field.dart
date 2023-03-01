@@ -16,6 +16,7 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:lyell/lyell.dart';
+import 'package:meta/meta.dart';
 
 class DogStructureField extends RetainedAnnotationHolder
     implements StructureNode {
@@ -116,6 +117,7 @@ class DogStructureField extends RetainedAnnotationHolder
         name, optional, false, []);
   }
 
+  @factory
   static DogStructureField create<T>(
       String name, Type type, IterableKind iterable,
       {bool optional = false, Type? converterType}) {
