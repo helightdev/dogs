@@ -178,7 +178,7 @@ class DogEngine {
   bool validateObject(dynamic value, [Type? type]) {
     var queryType = type ?? value.runtimeType;
     var validatable = validatables[queryType]!;
-    return validatable.validate(value);
+    return validatable.validate(value, this);
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the

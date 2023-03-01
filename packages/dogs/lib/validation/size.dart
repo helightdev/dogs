@@ -42,7 +42,7 @@ class SizeRange extends StructureMetadata
   }
 
   @override
-  bool validate(cached, value) {
+  bool validate(cached, value, DogEngine engine) {
     if (value == null) return true;
     var it = value as Iterable;
 

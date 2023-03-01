@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import 'package:dogs_core/dogs_core.dart';
+
 abstract class Validatable<T> {
-  bool validate(T src);
+  bool validate(T src, DogEngine engine);
 }

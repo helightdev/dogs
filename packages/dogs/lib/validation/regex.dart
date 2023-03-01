@@ -35,7 +35,7 @@ class Regex extends StructureMetadata
   }
 
   @override
-  bool validate(cached, value) {
+  bool validate(cached, value, DogEngine engine) {
     var entry = cached as _RegexCacheEntry;
     if (entry.isIterable) {
       if (value == null) return true;

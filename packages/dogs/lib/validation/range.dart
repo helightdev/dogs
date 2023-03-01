@@ -52,7 +52,7 @@ class Range extends StructureMetadata
   }
 
   @override
-  bool validate(cached, value) {
+  bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
       return (value as Iterable).every((e) => validateSingle(e));
@@ -113,7 +113,7 @@ class Minimum extends StructureMetadata
   }
 
   @override
-  bool validate(cached, value) {
+  bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
       return (value as Iterable).every((e) => validateSingle(e));
@@ -163,7 +163,7 @@ class Maximum extends StructureMetadata
   }
 
   @override
-  bool validate(cached, value) {
+  bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
       return (value as Iterable).every((e) => validateSingle(e));

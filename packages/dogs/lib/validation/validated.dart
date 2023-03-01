@@ -43,20 +43,20 @@ class Validated extends StructureMetadata implements FieldValidator {
   }
 
   @override
-  bool validate(cached, value) {
+  bool validate(cached, value, DogEngine engine) {
     var entry = cached as _ValidatedCacheEntry;
     var validator = DogEngine.instance.validatables[entry.serial]!;
     if (entry.iterable) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e, validator));
+      return (value as Iterable).every((e) => validateSingle(e, validator, engine));
     } else {
-      return validateSingle(value, validator);
+      return validateSingle(value, validator, engine);
     }
   }
 
-  bool validateSingle(value, Validatable validator) {
+  bool validateSingle(value, Validatable validator, DogEngine engine) {
     if (value == null) return true;
-    return validator.validate(value);
+    return validator.validate(value, engine);
   }
 }
 
