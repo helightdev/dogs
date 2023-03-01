@@ -16,7 +16,7 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
-/// Interface for providing [DogEngine.internalSingleton.copy]
+/// Interface for providing [DogEngine.copy]
 abstract class Copyable<T> {
   T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);
 }

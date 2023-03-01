@@ -16,6 +16,7 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
+/// Interface for providing [DogEngine.validate]
 abstract class Validatable<T> {
   bool validate(T src, DogEngine engine);
 }
