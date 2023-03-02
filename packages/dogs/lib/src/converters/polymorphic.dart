@@ -20,7 +20,8 @@ import 'package:dogs_core/dogs_core.dart';
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.
 class PolymorphicConverter extends DogConverter {
-  PolymorphicConverter();
+
+  PolymorphicConverter() : super(false);
 
   static final typePropertyKey = DogString("_type");
   static final valuePropertyKey = DogString("_value");
@@ -94,6 +95,7 @@ class PolymorphicConverter extends DogConverter {
 }
 
 class DefaultListConverter extends DogConverter<List> {
+
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   @override

@@ -20,7 +20,6 @@ import 'package:meta/meta.dart';
 
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
 class DogEngine {
-
   static DogEngine? _instance;
 
   /// Checks if a valid instance of [DogEngine] is statically available.
@@ -126,8 +125,13 @@ class DogEngine {
   DogConverter findAssociatedConverterOrThrow(Type type) {
     var converter = findAssociatedConverter(type);
     if (converter == null) {
-      throw ArgumentError.value(
-          type, "type", "No converter for given type found");
+      if (type == dynamic) {
+        throw Exception("Tried to resolve the converter for 'dynamic'. "
+            "Consider explicitly specifying a type to resolve.");
+      } else {
+        throw ArgumentError.value(
+            type, "type", "No converter for given type found");
+      }
     }
     return converter;
   }
