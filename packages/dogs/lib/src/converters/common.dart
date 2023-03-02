@@ -20,6 +20,8 @@ import 'dart:typed_data';
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
+/// [DogConverter] for [DateTime] instances which encodes the timestamp as a
+/// Iso8601 string.
 class DateTimeConverter extends DogConverter<DateTime>
     with StructureEmitter<DateTime> {
   @override
@@ -42,6 +44,8 @@ class DateTimeConverter extends DogConverter<DateTime>
   DogStructure get structure => DogStructure<DateTime>.synthetic("DateTime");
 }
 
+/// [DogConverter] for [Duration] instances which encode the time difference
+/// in milliseconds as an integer
 class DurationConverter extends DogConverter<Duration>
     with StructureEmitter<Duration> {
   @override
@@ -61,6 +65,7 @@ class DurationConverter extends DogConverter<Duration>
   DogStructure get structure => DogStructure<Duration>.synthetic("Duration");
 }
 
+/// [DogConverter] for [Uri] instances which encodes the uri into a string.
 class UriConverter extends DogConverter<Uri> with StructureEmitter<Uri> {
   @override
   Uri convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -80,6 +85,8 @@ class UriConverter extends DogConverter<Uri> with StructureEmitter<Uri> {
   DogStructure get structure => DogStructure<Uri>.synthetic("Uri");
 }
 
+/// [DogConverter] for [Uint8List] instances which encodes the binary data
+/// as a base64 string using [base64Encode].
 class Uint8ListConverter extends DogConverter<Uint8List>
     with StructureEmitter<Uint8List> {
   @override
