@@ -17,6 +17,8 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
+const positive = Range(min: 0);
+
 class Range extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
   final num? min;
