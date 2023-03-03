@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import 'package:dogs_core/src/structure/structure.dart';
+
 abstract class DogStructureProxy {
   const DogStructureProxy();
 
@@ -24,6 +26,7 @@ abstract class DogStructureProxy {
   dynamic getField(dynamic obj, int index);
 }
 
+/// Simple class-less implementation of [DogStructureProxy], primarily for tests.
 class MemoryDogStructureProxy extends DogStructureProxy {
   const MemoryDogStructureProxy();
 
@@ -36,10 +39,16 @@ class MemoryDogStructureProxy extends DogStructureProxy {
   }
 }
 
+/// [DogStructureProxy] implementation for creating universal object factories.
 class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
+
+  /// Factory method for instantiating [T] using a sorted list of field values.
   final T Function(List args) activator;
+
+  /// Accessor methods for all indexed fields of the [DogStructure] for type [T].
   final List<dynamic Function(T obj)> getters;
 
+  /// [DogStructureProxy] implementation for creating universal object factories.
   const ObjectFactoryStructureProxy(this.activator, this.getters);
 
   @override
