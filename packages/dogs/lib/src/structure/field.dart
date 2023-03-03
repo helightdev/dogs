@@ -64,7 +64,8 @@ class DogStructureField extends RetainedAnnotationHolder
   factory DogStructureField.string(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = String;
     if (iterable == IterableKind.list) {
       type = List<String>;
@@ -72,13 +73,14 @@ class DogStructureField extends RetainedAnnotationHolder
       type = Set<String>;
     }
     return DogStructureField(type, TypeToken<String>(), converterType, iterable,
-        name, optional, false, []);
+        name, optional, false, annotations);
   }
 
   factory DogStructureField.int(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = int;
     if (iterable == IterableKind.list) {
       type = List<int>;
@@ -86,13 +88,14 @@ class DogStructureField extends RetainedAnnotationHolder
       type = Set<int>;
     }
     return DogStructureField(type, TypeToken<int>(), converterType, iterable,
-        name, optional, false, []);
+        name, optional, false, annotations);
   }
 
   factory DogStructureField.double(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = double;
     if (iterable == IterableKind.list) {
       type = List<double>;
@@ -100,13 +103,14 @@ class DogStructureField extends RetainedAnnotationHolder
       type = Set<double>;
     }
     return DogStructureField(type, TypeToken<double>(), converterType, iterable,
-        name, optional, false, []);
+        name, optional, false, annotations);
   }
 
   factory DogStructureField.bool(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
-      Type? converterType}) {
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = bool;
     if (iterable == IterableKind.list) {
       type = List<bool>;
@@ -114,14 +118,16 @@ class DogStructureField extends RetainedAnnotationHolder
       type = Set<bool>;
     }
     return DogStructureField(type, TypeToken<bool>(), converterType, iterable,
-        name, optional, false, []);
+        name, optional, false, annotations);
   }
 
   @factory
   static DogStructureField create<T>(
       String name, Type type, IterableKind iterable,
-      {bool optional = false, Type? converterType}) {
+      {bool optional = false,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     return DogStructureField(type, TypeToken<T>(), converterType, iterable,
-        name, optional, true, []);
+        name, optional, true, annotations);
   }
 }
