@@ -177,9 +177,9 @@ extension FieldExtension on DogStructureField {
 
   DogConverter? findConverter() {
     if (converterType == null) {
-      return dogs.findAssociatedConverter(serial.typeArgument);
+      return DogEngine.instance.findAssociatedConverter(serial.typeArgument);
     } else {
-      return dogs.findConverter(converterType!);
+      return DogEngine.instance.findConverter(converterType!);
     }
   }
 }
