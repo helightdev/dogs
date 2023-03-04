@@ -48,9 +48,6 @@ export 'src/json.dart';
 export 'src/serializer.dart';
 export 'src/visitor.dart';
 
-/// Static instance of [DogEngine] that will be initialised by invoking
-/// the generated initialiseDogs() method.
-DogEngine get dogs => DogEngine.instance;
 
 /// Marks a class or enum as serializable.
 /// The dogs_generator will then generate a [DefaultStructureConverter] which

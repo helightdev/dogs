@@ -16,6 +16,10 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
+/// Static instance of [DogEngine] that will be initialised by invoking
+/// the generated initialiseDogs() method.
+DogEngine get dogs => DogEngine.instance;
+
 /// Encodes this [value] to json, using the [DogConverter] associated with [T].
 String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
 
