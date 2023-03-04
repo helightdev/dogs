@@ -1,3 +1,7 @@
+## 2.1.1
+
+ - **REFACTOR**: auto reformat.
+
 ## 2.1.0
 
  - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.

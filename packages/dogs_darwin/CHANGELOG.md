@@ -1,3 +1,7 @@
+## 1.0.1-alpha.4
+
+ - Update a dependency to the latest release.
+
 ## 1.0.1-alpha.3
 
  - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.

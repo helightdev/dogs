@@ -1,3 +1,9 @@
+## 2.1.1
+
+ - **REFACTOR**: auto reformat.
+ - **REFACTOR**: remove unused import.
+ - **FIX**: do not associate polymorphic converters with types anymore.
+
 ## 2.1.0
 
  - **REFACTOR**: move annotations to converter.
