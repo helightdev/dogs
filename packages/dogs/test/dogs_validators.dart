@@ -150,4 +150,55 @@ void main() {
       expect(false, converter.validate(["Max", 200, {"Person"}], emptyEngine));
     });
   });
+  group("Iterables", () {
+    test("SizeRange", () {
+      var structure = DogStructure("Person", [
+        DogStructureField.string("name"),
+        DogStructureField.int("age"),
+        DogStructureField.string("tags", iterable: IterableKind.set, optional: true, annotations: [
+          SizeRange(min: 1, max: 4)
+        ])
+      ], [], MemoryDogStructureProxy());
+      var converter = DogStructureConverterImpl(structure);
+      expect(true, converter.validate(["Max", 18, null], emptyEngine));
+      expect(true, converter.validate(["Max", 18, {"Person"}], emptyEngine));
+      expect(true, converter.validate(["Max", 18, {"A","B","C","D"}], emptyEngine));
+      expect(false, converter.validate(["Max", 18, <String>{}], emptyEngine));
+      expect(false, converter.validate(["Max", 18, {"A","B","C","D","E"}], emptyEngine));
+    });
+  });
+  test("Validated", () {
+    var tempEngine = DogEngine(false);
+    var innerStruct = DogStructure<_Inner>("inner", [
+      DogStructureField.string("text", annotations: [
+        LengthRange(min: 1, max: 5)
+      ])
+    ], [], _Inner.proxy);
+    var innerConverter = DogStructureConverterImpl(innerStruct);
+    tempEngine.registerConverter(innerConverter);
+
+    var structure = DogStructure("Person", [
+      DogStructureField.string("name"),
+      DogStructureField.int("age"),
+      DogStructureField.string("tags", iterable: IterableKind.set),
+      DogStructureField.create<_Inner>("children", List<_Inner>, IterableKind.list, annotations: [
+        validated
+      ], optional: true)
+    ], [], MemoryDogStructureProxy());
+    var converter = DogStructureConverterImpl(structure);
+    expect(true, converter.validate(["Max", 18, {"Person"}, null], tempEngine));
+    expect(true, converter.validate(["Max", 18, {"Person"}, [_Inner("Test")]], tempEngine));
+    expect(true, converter.validate(["Max", 18, {"Person"}, []], tempEngine));
+    expect(false, converter.validate(["Max", 18, {"Person"}, [_Inner("")]], tempEngine));
+    expect(false, converter.validate(["Max", 18, {"Person"}, [_Inner("12345A")]], tempEngine));
+  });
+}
+
+class _Inner {
+  String text;
+  _Inner(this.text);
+  
+  static _Inner parse(List args) => _Inner(args[0]);
+  static $text(_Inner obj) => obj.text;
+  static ObjectFactoryStructureProxy<_Inner> proxy = ObjectFactoryStructureProxy(parse, [$text]);
 }
