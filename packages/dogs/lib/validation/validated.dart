@@ -48,7 +48,8 @@ class Validated extends StructureMetadata implements FieldValidator {
     var validator = engine.validatables[entry.serial]!;
     if (entry.iterable) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e, validator, engine));
+      return (value as Iterable)
+          .every((e) => validateSingle(e, validator, engine));
     } else {
       return validateSingle(value, validator, engine);
     }

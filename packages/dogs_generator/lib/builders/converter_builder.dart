@@ -75,14 +75,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       constructorName = ".dog";
       constructor = element.getNamedConstructor("dog")!;
     }
-    var structurized =
-        await structurize(element.thisType, constructor, genContext, codeContext.cachedCounter);
+    var structurized = await structurize(
+        element.thisType, constructor, genContext, codeContext.cachedCounter);
     codeContext.additionalImports.addAll(structurized.imports);
 
     writeGeneratedConverter(
         element, structurized, constructorName, codeContext);
-    writeGeneratedBuilder(
-        element, structurized, constructorName, codeContext);
+    writeGeneratedBuilder(element, structurized, constructorName, codeContext);
     writeGeneratedExtension(
         element, structurized, constructorName, codeContext);
   }
@@ -194,7 +193,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
   @override
   FutureOr<void> generateSubject(SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
-    codeContext.additionalImports.add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+    codeContext.additionalImports
+        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
 
     try {
       for (var element in genContext.matches) {

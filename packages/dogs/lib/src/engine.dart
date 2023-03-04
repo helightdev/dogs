@@ -257,4 +257,3 @@ dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
 
 /// Common iterable kinds which are compatible with dogs.
 enum IterableKind { list, set, none }
-

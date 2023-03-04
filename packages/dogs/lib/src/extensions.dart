@@ -139,8 +139,7 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
   Type get deriveStream => Stream<T>;
 
   T copy([Map<String, dynamic>? overrides]) {
-    return DogEngine.instance
-        .copyObject(this, overrides, runtimeType);
+    return DogEngine.instance.copyObject(this, overrides, runtimeType);
   }
 
   bool get isValid => DogEngine.instance.validateObject(this, T);

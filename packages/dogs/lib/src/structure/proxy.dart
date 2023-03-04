@@ -41,7 +41,6 @@ class MemoryDogStructureProxy extends DogStructureProxy {
 
 /// [DogStructureProxy] implementation for creating universal object factories.
 class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
-
   /// Factory method for instantiating [T] using a sorted list of field values.
   final T Function(List args) activator;
 

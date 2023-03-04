@@ -45,14 +45,25 @@ void main() {
         ],
         [],
         MemoryDogStructureProxy());
-    var a = structure.proxy.instantiate(["Workout", "Lets get fit", true, {"sport", "lifestyle"}]);
+    var a = structure.proxy.instantiate([
+      "Workout",
+      "Lets get fit",
+      true,
+      {"sport", "lifestyle"}
+    ]);
     expect(structure.proxy.getField(a, 0), "Workout");
     expect(structure.proxy.getField(a, 1), "Lets get fit");
     expect(structure.proxy.getField(a, 2), true);
-    expect(structure.proxy.getField(a, 3), containsAllInOrder(["sport", "lifestyle"]));
+    expect(structure.proxy.getField(a, 3),
+        containsAllInOrder(["sport", "lifestyle"]));
     expect(structure.proxy.getField(a, 3), isA<Set>());
 
-    var b = structure.proxy.instantiate([null, "Some Data", false, {"info"}]);
+    var b = structure.proxy.instantiate([
+      null,
+      "Some Data",
+      false,
+      {"info"}
+    ]);
     expect(structure.proxy.getField(b, 0), null);
     expect(structure.proxy.getField(b, 1), "Some Data");
     expect(structure.proxy.getField(b, 2), false);
