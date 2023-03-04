@@ -96,6 +96,8 @@ class PolymorphicConverter extends DogConverter {
 class DefaultListConverter extends DogConverter<List> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
+  DefaultListConverter() : super(false);
+
   @override
   List convertFromGraph(DogGraphValue value, DogEngine engine) {
     return polymorphicConverter
@@ -116,6 +118,8 @@ class DefaultListConverter extends DogConverter<List> {
 
 class DefaultSetConverter extends DogConverter<Set> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+
+  DefaultSetConverter() : super(false);
 
   @override
   Set convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -138,6 +142,8 @@ class DefaultSetConverter extends DogConverter<Set> {
 class DefaultIterableConverter extends DogConverter<Iterable> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
+  DefaultIterableConverter() : super(false);
+
   @override
   Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
     return polymorphicConverter.iterableFromGraph(value.asList!, engine);
@@ -156,6 +162,8 @@ class DefaultIterableConverter extends DogConverter<Iterable> {
 
 class DefaultMapConverter extends DogConverter<Map> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
+
+  DefaultMapConverter() : super(false);
 
   @override
   Map convertFromGraph(DogGraphValue value, DogEngine engine) {
