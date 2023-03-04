@@ -20,3 +20,6 @@ dev_dependencies:
   test: ^1.16.0
 
   dogs_generator: any
+
+dogs:
+  library: true

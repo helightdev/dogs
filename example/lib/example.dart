@@ -7,7 +7,9 @@ import 'models.dart';
 export 'dogs.g.dart';
 
 void main() async {
-  await initialiseDogs();
+  var engine = DogEngine(false);
+  engine.setSingleton();
+  installExampleConverters();
   print(DogSchema.create().getApiJson());
   print("---");
   var person = Person(
