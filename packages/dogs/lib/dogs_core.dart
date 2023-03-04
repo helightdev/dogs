@@ -16,8 +16,6 @@
 
 library dogs_core;
 
-import 'dogs_core.dart';
-
 export 'src/converters/common.dart';
 export 'src/converters/enum.dart';
 export 'src/converters/polymorphic.dart';
