@@ -1,3 +1,22 @@
+## 2.1.0
+
+ - **REFACTOR**: move annotations to converter.
+ - **REFACTOR**: move IterableKind to engine.
+ - **REFACTOR**: move global dogs field to globals.dart.
+ - **REFACTOR**: Use DogEngine.instance instead of dogs.
+ - **REFACTOR**: Use DogEngine.instance instead of dogs.
+ - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.
+ - **REFACTOR**: use passed DogEngine reference instead of the static one.
+ - **REFACTOR**: add @factory annotation.
+ - **FIX**: make the PolymorphicConverter not associated with dynamic by default.
+ - **FEAT**: add annotations parameters.
+ - **FEAT**: add constant 'positive' accessor annotation to restrict numbers to be positive or zero.
+ - **FEAT**: add DogEngine reference to validate calls.
+ - **DOCS**: update polymorphic docs.
+ - **DOCS**: add docs for structure proxy.
+ - **DOCS**: add documentation for default converters.
+ - **DOCS**: update documentation for Validatable and Copyable.
+
 ## 2.0.0
 
 > Note: This release has breaking changes.

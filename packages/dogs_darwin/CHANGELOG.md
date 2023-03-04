@@ -1,3 +1,7 @@
+## 1.0.1-alpha.3
+
+ - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.
+
 ## 1.0.1-alpha.2
 
 > Note: This release has breaking changes.

@@ -1,3 +1,8 @@
+## 2.1.0
+
+ - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.
+ - **FEAT**: add library option to code generation.
+
 ## 2.0.1
 
  - **REFACTOR**: update to lyell 0.1.0.
