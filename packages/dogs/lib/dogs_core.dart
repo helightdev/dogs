@@ -109,6 +109,3 @@ class Polymorphic {
 
 /// Marks a property as polymorphic, meaning its value's type can vary.
 const polymorphic = Polymorphic();
-
-/// Common iterable kinds which are compatible with dogs.
-enum IterableKind { list, set, none }
