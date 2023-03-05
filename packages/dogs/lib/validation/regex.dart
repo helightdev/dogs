@@ -17,6 +17,10 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
+/// Reduced version of a RFC 5322 email regex from https://www.regular-expressions.info/email.html
+/// This regex omits IP addresses, double quotes and square brackets.
+const email = Regex("[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+
 class Regex extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
   final String pattern;

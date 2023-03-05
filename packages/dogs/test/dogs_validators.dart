@@ -120,6 +120,118 @@ void main() {
             {"Person"}
           ], emptyEngine));
     });
+    test("Email", () {
+      var structure = DogStructure(
+          "Person",
+          [
+            DogStructureField.string("name", annotations: [
+              email
+            ]),
+            DogStructureField.int("age"),
+            DogStructureField.string("tags", iterable: IterableKind.set)
+          ],
+          [],
+          MemoryDogStructureProxy());
+      var converter = DogStructureConverterImpl(structure);
+      expect(
+          true,
+          converter.validate([
+            null,
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          true,
+          converter.validate([
+            "contact@helight.dev",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          true,
+          converter.validate([
+            "test@google-mail.com",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          false,
+          converter.validate([
+            "max",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          false,
+          converter.validate([
+            "weird@mail-like",
+            18,
+            {"Person"}
+          ], emptyEngine));
+    });
+    test("NotBlank", () {
+      var structure = DogStructure(
+          "Person",
+          [
+            DogStructureField.string("name", annotations: [
+              notBlank
+            ]),
+            DogStructureField.int("age"),
+            DogStructureField.string("tags", iterable: IterableKind.set)
+          ],
+          [],
+          MemoryDogStructureProxy());
+      var converter = DogStructureConverterImpl(structure);
+      expect(
+          true,
+          converter.validate([
+            null,
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          true,
+          converter.validate([
+            "Max",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          true,
+          converter.validate([
+            "  Max  ",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          false,
+          converter.validate([
+            "",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          false,
+          converter.validate([
+            " ",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          false,
+          converter.validate([
+            "\n",
+            18,
+            {"Person"}
+          ], emptyEngine));
+      expect(
+          false,
+          converter.validate([
+            "\t",
+            18,
+            {"Person"}
+          ], emptyEngine));
+    });
   });
   group("Numbers", () {
     test("Minimum (inclusive)", () {
@@ -570,9 +682,11 @@ void main() {
 
 class _Inner {
   String text;
+
   _Inner(this.text);
 
   static _Inner parse(List args) => _Inner(args[0]);
+
   static $text(_Inner obj) => obj.text;
   static ObjectFactoryStructureProxy<_Inner> proxy =
       ObjectFactoryStructureProxy(parse, [$text]);

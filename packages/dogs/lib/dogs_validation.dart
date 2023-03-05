@@ -16,6 +16,7 @@
 
 library dogs_validation;
 
+export 'validation/blank.dart';
 export 'validation/description.dart';
 export 'validation/length.dart';
 export 'validation/range.dart';
