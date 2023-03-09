@@ -1,3 +1,10 @@
+## 3.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **REFACTOR**: change positive to exclude 0, add positiveOrNull, as well as negative versions.
+ - **BREAKING** **FEAT**: add notBlank and email validators.
+
 ## 2.1.1
 
  - **REFACTOR**: auto reformat.
