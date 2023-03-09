@@ -1,22 +1,25 @@
 import 'package:darwin_marshal/darwin_marshal.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_darwin/dogs_darwin.dart';
+import 'package:lyell/lyell.dart';
 
 void main() {
   var dogs = DogEngine(false);
   dogs.registerConverter(CatConverter());
   var marshal = DarwinMarshal();
+  DarwinMarshalSimple.register(marshal);
   DogsMarshal.link(marshal, dogs);
+  print(marshal.associatedMappers);
 
   var serializationContext =
-      SerializationContext(List<Cat>, "application/json", {}, marshal);
+      SerializationContext(MarshalTarget(TypeToken<List<Cat>>()), "application/json", {}, marshal);
   var serializer = marshal.findSerializer(serializationContext)!;
   var serialized = serializer
       .serialize([Cat("CAT 1", 5), Cat("CAT 2", 5)], serializationContext);
   print(serialized);
 
   var deserializationContext =
-      DeserializationContext("application/json", Set<Cat>, {}, marshal);
+      DeserializationContext("application/json", MarshalTarget(TypeToken<Set<Cat>>()), {}, marshal);
   var deserializer = marshal.findDeserializer(deserializationContext)!;
   var deserialized =
       deserializer.deserialize(serialized, deserializationContext);
@@ -35,7 +38,7 @@ class Cat {
   }
 }
 
-class CatConverter extends DogConverter<Cat> {
+class CatConverter extends DogConverter<Cat> with StructureEmitter<Cat> {
   @override
   Cat convertFromGraph(DogGraphValue value, DogEngine engine) {
     var map = value.asMap!.value;
@@ -50,4 +53,7 @@ class CatConverter extends DogConverter<Cat> {
       DogString("age"): DogGraphValue.fromNative(value.age)
     });
   }
+
+  @override
+  DogStructure get structure => DogStructure<Cat>.synthetic("Cat");
 }

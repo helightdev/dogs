@@ -77,23 +77,27 @@ class DogService {
   DogService(this.system, this.engine);
 
   void start() {
-    system.eventbus.getLine<ApiDocsResolveParameterTypeEvent>().subscribe((p0) {
-      var type = p0.args.parameter!.typeArgument;
-      var object = resolve(type);
-      if (object != null) p0.update(object);
-    });
-    system.eventbus.getLine<ApiDocsResolveReturnTypeEvent>().subscribe((p0) {
-      var type = p0.args.registration.returnType.typeArgument;
-      var object = resolve(type);
-      if (object != null) p0.update(object);
-    });
-    system.eventbus.getLine<ApiDocsPopulateEvent>().subscribe((p0) {
-      p0.document.components!.schemas
-          .addAll(DogSchema.create().getComponents().schemas);
-    });
-    system.eventbus.getLine<MarshalConfigureEvent>().subscribe((p0) {
-      DogsMarshal.link(p0.marshal);
-    });
+    if (system.serviceMixin.findDescriptors(DarwinHttpServer).isNotEmpty) {
+      system.eventbus.getLine<ApiDocsResolveParameterTypeEvent>().subscribe((p0) {
+        var type = p0.args.parameter!.typeArgument;
+        var object = resolve(type);
+        if (object != null) p0.update(object);
+      });
+      system.eventbus.getLine<ApiDocsResolveReturnTypeEvent>().subscribe((p0) {
+        var type = p0.args.registration.returnType.typeArgument;
+        var object = resolve(type);
+        if (object != null) p0.update(object);
+      });
+      system.eventbus.getLine<ApiDocsPopulateEvent>().subscribe((p0) {
+        p0.document.components!.schemas
+            .addAll(DogSchema.create().getComponents().schemas);
+      });
+    }
+    if (system.serviceMixin.findDescriptors(DarwinMarshal).isNotEmpty) {
+      system.eventbus.getLine<MarshalConfigureEvent>().subscribe((p0) {
+        DogsMarshal.link(p0.marshal);
+      });
+    }
   }
 
   APISchemaObject? resolve(Type type) {

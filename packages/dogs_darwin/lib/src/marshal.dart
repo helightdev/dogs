@@ -15,19 +15,62 @@
  */
 // ignore_for_file: invalid_use_of_internal_member
 
+import 'dart:convert';
+
 import 'package:darwin_marshal/darwin_marshal.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_darwin/dogs_darwin.dart';
+import 'package:lyell/src/lyell_base.dart';
 
 class DogsMarshal {
   static void link(DarwinMarshal marshal, [DogEngine? engineOverride]) {
     var engine = engineOverride ?? DogEngine.instance;
-    engine.associatedConverters.forEach((key, value) {
-      var collectionSerializer = DogsDarwinCollectionMapper(key, value, engine);
-      marshal.registerTypeMapper(
-          key, DogsDarwinSingleMapper(key, value, engine));
-      marshal.registerTypeMapper(value.deriveList, collectionSerializer);
-      marshal.registerTypeMapper(value.deriveSet, collectionSerializer);
+    engine.structures.forEach((key, value) {
+      print("Linking for $key");
+      marshal.registerMultiple(DogMarshalDirectMapper(value, engine));
     });
   }
+}
+
+class DogMarshalDirectMapper extends SimpleSerialMultiAdapter {
+
+  final DogEngine engine;
+  final TypeCapture capture;
+  DogMarshalDirectMapper(this.capture, this.engine);
+
+  @override
+  Iterable? deserializeMultiple(List<int> data, DeserializationContext context) {
+    if (data.isEmpty) return [];
+    var str = utf8.decode(data);
+    var graph = engine.jsonSerializer.deserialize(str);
+    return engine.convertIterableFromGraph(graph, capture.typeArgument, IterableKind.list);
+  }
+
+  @override
+  deserializeSingle(List<int> data, DeserializationContext context) {
+    if (data.isEmpty) return [];
+    var str = utf8.decode(data);
+    var graph = engine.jsonSerializer.deserialize(str);
+    return engine.convertObjectFromGraph(graph, capture.typeArgument);
+  }
+
+  @override
+  List<int> serializeMultiple(Iterable? obj, SerializationContext context) {
+    context.mime ??= "application/json";
+    if (obj == null) return [];
+    var graph = engine.convertIterableToGraph(obj, capture.typeArgument, IterableKind.list);
+    var json = engine.jsonSerializer.serialize(graph);
+    return utf8.encode(json);
+  }
+
+  @override
+  List<int> serializeSingle(obj, SerializationContext context) {
+    context.mime ??= "application/json";
+    if (obj == null) return [];
+    var graph = engine.convertObjectToGraph(obj, capture.typeArgument);
+    var json = engine.jsonSerializer.serialize(graph);
+    return utf8.encode(json);
+  }
+
+  @override
+  TypeCapture get typeCapture => capture;
 }
