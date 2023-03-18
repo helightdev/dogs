@@ -12,7 +12,7 @@ class LinkBuilder extends DogsAdapter<LinkSerializer> {
   @override
   Future<SubjectDescriptor> generateDescriptor(
       SubjectGenContext<Element> context) async {
-    var binding = context.defaultDescriptor();
+    var binding = SubjectDescriptor(uri: context.step.inputId.uri.toString());
     binding.meta["converterNames"] =
         context.matches.map((e) => e.name).toList();
     return binding;
