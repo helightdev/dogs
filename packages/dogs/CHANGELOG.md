@@ -1,3 +1,9 @@
+## 4.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: add new converter and polymorphic features.
+
 ## 3.0.0
 
 > Note: This release has breaking changes.
