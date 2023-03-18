@@ -16,6 +16,7 @@
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:lyell/lyell.dart';
 
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.
@@ -96,13 +97,17 @@ class PolymorphicConverter extends DogConverter {
 class DefaultListConverter extends DogConverter<List> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
-  DefaultListConverter() : super(false);
+  final TypeCapture? cast;
+
+  DefaultListConverter([this.cast]) : super(false, true);
 
   @override
   List convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return polymorphicConverter
+    var list = polymorphicConverter
         .iterableFromGraph(value.asList!, engine)
         .toList();
+    if (cast != null) return cast!.castList(list);
+    return list;
   }
 
   @override
@@ -119,13 +124,17 @@ class DefaultListConverter extends DogConverter<List> {
 class DefaultSetConverter extends DogConverter<Set> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
-  DefaultSetConverter() : super(false);
+  final TypeCapture? cast;
+
+  DefaultSetConverter([this.cast]) : super(false, true);
 
   @override
   Set convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return polymorphicConverter
+    var set = polymorphicConverter
         .iterableFromGraph(value.asList!, engine)
         .toSet();
+    if (cast != null) return cast!.castSet(set);
+    return set;
   }
 
   @override
@@ -142,11 +151,15 @@ class DefaultSetConverter extends DogConverter<Set> {
 class DefaultIterableConverter extends DogConverter<Iterable> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
-  DefaultIterableConverter() : super(false);
+  final TypeCapture? cast;
+
+  DefaultIterableConverter([this.cast]) : super(false, true);
 
   @override
   Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return polymorphicConverter.iterableFromGraph(value.asList!, engine);
+    var iterable = polymorphicConverter.iterableFromGraph(value.asList!, engine);
+    if (cast != null) return cast!.castIterable(iterable);
+    return iterable;
   }
 
   @override

@@ -81,9 +81,11 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
     writeGeneratedConverter(
         element, structurized, constructorName, codeContext);
-    writeGeneratedBuilder(element, structurized, constructorName, codeContext);
-    writeGeneratedExtension(
-        element, structurized, constructorName, codeContext);
+    if (structurized.fieldNames.isNotEmpty) {
+      writeGeneratedBuilder(element, structurized, constructorName, codeContext);
+      writeGeneratedExtension(
+          element, structurized, constructorName, codeContext);
+    }
   }
 
   void writeGeneratedConverter(

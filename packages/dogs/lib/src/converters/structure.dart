@@ -18,6 +18,13 @@ import 'package:collection/collection.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
+abstract class ConverterSupplyingVisitor extends StructureMetadata {
+  const ConverterSupplyingVisitor();
+
+  bool get ephemeral => false;
+  DogConverter resolve(DogStructure structure, DogStructureField field, DogEngine engine);
+}
+
 abstract class DefaultStructureConverter<T> extends DogConverter<T>
     with StructureEmitter<T>
     implements Copyable<T>, Validatable<T> {
@@ -27,6 +34,9 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   bool _hasValidation = false;
   late Map<ClassValidator, dynamic> _cachedClassValidators;
   late Map<int, List<MapEntry<FieldValidator, dynamic>>> _cachedFieldValidators;
+  
+  bool _hasCachedConverters = false;
+  late List<DogConverter?> _cachedConverters;
 
   DefaultStructureConverter() {
     // Create and cache validators eagerly
@@ -59,7 +69,37 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       return MapEntry(index, validators);
     }));
   }
+  
+  void initConverters(DogEngine engine) {
+    _cachedConverters = List.filled(structure.fields.length, null);
+    structure.fields.mapIndexed((index, element) {
+      _cachedConverters[index] = getConverter(engine, element, true);
+    });
+    _hasCachedConverters = true;
+  }
 
+  DogConverter? getConverter(DogEngine engine, DogStructureField field, bool cachePhase) {
+    final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
+    if (supplier != null) {
+      if (supplier.ephemeral && cachePhase) return null;
+      return supplier.resolve(structure, field, engine);
+    }
+
+    if (field.converterType != null) {
+      return engine.findConverter(field.converterType!);
+    }
+
+    if (field.structure) {
+      var directConverter = engine.findAssociatedConverter(field.type);
+      if (directConverter != null) return directConverter;
+
+      // Return serial converter
+      return engine.findAssociatedConverter(field.serial.typeArgument);
+    }
+
+    return null; // Primitives
+  }
+  
   @override
   APISchemaObject get output {
     if (structure.isSynthetic) return APISchemaObject.empty();
@@ -69,13 +109,17 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
 
   @override
   T convertFromGraph(DogGraphValue value, DogEngine engine) {
+    if (!_hasCachedConverters) {
+      initConverters(engine);
+    }
     if (value is! DogMap) {
       throw Exception(
           "Expected a DogMap for structure ${structure.typeArgument} but go ${value.runtimeType}");
     }
     var map = value.value;
     var values = [];
-    for (var field in structure.fields) {
+    for (int i = 0; i < _cachedConverters.length; i++) {
+      var field = structure.fields[i];
       var fieldValue = map[DogString(field.name)] ?? DogNull();
 
       if (fieldValue is DogNull) {
@@ -83,20 +127,22 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
           values.add(null);
           continue;
         }
-        throw Exception(
-            "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got ${fieldValue.coerceString()}");
+        throw Exception("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got ${fieldValue.coerceString()}");
       }
-      if (field.converterType != null) {
-        var convertFromGraph = engine
-            .findConverter(field.converterType!)!
-            .convertFromGraph(fieldValue, engine);
-        values.add(convertFromGraph);
-      } else if (field.structure) {
-        values.add(engine.convertIterableFromGraph(
-            fieldValue, field.serial.typeArgument, field.iterableKind));
+
+      var converter = _cachedConverters[i];
+      if (converter == null && field.structure) {
+        converter = getConverter(engine, field, false);
+      }
+
+      if (converter == null) {
+        values.add(adjustIterable(fieldValue.coerceNative(), field.iterableKind));
       } else {
-        values
-            .add(adjustIterable(fieldValue.coerceNative(), field.iterableKind));
+        if (converter.keepIterables) {
+          values.add(converter.convertFromGraph(fieldValue, engine));
+        } else {
+          values.add(converter.convertIterableFromGraph(fieldValue, engine, field.iterableKind));
+        }
       }
     }
     return structure.proxy.instantiate(values);
@@ -104,20 +150,26 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
 
   @override
   DogGraphValue convertToGraph(T value, DogEngine engine) {
+    if (!_hasCachedConverters) {
+      initConverters(engine);
+    }
     var map = <DogGraphValue, DogGraphValue>{};
     var values = structure.getters.map((e) => e(value)).toList();
-    for (var field in structure.fields) {
+    for (int i = 0; i < _cachedConverters.length; i++) {
+      var field = structure.fields[i];
       var fieldValue = values.removeAt(0);
-
-      if (field.converterType != null) {
-        map[DogString(field.name)] = engine
-            .findConverter(field.converterType!)!
-            .convertToGraph(fieldValue, engine);
-      } else if (field.structure) {
-        map[DogString(field.name)] = engine.convertIterableToGraph(
-            fieldValue, field.serial.typeArgument, field.iterableKind);
-      } else {
+      var converter = _cachedConverters[i];
+      if (converter == null && field.structure) {
+        converter = getConverter(engine, field, false);
+      }
+      if (converter == null) {
         map[DogString(field.name)] = DogGraphValue.fromNative(fieldValue);
+      } else {
+        if (converter.keepIterables) {
+          map[DogString(field.name)] = converter.convertToGraph(fieldValue, engine);
+        } else {
+          map[DogString(field.name)] = converter.convertIterableToGraph(fieldValue, engine, field.iterableKind);
+        }
       }
     }
     return DogMap(map);

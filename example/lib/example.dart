@@ -15,7 +15,7 @@ void main() async {
   var person = Person(
       name: "Christoph",
       age: 19,
-      notes: [Note("I love dart!", 0, DateTime.now(), [])],
+      notes: [Note("I love dart!", 0, [TextAttachment()], [])],
       gender: Gender.male,
       birthdayDate: DateTime(2003, 11, 11)
   );
@@ -43,12 +43,12 @@ void main() async {
 void testValidate() {
   print("TRUE ===");
   print(Person(name: "Gunter", age: 17, notes: [], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
-  print(Person(name: "Gunter", age: 17, notes: [Note("Test", 1, [], [1, 5, 7])], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+  print(Person(name: "Gunter", age: 17, notes: [Note("Test", 1, [ImageAttachment()], [1, 5, 7])], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
 
   print("FALSE ===");
   print(Person(name: "", age: 17, notes: [], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
   print(Person(name: "Gunter Mann", age: 17, notes: [], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
-  print(Person(name: "Gunter", age: 17, notes: [Note("Test", 1, [], [-1, 5, 7])], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
+  print(Person(name: "Gunter", age: 17, notes: [Note("Test", 1, [ImageAttachment()], [-1, 5, 7])], gender: Gender.male, birthdayDate: DateTime.now()).isValid);
 }
 
 void testJson(Person person) {

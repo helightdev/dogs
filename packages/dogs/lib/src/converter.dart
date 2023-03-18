@@ -17,10 +17,12 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:lyell/lyell.dart';
+import 'package:meta/meta.dart';
 
 abstract class DogConverter<T> extends TypeCapture<T> {
   final bool isAssociated;
-  DogConverter([this.isAssociated = true]);
+  final bool keepIterables;
+  DogConverter([this.isAssociated = true, this.keepIterables = false]);
 
   APISchemaObject get output => APISchemaObject.empty();
 
@@ -82,9 +84,55 @@ class PropertySerializer {
 }
 
 /// Marks a property as polymorphic, meaning its values type can vary.
-class Polymorphic {
+@internal
+class Polymorphic extends ConverterSupplyingVisitor {
   const Polymorphic();
+
+  @override
+  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field, DogEngine engine) {
+    if (field.serial.typeArgument == dynamic) {
+      switch (field.iterableKind) {
+        case IterableKind.list:
+          return DefaultListConverter();
+        case IterableKind.set:
+          return DefaultSetConverter();
+        case IterableKind.none:
+          return PolymorphicConverter();
+      }
+    } else {
+      switch (field.iterableKind) {
+        case IterableKind.list:
+          return DefaultListConverter(field.serial);
+        case IterableKind.set:
+          return DefaultSetConverter(field.serial);
+        case IterableKind.none:
+          return PolymorphicConverter();
+      }
+    }
+  }
 }
 
 /// Marks a property as polymorphic, meaning its value's type can vary.
 const polymorphic = Polymorphic();
+
+extension ConverterIterableExtension on DogConverter {
+
+  dynamic convertIterableToGraph(dynamic value, DogEngine engine, IterableKind kind) {
+    if (kind == IterableKind.none) {
+      return convertToGraph(value, engine);
+    } else {
+      if (value is! Iterable) throw Exception("Expected an iterable");
+      return DogList(value.map((e) => convertToGraph(e, engine)).toList());
+    }
+  }
+
+  dynamic convertIterableFromGraph(DogGraphValue value, DogEngine engine, IterableKind kind) {
+    if (kind == IterableKind.none) {
+      return convertFromGraph(value, engine);
+    } else {
+      if (value is! DogList) throw Exception("Expected a list");
+      var items = value.value.map((e) => convertFromGraph(e, engine));
+      return adjustIterable(items, kind);
+    }
+  }
+}

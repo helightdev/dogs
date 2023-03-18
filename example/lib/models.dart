@@ -46,9 +46,29 @@ class Note with DogsMixin<Note> {
   List<int>? claims;
 
   @polymorphic
-  Object? attachment;
+  List<IAttachment>? attachments;
 
-  Note(this.text, this.id, this.attachment, this.claims);
+  Note(this.text, this.id, this.attachments, this.claims);
+}
+
+abstract class IAttachment {
+  String get mime;
+}
+
+@serializable
+class TextAttachment extends IAttachment {
+  @override
+  String get mime => "text/plain";
+
+  TextAttachment();
+}
+
+@serializable
+class ImageAttachment extends IAttachment {
+  @override
+  String get mime => "image/png";
+
+  ImageAttachment();
 }
 
 @serializable

@@ -123,19 +123,6 @@ Future<StructurizeResult> structurize(
       propertySerializer =
           counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
     }
-    if (polymorphicChecker.hasAnnotationOf(field)) {
-      if (field.type.isDartCoreMap) {
-        propertySerializer = genPrefix.str("DefaultMapConverter");
-      } else if (field.type.isDartCoreIterable) {
-        propertySerializer = genPrefix.str("DefaultIterableConverter");
-      } else if (field.type.isDartCoreList) {
-        propertySerializer = genPrefix.str("DefaultListConverter");
-      } else if (field.type.isDartCoreSet) {
-        propertySerializer = genPrefix.str("DefaultSetConverter");
-      } else {
-        propertySerializer = genPrefix.str("PolymorphicConverter");
-      }
-    }
 
     fields.add(CompiledStructureField(
         fieldName,

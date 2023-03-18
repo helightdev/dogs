@@ -137,6 +137,13 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
   Type get deriveFutureOr => FutureOr<T>;
   @override
   Type get deriveStream => Stream<T>;
+  @override
+  List<T> castList(List<dynamic> list) => list.cast<T>();
+  @override
+  Set<T> castSet(Set<dynamic> set) => set.cast<T>();
+  @override
+  Iterable<T> castIterable(Iterable<T> iterable) => iterable.cast<T>();
+
 
   T copy([Map<String, dynamic>? overrides]) {
     return DogEngine.instance.copyObject(this, overrides, runtimeType);
