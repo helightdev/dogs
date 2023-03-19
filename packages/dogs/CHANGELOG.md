@@ -1,3 +1,7 @@
+## 4.1.1
+
+ - **FIX**: handle field visitor specified converters for api schema generation.
+
 ## 4.1.0
 
  - **FEAT**: add better error handling for api schema validation.
