@@ -15,6 +15,7 @@
  */
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
@@ -60,14 +61,22 @@ class DogSchema {
           var object = serialSchema;
           if (e.optional) object.isNullable = true;
           e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
-            element.visit(object);
+            try {
+              element.visit(object);
+            } catch(ex,st) {
+              log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+            }
           });
           return MapEntry(e.name, serialSchema);
         } else {
           var object = APISchemaObject.array(ofSchema: serialSchema);
           if (e.optional) object.isNullable = true;
           e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
-            element.visit(object);
+            try {
+              element.visit(object);
+            } catch(ex,st) {
+              log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+            }
           });
           return MapEntry(e.name, object);
         }
@@ -76,13 +85,21 @@ class DogSchema {
       var object = e.findConverter()!.output;
       if (e.optional) object.isNullable = true;
       e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
-        element.visit(object);
+        try {
+          element.visit(object);
+        } catch(ex,st) {
+          log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+        }
       });
       return MapEntry(e.name, object);
     }));
     var value = APISchemaObject.object(properties);
     structure.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
-      element.visit(value);
+      try {
+        element.visit(value);
+      } catch(ex,st) {
+        log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+      }
     });
     _cachedStructObjects[serialName] = value;
     return MapEntry(serialName, value);
