@@ -82,7 +82,12 @@ class DogSchema {
         }
       }
 
-      var object = e.findConverter()!.output;
+      APISchemaObject? object = e.findConverter(structure)?.output;
+      if (object == null) {
+        log("Can't find converter for ${e.name} in ${structure.serialName}");
+        return MapEntry(e.name, APISchemaObject.empty());
+      }
+
       if (e.optional) object.isNullable = true;
       e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
         try {

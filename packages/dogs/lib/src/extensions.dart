@@ -181,7 +181,9 @@ extension FieldExtension on DogStructureField {
     return annotations.whereType<T>().toList();
   }
 
-  DogConverter? findConverter() {
+  DogConverter? findConverter(DogStructure structure) {
+    var specified = firstAnnotationOf<ConverterSupplyingVisitor>()?.resolve(structure, this, DogEngine.instance);
+    if (specified != null) return specified;
     if (converterType == null) {
       return DogEngine.instance.findAssociatedConverter(serial.typeArgument);
     } else {
