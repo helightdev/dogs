@@ -1,3 +1,7 @@
+## 4.1.2
+
+ - **FIX**: add item type name to the name of polymorphic schema fields if a cast is specified.
+
 ## 4.1.1
 
  - **FIX**: handle field visitor specified converters for api schema generation.
