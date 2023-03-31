@@ -1,3 +1,7 @@
+## 3.0.5
+
+ - **FIX**: use actual field name instead of property name for generated builder setter.
+
 ## 3.0.4
 
  - Update a dependency to the latest release.
