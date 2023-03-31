@@ -1,3 +1,7 @@
+## 3.0.6
+
+ - **FIX**: use cached alias counter for generating the reactor.
+
 ## 3.0.5
 
  - **FIX**: use actual field name instead of property name for generated builder setter.
