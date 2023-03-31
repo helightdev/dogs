@@ -10,9 +10,11 @@ class DogReactorBuilder extends SubjectReactorBuilder {
 
   String packageName = "unnamed";
   bool isLibrary = false;
+  late BuildStep step;
 
   @override
   Future build(BuildStep buildStep) async {
+    step = buildStep;
     packageName = buildStep.inputId.package;
     try {
       var pubspecString = await buildStep
@@ -36,14 +38,22 @@ class DogReactorBuilder extends SubjectReactorBuilder {
 
   @override
   FutureOr<void> buildReactor(
-      List<SubjectDescriptor> descriptors, SubjectCodeContext code) {
+      List<SubjectDescriptor> descriptors, SubjectCodeContext code) async {
     code.additionalImports
         .add(AliasImport.root("package:dogs_core/dogs_core.dart"));
-    code.codeBuffer
-        .writeln(descriptors.map((e) => "export '${e.uri}';").join("\n"));
 
+    List<String> descriptorNames = [];
+    for (var descriptor in descriptors) {
+      var names = (descriptor.meta["converterNames"] as List).cast<String>();
+      for (var name in names) {
+        var type = await getDartType(step, descriptor.uri, name);
+        descriptorNames.add(code.cachedCounter.get(type));
+      }
+
+      code.codeBuffer.writeln("export '${descriptor.uri}';");
+    }
     var converterNameArr =
-        "[${descriptors.expand((e) => (e.meta["converterNames"] as List).cast<String>()).map((e) => "$e()").join(", ")}]";
+        "[${descriptorNames.map((e) => "$e()").join(", ")}]";
     if (!isLibrary) {
       code.codeBuffer.writeln("""
 Future initialiseDogs() async {
