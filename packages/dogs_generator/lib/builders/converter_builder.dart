@@ -155,7 +155,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
       for (var element in structurized.structure.fields) {
         builder.methods.add(Method((builder) => builder
-          ..name = element.name
+          ..name = element.accessor
           ..type = MethodType.setter
           ..requiredParameters.add(Parameter((builder) => builder
             ..name = "value"
