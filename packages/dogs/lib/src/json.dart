@@ -43,10 +43,14 @@ extension DogJsonExtension on DogEngine {
     return _jsonSerializer.serialize(graph);
   }
 
-  /// Async version of [jsonEncode].
-  Future<String> jsonEncodeAsync<T>(T value) {
-    if (!asyncEnabled) return Future.value(jsonEncode<T>(value));
-    return pool!.task((p0) async => await p0.encodeJson(value, T));
+  String jsonEncodeList<T>(List<T> value) {
+    var graph = convertIterableToGraph(value, T, IterableKind.list);
+    return _jsonSerializer.serialize(graph);
+  }
+
+  String jsonEncodeSet<T>(Set<T> value) {
+    var graph = convertIterableToGraph(value, T, IterableKind.set);
+    return _jsonSerializer.serialize(graph);
   }
 
   /// Decodes this [encoded] json to an [T] instance,
@@ -54,6 +58,22 @@ extension DogJsonExtension on DogEngine {
   T jsonDecode<T>(String encoded) {
     var graph = _jsonSerializer.deserialize(encoded);
     return convertObjectFromGraph(graph, T);
+  }
+
+  List<T> jsonDecodeList<T>(String encoded) {
+    var graph = _jsonSerializer.deserialize(encoded);
+    return convertIterableFromGraph(graph, T, IterableKind.list);
+  }
+
+  Set<T> jsonDecodeSet<T>(String encoded) {
+    var graph = _jsonSerializer.deserialize(encoded);
+    return convertIterableFromGraph(graph, T, IterableKind.set);
+  }
+
+  /// Async version of [jsonEncode].
+  Future<String> jsonEncodeAsync<T>(T value) {
+    if (!asyncEnabled) return Future.value(jsonEncode<T>(value));
+    return pool!.task((p0) async => await p0.encodeJson(value, T));
   }
 
   /// Async version of [jsonDecode].
