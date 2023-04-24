@@ -1,3 +1,7 @@
+## 4.2.1
+
+ - **FIX**: add continue statement I accidentally deleted.
+
 ## 4.2.0
 
  - **REFACTOR**: export lyell.

@@ -1,3 +1,7 @@
+## 3.0.8
+
+ - Update a dependency to the latest release.
+
 ## 3.0.7
 
  - **FIX**: refer to the runtimeType of polymorphic.
