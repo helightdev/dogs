@@ -165,6 +165,10 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       if (converter == null) {
         map[DogString(field.name)] = DogGraphValue.fromNative(fieldValue);
       } else {
+        if (fieldValue == null) {
+          if (!field.optional) throw Exception("Expected a value of type ${field.type} but got null");
+          map[DogString(field.name)] = DogNull();
+        }
         if (converter.keepIterables) {
           map[DogString(field.name)] = converter.convertToGraph(fieldValue, engine);
         } else {
