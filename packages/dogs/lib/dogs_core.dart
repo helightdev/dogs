@@ -16,6 +16,9 @@
 
 library dogs_core;
 
+// Include lyell
+export 'package:lyell/lyell.dart';
+
 export 'src/converters/common.dart';
 export 'src/converters/enum.dart';
 export 'src/converters/polymorphic.dart';
@@ -37,7 +40,7 @@ export 'src/visitors/null_exclusion.dart';
 export 'src/visitors/string_keyed.dart';
 
 export 'src/async.dart';
-export 'src/converter.dart';
+export 'src/converter.dart' hide Polymorphic;
 export 'src/engine.dart';
 export 'src/extensions.dart';
 export 'src/global.dart';
