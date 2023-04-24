@@ -93,6 +93,9 @@ class DogEngine {
     pool?.stop();
   }
 
+  /// Returns the [DogStructure] associated with [type].
+  DogStructure? findStructureByType(Type type) => structures[type];
+
   /// Returns the [DogStructure] that is associated with the serial name [name]
   /// or null if not present.
   DogStructure? findSerialName(String name) => structures.entries
