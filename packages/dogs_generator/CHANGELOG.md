@@ -1,3 +1,7 @@
+## 3.0.7
+
+ - **FIX**: refer to the runtimeType of polymorphic.
+
 ## 3.0.6
 
  - **FIX**: use cached alias counter for generating the reactor.

@@ -1,3 +1,10 @@
+## 4.2.0
+
+ - **REFACTOR**: export lyell.
+ - **FIX**: nullable structure fields now allow for null values.
+ - **FEAT**: add findStructureByType.
+ - **FEAT**: add additional methods for encoding collections as json.
+
 ## 4.1.2
 
  - **FIX**: add item type name to the name of polymorphic schema fields if a cast is specified.
