@@ -85,7 +85,7 @@ String szPrefix = "sz";
 TypeChecker propertyNameChecker = TypeChecker.fromRuntime(PropertyName);
 TypeChecker propertySerializerChecker =
     TypeChecker.fromRuntime(PropertySerializer);
-TypeChecker polymorphicChecker = TypeChecker.fromRuntime(Polymorphic);
+TypeChecker polymorphicChecker = TypeChecker.fromRuntime(polymorphic.runtimeType);
 
 Future<StructurizeResult> structurize(
     DartType type,
