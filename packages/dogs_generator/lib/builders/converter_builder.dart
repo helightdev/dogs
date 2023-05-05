@@ -266,7 +266,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
           ..type = MethodType.setter
           ..requiredParameters.add(Parameter((builder) => builder
             ..name = "value"
-            ..type = Reference(element.type)))
+            ..type = Reference(element.type + (element.optional ? "?" : ""))))
           ..body = Code("\$values[$index] = value;")));
       }
 
