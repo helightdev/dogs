@@ -1,3 +1,9 @@
+## 1.0.1-alpha.12
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: major rework and removed deprecations.
+
 ## 1.0.1-alpha.11
 
  - Update a dependency to the latest release.

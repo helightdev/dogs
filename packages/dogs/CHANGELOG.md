@@ -1,3 +1,9 @@
+## 5.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: major rework and removed deprecations.
+
 ## 4.2.1
 
  - **FIX**: add continue statement I accidentally deleted.

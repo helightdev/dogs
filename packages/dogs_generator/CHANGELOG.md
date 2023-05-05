@@ -1,3 +1,10 @@
+## 4.0.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: re-added README.md, generated builders now also have nullable parameters if the field is nullable.
+ - **BREAKING** **FEAT**: major rework and removed deprecations.
+
 ## 3.0.8
 
  - Update a dependency to the latest release.
