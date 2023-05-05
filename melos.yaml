@@ -2,6 +2,8 @@ name: dogs_project
 repository: https://github.com/DarwinFramework/dogs
 packages:
   - packages/**
+  - example/
+  - benchmarks/
 scripts:
   copy-readme:
     name: copy-readme
@@ -19,3 +21,7 @@ scripts:
     run: dart format .
     exec:
       concurrency: 1
+  smoke:
+    name: smoke
+    description: 'Runs smoke tests'
+    run: cd smoke/ && bash smoke.sh && cd ../

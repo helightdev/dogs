@@ -57,7 +57,7 @@ class DogReactorBuilder extends SubjectReactorBuilder {
     if (!isLibrary) {
       code.codeBuffer.writeln("""
 Future initialiseDogs() async {
-  var engine = DogEngine.hasValidInstance ? DogEngine.instance : DogEngine(false);
+  var engine = DogEngine.hasValidInstance ? DogEngine.instance : DogEngine();
   engine.registerAllConverters($converterNameArr);
   engine.setSingleton();
 }""");

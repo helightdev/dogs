@@ -14,7 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:aqueduct_isolates/aqueduct_isolates.dart';
+import 'dart:async';
+
 import 'package:dogs_core/dogs_core.dart';
 import 'package:meta/meta.dart';
 
@@ -28,69 +29,83 @@ class DogEngine {
   /// Returns the current statically linked [DogEngine].
   static DogEngine get instance => _instance!;
 
-  @internal
+  /// Read-only list of [DogConverter]s.
   List<DogConverter> converters = [];
-  @internal
+  /// Read-only mapping of [DogConverter]s.
   Map<Type, DogConverter> associatedConverters = {};
-  @internal
+  /// Read-only mapping of [DogStructure]s.
   Map<Type, DogStructure> structures = {};
-  @internal
-  Map<Type, Copyable> copyable = {};
-  @internal
+  /// Read-only mapping of [Copyable]s.
+  Map<Type, Copyable> copyables = {};
+  /// Read-only mapping of [Validatable]s.
   Map<Type, Validatable> validatables = {};
-  @internal
-  AqueductPool<DogsSerializerAqueduct>? pool;
 
-  bool _asyncEnabled = false;
+  final StreamController<bool> _changeStreamController =
+      StreamController.broadcast();
 
-  bool get asyncEnabled => _asyncEnabled;
+  Stream<bool> get changeStream => _changeStreamController.stream;
 
-  /// Enables/Disables the async capability. (Experimental)
-  set asyncEnabled(bool asyncEnabled) {
-    _asyncEnabled = asyncEnabled;
-    if (asyncEnabled) {
-      rebuildAsyncPool();
-    } else {
-      pool?.stop();
-    }
-  }
+  StreamSubscription? _forkSubscription;
+
+  final DogNativeCodec codec;
 
   /// Creates a new [DogEngine] with optional async capabilities which can
   /// be enabled via [enableAsync]. (Experimental)
-  DogEngine([bool enableAsync = false]) {
-    if (enableAsync) {
-      asyncEnabled = true;
-    }
-    // Register polymorphic converters
-    registerConverter(PolymorphicConverter());
-    registerConverter(DefaultMapConverter());
-    registerConverter(DefaultIterableConverter());
-    registerConverter(DefaultListConverter());
-    registerConverter(DefaultSetConverter());
+  DogEngine({bool registerBaseConverters = true, this.codec = const DefaultNativeCodec()}) {
+    if (registerBaseConverters) {
+      // Register polymorphic converters
+      registerConverter(PolymorphicConverter(), false);
+      registerConverter(DefaultMapConverter(), false);
+      registerConverter(DefaultIterableConverter(), false);
+      registerConverter(DefaultListConverter(), false);
+      registerConverter(DefaultSetConverter(), false);
 
-    // Register common converters
-    registerConverter(DateTimeConverter());
-    registerConverter(DurationConverter());
-    registerConverter(UriConverter());
-    registerConverter(Uint8ListConverter());
+      // Register common converters
+      registerConverter(DateTimeConverter(), false);
+      registerConverter(DurationConverter(), false);
+      registerConverter(UriConverter(), false);
+      registerConverter(Uint8ListConverter(), false);
+    }
   }
 
   /// Sets this current instance as [_instance].
   void setSingleton() => _instance = this;
 
-  /// Rebuilds the isolate pool to reflect changes to the engine,
-  /// if [asyncEnabled] is set to true. Otherwise throws an exception.
-  void rebuildAsyncPool() {
-    if (!asyncEnabled) throw Exception("Async is not currently enabled!");
-    pool?.stop();
-    pool = AqueductPool<DogsSerializerAqueduct>(
-        1, () => DogsSerializerAqueduct(this));
-    pool?.start();
+  void clear() {
+    converters.clear();
+    associatedConverters.clear();
+    structures.clear();
+    copyables.clear();
+    validatables.clear();
   }
 
-  /// Shuts down this [DogEngine] instance and isolates spawned by it.
-  void shutdown() {
-    pool?.stop();
+  @internal
+  void forkConverters(DogEngine engine) {
+    clear();
+    var forks = engine.converters.map((e) => e.fork(this));
+    registerAllConverters(forks);
+    _changeStreamController.add(true);
+  }
+
+  DogEngine fork({DogNativeCodec? codec}) {
+    DogEngine forked = DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
+    forked._forkSubscription = changeStream.listen((event) {
+      forked.forkConverters(this);
+    }, onDone: () {
+      print("Closing dog engine because the parent has been closed.");
+      forked.close();
+    }, onError: (_) {
+      print("Closing dog engine because the parent event stream threw an error");
+      forked.close();
+    });
+    forked.forkConverters(this);
+    return forked;
+  }
+
+  void close() {
+    _changeStreamController.close();
+    _forkSubscription?.cancel();
+    clear();
   }
 
   /// Returns the [DogStructure] associated with [type].
@@ -139,17 +154,18 @@ class DogEngine {
     return converter;
   }
 
-  /// Registers a [converter] in this [DogEngine] instance and rebuilds the
-  /// pool if [asyncEnabled] and [rebuildPool] is true. If this converter also
+  /// Registers a [converter] in this [DogEngine] instance and emits a event to
+  /// the change stream if [emitChangeToStream] is true. If this converter also
   /// has the [StructureEmitter] mixin, the supplied structure will be linked.
   /// If this converter also has the [Copyable] mixin, it will also be linked.
-  void registerConverter(DogConverter converter, [bool rebuildPool = true]) {
+  void registerConverter(DogConverter converter,
+      [bool emitChangeToStream = true]) {
     if (converter.isAssociated) {
       if (converter is StructureEmitter) {
         structures[converter.structure.typeArgument] = converter.structure;
       }
       if (converter is Copyable) {
-        copyable[converter.typeArgument] = converter as Copyable;
+        copyables[converter.typeArgument] = converter as Copyable;
       }
       if (converter is Validatable) {
         validatables[converter.typeArgument] = converter as Validatable;
@@ -157,17 +173,17 @@ class DogEngine {
       associatedConverters[converter.typeArgument] = converter;
     }
     converters.add(converter);
-    if (rebuildPool && _asyncEnabled) rebuildAsyncPool();
+    converter.registrationCallback(this);
+    if (emitChangeToStream) _changeStreamController.add(true);
   }
 
   /// Registers multiple converters using [registerConverter].
   /// For more details see [DogEngine.registerConverter].
-  void registerAllConverters(Iterable<DogConverter> converters,
-      [bool rebuildPool = true]) {
+  void registerAllConverters(Iterable<DogConverter> converters) {
     for (var x in converters) {
       registerConverter(x, false);
     }
-    if (rebuildPool && _asyncEnabled) rebuildAsyncPool();
+    _changeStreamController.add(true);
   }
 
   /// Creates a copy of the supplied [value] using the [Copyable] associated
@@ -176,7 +192,7 @@ class DogEngine {
   dynamic copyObject(dynamic value,
       [Map<String, dynamic>? overrides, Type? type]) {
     var queryType = type ?? value;
-    var cloneable = copyable[queryType]!;
+    var cloneable = copyables[queryType]!;
     return cloneable.copy(value, this, overrides);
   }
 
@@ -209,20 +225,53 @@ class DogEngine {
     }
   }
 
-  /// Async version of [convertObjectToGraph].
-  Future<DogGraphValue> convertObjectToGraphAsync(
-      dynamic value, Type serialType) {
-    if (!asyncEnabled) {
-      return Future.value(convertObjectToGraph(value, serialType));
-    }
-    return pool!.task((p0) async => await p0.convertToGraph(value, serialType));
-  }
-
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
   dynamic convertObjectFromGraph(DogGraphValue value, Type serialType) {
     var converter = associatedConverters[serialType]!;
     return converter.convertFromGraph(value, this);
+  }
+
+  dynamic convertObjectFromNative(dynamic value, Type serialType) {
+    var converter = associatedConverters[serialType]!;
+    return converter.convertFromNative(value, this);
+  }
+
+  dynamic convertObjectToNative(dynamic value, Type serialType) {
+    var converter = associatedConverters[serialType];
+    if (converter == null) {
+      throw Exception("Couldn't find an converter for $serialType");
+    }
+    return converter.convertToNative(value, this);
+  }
+
+  dynamic convertIterableToNative(
+      dynamic value, Type serialType, IterableKind kind) {
+    if (kind == IterableKind.none) {
+      return convertObjectToNative(value, serialType);
+    } else {
+      var converter = associatedConverters[serialType];
+      if (converter == null) {
+        throw Exception("Couldn't find an converter for $serialType");
+      }
+      if (value is! Iterable) throw Exception("value is not iterable");
+      return value.map((e) => converter.convertToNative(e, this)).toList();
+    }
+  }
+
+  dynamic convertIterableFromNative(
+      dynamic value, Type serialType, IterableKind kind) {
+    if (kind == IterableKind.none) {
+      return convertObjectFromNative(value, serialType);
+    } else {
+      var converter = associatedConverters[serialType];
+      if (converter == null) {
+        throw Exception("Couldn't find an converter for $serialType");
+      }
+      if (value is! Iterable) throw Exception("value is not iterable");
+      return adjustIterable(
+          value.map((e) => converter.convertFromNative(e, this)), kind);
+    }
   }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
@@ -237,22 +286,52 @@ class DogEngine {
       return adjustIterable(items, kind);
     }
   }
+}
 
-  /// Async version of [convertObjectFromGraph].
-  Future<dynamic> convertObjectFromGraphAsync(
-      DogGraphValue value, Type serialType) {
-    if (!asyncEnabled) {
-      return Future.value(convertObjectFromGraph(value, serialType));
+abstract class DogNativeCodec {
+
+  const DogNativeCodec();
+
+  bool isNative(Type serial);
+  DogGraphValue fromNative(dynamic value);
+  
+}
+
+class DefaultNativeCodec extends DogNativeCodec {
+
+  const DefaultNativeCodec();
+
+  @override
+  DogGraphValue fromNative(value) {
+    if (value == null) return DogNull();
+    if (value is String) return DogString(value);
+    if (value is int) return DogInt(value);
+    if (value is double) return DogDouble(value);
+    if (value is bool) return DogBool(value);
+    if (value is Iterable) {
+      return DogList(value.map((e) => fromNative(e)).toList());
     }
-    return pool!
-        .task((p0) async => await p0.convertFromGraph(value, serialType));
+    if (value is Map) {
+      return DogMap(value
+          .map((key, value) => MapEntry(fromNative(key), fromNative(value))));
+    }
+
+    throw ArgumentError.value(
+        value, null, "Can't coerce native value to dart object graph");
   }
+  
+  @override
+  bool isNative(Type serial) {
+    return serial == String || serial == int || serial == double || serial == bool;
+  }
+  
 }
 
 /// Converts a [value] to the given [IterableKind]. If the value is a [Iterable]
 /// implementation, it will converted to the desired [IterableKind]. Trying to
 /// convert singular values to a iterable will result in an exception.
 dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
+  if (kind == IterableKind.none) return value;
   if (kind == IterableKind.list) return (value as Iterable).toList();
   if (kind == IterableKind.set) return (value as Iterable).toSet();
   return value;

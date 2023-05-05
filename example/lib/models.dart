@@ -1,5 +1,6 @@
 import 'package:dogs_core/dogs_validation.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:example/example.dart';
 
 @serializable
 @Description("A random unique person")
@@ -18,7 +19,6 @@ class Person with DogsMixin<Person> {
   Gender gender;
 
   @PropertyName("birthday")
-  @PropertySerializer(PolymorphicConverter)
   DateTime birthdayDate;
 
   Person.dog(this.name, this.age, this.tags, this.notes, this.birthdayDate, this.gender);

@@ -19,11 +19,12 @@ import 'package:dogs_core/dogs_validation.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var emptyEngine = DogEngine(false); // Empty engine
+  var emptyEngine = DogEngine(); // Empty engine
   group("Strings", () {
     test("Length Range", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name",
                 annotations: [LengthRange(min: 3, max: 10)], optional: true),
@@ -72,6 +73,7 @@ void main() {
     test("Regex", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name",
                 annotations: [
@@ -123,6 +125,7 @@ void main() {
     test("Email", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name", annotations: [
               email
@@ -172,6 +175,7 @@ void main() {
     test("NotBlank", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name", annotations: [
               notBlank
@@ -237,6 +241,7 @@ void main() {
     test("Minimum (inclusive)", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age",
@@ -292,6 +297,7 @@ void main() {
     test("Minimum (exclusive)", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age",
@@ -347,6 +353,7 @@ void main() {
     test("Maximum (inclusive)", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age",
@@ -396,6 +403,7 @@ void main() {
     test("Maximum (exclusive)", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age",
@@ -445,6 +453,7 @@ void main() {
     test("Range (inclusive)", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age",
@@ -507,6 +516,7 @@ void main() {
     test("Range (exclusive)", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age",
@@ -575,6 +585,7 @@ void main() {
     test("SizeRange", () {
       var structure = DogStructure(
           "Person",
+          StructureConformity.basic,
           [
             DogStructureField.string("name"),
             DogStructureField.int("age"),
@@ -612,9 +623,10 @@ void main() {
     });
   });
   test("Validated", () {
-    var tempEngine = DogEngine(false);
+    var tempEngine = DogEngine();
     var innerStruct = DogStructure<_Inner>(
         "inner",
+        StructureConformity.basic,
         [
           DogStructureField.string("text",
               annotations: [LengthRange(min: 1, max: 5)])
@@ -626,6 +638,7 @@ void main() {
 
     var structure = DogStructure(
         "Person",
+        StructureConformity.basic,
         [
           DogStructureField.string("name"),
           DogStructureField.int("age"),
@@ -689,5 +702,5 @@ class _Inner {
 
   static $text(_Inner obj) => obj.text;
   static ObjectFactoryStructureProxy<_Inner> proxy =
-      ObjectFactoryStructureProxy(parse, [$text]);
+      ObjectFactoryStructureProxy(parse, [$text], (obj) => [$text(obj)]);
 }

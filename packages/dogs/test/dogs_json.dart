@@ -4,7 +4,7 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var dogs = DogEngine(false);
+  var dogs = DogEngine();
   test('dogs json serialization', () {
     var mapPayload = {
       "id": 0,
@@ -18,6 +18,7 @@ void main() {
     var engine = DogEngine();
     var structure = DogStructure(
         "TestStruct",
+        StructureConformity.basic,
         [
           DogStructureField.string("name"),
           DogStructureField.int("age"),

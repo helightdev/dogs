@@ -22,6 +22,7 @@ void main() {
   test("Person", () {
     var structure = DogStructure(
         "Person",
+        StructureConformity.basic,
         [
           DogStructureField.string("name"),
           DogStructureField.int("age"),
@@ -37,6 +38,7 @@ void main() {
   test("Note", () {
     var structure = DogStructure(
         "Note",
+        StructureConformity.basic,
         [
           DogStructureField.string("title", optional: true),
           DogStructureField.string("description"),

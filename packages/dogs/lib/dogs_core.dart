@@ -24,7 +24,6 @@ export 'src/converters/enum.dart';
 export 'src/converters/polymorphic.dart';
 export 'src/converters/structure.dart';
 
-export 'src/dataclass/builder.dart';
 export 'src/dataclass/copyable.dart';
 export 'src/dataclass/validatable.dart';
 
@@ -39,8 +38,9 @@ export 'src/structure/validator.dart';
 export 'src/visitors/null_exclusion.dart';
 export 'src/visitors/string_keyed.dart';
 
-export 'src/async.dart';
-export 'src/converter.dart' hide Polymorphic;
+// ignore: invalid_export_of_internal_element
+export 'src/converter.dart';
+export 'src/dataclass.dart';
 export 'src/engine.dart';
 export 'src/extensions.dart';
 export 'src/global.dart';

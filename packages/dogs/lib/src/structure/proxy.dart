@@ -16,14 +16,27 @@
 
 import 'package:dogs_core/src/structure/structure.dart';
 
+/// Method proxy provider for [DogStructure]s.
+/// A structure proxy must provided instantiation/"activation" for the object
+/// and property accessor methods for all fields defined by the structure.
+/// A get-all method for faster field value retrieval must also be provided.
 abstract class DogStructureProxy {
   const DogStructureProxy();
+
+  /// Optional generated hash function created by the dogs_generator.
+  abstract final int Function(dynamic obj)? hashFunc;
+
+  /// Optional generated equals function created by the dogs_generator.
+  abstract final bool Function(dynamic a, dynamic b)? equalsFunc;
 
   /// Creates a new instance of the structure.
   dynamic instantiate(List<dynamic> args);
 
   /// Accesses a field of the structure.
   dynamic getField(dynamic obj, int index);
+
+  /// Shortcut method for collecting all field values in a single call.
+  List getFieldValues(dynamic obj);
 }
 
 /// Simple class-less implementation of [DogStructureProxy], primarily for tests.
@@ -37,6 +50,17 @@ class MemoryDogStructureProxy extends DogStructureProxy {
   dynamic getField(obj, int index) {
     return obj[index];
   }
+
+  @override
+  List getFieldValues(obj) {
+    return obj;
+  }
+
+  @override
+  bool Function(dynamic a, dynamic b)? get equalsFunc => null;
+
+  @override
+  int Function(dynamic obj)? get hashFunc => null;
 }
 
 /// [DogStructureProxy] implementation for creating universal object factories.
@@ -47,8 +71,23 @@ class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
   /// Accessor methods for all indexed fields of the [DogStructure] for type [T].
   final List<dynamic Function(T obj)> getters;
 
+  /// Shortcut method for collecting all field values in a single call.
+  final List Function(T obj) values;
+
+  /// Optional generated hash function created by the dogs_generator.
+  final int Function(T obj)? $hashFunc;
+
+  /// Optional generated equals function created by the dogs_generator.
+  final bool Function(T a, T b)? $equalsFunc;
+
+  @override
+  bool Function(dynamic a, dynamic b)? get equalsFunc => (a,b) => $equalsFunc!(a,b);
+
+  @override
+  int Function(dynamic obj)? get hashFunc => (obj) => $hashFunc!(obj);
+
   /// [DogStructureProxy] implementation for creating universal object factories.
-  const ObjectFactoryStructureProxy(this.activator, this.getters);
+  const ObjectFactoryStructureProxy(this.activator, this.getters, this.values, [this.$hashFunc, this.$equalsFunc]);
 
   @override
   dynamic getField(dynamic obj, int index) {
@@ -58,5 +97,10 @@ class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
   @override
   dynamic instantiate(List args) {
     return activator(args);
+  }
+
+  @override
+  List getFieldValues(obj) {
+    return values(obj);
   }
 }

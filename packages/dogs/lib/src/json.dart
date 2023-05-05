@@ -15,6 +15,7 @@
  */
 
 import 'dart:convert';
+import 'dart:convert' as conv;
 
 import 'package:dogs_core/dogs_core.dart';
 
@@ -39,8 +40,8 @@ extension DogJsonExtension on DogEngine {
 
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
   String jsonEncode<T>(T value) {
-    var graph = convertObjectToGraph(value, T);
-    return _jsonSerializer.serialize(graph);
+    var native = convertObjectToNative(value, T);
+    return conv.jsonEncode(native);
   }
 
   String jsonEncodeList<T>(List<T> value) {
@@ -56,8 +57,8 @@ extension DogJsonExtension on DogEngine {
   /// Decodes this [encoded] json to an [T] instance,
   /// using the [DogConverter] associated with [T].
   T jsonDecode<T>(String encoded) {
-    var graph = _jsonSerializer.deserialize(encoded);
-    return convertObjectFromGraph(graph, T);
+    var native = conv.jsonDecode(encoded);
+    return convertObjectFromNative(native, T);
   }
 
   List<T> jsonDecodeList<T>(String encoded) {
@@ -68,17 +69,5 @@ extension DogJsonExtension on DogEngine {
   Set<T> jsonDecodeSet<T>(String encoded) {
     var graph = _jsonSerializer.deserialize(encoded);
     return convertIterableFromGraph(graph, T, IterableKind.set);
-  }
-
-  /// Async version of [jsonEncode].
-  Future<String> jsonEncodeAsync<T>(T value) {
-    if (!asyncEnabled) return Future.value(jsonEncode<T>(value));
-    return pool!.task((p0) async => await p0.encodeJson(value, T));
-  }
-
-  /// Async version of [jsonDecode].
-  Future<T> jsonDecodeAsync<T>(String encoded) {
-    if (!asyncEnabled) return Future.value(jsonDecode<T>(encoded));
-    return pool!.task((p0) async => await p0.decodeJson(encoded, T));
   }
 }

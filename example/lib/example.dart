@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dogs_cbor/dogs_cbor.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_toml/dogs_toml.dart';
@@ -7,11 +9,13 @@ import 'models.dart';
 export 'dogs.g.dart';
 
 void main() async {
-  var engine = DogEngine(false);
+  var engine = DogEngine();
   engine.setSingleton();
   installExampleConverters();
   print(DogSchema.create().getApiJson());
   print("---");
+  print(ExampleBeanFactory.create(name: "Hallo", tags: ["Welt"]));
+
   var person = Person(
       name: "Christoph",
       age: 19,
@@ -36,8 +40,8 @@ void main() async {
   testToml(person);
   print("---");
   testValidate();
-
-  dogs.shutdown();
+  print("---");
+  testNativeCodec(person);
 }
 
 void testValidate() {
@@ -56,6 +60,38 @@ void testJson(Person person) {
   print(encoded);
   Person decoded = dogs.jsonDecode(encoded);
   print(decoded);
+  print(decoded.birthdayDate.toIso8601String());
+}
+
+void testNativeCodec(Person person) async {
+  var engine = dogs.fork(codec: TimeNativeCodec());
+  dogs.registerAllConverters([]);
+  await Future.delayed(Duration(microseconds: 1));
+  var graph = engine.toGraph<Person>(person);
+  print(graph);
+  print(graph.toDescriptionString());
+  var decoded = engine.fromGraph<Person>(graph);
+  print(decoded);
+  var nativeEncoded = engine.convertObjectToNative(person, Person);
+  print(nativeEncoded);
+  print(nativeEncoded["birthday"]);
+  print(nativeEncoded["birthday"].runtimeType);
+  engine.close();
+}
+
+class TimeNativeCodec extends DefaultNativeCodec {
+  @override
+  DogGraphValue fromNative(value) {
+    if (value is DateTime) return DogNative(value);
+    return super.fromNative(value);
+  }
+
+  @override
+  bool isNative(Type serial) {
+    if (serial == DateTime) return true;
+    return super.isNative(serial);
+  }
+
 }
 
 void testYaml(Person person) {
@@ -81,4 +117,10 @@ void testToml(Person person) {
 
 class TestValue {
 
+}
+
+class TestStructureAnnotation extends StructureMetadata {
+  final String value;
+
+  const TestStructureAnnotation(this.value);
 }

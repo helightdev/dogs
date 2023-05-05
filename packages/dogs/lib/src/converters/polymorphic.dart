@@ -16,7 +16,6 @@
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:lyell/lyell.dart';
 
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.
@@ -48,8 +47,8 @@ class PolymorphicConverter extends DogConverter {
 
   @override
   DogGraphValue convertToGraph(dynamic value, DogEngine engine) {
-    if (DogGraphValue.isNative(value) && serializeNativeValues) {
-      return DogGraphValue.fromNative(value);
+    if (engine.codec.isNative(value.runtimeType) && serializeNativeValues) {
+      return engine.codec.fromNative(value);
     }
     var type = value.runtimeType;
     var converter = engine.associatedConverters[type]!;

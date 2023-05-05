@@ -90,7 +90,7 @@ class DogService {
       });
       system.eventbus.getLine<ApiDocsPopulateEvent>().subscribe((p0) {
         p0.document.components!.schemas
-            .addAll(DogSchema.create().getComponents().schemas);
+            .addAll(DogSchema.create().retrieveComponents().schemas);
       });
     }
     if (system.serviceMixin.findDescriptors(DarwinMarshal).isNotEmpty) {

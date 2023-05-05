@@ -4,7 +4,7 @@ import 'package:dogs_darwin/dogs_darwin.dart';
 import 'package:lyell/lyell.dart';
 
 void main() {
-  var dogs = DogEngine(false);
+  var dogs = DogEngine();
   dogs.registerConverter(CatConverter());
   var marshal = DarwinMarshal();
   DarwinMarshalSimple.register(marshal);

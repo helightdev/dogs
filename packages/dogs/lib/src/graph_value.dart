@@ -38,10 +38,20 @@ abstract class DogGraphValue {
   /// (Deep-)Clones this graph value.
   DogGraphValue clone();
 
+  String describe(int indent) {
+    return "$runtimeType(${coerceString()})";
+  }
+
+  String toDescriptionString() {
+    return describe(0);
+  }
+
+
   /// Returns a [DogGraphValue] for the native value [value].
   /// All values that can be serialised by [jsonEncode] are considered native.
   /// Only values which fulfill [isNative] or [Iterable] and [Map] instances
   /// containing only value which fulfill [isNative] are convertible.
+  @Deprecated("Moved to DefaultNativeCodec")
   static DogGraphValue fromNative(dynamic value) {
     if (value == null) return DogNull();
     if (value is String) return DogString(value);
@@ -61,6 +71,7 @@ abstract class DogGraphValue {
   }
 
   /// Returns true if [value] is of type [String], [int], [double] or [bool].
+  @Deprecated("Moved to DefaultNativeCodec")
   static bool isNative(dynamic value) {
     return (value == null ||
         value is String ||
@@ -70,8 +81,39 @@ abstract class DogGraphValue {
   }
 }
 
+class DogNative extends DogGraphValue  {
+  final Object value;
+  const DogNative(this.value);
+
+  @override
+  dynamic coerceNative() {
+    return value;
+  }
+
+  @override
+  String coerceString() {
+    return value.toString();
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is DogString &&
+              runtimeType == other.runtimeType &&
+              value == other.value;
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  DogGraphValue clone() {
+    return this;
+  }
+}
+
 class DogString extends DogGraphValue {
   final String value;
+
   const DogString(this.value);
 
   @override
@@ -96,6 +138,7 @@ class DogString extends DogGraphValue {
 
 class DogInt extends DogGraphValue {
   final int value;
+
   const DogInt(this.value);
 
   @override
@@ -120,6 +163,7 @@ class DogInt extends DogGraphValue {
 
 class DogDouble extends DogGraphValue {
   final double value;
+
   const DogDouble(this.value);
 
   @override
@@ -144,6 +188,7 @@ class DogDouble extends DogGraphValue {
 
 class DogBool extends DogGraphValue {
   final bool value;
+
   const DogBool(this.value);
 
   @override
@@ -189,6 +234,7 @@ class DogNull extends DogGraphValue {
 
 class DogList extends DogGraphValue {
   final List<DogGraphValue> value;
+
   const DogList(this.value);
 
   @override
@@ -209,10 +255,22 @@ class DogList extends DogGraphValue {
 
   @override
   DogGraphValue clone() => DogList(value.map((e) => e.clone()).toList());
+
+  @override
+  String describe(int indent) {
+    StringBuffer buffer = StringBuffer();
+    buffer.writeln(runtimeType);
+    value.forEachIndexed((key, value) {
+      buffer.write("${"  " * (indent + 1)}[$key]: ");
+      buffer.writeln(value.describe(indent + 2).trimRight());
+    });
+    return buffer.toString().trimRight();
+  }
 }
 
 class DogMap extends DogGraphValue {
   final Map<DogGraphValue, DogGraphValue> value;
+
   const DogMap(this.value);
 
   @override
@@ -233,7 +291,23 @@ class DogMap extends DogGraphValue {
   @override
   int get hashCode => value.hashCode;
 
+  DogMap merge(DogMap map) {
+    return DogMap(mergeMaps(value, map.value)
+        .map((key, value) => MapEntry(key.clone(), value.clone())));
+  }
+
   @override
   DogGraphValue clone() =>
       DogMap(value.map((key, value) => MapEntry(key.clone(), value.clone())));
+
+  @override
+  String describe(int indent) {
+    StringBuffer buffer = StringBuffer();
+    buffer.writeln(runtimeType);
+    value.forEach((key, value) {
+      buffer.write("${"  " * (indent + 1)}[${key.coerceString()}]: ");
+      buffer.writeln(value.describe(indent + 2).trimRight());
+    });
+    return buffer.toString().trimRight();
+  }
 }

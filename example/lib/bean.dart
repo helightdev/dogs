@@ -15,16 +15,15 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:lyell/lyell.dart';
 
-/// Abstract base for generated class builders.
-abstract class Builder<T> with TypeCaptureMixin<T> {
-  final T $src;
-  final Map<String, dynamic> $overrides = {};
-  Builder(this.$src);
+@serializable
+class ExampleBean {
 
-  T build() {
-    return DogEngine.instance.copyable[typeArgument]!
-        .copy($src, DogEngine.instance, $overrides);
-  }
+  late String name;
+  int? age;
+  late List<String> tags;
+
+  @beanIgnore
+  late String ignored;
+
 }
