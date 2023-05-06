@@ -21,5 +21,3 @@ dev_dependencies:
   test: ^1.16.0
 
   dogs_generator: ^4.0.1
-dogs:
-  library: true
