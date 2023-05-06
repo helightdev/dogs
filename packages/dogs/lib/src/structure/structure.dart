@@ -56,16 +56,16 @@ class DogStructure<T> extends RetainedAnnotationHolder
 
   bool get isSynthetic => fields.isEmpty;
 
-  const DogStructure(
-      this.serialName, this.conformity, this.fields, this.annotations, this.proxy);
+  const DogStructure(this.serialName, this.conformity, this.fields,
+      this.annotations, this.proxy);
 
   @override
   String toString() {
     return 'DogStructure $typeArgument';
   }
 
-  factory DogStructure.synthetic(String name) =>
-      DogStructure<T>(name, StructureConformity.basic, [], [], const MemoryDogStructureProxy());
+  factory DogStructure.synthetic(String name) => DogStructure<T>(
+      name, StructureConformity.basic, [], [], const MemoryDogStructureProxy());
 }
 
 abstract class StructureNode {

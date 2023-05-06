@@ -92,39 +92,38 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       throw Exception("No accessible constructor");
     }
 
-    writeGeneratedConverter(element, structurized, constructorName, codeContext);
-    if (structurized.fieldNames.isNotEmpty && structurized.structure.conformity != StructureConformity.bean) {
-      writeGeneratedBuilder(element, structurized, constructorName, codeContext);
-      writeGeneratedExtension(element, structurized, constructorName, codeContext);
+    writeGeneratedConverter(
+        element, structurized, constructorName, codeContext);
+    if (structurized.fieldNames.isNotEmpty &&
+        structurized.structure.conformity != StructureConformity.bean) {
+      writeGeneratedBuilder(
+          element, structurized, constructorName, codeContext);
+      writeGeneratedExtension(
+          element, structurized, constructorName, codeContext);
     }
   }
 
-  void writeBeanFactory(
-      ClassElement element,
-      StructurizeResult structurized,
+  void writeBeanFactory(ClassElement element, StructurizeResult structurized,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var factoryName = "${element.name}Factory";
     var clazz = Class((builder) {
       builder.name = factoryName;
       builder.methods.add(Method((builder) {
-        builder.optionalParameters.addAll(structurized.structure.fields.map((e) => Parameter((builder) => builder
-          ..named = true
-          ..required = !e.optional
-          ..type = Reference(e.type + (e.optional?"?":""))
-          ..name = e.name)));
+        builder.optionalParameters.addAll(structurized.structure.fields
+            .map((e) => Parameter((builder) => builder
+              ..named = true
+              ..required = !e.optional
+              ..type = Reference(e.type + (e.optional ? "?" : ""))
+              ..name = e.name)));
 
         builder
-        ..name = "create"
-        ..returns = Reference(codeContext.className(element))
-        ..static = true
-        ..lambda = false
-        ..body = Code(
-            "var obj = ${codeContext.className(element)}();${
-                structurized.structure.fields.mapIndexed((i, e) => "obj.${e
-                    .name} = ${e.name};").join("\n")
-            } return obj;"
-        );
+          ..name = "create"
+          ..returns = Reference(codeContext.className(element))
+          ..static = true
+          ..lambda = false
+          ..body = Code(
+              "var obj = ${codeContext.className(element)}();${structurized.structure.fields.mapIndexed((i, e) => "obj.${e.name} = ${e.name};").join("\n")} return obj;");
       }));
     });
 
@@ -162,7 +161,11 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  void _defaultProxyMethods(StructurizeResult structurized, ClassBuilder builder, SubjectCodeContext codeContext, ClassElement element) {
+  void _defaultProxyMethods(
+      StructurizeResult structurized,
+      ClassBuilder builder,
+      SubjectCodeContext codeContext,
+      ClassElement element) {
     for (var value in structurized.fieldNames) {
       builder.methods.add(Method((builder) => builder
         ..name = "_$value"
@@ -174,7 +177,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..lambda = true
         ..body = Code("obj.$value")));
     }
-    
+
     builder.methods.add(Method((builder) => builder
       ..name = "_values"
       ..returns = Reference("List<dynamic>")
@@ -183,8 +186,9 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..name = "obj"))
       ..static = true
       ..lambda = true
-      ..body = Code("[${structurized.fieldNames.map((e) => "obj.$e").join(",")}]")));
-    
+      ..body =
+          Code("[${structurized.fieldNames.map((e) => "obj.$e").join(",")}]")));
+
     builder.methods.add(Method((builder) => builder
       ..name = "_activator"
       ..returns = Reference(codeContext.className(element))
@@ -196,7 +200,11 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       ..body = Code(structurized.activator)));
   }
 
-  void _dataclassProxyMethods(ClassBuilder builder, SubjectCodeContext codeContext, ClassElement element, StructurizeResult structurized) {
+  void _dataclassProxyMethods(
+      ClassBuilder builder,
+      SubjectCodeContext codeContext,
+      ClassElement element,
+      StructurizeResult structurized) {
     builder.methods.add(Method((builder) => builder
       ..name = "_hash"
       ..returns = Reference("int")
@@ -214,7 +222,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
           return "obj.$fieldName.hashCode";
         }
       }).join("^"))));
-    
+
     builder.methods.add(Method((builder) => builder
       ..name = "_equals"
       ..returns = Reference("bool")
@@ -248,16 +256,15 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.name = builderName;
 
       builder.fields.add(Field((builder) => builder
-          ..name = "\$values"
-          ..type = Reference("late List<dynamic>")
-      ));
+        ..name = "\$values"
+        ..type = Reference("late List<dynamic>")));
 
       builder.constructors.add(Constructor((builder) => builder
         ..optionalParameters.add(Parameter((builder) => builder
           ..type = Reference("${codeContext.className(element)}?")
           ..name = "\$src"))
-        ..body = Code("if (\$src == null) {\$values = List.filled(${structurized.fieldNames.length},null);} else {\$values = ${element.name}Converter._values(\$src);}")
-      ));
+        ..body = Code(
+            "if (\$src == null) {\$values = List.filled(${structurized.fieldNames.length},null);} else {\$values = ${element.name}Converter._values(\$src);}")));
 
       for (var element in structurized.structure.fields) {
         var index = structurized.structure.fields.indexOf(element);
@@ -271,11 +278,10 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       }
 
       builder.methods.add(Method((builder) => builder
-          ..name = "build"
-          ..returns = Reference(codeContext.className(element))
-          ..lambda = true
-          ..body = Code("${element.name}Converter._activator(\$values)")
-      ));
+        ..name = "build"
+        ..returns = Reference(codeContext.className(element))
+        ..lambda = true
+        ..body = Code("${element.name}Converter._activator(\$values)")));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
@@ -294,7 +300,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.methods.add(Method((builder) => builder
         ..name = "builder"
         ..returns = Reference(element.name)
-        ..annotations.add(CodeExpression(Code("Deprecated(\"Use rebuild() instead\")")))
+        ..annotations
+            .add(CodeExpression(Code("Deprecated(\"Use rebuild() instead\")")))
         ..requiredParameters.add(Parameter((builder) => builder
           ..name = "func"
           ..type = Reference("Function($builderName builder)")))

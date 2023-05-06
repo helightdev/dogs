@@ -4,10 +4,13 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:toml/toml.dart';
 
 class DogTomlSerializer extends DogSerializer {
+
+  final codec = DefaultNativeCodec();
+
   @override
   DogGraphValue deserialize(value) {
     var decoded = TomlDocument.parse(value).toMap();
-    return DogGraphValue.fromNative(decoded);
+    return codec.fromNative(decoded);
   }
 
   @override

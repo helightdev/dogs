@@ -32,17 +32,18 @@ class DogsMarshal {
 }
 
 class DogMarshalDirectMapper extends SimpleSerialMultiAdapter {
-
   final DogEngine engine;
   final TypeCapture capture;
   DogMarshalDirectMapper(this.capture, this.engine);
 
   @override
-  Iterable? deserializeMultiple(List<int> data, DeserializationContext context) {
+  Iterable? deserializeMultiple(
+      List<int> data, DeserializationContext context) {
     if (data.isEmpty) return [];
     var str = utf8.decode(data);
     var graph = engine.jsonSerializer.deserialize(str);
-    return engine.convertIterableFromGraph(graph, capture.typeArgument, IterableKind.list);
+    return engine.convertIterableFromGraph(
+        graph, capture.typeArgument, IterableKind.list);
   }
 
   @override
@@ -57,7 +58,8 @@ class DogMarshalDirectMapper extends SimpleSerialMultiAdapter {
   List<int> serializeMultiple(Iterable? obj, SerializationContext context) {
     context.mime ??= "application/json";
     if (obj == null) return [];
-    var graph = engine.convertIterableToGraph(obj, capture.typeArgument, IterableKind.list);
+    var graph = engine.convertIterableToGraph(
+        obj, capture.typeArgument, IterableKind.list);
     var json = engine.jsonSerializer.serialize(graph);
     return utf8.encode(json);
   }

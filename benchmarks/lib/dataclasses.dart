@@ -25,23 +25,21 @@ part 'dataclasses.g.dart';
 
 @serializable
 class DogBenchmarkDataclassEntity with Dataclass<DogBenchmarkDataclassEntity> {
-
   final String name;
   final int age;
   final List<String> tags;
 
   @polymorphic
-  final Map<String,String> fields;
+  final Map<String, String> fields;
 
   DogBenchmarkDataclassEntity(this.name, this.age, this.tags, this.fields);
 }
 
 class NativeBenchmarkDataclassEntity {
-
   final String name;
   final int age;
   final List<String> tags;
-  final Map<String,String> fields;
+  final Map<String, String> fields;
 
   NativeBenchmarkDataclassEntity(this.name, this.age, this.tags, this.fields);
 
@@ -57,33 +55,40 @@ class NativeBenchmarkDataclassEntity {
 
   @override
   int get hashCode =>
-      name.hashCode ^ age.hashCode ^ deepEquality.hash(tags) ^ deepEquality.hash(fields);
+      name.hashCode ^
+      age.hashCode ^
+      deepEquality.hash(tags) ^
+      deepEquality.hash(fields);
 }
 
 class EquatableBenchmarkDataclassEntity extends Equatable {
-
   final String name;
   final int age;
   final List<String> tags;
-  final Map<String,String> fields;
+  final Map<String, String> fields;
 
-  EquatableBenchmarkDataclassEntity(this.name, this.age, this.tags, this.fields);
+  EquatableBenchmarkDataclassEntity(
+      this.name, this.age, this.tags, this.fields);
 
   @override
   List<Object?> get props => [name, age, tags, fields];
-
 }
 
-abstract class BuiltBenchmarkDataclassEntity implements Built<BuiltBenchmarkDataclassEntity, BuiltBenchmarkDataclassEntityBuilder> {
-  static Serializer<BuiltBenchmarkDataclassEntity> get serializer => _$builtBenchmarkDataclassEntitySerializer;
+abstract class BuiltBenchmarkDataclassEntity
+    implements
+        Built<BuiltBenchmarkDataclassEntity,
+            BuiltBenchmarkDataclassEntityBuilder> {
+  static Serializer<BuiltBenchmarkDataclassEntity> get serializer =>
+      _$builtBenchmarkDataclassEntitySerializer;
 
   String get name;
   int get age;
   BuiltList<String> get tags;
-  BuiltMap<String,String> get fields;
+  BuiltMap<String, String> get fields;
 
-
-  factory BuiltBenchmarkDataclassEntity([Function(BuiltBenchmarkDataclassEntityBuilder) updates]) = _$BuiltBenchmarkDataclassEntity;
+  factory BuiltBenchmarkDataclassEntity(
+          [Function(BuiltBenchmarkDataclassEntityBuilder) updates]) =
+      _$BuiltBenchmarkDataclassEntity;
   BuiltBenchmarkDataclassEntity._();
 }
 
@@ -94,8 +99,10 @@ Map<DogBenchmarkDataclassEntity, int> dogMap(int count) {
         mockName(),
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
-        Map.fromEntries(List.generate(mockInteger(), (index) => MapEntry<String,String>("$index-k", mockColor())))
-    )] = i;
+        Map.fromEntries(List.generate(
+            mockInteger(),
+            (index) =>
+                MapEntry<String, String>("$index-k", mockColor()))))] = i;
   }
   return map;
 }
@@ -107,8 +114,10 @@ Map<NativeBenchmarkDataclassEntity, int> nativeMap(int count) {
         mockName(),
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
-        Map.fromEntries(List.generate(mockInteger(), (index) => MapEntry<String,String>("$index-k", mockColor())))
-    )] = i;
+        Map.fromEntries(List.generate(
+            mockInteger(),
+            (index) =>
+                MapEntry<String, String>("$index-k", mockColor()))))] = i;
   }
   return map;
 }
@@ -120,8 +129,10 @@ Map<EquatableBenchmarkDataclassEntity, int> equatableMap(int count) {
         mockName(),
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
-        Map.fromEntries(List.generate(mockInteger(), (index) => MapEntry<String,String>("$index-k", mockColor())))
-    )] = i;
+        Map.fromEntries(List.generate(
+            mockInteger(),
+            (index) =>
+                MapEntry<String, String>("$index-k", mockColor()))))] = i;
   }
   return map;
 }
@@ -130,11 +141,12 @@ Map<BuiltBenchmarkDataclassEntity, int> builtMap(int count) {
   var map = <BuiltBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
     map[BuiltBenchmarkDataclassEntity((builder) => builder
-        ..name = mockName()
-        ..age = mockInteger()
-        ..tags = ListBuilder(List.generate(mockInteger(), (index) => mockString()))
-        ..fields = MapBuilder(Map.fromEntries(List.generate(mockInteger(), (index) => MapEntry<String,String>("$index-k", mockColor()))))
-    )] = i;
+      ..name = mockName()
+      ..age = mockInteger()
+      ..tags =
+          ListBuilder(List.generate(mockInteger(), (index) => mockString()))
+      ..fields = MapBuilder(Map.fromEntries(List.generate(mockInteger(),
+          (index) => MapEntry<String, String>("$index-k", mockColor())))))] = i;
   }
   return map;
 }

@@ -16,7 +16,6 @@
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:lyell/lyell.dart';
 import 'package:meta/meta.dart';
 
 abstract class DogConverter<T> extends TypeCapture<T> {
@@ -86,7 +85,8 @@ class _Polymorphic extends ConverterSupplyingVisitor {
   const _Polymorphic();
 
   @override
-  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field, DogEngine engine) {
+  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field,
+      DogEngine engine) {
     if (field.serial.typeArgument == dynamic) {
       switch (field.iterableKind) {
         case IterableKind.list:
@@ -149,7 +149,8 @@ extension ConverterIterableExtension on DogConverter {
     }
   }
 
-  dynamic convertIterableToNative(dynamic value, DogEngine engine, IterableKind kind) {
+  dynamic convertIterableToNative(
+      dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
       return convertToNative(value, engine);
     } else {
@@ -158,12 +159,14 @@ extension ConverterIterableExtension on DogConverter {
     }
   }
 
-  dynamic convertIterableFromNative(dynamic value, DogEngine engine, IterableKind kind) {
+  dynamic convertIterableFromNative(
+      dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
       return convertFromNative(value, engine);
     } else {
       if (value is! Iterable) throw Exception("value is not iterable");
-      return adjustIterable(value.map((e) => convertFromNative(e, engine)), kind);
+      return adjustIterable(
+          value.map((e) => convertFromNative(e, engine)), kind);
     }
   }
 }

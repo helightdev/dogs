@@ -18,12 +18,10 @@ import 'package:dogs_core/dogs_core.dart';
 
 @serializable
 class ExampleBean {
-
   late String name;
   int? age;
   late List<String> tags;
 
   @beanIgnore
   late String ignored;
-
 }

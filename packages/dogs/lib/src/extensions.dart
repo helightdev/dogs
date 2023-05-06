@@ -17,7 +17,6 @@
 import 'dart:async';
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:lyell/lyell.dart';
 
 extension DogValueExtension on DogGraphValue {
   bool get isNull => this is DogNull;
@@ -88,10 +87,12 @@ extension DogsIterableExtension<T> on Iterable<T> {
 extension DogsMapExtension<K, V> on Map<K, V> {
   Type get keyTypeArgument => K;
   Type get valueTypeArgument => V;
+  @Deprecated("Moved to DefaultNativeCodec")
   DogGraphValue get asGraph => DogGraphValue.fromNative(this);
 }
 
 extension DogsListExtension<T> on List<T> {
+  @Deprecated("Moved to DefaultNativeCodec")
   DogGraphValue get asGraph => DogGraphValue.fromNative(this);
 }
 
@@ -144,7 +145,6 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
   @override
   Iterable<T> castIterable(Iterable<T> iterable) => iterable.cast<T>();
 
-
   T copy([Map<String, dynamic>? overrides]) {
     return DogEngine.instance.copyObject(this, overrides, runtimeType);
   }
@@ -182,7 +182,8 @@ extension FieldExtension on DogStructureField {
   }
 
   DogConverter? findConverter(DogStructure structure) {
-    var specified = firstAnnotationOf<ConverterSupplyingVisitor>()?.resolve(structure, this, DogEngine.instance);
+    var specified = firstAnnotationOf<ConverterSupplyingVisitor>()
+        ?.resolve(structure, this, DogEngine.instance);
     if (specified != null) return specified;
     if (converterType == null) {
       return DogEngine.instance.findAssociatedConverter(serial.typeArgument);

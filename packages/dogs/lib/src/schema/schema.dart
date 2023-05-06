@@ -63,8 +63,9 @@ class DogSchema {
           e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
             try {
               element.visit(object);
-            } catch(ex,st) {
-              log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+            } catch (ex, st) {
+              log("Exception thrown at dog api schema generation",
+                  error: ex, stackTrace: st);
             }
           });
           return MapEntry(e.name, serialSchema);
@@ -74,8 +75,9 @@ class DogSchema {
           e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
             try {
               element.visit(object);
-            } catch(ex,st) {
-              log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+            } catch (ex, st) {
+              log("Exception thrown at dog api schema generation",
+                  error: ex, stackTrace: st);
             }
           });
           return MapEntry(e.name, object);
@@ -92,8 +94,9 @@ class DogSchema {
       e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
         try {
           element.visit(object);
-        } catch(ex,st) {
-          log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+        } catch (ex, st) {
+          log("Exception thrown at dog api schema generation",
+              error: ex, stackTrace: st);
         }
       });
       return MapEntry(e.name, object);
@@ -102,8 +105,9 @@ class DogSchema {
     structure.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
       try {
         element.visit(value);
-      } catch(ex,st) {
-        log("Exception thrown at dog api schema generation", error: ex, stackTrace: st);
+      } catch (ex, st) {
+        log("Exception thrown at dog api schema generation",
+            error: ex, stackTrace: st);
       }
     });
     _cachedStructObjects[serialName] = value;

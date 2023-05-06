@@ -31,12 +31,16 @@ class DogEngine {
 
   /// Read-only list of [DogConverter]s.
   List<DogConverter> converters = [];
+
   /// Read-only mapping of [DogConverter]s.
   Map<Type, DogConverter> associatedConverters = {};
+
   /// Read-only mapping of [DogStructure]s.
   Map<Type, DogStructure> structures = {};
+
   /// Read-only mapping of [Copyable]s.
   Map<Type, Copyable> copyables = {};
+
   /// Read-only mapping of [Validatable]s.
   Map<Type, Validatable> validatables = {};
 
@@ -51,7 +55,9 @@ class DogEngine {
 
   /// Creates a new [DogEngine] with optional async capabilities which can
   /// be enabled via [enableAsync]. (Experimental)
-  DogEngine({bool registerBaseConverters = true, this.codec = const DefaultNativeCodec()}) {
+  DogEngine(
+      {bool registerBaseConverters = true,
+      this.codec = const DefaultNativeCodec()}) {
     if (registerBaseConverters) {
       // Register polymorphic converters
       registerConverter(PolymorphicConverter(), false);
@@ -88,14 +94,16 @@ class DogEngine {
   }
 
   DogEngine fork({DogNativeCodec? codec}) {
-    DogEngine forked = DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
+    DogEngine forked =
+        DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked._forkSubscription = changeStream.listen((event) {
       forked.forkConverters(this);
     }, onDone: () {
       print("Closing dog engine because the parent has been closed.");
       forked.close();
     }, onError: (_) {
-      print("Closing dog engine because the parent event stream threw an error");
+      print(
+          "Closing dog engine because the parent event stream threw an error");
       forked.close();
     });
     forked.forkConverters(this);
@@ -289,16 +297,13 @@ class DogEngine {
 }
 
 abstract class DogNativeCodec {
-
   const DogNativeCodec();
 
   bool isNative(Type serial);
   DogGraphValue fromNative(dynamic value);
-  
 }
 
 class DefaultNativeCodec extends DogNativeCodec {
-
   const DefaultNativeCodec();
 
   @override
@@ -319,12 +324,14 @@ class DefaultNativeCodec extends DogNativeCodec {
     throw ArgumentError.value(
         value, null, "Can't coerce native value to dart object graph");
   }
-  
+
   @override
   bool isNative(Type serial) {
-    return serial == String || serial == int || serial == double || serial == bool;
+    return serial == String ||
+        serial == int ||
+        serial == double ||
+        serial == bool;
   }
-  
 }
 
 /// Converts a [value] to the given [IterableKind]. If the value is a [Iterable]

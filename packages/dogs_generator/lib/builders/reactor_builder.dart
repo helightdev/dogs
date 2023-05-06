@@ -52,8 +52,7 @@ class DogReactorBuilder extends SubjectReactorBuilder {
 
       code.codeBuffer.writeln("export '${descriptor.uri}';");
     }
-    var converterNameArr =
-        "[${descriptorNames.map((e) => "$e()").join(", ")}]";
+    var converterNameArr = "[${descriptorNames.map((e) => "$e()").join(", ")}]";
     if (!isLibrary) {
       code.codeBuffer.writeln("""
 Future initialiseDogs() async {

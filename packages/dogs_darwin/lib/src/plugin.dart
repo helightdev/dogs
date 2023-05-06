@@ -78,7 +78,9 @@ class DogService {
 
   void start() {
     if (system.serviceMixin.findDescriptors(DarwinHttpServer).isNotEmpty) {
-      system.eventbus.getLine<ApiDocsResolveParameterTypeEvent>().subscribe((p0) {
+      system.eventbus
+          .getLine<ApiDocsResolveParameterTypeEvent>()
+          .subscribe((p0) {
         var type = p0.args.parameter!.typeArgument;
         var object = resolve(type);
         if (object != null) p0.update(object);

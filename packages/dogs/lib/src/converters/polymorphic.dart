@@ -102,9 +102,8 @@ class DefaultListConverter extends DogConverter<List> {
 
   @override
   List convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var list = polymorphicConverter
-        .iterableFromGraph(value.asList!, engine)
-        .toList();
+    var list =
+        polymorphicConverter.iterableFromGraph(value.asList!, engine).toList();
     if (cast != null) return cast!.castList(list);
     return list;
   }
@@ -117,7 +116,9 @@ class DefaultListConverter extends DogConverter<List> {
   @override
   APISchemaObject get output =>
       APISchemaObject.array(ofSchema: polymorphicConverter.output)
-        ..title = cast == null ? "Dynamic List" : "${cast!.typeArgument.toString()} List";
+        ..title = cast == null
+            ? "Dynamic List"
+            : "${cast!.typeArgument.toString()} List";
 }
 
 class DefaultSetConverter extends DogConverter<Set> {
@@ -129,9 +130,8 @@ class DefaultSetConverter extends DogConverter<Set> {
 
   @override
   Set convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var set = polymorphicConverter
-        .iterableFromGraph(value.asList!, engine)
-        .toSet();
+    var set =
+        polymorphicConverter.iterableFromGraph(value.asList!, engine).toSet();
     if (cast != null) return cast!.castSet(set);
     return set;
   }
@@ -144,7 +144,9 @@ class DefaultSetConverter extends DogConverter<Set> {
   @override
   APISchemaObject get output =>
       APISchemaObject.array(ofSchema: polymorphicConverter.output)
-        ..title = cast == null ? "Dynamic Set" : "${cast!.typeArgument.toString()} Set";
+        ..title = cast == null
+            ? "Dynamic Set"
+            : "${cast!.typeArgument.toString()} Set";
 }
 
 class DefaultIterableConverter extends DogConverter<Iterable> {
@@ -156,7 +158,8 @@ class DefaultIterableConverter extends DogConverter<Iterable> {
 
   @override
   Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var iterable = polymorphicConverter.iterableFromGraph(value.asList!, engine);
+    var iterable =
+        polymorphicConverter.iterableFromGraph(value.asList!, engine);
     if (cast != null) return cast!.castIterable(iterable);
     return iterable;
   }
@@ -169,7 +172,9 @@ class DefaultIterableConverter extends DogConverter<Iterable> {
   @override
   APISchemaObject get output =>
       APISchemaObject.array(ofSchema: polymorphicConverter.output)
-        ..title = cast == null ? "Dynamic List" : "${cast!.typeArgument.toString()} List";
+        ..title = cast == null
+            ? "Dynamic List"
+            : "${cast!.typeArgument.toString()} List";
 }
 
 class DefaultMapConverter extends DogConverter<Map> {

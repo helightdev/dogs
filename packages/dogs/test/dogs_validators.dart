@@ -127,9 +127,7 @@ void main() {
           "Person",
           StructureConformity.basic,
           [
-            DogStructureField.string("name", annotations: [
-              email
-            ]),
+            DogStructureField.string("name", annotations: [email]),
             DogStructureField.int("age"),
             DogStructureField.string("tags", iterable: IterableKind.set)
           ],
@@ -177,9 +175,7 @@ void main() {
           "Person",
           StructureConformity.basic,
           [
-            DogStructureField.string("name", annotations: [
-              notBlank
-            ]),
+            DogStructureField.string("name", annotations: [notBlank]),
             DogStructureField.int("age"),
             DogStructureField.string("tags", iterable: IterableKind.set)
           ],

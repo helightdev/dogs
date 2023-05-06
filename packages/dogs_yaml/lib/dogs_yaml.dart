@@ -7,10 +7,13 @@ import 'package:json2yaml/json2yaml.dart';
 import 'package:yaml/yaml.dart';
 
 class DogYamlSerializer extends DogSerializer {
+
+  final codec = DefaultNativeCodec();
+
   @override
   DogGraphValue deserialize(value) {
     var decoded = loadYaml(value);
-    return DogGraphValue.fromNative(decoded);
+    return codec.fromNative(decoded);
   }
 
   @override

@@ -20,7 +20,6 @@ import 'package:dogs_core/dogs_core.dart';
 const notBlank = NotBlank();
 
 class NotBlank extends StructureMetadata implements FieldValidator {
-
   /// Requires non-null strings to not be blank.
   const NotBlank();
 

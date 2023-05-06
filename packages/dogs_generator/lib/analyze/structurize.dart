@@ -31,13 +31,15 @@ class IRStructure {
   List<IRStructureField> fields;
   String metadataSource;
 
-  IRStructure(
-      this.type, this.conformity, this.serialName, this.fields, this.metadataSource);
+  IRStructure(this.type, this.conformity, this.serialName, this.fields,
+      this.metadataSource);
 
   String code(List<String> getters) {
     var fieldsArr = "[${fields.map((e) => e.code).join(", ")}]";
-    var dataclassInsert = conformity == StructureConformity.dataclass ? (", _hash, _equals") : "";
-    var proxyDef = "$genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}], _values$dataclassInsert)";
+    var dataclassInsert =
+        conformity == StructureConformity.dataclass ? (", _hash, _equals") : "";
+    var proxyDef =
+        "$genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}], _values$dataclassInsert)";
     return "$genAlias.DogStructure<$type>('$serialName', $genAlias.$conformity, $fieldsArr, $metadataSource, $proxyDef)";
   }
 }
@@ -64,8 +66,7 @@ class IRStructureField {
       this.optional,
       this.structure,
       this.metadataSource,
-      this.$isMap
-      );
+      this.$isMap);
 
   String get code {
     return "$genAlias.DogStructureField($type, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '$name', $optional, $structure, $metadataSource)";
@@ -94,7 +95,8 @@ String szPrefix = "sz";
 TypeChecker propertyNameChecker = TypeChecker.fromRuntime(PropertyName);
 TypeChecker propertySerializerChecker =
     TypeChecker.fromRuntime(PropertySerializer);
-TypeChecker polymorphicChecker = TypeChecker.fromRuntime(polymorphic.runtimeType);
+TypeChecker polymorphicChecker =
+    TypeChecker.fromRuntime(polymorphic.runtimeType);
 TypeChecker dataclassChecker = TypeChecker.fromRuntime(Dataclass);
 TypeChecker mapChecker = TypeChecker.fromRuntime(Map);
 TypeChecker beanIgnoreChecker = TypeChecker.fromRuntime(beanIgnore.runtimeType);
@@ -108,14 +110,14 @@ Future<StructurizeResult> structurizeConstructor(
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
-  
+
   // Determine used constructor
   var constructorName = "";
   if (element.getNamedConstructor("dog") != null) {
     constructorElement = element.getNamedConstructor("dog")!;
     constructorName = ".dog";
   }
-  
+
   for (var e in constructorElement.parameters) {
     var fieldName = e.name.replaceFirst("this.", "");
     var field = element.getField(fieldName);
@@ -154,13 +156,13 @@ Future<StructurizeResult> structurizeConstructor(
         optional,
         !isDogPrimitiveType(serialType),
         getRetainedAnnotationSourceArray(field, counter),
-        mapChecker.isAssignableFrom(field)
-    ));
+        mapChecker.isAssignableFrom(field)));
   }
 
   // Create proxy arguments
   var getters = fields.map((e) => e.accessor).toList();
-  var activator = "return ${element.name}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
+  var activator =
+      "return ${element.name}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
     var y = fields[i];
     if (e.isNamed) {
       if (y.iterableKind == IterableKind.none) return "${e.name}: list[$i]";
@@ -173,11 +175,14 @@ Future<StructurizeResult> structurizeConstructor(
     }
   }).join(", ")});";
   var isDataclass = dataclassChecker.isAssignableFromType(element.thisType);
-  var structure = IRStructure(counter.get(type), isDataclass ? StructureConformity.dataclass : StructureConformity.basic, serialName, fields,
+  var structure = IRStructure(
+      counter.get(type),
+      isDataclass ? StructureConformity.dataclass : StructureConformity.basic,
+      serialName,
+      fields,
       getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
 }
-
 
 Future<StructurizeResult> structurizeBean(
     DartType type,
@@ -227,26 +232,24 @@ Future<StructurizeResult> structurizeBean(
         optional,
         !isDogPrimitiveType(serialType),
         getRetainedAnnotationSourceArray(field, counter),
-        mapChecker.isAssignableFrom(field)
-    ));
+        mapChecker.isAssignableFrom(field)));
   }
 
   // Create proxy arguments
   var getters = fields.map((e) => e.accessor).toList();
-  var activator = "var obj = ${counter.get(element.thisType)}();${
-      fields.where((element) {
-        var field = classElement.getField(element.name)!;
-        return field.getter != null && field.setter != null;
-      }).mapIndexed((i, e) {
-        if (e.iterableKind == IterableKind.none) {
-          return "obj.${e.name} = list[$i];";
-        } else if (e.optional)  {
-          return "obj.${e.name} = list[$i]?.cast<${e.serialType}>();";
-        }
-        return "obj.${e.name} = list[$i];";
-      }).join("\n")
-  } return obj;";
-  var structure = IRStructure(counter.get(type), StructureConformity.bean, serialName, fields,
-      getRetainedAnnotationSourceArray(element, counter));
+  var activator =
+      "var obj = ${counter.get(element.thisType)}();${fields.where((element) {
+    var field = classElement.getField(element.name)!;
+    return field.getter != null && field.setter != null;
+  }).mapIndexed((i, e) {
+    if (e.iterableKind == IterableKind.none) {
+      return "obj.${e.name} = list[$i];";
+    } else if (e.optional) {
+      return "obj.${e.name} = list[$i]?.cast<${e.serialType}>();";
+    }
+    return "obj.${e.name} = list[$i];";
+  }).join("\n")} return obj;";
+  var structure = IRStructure(counter.get(type), StructureConformity.bean,
+      serialName, fields, getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
 }

@@ -15,7 +15,6 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:lyell/lyell.dart';
 import 'package:meta/meta.dart';
 
 class DogStructureField extends RetainedAnnotationHolder

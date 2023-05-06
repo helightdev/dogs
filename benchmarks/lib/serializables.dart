@@ -23,24 +23,26 @@ import 'package:mock_data/mock_data.dart';
 part 'serializables.g.dart';
 
 DogPerson dogPerson() {
-  return DogPerson(mockString(), mockInteger(), List.generate(5, (index) => mockString()));
+  return DogPerson(
+      mockString(), mockInteger(), List.generate(5, (index) => mockString()));
 }
 
 BuiltPerson builtPerson() {
   return BuiltPerson((func) => func
-      ..name = mockString()
-      ..age = mockInteger()
-      ..tags = ListBuilder(List.generate(5, (index) => mockString()))
-  );
+    ..name = mockString()
+    ..age = mockInteger()
+    ..tags = ListBuilder(List.generate(5, (index) => mockString())));
 }
 
 NativePerson nativePerson() {
-  return NativePerson(name: mockString(), age: mockInteger(), tags: List.generate(5, (index) => mockString()));
+  return NativePerson(
+      name: mockString(),
+      age: mockInteger(),
+      tags: List.generate(5, (index) => mockString()));
 }
 
 @dogs.serializable
 class DogPerson {
-
   String name;
   int age;
   List<String> tags;
@@ -49,7 +51,6 @@ class DogPerson {
 }
 
 abstract class BuiltPerson implements Built<BuiltPerson, BuiltPersonBuilder> {
-
   static Serializer<BuiltPerson> get serializer => _$builtPersonSerializer;
 
   String get name;
@@ -61,7 +62,6 @@ abstract class BuiltPerson implements Built<BuiltPerson, BuiltPersonBuilder> {
 }
 
 class NativePerson {
-
   String name;
   int age;
   List<String> tags;
@@ -89,7 +89,5 @@ class NativePerson {
   });
 }
 
-@SerializersFor([
-  BuiltPerson
-])
+@SerializersFor([BuiltPerson])
 Serializers serializers = _$serializers;

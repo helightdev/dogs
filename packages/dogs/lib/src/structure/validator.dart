@@ -18,7 +18,6 @@ import 'package:dogs_core/dogs_core.dart';
 
 /// Property level validator for annotations of [DogStructureField]s.
 abstract class FieldValidator {
-
   const FieldValidator();
 
   bool isApplicable(DogStructure structure, DogStructureField field) => true;
@@ -28,7 +27,6 @@ abstract class FieldValidator {
 
 /// Class level validator for annotations of [ClassValidator]s.
 abstract class ClassValidator {
-
   const ClassValidator();
 
   bool isApplicable(DogStructure structure) => true;

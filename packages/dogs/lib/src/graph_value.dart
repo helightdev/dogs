@@ -46,7 +46,6 @@ abstract class DogGraphValue {
     return describe(0);
   }
 
-
   /// Returns a [DogGraphValue] for the native value [value].
   /// All values that can be serialised by [jsonEncode] are considered native.
   /// Only values which fulfill [isNative] or [Iterable] and [Map] instances
@@ -81,7 +80,7 @@ abstract class DogGraphValue {
   }
 }
 
-class DogNative extends DogGraphValue  {
+class DogNative extends DogGraphValue {
   final Object value;
   const DogNative(this.value);
 
@@ -98,9 +97,9 @@ class DogNative extends DogGraphValue  {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is DogString &&
-              runtimeType == other.runtimeType &&
-              value == other.value;
+      other is DogString &&
+          runtimeType == other.runtimeType &&
+          value == other.value;
 
   @override
   int get hashCode => value.hashCode;

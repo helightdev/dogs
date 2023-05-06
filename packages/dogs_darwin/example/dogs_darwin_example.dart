@@ -11,15 +11,15 @@ void main() {
   DogsMarshal.link(marshal, dogs);
   print(marshal.associatedMappers);
 
-  var serializationContext =
-      SerializationContext(MarshalTarget(TypeToken<List<Cat>>()), "application/json", {}, marshal);
+  var serializationContext = SerializationContext(
+      MarshalTarget(TypeToken<List<Cat>>()), "application/json", {}, marshal);
   var serializer = marshal.findSerializer(serializationContext)!;
   var serialized = serializer
       .serialize([Cat("CAT 1", 5), Cat("CAT 2", 5)], serializationContext);
   print(serialized);
 
-  var deserializationContext =
-      DeserializationContext("application/json", MarshalTarget(TypeToken<Set<Cat>>()), {}, marshal);
+  var deserializationContext = DeserializationContext(
+      "application/json", MarshalTarget(TypeToken<Set<Cat>>()), {}, marshal);
   var deserializer = marshal.findDeserializer(deserializationContext)!;
   var deserialized =
       deserializer.deserialize(serialized, deserializationContext);

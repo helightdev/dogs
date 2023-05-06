@@ -197,7 +197,8 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
         if (converter.keepIterables) {
           values.add(converter.convertFromNative(fieldValue, engine));
         } else {
-          values.add(converter.convertIterableFromNative(fieldValue, engine, field.iterableKind));
+          values.add(converter.convertIterableFromNative(
+              fieldValue, engine, field.iterableKind));
         }
       }
     }
@@ -277,7 +278,8 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
         if (converter.keepIterables) {
           map[field.name] = converter.convertToNative(fieldValue, engine);
         } else {
-          map[field.name] = converter.convertIterableToNative(fieldValue, engine, field.iterableKind);
+          map[field.name] = converter.convertIterableToNative(
+              fieldValue, engine, field.iterableKind);
         }
       }
     }

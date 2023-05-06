@@ -20,10 +20,13 @@ import 'dart:convert' as conv;
 import 'package:dogs_core/dogs_core.dart';
 
 class DogJsonSerializer extends DogSerializer {
+
+  final codec = DefaultNativeCodec();
+
   @override
   DogGraphValue deserialize(value) {
     var decoded = jsonDecode(value);
-    return DogGraphValue.fromNative(decoded);
+    return codec.fromNative(decoded);
   }
 
   @override

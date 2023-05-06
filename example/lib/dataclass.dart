@@ -15,15 +15,11 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:equatable/equatable.dart';
 
 import 'dogs.g.dart';
 
-void main() {
-  var engine = DogEngine();
-  engine.setSingleton();
-  installExampleConverters();
-  cacheDataclassHashCodes = true;
+void main() async {
+  await initialiseDogs();
 
   var a = DataclassTest("Alice", 1, ["We", "Are", "Family"]);
   var b = DataclassTest("Bob", 2, ["Test", "Data", "Filler"]);
@@ -37,10 +33,8 @@ void main() {
   print(a.hashCode == c.hashCode);
 }
 
-
 @serializable
 class DataclassTest with Dataclass<DataclassTest> {
-
   final String string;
   final int integer;
   final List<String> tags;

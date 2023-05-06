@@ -9,7 +9,8 @@ import 'package:dogs_core/dogs_core.dart';
 void benchmarkIndexOf() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running IndexOf Benchmarks ($count items, $iterations iterations)  ");
+  print(
+      "==== Running IndexOf Benchmarks ($count items, $iterations iterations)  ");
   var dogs = _runIndexOfBenchmark(dogMap, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runIndexOfBenchmark(builtMap, count, iterations);
@@ -33,11 +34,11 @@ void benchmarkDirectEquality() {
   print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
-
 void benchmarkMapKey() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running MapKey Benchmarks ($count items, $iterations iterations)  ");
+  print(
+      "==== Running MapKey Benchmarks ($count items, $iterations iterations)  ");
   var dogs = _runMapKeyBenchmark(dogMap, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runMapKeyBenchmark(builtMap, count, iterations);
@@ -51,34 +52,40 @@ void benchmarkMapKey() {
 void benchmarkJsonSerialization() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running JsonSerialization Benchmarks ($count items, $iterations iterations)  ");
+  print(
+      "==== Running JsonSerialization Benchmarks ($count items, $iterations iterations)  ");
   var dogEngine = DogEngine.instance;
   var dogs = _runJsonEncodeBenchmark(dogPerson, (p) {
     return dogEngine.jsonEncode<DogPerson>(p);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
-  var built = _runJsonEncodeBenchmark(builtPerson, (p) => jsonEncode(serializers.serialize(p)), count, iterations);
+  var built = _runJsonEncodeBenchmark(builtPerson,
+      (p) => jsonEncode(serializers.serialize(p)), count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
-  var native = _runJsonEncodeBenchmark(nativePerson, (p) => jsonEncode(p.toMap()), count, iterations);
+  var native = _runJsonEncodeBenchmark(
+      nativePerson, (p) => jsonEncode(p.toMap()), count, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
 void benchmarkJsonDeserialization() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running JsonDeserialization Benchmarks ($count items, $iterations iterations)  ");
+  print(
+      "==== Running JsonDeserialization Benchmarks ($count items, $iterations iterations)  ");
   var dogEngine = DogEngine.instance;
   var dogs = _runJsonDecodeBenchmark(dogPerson, (p) {
     return dogEngine.jsonEncode<DogPerson>(p);
-  },(s) {
+  }, (s) {
     return dogEngine.jsonDecode<DogPerson>(s);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
-  var built = _runJsonDecodeBenchmark(builtPerson, (p) => jsonEncode(serializers.serialize(p)),(s) {
+  var built = _runJsonDecodeBenchmark(
+      builtPerson, (p) => jsonEncode(serializers.serialize(p)), (s) {
     return serializers.deserialize(jsonDecode(s));
   }, count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
-  var native = _runJsonDecodeBenchmark(nativePerson, (p) => jsonEncode(p.toMap()),(s) {
+  var native =
+      _runJsonDecodeBenchmark(nativePerson, (p) => jsonEncode(p.toMap()), (s) {
     return NativePerson.fromMap(jsonDecode(s));
   }, count, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
@@ -87,20 +94,19 @@ void benchmarkJsonDeserialization() {
 void benchmarkBuilders() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running Builder Benchmarks ($count items, $iterations iterations)  ");
+  print(
+      "==== Running Builder Benchmarks ($count items, $iterations iterations)  ");
   var dogEngine = DogEngine.instance;
-  var dogs = _runBuilderBenchmark(dogPerson, (a,b) {
+  var dogs = _runBuilderBenchmark(dogPerson, (a, b) {
     return a.rebuild((builder) => builder
       ..name = b.name
-      ..tags = b.tags
-    );
+      ..tags = b.tags);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
-  var built = _runBuilderBenchmark(builtPerson, (a,b) {
+  var built = _runBuilderBenchmark(builtPerson, (a, b) {
     return a.rebuild((builder) => builder
       ..name = b.name
-      ..tags = ListBuilder<String>(b.tags)
-    );
+      ..tags = ListBuilder<String>(b.tags));
   }, count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
 }
@@ -120,23 +126,24 @@ int _runDirectEquality<T>(Map Function(int) generator, int iterations) {
   return stopwatch.elapsedMicroseconds;
 }
 
-
-int _runBuilderBenchmark<T>(T Function() generator, T Function(T,T) converter, int count, int iterations) {
+int _runBuilderBenchmark<T>(T Function() generator, T Function(T, T) converter,
+    int count, int iterations) {
   var stopwatch = Stopwatch();
   stopwatch.start();
   var list = List.generate(count, (index) => generator());
   for (int i = 0; i < iterations; i++) {
     for (int c = 1; c < count; c++) {
-      converter(list[c-1], list[c]);
+      converter(list[c - 1], list[c]);
     }
   }
   stopwatch.stop();
   return stopwatch.elapsedMicroseconds;
 }
 
-int _runJsonEncodeBenchmark<T>(T Function() generator, dynamic Function(T) converter, int count, int iterations) {
+int _runJsonEncodeBenchmark<T>(T Function() generator,
+    dynamic Function(T) converter, int count, int iterations) {
   var stopwatch = Stopwatch();
-  stopwatch.start();  
+  stopwatch.start();
   var list = List.generate(count, (index) => generator());
   for (int i = 0; i < iterations; i++) {
     for (int c = 0; c < count; c++) {
@@ -147,7 +154,12 @@ int _runJsonEncodeBenchmark<T>(T Function() generator, dynamic Function(T) conve
   return stopwatch.elapsedMicroseconds;
 }
 
-int _runJsonDecodeBenchmark<T>(T Function() generator, String Function(T) converter, dynamic Function(String) reconverter, int count, int iterations) {
+int _runJsonDecodeBenchmark<T>(
+    T Function() generator,
+    String Function(T) converter,
+    dynamic Function(String) reconverter,
+    int count,
+    int iterations) {
   var stopwatch = Stopwatch();
   stopwatch.start();
   var list = List.generate(count, (index) => converter(generator()));
@@ -160,8 +172,8 @@ int _runJsonDecodeBenchmark<T>(T Function() generator, String Function(T) conver
   return stopwatch.elapsedMicroseconds;
 }
 
-
-int _runMapKeyBenchmark(Map Function(int) generator, int count, int iterations) {
+int _runMapKeyBenchmark(
+    Map Function(int) generator, int count, int iterations) {
   var map = generator(count);
   var keys = map.keys.toList();
   var stopwatch = Stopwatch();
@@ -175,7 +187,8 @@ int _runMapKeyBenchmark(Map Function(int) generator, int count, int iterations) 
   return stopwatch.elapsedMicroseconds;
 }
 
-int _runIndexOfBenchmark(Map Function(int) generator, int count, int iterations) {
+int _runIndexOfBenchmark(
+    Map Function(int) generator, int count, int iterations) {
   var map = generator(count);
   var keys = map.keys.toList();
   var stopwatch = Stopwatch();

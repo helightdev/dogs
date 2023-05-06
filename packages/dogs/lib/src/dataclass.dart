@@ -16,7 +16,6 @@
 
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
 
 /*
 Note: This dataclass implementation is pretty optimised for being runtime-only
@@ -39,7 +38,7 @@ bool cacheDataclassHashCodes = true;
 const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 
 Map<Type, int Function(dynamic)> _dataclassHashCode = {};
-Map<Type, bool Function(dynamic,dynamic)> _dataclassEquals = {};
+Map<Type, bool Function(dynamic, dynamic)> _dataclassEquals = {};
 
 int Function(dynamic) _createDataclassHashCodeProvider<T>() {
   var structure = dogs.structures[T]!;
@@ -66,12 +65,12 @@ int Function(dynamic) _createDataclassHashCodeProvider<T>() {
   return provider;
 }
 
-bool Function(dynamic,dynamic) _createDataclassEqualityProvider<T>() {
+bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
   var structure = dogs.structures[T]!;
   var proxy = structure.proxy;
-  bool Function(dynamic,dynamic) provider;
+  bool Function(dynamic, dynamic) provider;
   if (proxy.equalsFunc == null) {
-    provider = (a,b) {
+    provider = (a, b) {
       var va = proxy.getFieldValues(a);
       var vb = proxy.getFieldValues(b);
       return deepEquality.equals(va, vb);
@@ -101,7 +100,7 @@ mixin Dataclass<T> {
     if (cacheDataclassHashCodes && hashCode != other.hashCode) return false;
     var equalityProvider = _dataclassEquals[T];
     equalityProvider ??= _createDataclassEqualityProvider<T>();
-    return equalityProvider(this,other);
+    return equalityProvider(this, other);
   }
 
   @override

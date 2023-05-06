@@ -81,13 +81,15 @@ class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
   final bool Function(T a, T b)? $equalsFunc;
 
   @override
-  bool Function(dynamic a, dynamic b)? get equalsFunc => (a,b) => $equalsFunc!(a,b);
+  bool Function(dynamic a, dynamic b)? get equalsFunc =>
+      (a, b) => $equalsFunc!(a, b);
 
   @override
   int Function(dynamic obj)? get hashFunc => (obj) => $hashFunc!(obj);
 
   /// [DogStructureProxy] implementation for creating universal object factories.
-  const ObjectFactoryStructureProxy(this.activator, this.getters, this.values, [this.$hashFunc, this.$equalsFunc]);
+  const ObjectFactoryStructureProxy(this.activator, this.getters, this.values,
+      [this.$hashFunc, this.$equalsFunc]);
 
   @override
   dynamic getField(dynamic obj, int index) {
