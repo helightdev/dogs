@@ -19,17 +19,17 @@ with json support out of the box.
 ```dart
 @serializable
 class Person with Dataclass<Person>{
-  
+
   @LengthRange(max: 128)
   final String name;
-  
+
   @Minimum(18)
   final int age;
 
   @SizeRange(max: 16)
   @Regex("((_)?[a-z]+[A-Za-z0-9]*)+")
   final Set<String>? tags;
-  
+
   Person(this.name, this.age, this.tags);
 
 }
