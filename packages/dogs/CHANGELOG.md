@@ -1,3 +1,8 @@
+## 5.0.1
+
+ - **FIX**: recursively visit entries of maps and lists.
+ - **FIX**: handle null as empty collection if the field is not nullable.
+
 ## 5.0.0
 
 > Note: This release has breaking changes.
