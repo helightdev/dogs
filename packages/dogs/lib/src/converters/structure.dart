@@ -139,9 +139,12 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
         if (field.optional) {
           values.add(null);
           continue;
+        } else if (field.iterableKind != IterableKind.none) {
+          fieldValue = DogList([]);
+        } else {
+          throw Exception(
+              "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got ${fieldValue.coerceString()}");
         }
-        throw Exception(
-            "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got ${fieldValue.coerceString()}");
       }
 
       var converter = _cachedConverters[i];
@@ -179,9 +182,12 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
         if (field.optional) {
           values.add(null);
           continue;
+        } else if (field.iterableKind != IterableKind.none) {
+          fieldValue = [];
+        } else {
+          throw Exception(
+              "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $fieldValue");
         }
-        throw Exception(
-            "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got ${fieldValue.coerceString()}");
       }
 
       var converter = _cachedConverters[i];
