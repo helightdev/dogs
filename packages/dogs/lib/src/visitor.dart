@@ -25,6 +25,7 @@ abstract class DogVisitor<T> {
     if (v is DogDouble) return visitDouble(v);
     if (v is DogBool) return visitBool(v);
     if (v is DogNull) return visitNull(v);
+    if (v is DogNative) return visitNative(v);
     return null as T;
   }
 
@@ -35,4 +36,5 @@ abstract class DogVisitor<T> {
   T visitDouble(DogDouble d) => null as T;
   T visitBool(DogBool b) => null as T;
   T visitNull(DogNull n) => null as T;
+  T visitNative(DogNative n) => null as T;
 }
