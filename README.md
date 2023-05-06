@@ -11,10 +11,9 @@
     </a>
 </h1>
 
-DOGs, short for Dart Object Graphs, is a universal serialization library for
-dart making strong use of code generation to reduce boilerplate massively.
-Dogs can be easily extended to support a wide array of encodings and comes
-with json support out of the box.
+DOGs, short for Dart Object Graphs, is a universal serialization library making strong use of code
+generation to make your code more concise and fluent to write. The core package can be easily extended
+to support a wide array of encodings and comes with json support out of the box.
 
 ```dart
 @serializable
