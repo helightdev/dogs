@@ -108,6 +108,14 @@ Future<StructurizeResult> structurizeConstructor(
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
+  
+  // Determine used constructor
+  var constructorName = "";
+  if (element.getNamedConstructor("dog") != null) {
+    constructorElement = element.getNamedConstructor("dog")!;
+    constructorName = ".dog";
+  }
+  
   for (var e in constructorElement.parameters) {
     var fieldName = e.name.replaceFirst("this.", "");
     var field = element.getField(fieldName);
@@ -150,21 +158,21 @@ Future<StructurizeResult> structurizeConstructor(
     ));
   }
 
-  // Determine used constructor
-  var constructorName = "";
-  if (element.getNamedConstructor("dog") != null) {
-    constructorName = ".dog";
-  }
-
   // Create proxy arguments
   var getters = fields.map((e) => e.accessor).toList();
-  var activator = "return ${element.name}$constructorName(${fields.mapIndexed((i, y) {
-    if (y.iterableKind == IterableKind.none) return "list[$i]";
-    if (y.optional) return "list[$i]?.cast<${y.serialType}>()";
-    return "list[$i].cast<${y.serialType}>()";
+  var activator = "return ${element.name}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
+    var y = fields[i];
+    if (e.isNamed) {
+      if (y.iterableKind == IterableKind.none) return "${e.name}: list[$i]";
+      if (y.optional) return "${e.name}: list[$i]?.cast<${y.serialType}>()";
+      return "${e.name}: list[$i].cast<${y.serialType}>()";
+    } else {
+      if (y.iterableKind == IterableKind.none) return "list[$i]";
+      if (y.optional) return "list[$i]?.cast<${y.serialType}>()";
+      return "list[$i].cast<${y.serialType}>()";
+    }
   }).join(", ")});";
   var isDataclass = dataclassChecker.isAssignableFromType(element.thisType);
-
   var structure = IRStructure(counter.get(type), isDataclass ? StructureConformity.dataclass : StructureConformity.basic, serialName, fields,
       getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
