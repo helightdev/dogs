@@ -1,3 +1,7 @@
+## 2.0.12
+
+ - **REFACTOR**: fix common code style issues.
+
 ## 2.0.11
 
  - Update a dependency to the latest release.

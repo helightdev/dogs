@@ -1,3 +1,8 @@
+## 4.1.0
+
+ - **REFACTOR**: fix common code style issues.
+ - **FEAT**: add support for named parameters, fix wrong field identification.
+
 ## 4.0.1
 
  - Update a dependency to the latest release.

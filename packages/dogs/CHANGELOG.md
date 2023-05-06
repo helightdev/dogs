@@ -1,3 +1,8 @@
+## 5.0.2
+
+ - **REFACTOR**: fix common code style issues.
+ - **FIX**: add native to graph visitor.
+
 ## 5.0.1
 
  - **FIX**: recursively visit entries of maps and lists.
