@@ -1,4 +1,7 @@
+import 'package:dogs_cbor/dogs_cbor.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_toml/dogs_toml.dart';
+import 'package:dogs_yaml/dogs_yaml.dart';
 import 'package:logging/logging.dart';
 import 'package:smoke_test_0/dogs.g.dart';
 import 'package:smoke_test_0/validation.dart';
@@ -11,6 +14,9 @@ Future main() async {
   testModels();
   testConformities();
   testValidators();
+  testCbor();
+  testYaml();
+  testToml();
   print("All tests passed");
 }
 
@@ -37,6 +43,55 @@ void testConformities() {
   testSimple(ConformityBasic.variant0, ConformityBasic.variant1);
   testSimple(ConformityData.variant0, ConformityData.variant1);
   testSimple(ConformityBean.variant0, ConformityBean.variant1);
+}
+
+void testCbor() {
+  testEncoding(dogs.cborSerializer, ModelA.variant0, ModelA.variant1);
+  testEncoding(dogs.cborSerializer, ModelB.variant0, ModelB.variant1);
+  testEncoding(dogs.cborSerializer, ModelC.variant0, ModelC.variant1);
+  testEncoding(dogs.cborSerializer, ModelD.variant0, ModelD.variant1);
+  testEncoding(dogs.cborSerializer, ModelE.variant0, ModelE.variant1);
+  testEncoding(dogs.cborSerializer, ModelF.variant0, ModelF.variant1);
+  testEncoding(dogs.cborSerializer, Note.variant0, Note.variant1);
+}
+
+void testYaml() {
+  testEncoding(dogs.yamlSerializer, ModelA.variant0, ModelA.variant1);
+  testEncoding(dogs.yamlSerializer, ModelB.variant0, ModelB.variant1);
+  testEncoding(dogs.yamlSerializer, ModelC.variant0, ModelC.variant1);
+  testEncoding(dogs.yamlSerializer, ModelD.variant0, ModelD.variant1);
+  testEncoding(dogs.yamlSerializer, ModelE.variant0, ModelE.variant1);
+  testEncoding(dogs.yamlSerializer, ModelF.variant0, ModelF.variant1);
+  testEncoding(dogs.yamlSerializer, Note.variant0, Note.variant1);
+}
+
+void testToml() {
+  testEncoding(dogs.tomlSerializer, ModelA.variant0, ModelA.variant1);
+  testEncoding(dogs.tomlSerializer, ModelB.variant0, ModelB.variant1);
+  testEncoding(dogs.tomlSerializer, ModelC.variant0, ModelC.variant1);
+  testEncoding(dogs.tomlSerializer, ModelD.variant0, ModelD.variant1);
+  testEncoding(dogs.tomlSerializer, ModelE.variant0, ModelE.variant1);
+  testEncoding(dogs.tomlSerializer, ModelF.variant0, ModelF.variant1);
+  testEncoding(dogs.tomlSerializer, Note.variant0, Note.variant1);
+}
+
+
+void testEncoding<T>(DogSerializer serializer, T Function() a, T Function() b) {
+  var va0 = a();
+  var va1 = a();
+  var vb0 = b();
+  var vb1 = b();
+  var ga = dogs.convertObjectToGraph(va0, T);
+  var gb = dogs.convertObjectToGraph(vb0, T);
+  var ea = serializer.serialize(ga);
+  var eb = serializer.serialize(gb);
+  var gda = serializer.deserialize(ea);
+  var gdb = serializer.deserialize(eb);
+  var da = dogs.convertObjectFromGraph(gda, T);
+  var db = dogs.convertObjectFromGraph(gdb, T);
+  if (va1 != da || va0 != da) throw Exception("Non-pure serialization");
+  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization");
+  if (ea == eb) throw Exception("Wrong equality");
 }
 
 void testValidation<T extends Dataclass<T>>(List<T> Function() trues, List<T> Function() falses) {

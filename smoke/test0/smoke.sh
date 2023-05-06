@@ -14,5 +14,6 @@
 #    limitations under the License.
 #
 
+dart pub get
 dart run build_runner build --delete-conflicting-outputs --verbose
 dart run lib/test.dart
