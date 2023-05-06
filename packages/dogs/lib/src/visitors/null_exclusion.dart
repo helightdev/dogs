@@ -35,12 +35,14 @@ class NullExclusionVisitor extends DogVisitor<DogGraphValue> {
 
   @override
   DogGraphValue visitList(DogList l) {
-    return DogList(l.value.whereNot((e) => e is DogNull).toList());
+    return DogList(l.value.whereNot((e) => e is DogNull).map((e) => visit(e)).toList());
   }
 
   @override
   DogGraphValue visitMap(DogMap m) {
-    return DogMap(Map.fromEntries(m.value.entries.whereNot(
-        (element) => element.key is DogNull || element.value is DogNull)));
+    return DogMap(Map.fromEntries(m.value.entries
+        .whereNot((element) => element.key is DogNull || element.value is DogNull)
+        .map((e) => MapEntry(visit(e.key), visit(e.value)))
+    ));
   }
 }
