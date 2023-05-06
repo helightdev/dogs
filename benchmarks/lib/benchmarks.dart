@@ -9,85 +9,85 @@ import 'package:dogs_core/dogs_core.dart';
 void benchmarkIndexOf() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running IndexOf Benchmarks ($count items, $iterations iterations)");
+  print("==== Running IndexOf Benchmarks ($count items, $iterations iterations)  ");
   var dogs = _runIndexOfBenchmark(dogMap, count, iterations);
-  print("Dogs took $dogsμs (${dogs / 1000}ms)");
+  print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runIndexOfBenchmark(builtMap, count, iterations);
-  print("BuiltValue took $builtμs (${built / 1000}ms)");
+  print("BuiltValue took $builtμs (${built / 1000}ms)  ");
   var equatable = _runIndexOfBenchmark(equatableMap, count, iterations);
-  print("Equatable took $equatableμs (${equatable / 1000}ms)");
+  print("Equatable took $equatableμs (${equatable / 1000}ms)  ");
   var native = _runIndexOfBenchmark(nativeMap, count, iterations);
-  print("Native took $nativeμs (${native / 1000}ms)");
+  print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
 void benchmarkDirectEquality() {
   var iterations = 1000000;
-  print("==== Running DirectEquality Benchmarks ($iterations iterations)");
+  print("==== Running DirectEquality Benchmarks ($iterations iterations)  ");
   var dogs = _runDirectEquality(dogMap, iterations);
-  print("Dogs took $dogsμs (${dogs / 1000}ms)");
+  print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runDirectEquality(builtMap, iterations);
-  print("BuiltValue took $builtμs (${built / 1000}ms)");
+  print("BuiltValue took $builtμs (${built / 1000}ms)  ");
   var equatable = _runDirectEquality(equatableMap, iterations);
-  print("Equatable took $equatableμs (${equatable / 1000}ms)");
+  print("Equatable took $equatableμs (${equatable / 1000}ms)  ");
   var native = _runDirectEquality(nativeMap, iterations);
-  print("Native took $nativeμs (${native / 1000}ms)");
+  print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
 
 void benchmarkMapKey() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running MapKey Benchmarks ($count items, $iterations iterations)");
+  print("==== Running MapKey Benchmarks ($count items, $iterations iterations)  ");
   var dogs = _runMapKeyBenchmark(dogMap, count, iterations);
-  print("Dogs took $dogsμs (${dogs / 1000}ms)");
+  print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runMapKeyBenchmark(builtMap, count, iterations);
-  print("BuiltValue took $builtμs (${built / 1000}ms)");
+  print("BuiltValue took $builtμs (${built / 1000}ms)  ");
   var equatable = _runMapKeyBenchmark(equatableMap, count, iterations);
-  print("Equatable took $equatableμs (${equatable / 1000}ms)");
+  print("Equatable took $equatableμs (${equatable / 1000}ms)  ");
   var native = _runMapKeyBenchmark(nativeMap, count, iterations);
-  print("Native took $nativeμs (${native / 1000}ms)");
+  print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
 void benchmarkJsonSerialization() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running JsonSerialization Benchmarks ($count items, $iterations iterations)");
+  print("==== Running JsonSerialization Benchmarks ($count items, $iterations iterations)  ");
   var dogEngine = DogEngine.instance;
   var dogs = _runJsonEncodeBenchmark(dogPerson, (p) {
     return dogEngine.jsonEncode<DogPerson>(p);
   }, count, iterations);
-  print("Dogs took $dogsμs (${dogs / 1000}ms)");
+  print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runJsonEncodeBenchmark(builtPerson, (p) => jsonEncode(serializers.serialize(p)), count, iterations);
-  print("Built took $builtμs (${built / 1000}ms)");
+  print("Built took $builtμs (${built / 1000}ms)  ");
   var native = _runJsonEncodeBenchmark(nativePerson, (p) => jsonEncode(p.toMap()), count, iterations);
-  print("Native took $nativeμs (${native / 1000}ms)");
+  print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
 void benchmarkJsonDeserialization() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running JsonDeserialization Benchmarks ($count items, $iterations iterations)");
+  print("==== Running JsonDeserialization Benchmarks ($count items, $iterations iterations)  ");
   var dogEngine = DogEngine.instance;
   var dogs = _runJsonDecodeBenchmark(dogPerson, (p) {
     return dogEngine.jsonEncode<DogPerson>(p);
   },(s) {
     return dogEngine.jsonDecode<DogPerson>(s);
   }, count, iterations);
-  print("Dogs took $dogsμs (${dogs / 1000}ms)");
+  print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runJsonDecodeBenchmark(builtPerson, (p) => jsonEncode(serializers.serialize(p)),(s) {
     return serializers.deserialize(jsonDecode(s));
   }, count, iterations);
-  print("Built took $builtμs (${built / 1000}ms)");
+  print("Built took $builtμs (${built / 1000}ms)  ");
   var native = _runJsonDecodeBenchmark(nativePerson, (p) => jsonEncode(p.toMap()),(s) {
     return NativePerson.fromMap(jsonDecode(s));
   }, count, iterations);
-  print("Native took $nativeμs (${native / 1000}ms)");
+  print("Native took $nativeμs (${native / 1000}ms)  ");
 }
 
 void benchmarkBuilders() {
   var count = 500;
   var iterations = 1000;
-  print("==== Running Builder Benchmarks ($count items, $iterations iterations)");
+  print("==== Running Builder Benchmarks ($count items, $iterations iterations)  ");
   var dogEngine = DogEngine.instance;
   var dogs = _runBuilderBenchmark(dogPerson, (a,b) {
     return a.rebuild((builder) => builder
@@ -95,14 +95,14 @@ void benchmarkBuilders() {
       ..tags = b.tags
     );
   }, count, iterations);
-  print("Dogs took $dogsμs (${dogs / 1000}ms)");
+  print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
   var built = _runBuilderBenchmark(builtPerson, (a,b) {
     return a.rebuild((builder) => builder
       ..name = b.name
       ..tags = ListBuilder<String>(b.tags)
     );
   }, count, iterations);
-  print("Built took $builtμs (${built / 1000}ms)");
+  print("Built took $builtμs (${built / 1000}ms)  ");
 }
 
 // ----
