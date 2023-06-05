@@ -181,14 +181,23 @@ extension FieldExtension on DogStructureField {
     return annotations.whereType<T>().toList();
   }
 
-  DogConverter? findConverter(DogStructure structure) {
-    var specified = firstAnnotationOf<ConverterSupplyingVisitor>()
-        ?.resolve(structure, this, DogEngine.instance);
-    if (specified != null) return specified;
-    if (converterType == null) {
-      return DogEngine.instance.findAssociatedConverter(serial.typeArgument);
-    } else {
-      return DogEngine.instance.findConverter(converterType!);
+  DogConverter? findConverter(DogStructure structure, [DogEngine? engine]) {
+    engine ??= DogEngine.instance;
+    final supplier = firstAnnotationOf<ConverterSupplyingVisitor>();
+    if (supplier != null) {
+      return supplier.resolve(structure, this, engine);
     }
+
+    if (converterType != null) {
+      return engine.findConverter(converterType!);
+    }
+
+    if (engine.codec.isNative(serial.typeArgument)) {
+      return null;
+    }
+
+    var directConverter = engine.findAssociatedConverter(type);
+    if (directConverter != null) return directConverter;
+    return engine.findAssociatedConverter(serial.typeArgument);
   }
 }
