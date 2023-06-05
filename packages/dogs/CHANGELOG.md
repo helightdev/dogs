@@ -1,3 +1,7 @@
+## 5.0.3
+
+ - **FIX**: findConverter extension now works as expected.
+
 ## 5.0.2
 
  - **REFACTOR**: fix common code style issues.

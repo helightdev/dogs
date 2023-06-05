@@ -1,3 +1,7 @@
+## 4.1.1
+
+ - **FIX**: required input now includes .conv.g.dart and runs_before keys are now valid.
+
 ## 4.1.0
 
  - **REFACTOR**: fix common code style issues.
