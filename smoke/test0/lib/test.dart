@@ -12,12 +12,98 @@ import 'models.dart';
 Future main() async {
   await initialiseDogs();
   testModels();
+  print("-- Model test passed");
+  testOperations();
+  print("-- Operations test passed");
   testConformities();
+  print("-- Conformity test passed");
   testValidators();
+  print("-- Validator test passed");
+  testTrees();
+  print("-- TypeTree test passed");
   testCbor();
+  print("-- Cbor test passed");
   testYaml();
+  print("-- Yaml test passed");
   testToml();
+  print("-- Toml test passed");
   print("All tests passed");
+}
+
+void testOperations() {
+  print("-- A");
+  testOperation(ModelA, ModelA.variant0(), deepEquality.equals);
+  testOperation(ModelA, ModelA.variant1(), deepEquality.equals);
+  print("-- B");
+  testOperation(ModelB, ModelB.variant0(), deepEquality.equals);
+  testOperation(ModelB, ModelB.variant1(), deepEquality.equals);
+  print("-- C");
+  testOperation(ModelC, ModelC.variant0(), deepEquality.equals);
+  testOperation(ModelC, ModelC.variant1(), deepEquality.equals);
+  print("-- D");
+  testOperation(ModelD, ModelD.variant0(), deepEquality.equals);
+  testOperation(ModelD, ModelD.variant1(), deepEquality.equals);
+  print("-- E");
+  testOperation(ModelE, ModelE.variant0(), deepEquality.equals);
+  testOperation(ModelE, ModelE.variant1(), deepEquality.equals);
+  print("-- F");
+  testOperation(ModelF, ModelF.variant0(), deepEquality.equals);
+  testOperation(ModelF, ModelF.variant1(), deepEquality.equals);
+  print("-- G");
+  testOperation(ModelG, ModelG.variant0(), deepEquality.equals);
+  testOperation(ModelG, ModelG.variant1(), deepEquality.equals);
+  print("-- Done");
+}
+
+void testTrees() {
+  // Iterable
+  testTypeTree(QualifiedTypeTree.iterable<ModelA>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<ModelB>(), [ModelB.variant0(), ModelB.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<ModelC>(), [ModelC.variant0(), ModelC.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<ModelD>(), [ModelD.variant0(), ModelD.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<ModelE>(), [ModelE.variant0(), ModelE.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<ModelF>(), [ModelF.variant0(), ModelF.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<dynamic>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
+  // Lists
+  testTypeTree(QualifiedTypeTree.list<ModelA>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<ModelB>(), [ModelB.variant0(), ModelB.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<ModelC>(), [ModelC.variant0(), ModelC.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<ModelD>(), [ModelD.variant0(), ModelD.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<ModelE>(), [ModelE.variant0(), ModelE.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<ModelF>(), [ModelF.variant0(), ModelF.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<dynamic>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
+  // Sets
+  testTypeTree(QualifiedTypeTree.set<ModelA>(), {ModelA.variant0(), ModelA.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<ModelB>(), {ModelB.variant0(), ModelB.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<ModelC>(), {ModelC.variant0(), ModelC.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<ModelD>(), {ModelD.variant0(), ModelD.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<ModelE>(), {ModelE.variant0(), ModelE.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<ModelF>(), {ModelF.variant0(), ModelF.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<dynamic>(), {ModelA.variant0(), ModelA.variant1()}, deepEquality.equals);
+
+  testTypeTree(QualifiedTypeTree.map<String,int>(), {
+    "Hello": 12,
+    "value": 35
+  }, deepEquality.equals);
+  testTypeTree(QualifiedTypeTreeN<Map<dynamic, List<dynamic>>, Map>([
+    QualifiedTypeTree.terminal<dynamic>(),
+    QualifiedTypeTree.list<dynamic>(),
+  ]), {
+    ModelA.variant0(): [ModelB.variant0()],
+    ModelA.variant1(): [ModelB.variant1()],
+  }, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.map<ModelA,ModelB>(), {
+    ModelA.variant0(): ModelB.variant0(),
+    ModelA.variant1(): ModelB.variant1(),
+  }, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.map<ModelC,ModelD>(), {
+    ModelC.variant0(): ModelD.variant0(),
+    ModelC.variant1(): ModelD.variant1(),
+  }, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.map<ModelE,ModelF>(), {
+    ModelE.variant0(): ModelF.variant0(),
+    ModelE.variant1(): ModelF.variant1(),
+  }, deepEquality.equals);
 }
 
 void testValidators() {
@@ -75,6 +161,32 @@ void testToml() {
   testEncoding(dogs.tomlSerializer, Note.variant0, Note.variant1);
 }
 
+void testTypeTree(TypeTree tree, dynamic initialValue, bool Function(dynamic a, dynamic b) comparator) {
+  var converter = dogs.getTreeConverter(tree);
+  var resultGraph = converter.convertToGraph(initialValue, dogs);
+  var resultNative = converter.convertToNative(initialValue, dogs);
+  //print(resultNative);
+  //print(resultGraph.coerceString());
+  var reGraph = converter.convertFromGraph(resultGraph, dogs);
+  var reNative = converter.convertFromNative(resultNative, dogs);
+  if (!comparator(reGraph, initialValue)) throw Exception("Graph result not equal");
+  if (!comparator(reNative, initialValue)) throw Exception("Native result not equal");
+}
+
+void testOperation(Type type, dynamic initialValue, bool Function(dynamic a, dynamic b) comparator) {
+  var nativeOperation = dogs.modeRegistry.nativeSerialization.forType(type, dogs);
+  var graphOperation = dogs.modeRegistry.graphSerialization.forType(type, dogs);
+  var resultGraph = graphOperation.serialize(initialValue, dogs);
+  var resultNative = nativeOperation.serialize(initialValue, dogs);
+  print(resultNative);
+  print(resultGraph.toDescriptionString());
+  //print(resultNative);
+  //print(resultGraph.coerceString());
+  var reGraph = graphOperation.deserialize(resultGraph, dogs);
+  var reNative = nativeOperation.deserialize(resultNative, dogs);
+  if (!comparator(reGraph, initialValue)) throw Exception("Graph result not equal: $reGraph != $initialValue");
+  if (!comparator(reNative, initialValue)) throw Exception("Native result not equal: $reNative != $initialValue");
+}
 
 void testEncoding<T>(DogSerializer serializer, T Function() a, T Function() b) {
   var va0 = a();

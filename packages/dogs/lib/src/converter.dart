@@ -21,8 +21,15 @@ import 'package:meta/meta.dart';
 abstract class DogConverter<T> extends TypeCapture<T> {
   final bool isAssociated;
   final bool keepIterables;
+  final DogStructure<T>? struct;
 
-  DogConverter([this.isAssociated = true, this.keepIterables = false]);
+  DogConverter({
+    this.struct,
+    this.isAssociated = true,
+    this.keepIterables = false
+  });
+
+  OperationMode<T>? resolveOperationMode(Type opmodeType) => null;
 
   /// Describes the converts output using openapi3 component specs.
   APISchemaObject get output => APISchemaObject.empty();
@@ -42,6 +49,8 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   T convertFromNative(dynamic value, DogEngine engine) {
     return convertFromGraph(engine.codec.fromNative(value), engine);
   }
+
+  bool validate(T src, DogEngine engine) => true;
 
   void registrationCallback(DogEngine engine) {}
 

@@ -17,13 +17,14 @@
 import 'package:collection/collection.dart';
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/src/opmodes/operation.dart';
+import 'package:dogs_core/src/opmodes/structure/native.dart';
+
+import '../opmodes/structure/graph.dart';
 
 abstract class DefaultStructureConverter<T> extends DogConverter<T>
-    with StructureEmitter<T>
     implements Copyable<T>, Validatable<T> {
-  @override
-  DogStructure<T> get structure;
-
+  
   bool _hasValidation = false;
   late Map<ClassValidator, dynamic> _cachedClassValidators;
   late Map<int, List<MapEntry<FieldValidator, dynamic>>> _cachedFieldValidators;
@@ -31,51 +32,61 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   bool _hasCachedConverters = false;
   late List<DogConverter?> _cachedConverters;
   Map<String, dynamic> cache = {};
+  
+  final DogStructure<T> _struct;
 
-  DefaultStructureConverter();
+  DefaultStructureConverter({required DogStructure<T> s}) : _struct = s, super(struct: s);
 
   @override
   DogConverter<T> fork(DogEngine forkEngine) {
-    return DogStructureConverterImpl<T>(structure);
+    return DogStructureConverterImpl<T>(_struct);
+  }
+
+
+  @override
+  OperationMode<T>? resolveOperationMode(Type opmodeType) {
+    if (opmodeType == NativeSerializerMode) return StructureNativeSerialization(_struct);
+    if (opmodeType == GraphSerializerMode) return StructureGraphSerialization(_struct);
+    return null;
   }
 
   @override
   void registrationCallback(DogEngine engine) {
     // Create and cache validators eagerly
     _cachedClassValidators =
-        Map.fromEntries(structure.annotationsOf<ClassValidator>().where((e) {
-      var applicable = e.isApplicable(structure);
+        Map.fromEntries(_struct.annotationsOf<ClassValidator>().where((e) {
+      var applicable = e.isApplicable(_struct);
       if (applicable) {
         _hasValidation = true;
       } else {
-        print("$e is not applicable in $structure");
+        print("$e is not applicable in $struct");
       }
       return applicable;
-    }).map((e) => MapEntry(e, e.getCachedValue(structure))));
+    }).map((e) => MapEntry(e, e.getCachedValue(_struct))));
 
     _cachedFieldValidators =
-        Map.fromEntries(structure.fields.mapIndexed((index, field) {
+        Map.fromEntries(_struct.fields.mapIndexed((index, field) {
       var validators = field
           .annotationsOf<FieldValidator>()
           .where((e) {
-            var applicable = e.isApplicable(structure, field);
+            var applicable = e.isApplicable(_struct, field);
             if (applicable) {
               _hasValidation = true;
             } else {
-              print("$e is not applicable for $field in $structure");
+              print("$e is not applicable for $field in $struct");
             }
             return applicable;
           })
-          .map((e) => MapEntry(e, e.getCachedValue(structure, field)))
+          .map((e) => MapEntry(e, e.getCachedValue(_struct, field)))
           .toList();
       return MapEntry(index, validators);
     }));
 
     // Run annotation callbacks
-    structure.annotationsOf<RegistrationHook>().forEach((e) {
+    _struct.annotationsOf<RegistrationHook>().forEach((e) {
       e.onRegistration(engine, this);
     });
-    structure.fields
+    _struct.fields
         .expand((e) => e.annotationsOf<RegistrationHook>())
         .forEach((e) {
       e.onRegistration(engine, this);
@@ -83,9 +94,9 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   }
 
   void initConverters(DogEngine engine) {
-    _cachedConverters = List.filled(structure.fields.length, null);
-    for (var i = 0; i < structure.fields.length; i++) {
-      var element = structure.fields[i];
+    _cachedConverters = List.filled(_struct.fields.length, null);
+    for (var i = 0; i < _struct.fields.length; i++) {
+      var element = _struct.fields[i];
       _cachedConverters[i] = getConverter(engine, element, true);
     }
     _hasCachedConverters = true;
@@ -95,7 +106,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       DogEngine engine, DogStructureField field, bool cachePhase) {
     final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
     if (supplier != null) {
-      return supplier.resolve(structure, field, engine);
+      return supplier.resolve(_struct, field, engine);
     }
 
     if (field.converterType != null) {
@@ -106,7 +117,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       return null;
     }
 
-    var directConverter = engine.findAssociatedConverter(field.type);
+    var directConverter = engine.findAssociatedConverter(field.type.qualified.typeArgument);
     if (directConverter != null) return directConverter;
 
     // Return serial converter
@@ -115,9 +126,9 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
 
   @override
   APISchemaObject get output {
-    if (structure.isSynthetic) return APISchemaObject.empty();
+    if (_struct.isSynthetic) return APISchemaObject.empty();
     return APISchemaObject()
-      ..referenceURI = Uri(path: "/components/schemas/${structure.serialName}");
+      ..referenceURI = Uri(path: "/components/schemas/${_struct.serialName}");
   }
 
   @override
@@ -127,12 +138,12 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
     }
     if (value is! DogMap) {
       throw Exception(
-          "Expected a DogMap for structure ${structure.typeArgument} but got ${value.runtimeType}");
+          "Expected a DogMap for structure ${_struct.typeArgument} but got ${value.runtimeType}");
     }
     var map = value.value;
     var values = [];
     for (int i = 0; i < _cachedConverters.length; i++) {
-      var field = structure.fields[i];
+      var field = _struct.fields[i];
       var fieldValue = map[DogString(field.name)] ?? DogNull();
 
       if (fieldValue is DogNull) {
@@ -160,7 +171,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
         }
       }
     }
-    return structure.proxy.instantiate(values);
+    return _struct.proxy.instantiate(values);
   }
 
   @override
@@ -170,12 +181,12 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
     }
     if (value is! Map) {
       throw Exception(
-          "Expected a Map for structure ${structure.typeArgument} but got ${value.runtimeType}");
+          "Expected a Map for structure ${_struct.typeArgument} but got ${value.runtimeType}");
     }
     var map = value;
     var values = [];
     for (int i = 0; i < _cachedConverters.length; i++) {
-      var field = structure.fields[i];
+      var field = _struct.fields[i];
       var fieldValue = map[field.name];
 
       if (fieldValue == null) {
@@ -202,7 +213,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
         }
       }
     }
-    return structure.proxy.instantiate(values);
+    return _struct.proxy.instantiate(values);
   }
 
   @override
@@ -211,9 +222,9 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       initConverters(engine);
     }
     var map = <DogGraphValue, DogGraphValue>{};
-    var values = structure.getters.map((e) => e(value)).toList();
+    var values = _struct.getters.map((e) => e(value)).toList();
     for (int i = 0; i < _cachedConverters.length; i++) {
-      var field = structure.fields[i];
+      var field = _struct.fields[i];
       var fieldValue = values.removeAt(0);
       var converter = _cachedConverters[i];
       if (converter == null && field.structure) {
@@ -248,9 +259,9 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
       initConverters(engine);
     }
     var map = <String, dynamic>{};
-    var values = structure.proxy.getFieldValues(value);
+    var values = _struct.proxy.getFieldValues(value);
     for (int i = 0; i < _cachedConverters.length; i++) {
-      var field = structure.fields[i];
+      var field = _struct.fields[i];
       var fieldValue = values.removeAt(0);
       var converter = _cachedConverters[i];
       if (converter == null && field.structure) {
@@ -290,7 +301,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   bool validate(T value, DogEngine engine) {
     if (!_hasValidation) return true;
     return !_cachedFieldValidators.entries.any((pair) {
-          var fieldValue = structure.proxy.getField(value, pair.key);
+          var fieldValue = _struct.proxy.getField(value, pair.key);
           return pair.value
               .any((e) => !e.key.validate(e.value, fieldValue, engine));
         }) &&
@@ -301,26 +312,23 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T>
   @override
   T copy(T src, DogEngine engine, Map<String, dynamic>? overrides) {
     if (overrides == null) {
-      return structure.proxy.instantiate(structure.proxy.getFieldValues(src));
+      return _struct.proxy.instantiate(_struct.proxy.getFieldValues(src));
     } else {
       var map = overrides.map(
-          (key, value) => MapEntry(structure.indexOfFieldName(key)!, value));
+          (key, value) => MapEntry(_struct.indexOfFieldName(key)!, value));
       var values = [];
-      for (var i = 0; i < structure.fields.length; i++) {
+      for (var i = 0; i < _struct.fields.length; i++) {
         if (map.containsKey(i)) {
           values.add(map[i]);
         } else {
-          values.add(structure.proxy.getField(src, i));
+          values.add(_struct.proxy.getField(src, i));
         }
       }
-      return structure.proxy.instantiate(values);
+      return _struct.proxy.instantiate(values);
     }
   }
 }
 
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
-  @override
-  final DogStructure<T> structure;
-
-  DogStructureConverterImpl(this.structure);
+  DogStructureConverterImpl(DogStructure<T> structure) : super(s: structure);
 }

@@ -111,7 +111,3 @@ enum StructureConformity {
   /// effectively final and should therefore also have the final modifier
   dataclass
 }
-
-mixin StructureEmitter<T> on DogConverter<T> {
-  DogStructure get structure;
-}

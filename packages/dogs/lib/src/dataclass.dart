@@ -14,6 +14,9 @@
  *    limitations under the License.
  */
 
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
@@ -29,16 +32,8 @@ The performance overhead is pretty much:
 - Proxied accessor value lookups
  */
 
-/// Changes if [Dataclass]es lazily cache their deep hashCode.
-/// Significantly speeds up high-volume comparisons between similar Dataclasses but
-/// increases memory overhead.
-bool cacheDataclassHashCodes = true;
-
-/// Static [DeepCollectionEquality] instance used by the dog library.
-const DeepCollectionEquality deepEquality = DeepCollectionEquality();
-
-Map<Type, int Function(dynamic)> _dataclassHashCode = {};
-Map<Type, bool Function(dynamic, dynamic)> _dataclassEquals = {};
+Map<Type, int Function(dynamic)> _dataclassHashCode = HashMap();
+Map<Type, bool Function(dynamic, dynamic)> _dataclassEquals = HashMap();
 
 int Function(dynamic) _createDataclassHashCodeProvider<T>() {
   var structure = dogs.structures[T]!;
@@ -82,6 +77,8 @@ bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
   return provider;
 }
 
+bool kInjectProvidersOnConstruct = true;
+
 mixin Dataclass<T> {
   bool get isValid => DogEngine.instance.validateObject(this, T);
   void validate() => DogEngine.instance.validate<T>(this as T);
@@ -97,7 +94,7 @@ mixin Dataclass<T> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! T) return false;
-    if (cacheDataclassHashCodes && hashCode != other.hashCode) return false;
+    if (kCacheDataclassHashCodes && hashCode != other.hashCode) return false;
     var equalityProvider = _dataclassEquals[T];
     equalityProvider ??= _createDataclassEqualityProvider<T>();
     return equalityProvider(this, other);
@@ -105,7 +102,7 @@ mixin Dataclass<T> {
 
   @override
   int get hashCode {
-    if (cacheDataclassHashCodes) {
+    if (kCacheDataclassHashCodes) {
       var cv = _cachedHashCode;
       if (cv != null) return cv;
       var hashCodeProvider = _dataclassHashCode[T];

@@ -137,6 +137,26 @@ class ModelF with Dataclass<ModelF> {
 }
 
 @serializable
+class ModelG with Dataclass<ModelG> {
+
+  List<List<int>>? ints;
+  Map<String, Set<double>>? m;
+  Map<String, List<Object>> dyna;
+
+  ModelG(this.ints, this.m, this.dyna);
+
+  factory ModelG.variant0() {
+    return ModelG([[1,2,3],[4,5,6]], {"a": {1,2,3}, "b" : {1.1,2.2,3.3}}, {
+      "test": [Note.variant0(), "Hello World"]
+    });
+  }
+
+  factory ModelG.variant1() {
+    return ModelG(null, null, {});
+  }
+}
+
+@serializable
 class Note with Dataclass<Note> {
   String? title;
   String content;

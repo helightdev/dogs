@@ -196,7 +196,7 @@ extension FieldExtension on DogStructureField {
       return null;
     }
 
-    var directConverter = engine.findAssociatedConverter(type);
+    var directConverter = engine.findAssociatedConverter(type.qualified.typeArgument);
     if (directConverter != null) return directConverter;
     return engine.findAssociatedConverter(serial.typeArgument);
   }

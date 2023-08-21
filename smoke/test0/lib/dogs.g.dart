@@ -24,6 +24,7 @@ Future initialiseDogs() async {
     gen0.ModelDConverter(),
     gen0.ModelEConverter(),
     gen0.ModelFConverter(),
+    gen0.ModelGConverter(),
     gen0.NoteConverter(),
     gen1.EnumAConverter(),
     gen2.ConformityBeanConverter(),

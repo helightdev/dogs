@@ -50,7 +50,7 @@ void benchmarkMapKey() {
 }
 
 void benchmarkJsonSerialization() {
-  var count = 500;
+  var count = 1000;
   var iterations = 1000;
   print(
       "==== Running JsonSerialization Benchmarks ($count items, $iterations iterations)  ");
@@ -59,6 +59,10 @@ void benchmarkJsonSerialization() {
     return dogEngine.jsonEncode<DogPerson>(p);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
+  var dogsOp = _runJsonEncodeBenchmark(dogPerson, (p) {
+    return dogEngine.jsonEncodeOperation<DogPerson>(p);
+  }, count, iterations);
+  print("DogsOp took $dogsOpμs (${dogsOp / 1000}ms)  ");
   var built = _runJsonEncodeBenchmark(builtPerson,
       (p) => jsonEncode(serializers.serialize(p)), count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
@@ -68,7 +72,7 @@ void benchmarkJsonSerialization() {
 }
 
 void benchmarkJsonDeserialization() {
-  var count = 500;
+  var count = 1000;
   var iterations = 1000;
   print(
       "==== Running JsonDeserialization Benchmarks ($count items, $iterations iterations)  ");
@@ -79,6 +83,14 @@ void benchmarkJsonDeserialization() {
     return dogEngine.jsonDecode<DogPerson>(s);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
+
+  var dogsOp = _runJsonDecodeBenchmark(dogPerson, (p) {
+    return dogEngine.jsonEncodeOperation<DogPerson>(p);
+  }, (s) {
+    return dogEngine.jsonDecodeOperation<DogPerson>(s);
+  }, count, iterations);
+  print("DogsOp took $dogsOpμs (${dogsOp / 1000}ms)  ");
+
   var built = _runJsonDecodeBenchmark(
       builtPerson, (p) => jsonEncode(serializers.serialize(p)), (s) {
     return serializers.deserialize(jsonDecode(s));

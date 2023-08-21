@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_export_of_internal_element
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -27,6 +29,10 @@ export 'src/converters/structure.dart';
 export 'src/dataclass/copyable.dart';
 export 'src/dataclass/validatable.dart';
 
+export 'src/opmodes/operation.dart';
+export 'src/opmodes/primitive_buffer.dart';
+export 'src/opmodes/schemaless.dart';
+
 export 'src/schema/schema.dart';
 export 'src/schema/visitor.dart';
 
@@ -38,7 +44,6 @@ export 'src/structure/validator.dart';
 export 'src/visitors/null_exclusion.dart';
 export 'src/visitors/string_keyed.dart';
 
-// ignore: invalid_export_of_internal_element
 export 'src/converter.dart';
 export 'src/dataclass.dart';
 export 'src/engine.dart';
@@ -48,3 +53,4 @@ export 'src/graph_value.dart';
 export 'src/json.dart';
 export 'src/serializer.dart';
 export 'src/visitor.dart';
+export 'src/trees.dart';

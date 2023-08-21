@@ -38,7 +38,10 @@ class Cat {
   }
 }
 
-class CatConverter extends DogConverter<Cat> with StructureEmitter<Cat> {
+class CatConverter extends DogConverter<Cat> {
+
+  CatConverter() : super(struct: DogStructure<Cat>.synthetic("Cat"));
+
   @override
   Cat convertFromGraph(DogGraphValue value, DogEngine engine) {
     var map = value.asMap!.value;
@@ -53,7 +56,4 @@ class CatConverter extends DogConverter<Cat> with StructureEmitter<Cat> {
       DogString("age"): DogGraphValue.fromNative(value.age)
     });
   }
-
-  @override
-  DogStructure get structure => DogStructure<Cat>.synthetic("Cat");
 }

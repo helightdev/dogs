@@ -4,15 +4,16 @@ import 'package:test/test.dart';
 
 void main() {
   test('from native coercion', () {
-    expect(DogString("string"), DogGraphValue.fromNative("string"));
-    expect(DogInt(1337), DogGraphValue.fromNative(1337));
-    expect(DogDouble(1337.0), DogGraphValue.fromNative(1337.0));
-    expect(DogBool(true), DogGraphValue.fromNative(true));
-    expect(DogNull(), DogGraphValue.fromNative(null));
+    var codec = DefaultNativeCodec();
+    expect(DogString("string"), codec.fromNative("string"));
+    expect(DogInt(1337), codec.fromNative(1337));
+    expect(DogDouble(1337.0), codec.fromNative(1337.0));
+    expect(DogBool(true), codec.fromNative(true));
+    expect(DogNull(), codec.fromNative(null));
     expect(DogList([DogInt(1), DogInt(2)]).value,
-        containsAll(DogGraphValue.fromNative([1, 2]).asList!.value));
+        containsAll(codec.fromNative([1, 2]).asList!.value));
     expect(DogMap({DogString("a"): DogInt(1), DogString("b"): DogInt(2)}),
-        DogGraphValue.fromNative({"a": 1, "b": 2}));
+        codec.fromNative({"a": 1, "b": 2}));
   });
 
   test("to native coercion", () {

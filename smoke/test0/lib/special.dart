@@ -36,7 +36,16 @@ class ConvertableA {
 }
 
 @linkSerializer
-class ConvertableAConverter extends DogConverter<ConvertableA> with StructureEmitter<ConvertableA> {
+class ConvertableAConverter extends DogConverter<ConvertableA> with OperationMapMixin<ConvertableA> {
+
+  @override
+  Map<Type, OperationMode<ConvertableA> Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+        serializer: (value, engine) => [value.a, value.b],
+        deserializer: (value, engine) => ConvertableA(value[0], value[1]),
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.auto(this)
+  };
 
   @override
   ConvertableA convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -49,9 +58,9 @@ class ConvertableAConverter extends DogConverter<ConvertableA> with StructureEmi
     return DogList([DogInt(value.a), DogInt(value.b)]);
   }
 
-  @override
-  DogStructure get structure => DogStructure<ConvertableA>.synthetic("ConvertableA");
-
+  ConvertableAConverter() : super(
+    struct: DogStructure<ConvertableA>.synthetic("ConvertableA")
+  );
 }
 
 @serializable

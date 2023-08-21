@@ -21,10 +21,19 @@ typedef EnumFromString<T> = T? Function(String);
 typedef EnumToString<T> = String Function(T?);
 
 abstract class GeneratedEnumDogConverter<T extends Enum>
-    extends DogConverter<T> {
+    extends DogConverter<T> with OperationMapMixin<T> {
   EnumToString<T?> get toStr;
   EnumFromString<T?> get fromStr;
   List<String> get values;
+
+  @override
+  Map<Type, OperationMode<T> Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+        serializer: (value, engine) => toStr(value),
+        deserializer: (value, engine) => fromStr(value)!
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.auto(this)
+  };
 
   @override
   T convertFromGraph(DogGraphValue value, DogEngine engine) {

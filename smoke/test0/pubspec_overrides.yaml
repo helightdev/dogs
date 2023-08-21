@@ -1,0 +1,9 @@
+dependency_overrides:
+  lyell:
+    path: /home/helight/StudioProjects/lyell/packages/lyell
+  lyell_gen:
+    path: /home/helight/StudioProjects/lyell/packages/lyell_gen
+  dogs_core:
+    path: ../../packages/dogs
+  dogs_generator:
+    path: ../../packages/dogs_generator

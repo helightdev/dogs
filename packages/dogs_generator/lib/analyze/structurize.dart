@@ -47,6 +47,7 @@ class IRStructure {
 class IRStructureField {
   String accessor;
   String type;
+  String typeTree;
   String serialType;
   String converterType;
   IterableKind iterableKind;
@@ -59,6 +60,7 @@ class IRStructureField {
   IRStructureField(
       this.accessor,
       this.type,
+      this.typeTree,
       this.converterType,
       this.serialType,
       this.iterableKind,
@@ -69,7 +71,7 @@ class IRStructureField {
       this.$isMap);
 
   String get code {
-    return "$genAlias.DogStructureField($type, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '$name', $optional, $structure, $metadataSource)";
+    return "$genAlias.DogStructureField($typeTree, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '$name', $optional, $structure, $metadataSource)";
   }
 }
 
@@ -149,6 +151,7 @@ Future<StructurizeResult> structurizeConstructor(
     fields.add(IRStructureField(
         fieldName,
         counter.get(fieldType),
+        getTypeTree(fieldType).code(counter),
         propertySerializer,
         counter.get(serialType),
         iterableType,
@@ -156,7 +159,7 @@ Future<StructurizeResult> structurizeConstructor(
         optional,
         !isDogPrimitiveType(serialType),
         getRetainedAnnotationSourceArray(field, counter),
-        mapChecker.isAssignableFrom(field)));
+        mapChecker.isAssignableFrom(field.type.element!)));
   }
 
   // Create proxy arguments
@@ -225,6 +228,7 @@ Future<StructurizeResult> structurizeBean(
     fields.add(IRStructureField(
         fieldName,
         counter.get(fieldType),
+        getTypeTree(fieldType).code(counter),
         propertySerializer,
         counter.get(serialType),
         iterableType,

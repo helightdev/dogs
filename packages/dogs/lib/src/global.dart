@@ -14,11 +14,25 @@
  *    limitations under the License.
  */
 
+import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:meta/meta.dart';
 
 /// Static instance of [DogEngine] that will be initialised by invoking
 /// the generated initialiseDogs() method.
 DogEngine get dogs => DogEngine.instance;
+
+/// Changes if [Dataclass]es lazily cache their deep hashCode.
+/// Significantly speeds up high-volume comparisons between similar Dataclasses but
+/// increases memory overhead.
+bool kCacheDataclassHashCodes = true;
+
+/// Changes if polymorphic terminal nodes inferred for type trees print warnings on
+/// creation in debug mode.
+bool kWarnPolymorphicTerminalNode = true;
+
+/// Static [DeepCollectionEquality] instance used by the dog library.
+const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 
 /// Encodes this [value] to json, using the [DogConverter] associated with [T].
 String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
@@ -30,3 +44,6 @@ T fromJson<T>(String json) => DogEngine.instance.jsonDecode(json);
 /// using the [Copyable] mixin associated with [T].
 T copy<T>(T src, [Map<String, dynamic>? overrides]) =>
     DogEngine.instance.copy(src, overrides);
+
+@internal
+int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);

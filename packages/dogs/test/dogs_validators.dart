@@ -34,6 +34,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -86,6 +87,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -134,6 +136,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -182,6 +185,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -247,6 +251,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -303,6 +308,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -360,6 +366,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -410,6 +417,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -459,6 +467,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -526,6 +535,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(
           true,
           converter.validate([
@@ -593,6 +603,7 @@ void main() {
           [],
           MemoryDogStructureProxy());
       var converter = DogStructureConverterImpl(structure);
+      converter.registrationCallback(emptyEngine);
       expect(true, converter.validate(["Max", 18, null], emptyEngine));
       expect(
           true,
@@ -640,12 +651,13 @@ void main() {
           DogStructureField.int("age"),
           DogStructureField.string("tags", iterable: IterableKind.set),
           DogStructureField.create<_Inner>(
-              "children", List<_Inner>, IterableKind.list,
+              "children", iterable: IterableKind.list,
               annotations: [validated], optional: true)
         ],
         [],
         MemoryDogStructureProxy());
     var converter = DogStructureConverterImpl(structure);
+    converter.registrationCallback(emptyEngine);
     expect(
         true,
         converter.validate([

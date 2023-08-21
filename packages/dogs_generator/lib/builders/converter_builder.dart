@@ -143,14 +143,9 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.extend = Reference(
           "$genAlias.DefaultStructureConverter<${codeContext.className(element)}>");
 
-      builder.fields.add(Field((builder) => builder
-        ..name = "structure"
-        ..type = Reference(
-            "$genAlias.DogStructure<${codeContext.className(element)}>")
-        ..annotations.add(CodeExpression(Code("override")))
-        ..assignment = Code(
-            "const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())}")
-        ..modifier = FieldModifier.final$));
+      builder.constructors.add(Constructor((constr) => constr
+        ..initializers.add(Code("super(s: const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())})"))
+      ));
 
       _defaultProxyMethods(structurized, builder, codeContext, element);
 
@@ -275,6 +270,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
             ..name = "value"
             ..type = Reference(element.type + (element.optional ? "?" : ""))))
           ..body = Code("\$values[$index] = value;")));
+
+        builder.methods.add(Method((builder) => builder
+          ..name = element.accessor
+          ..type = MethodType.getter
+          ..returns = Reference(element.type + (element.optional ? "?" : ""))
+          ..lambda = true
+          ..body = Code("\$values[$index]")));
       }
 
       builder.methods.add(Method((builder) => builder
@@ -296,10 +298,11 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var builderName = "${element.name}Builder";
     var clazz = Extension((builder) {
       builder.name = extensionName;
-      builder.on = Reference(codeContext.cachedCounter.get(element.thisType));
+      var structureType = Reference(codeContext.cachedCounter.get(element.thisType));
+      builder.on = structureType;
       builder.methods.add(Method((builder) => builder
         ..name = "builder"
-        ..returns = Reference(element.name)
+        ..returns = structureType
         ..annotations
             .add(CodeExpression(Code("Deprecated(\"Use rebuild() instead\")")))
         ..requiredParameters.add(Parameter((builder) => builder
@@ -313,7 +316,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
       builder.methods.add(Method((builder) => builder
         ..name = "rebuild"
-        ..returns = Reference(element.name)
+        ..returns = structureType
         ..requiredParameters.add(Parameter((builder) => builder
           ..name = "f"
           ..type = Reference("Function($builderName b)")))
@@ -328,6 +331,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..returns = Reference(builderName)
         ..body = Code("""
           return $builderName(this);
+          """)));
+
+      builder.methods.add(Method((builder) => builder
+        ..name = "toNative"
+        ..returns = Reference("Map<String,dynamic>")
+        ..body = Code("""
+          return $genAlias.dogs.convertObjectToNative(this, ${codeContext.cachedCounter.get(element.thisType)});
           """)));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));

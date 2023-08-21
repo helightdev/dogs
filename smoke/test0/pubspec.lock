@@ -191,35 +191,35 @@ packages:
       path: "../../packages/dogs_cbor"
       relative: true
     source: path
-    version: "2.0.12"
+    version: "2.0.13"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../../packages/dogs"
       relative: true
     source: path
-    version: "5.0.2"
+    version: "5.0.3"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../packages/dogs_generator"
       relative: true
     source: path
-    version: "4.1.0"
+    version: "4.1.1"
   dogs_toml:
     dependency: "direct main"
     description:
       path: "../../packages/dogs_toml"
       relative: true
     source: path
-    version: "2.0.12"
+    version: "2.0.13"
   dogs_yaml:
     dependency: "direct main"
     description:
       path: "../../packages/dogs_yaml"
       relative: true
     source: path
-    version: "2.0.12"
+    version: "2.0.13"
   duffer:
     dependency: transitive
     description:
@@ -349,21 +349,19 @@ packages:
     source: hosted
     version: "1.1.1"
   lyell:
-    dependency: transitive
+    dependency: "direct main"
     description:
-      name: lyell
-      sha256: "02de9c7043117e7ce9ac69afd7c86a4b2363dcd888a66f3d581d0c18f9cfa668"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
+      path: "/home/helight/StudioProjects/lyell/packages/lyell"
+      relative: false
+    source: path
+    version: "1.1.0"
   lyell_gen:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: lyell_gen
-      sha256: "3fe186a75796100e6a055718a163e6f07cc626cae8fc9df2bbaf9c09f074a3e7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0+3"
+      path: "/home/helight/StudioProjects/lyell/packages/lyell_gen"
+      relative: false
+    source: path
+    version: "1.1.0"
   matcher:
     dependency: transitive
     description:
@@ -677,4 +675,4 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.1 <4.0.0"
+  dart: ">=2.19.0 <4.0.0"

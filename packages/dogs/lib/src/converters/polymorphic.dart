@@ -19,12 +19,52 @@ import 'package:dogs_core/dogs_core.dart';
 
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.
-class PolymorphicConverter extends DogConverter {
-  PolymorphicConverter() : super(false);
+class PolymorphicConverter extends DogConverter with OperationMapMixin {
+  PolymorphicConverter() : super(isAssociated: false);
 
-  static final typePropertyKey = DogString("_type");
-  static final valuePropertyKey = DogString("_value");
+  static const typePropertyKey = DogString("_type");
+  static const valuePropertyKey = DogString("_value");
+  static const typePropertyKeyStr = "_type";
+  static const valuePropertyKeyStr = "_value";
   bool serializeNativeValues = true;
+
+  @override
+  Map<Type, OperationMode Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+        serializer: (value, engine) {
+          if (value is! Map && engine.codec.isNative(value.runtimeType) && serializeNativeValues) return value;
+          var type = value.runtimeType;
+          var operation = engine.modeRegistry.nativeSerialization.forType(type, engine);
+          var structure = engine.structures[type]!;
+          var nativeValue = operation.serialize(value, engine);
+          if (nativeValue is Map) {
+            nativeValue[typePropertyKeyStr] = structure.serialName;
+            return nativeValue;
+          } else {
+            return {
+              typePropertyKeyStr: structure.serialName,
+              valuePropertyKeyStr: nativeValue
+            };
+          }
+        },
+        deserializer: (value, engine) {
+          if (value is! Map && engine.codec.isNative(value.runtimeType) && serializeNativeValues) return value;
+          if (value is! Map) throw Exception("Expected an map");
+          String typeValue = value[typePropertyKeyStr]!;
+          var structure = engine.findSerialName(typeValue)!;
+          var operation = engine.modeRegistry.nativeSerialization.forType(structure.typeArgument, engine);
+          if (value.length == 2 && value.containsKey(valuePropertyKeyStr)) {
+            var simpleValue = value[valuePropertyKeyStr]!;
+            return operation.deserialize(simpleValue, engine);
+          } else {
+            var clone = Map.of(value);
+            clone.remove(typePropertyKeyStr);
+            return operation.deserialize(clone, engine);
+          }
+        }
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.auto(this)
+  };
 
   @override
   dynamic convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -93,12 +133,28 @@ class PolymorphicConverter extends DogConverter {
             "A polymorphic object discriminated using the _type field.";
 }
 
-class DefaultListConverter extends DogConverter<List> {
+class DefaultListConverter extends DogConverter<List> with OperationMapMixin<List> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   final TypeCapture? cast;
 
-  DefaultListConverter([this.cast]) : super(false, true);
+  DefaultListConverter([this.cast]) : super(
+      isAssociated: false,
+      keepIterables: true
+  );
+
+  @override
+  Map<Type, OperationMode<List> Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+        serializer: (value, engine) => engine.modeRegistry.nativeSerialization
+            .forConverter(polymorphicConverter, engine)
+            .serializeIterable(value, engine, IterableKind.list),
+        deserializer: (value, engine) => engine.modeRegistry.nativeSerialization
+            .forConverter(polymorphicConverter, engine)
+            .deserializeIterable(value, engine, IterableKind.list),
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.auto(this)
+  };
 
   @override
   List convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -121,12 +177,29 @@ class DefaultListConverter extends DogConverter<List> {
             : "${cast!.typeArgument.toString()} List";
 }
 
-class DefaultSetConverter extends DogConverter<Set> {
+class DefaultSetConverter extends DogConverter<Set> with OperationMapMixin<Set> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   final TypeCapture? cast;
 
-  DefaultSetConverter([this.cast]) : super(false, true);
+  DefaultSetConverter([this.cast]) : super(
+      isAssociated: false,
+      keepIterables: true
+  );
+
+
+  @override
+  Map<Type, OperationMode<Set> Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+      serializer: (value, engine) => engine.modeRegistry.nativeSerialization
+          .forConverter(polymorphicConverter, engine)
+          .serializeIterable(value, engine, IterableKind.set),
+      deserializer: (value, engine) => engine.modeRegistry.nativeSerialization
+          .forConverter(polymorphicConverter, engine)
+          .deserializeIterable(value, engine, IterableKind.set),
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.auto(this)
+  };
 
   @override
   Set convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -149,12 +222,29 @@ class DefaultSetConverter extends DogConverter<Set> {
             : "${cast!.typeArgument.toString()} Set";
 }
 
-class DefaultIterableConverter extends DogConverter<Iterable> {
+class DefaultIterableConverter extends DogConverter<Iterable> with OperationMapMixin<Iterable> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   final TypeCapture? cast;
 
-  DefaultIterableConverter([this.cast]) : super(false, true);
+  DefaultIterableConverter([this.cast]) : super(
+      isAssociated: false,
+      keepIterables: true
+  );
+
+
+  @override
+  Map<Type, OperationMode<Iterable> Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+      serializer: (value, engine) => engine.modeRegistry.nativeSerialization
+          .forConverter(polymorphicConverter, engine)
+          .serializeIterable(value, engine, IterableKind.list),
+      deserializer: (value, engine) => engine.modeRegistry.nativeSerialization
+          .forConverter(polymorphicConverter, engine)
+          .deserializeIterable(value, engine, IterableKind.list),
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.auto(this)
+  };
 
   @override
   Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
@@ -180,7 +270,7 @@ class DefaultIterableConverter extends DogConverter<Iterable> {
 class DefaultMapConverter extends DogConverter<Map> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
-  DefaultMapConverter() : super(false);
+  DefaultMapConverter() : super(isAssociated: false);
 
   @override
   Map convertFromGraph(DogGraphValue value, DogEngine engine) {
