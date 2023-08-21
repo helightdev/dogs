@@ -39,12 +39,12 @@ class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter
     return DogBenchmarkDataclassEntity(list[0], list[1], list[2].cast<gen0.String>(), list[3]);
   }
 
-  static int _hash(gen2.DogBenchmarkDataclassEntity obj) => obj.name.hashCode ^ obj.age.hashCode ^ gen.deepEquality.hash(obj.tags) ^ obj.fields.hashCode;
+  static int _hash(gen2.DogBenchmarkDataclassEntity obj) => obj.name.hashCode ^ obj.age.hashCode ^ gen.deepEquality.hash(obj.tags) ^ gen.deepEquality.hash(obj.fields);
   static bool _equals(
     gen2.DogBenchmarkDataclassEntity a,
     gen2.DogBenchmarkDataclassEntity b,
   ) =>
-      (a.name == b.name && a.age == b.age && gen.deepEquality.equals(a.tags, b.tags) && a.fields == b.fields);
+      (a.name == b.name && a.age == b.age && gen.deepEquality.equals(a.tags, b.tags) && gen.deepEquality.equals(a.fields, b.fields));
 }
 
 class DogBenchmarkDataclassEntityBuilder {

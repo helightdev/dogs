@@ -47,12 +47,6 @@ extension DogJsonExtension on DogEngine {
     return conv.jsonEncode(native);
   }
 
-  /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  String jsonEncodeOperation<T>(T value) {
-    var native = convertObjectToNativeOperation(value, T);
-    return conv.jsonEncode(native);
-  }
-
   String jsonEncodeList<T>(List<T> value) {
     var graph = convertIterableToGraph(value, T, IterableKind.list);
     return _jsonSerializer.serialize(graph);
@@ -68,13 +62,6 @@ extension DogJsonExtension on DogEngine {
   T jsonDecode<T>(String encoded) {
     var native = conv.jsonDecode(encoded);
     return convertObjectFromNative(native, T);
-  }
-
-  /// Decodes this [encoded] json to an [T] instance,
-  /// using the [DogConverter] associated with [T].
-  T jsonDecodeOperation<T>(String encoded) {
-    var native = conv.jsonDecode(encoded);
-    return convertObjectFromNativeOperation(native, T);
   }
 
   List<T> jsonDecodeList<T>(String encoded) {

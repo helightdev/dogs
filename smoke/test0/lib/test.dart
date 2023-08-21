@@ -81,29 +81,38 @@ void testTrees() {
   testTypeTree(QualifiedTypeTree.set<ModelF>(), {ModelF.variant0(), ModelF.variant1()}, deepEquality.equals);
   testTypeTree(QualifiedTypeTree.set<dynamic>(), {ModelA.variant0(), ModelA.variant1()}, deepEquality.equals);
 
-  testTypeTree(QualifiedTypeTree.map<String,int>(), {
-    "Hello": 12,
-    "value": 35
-  }, deepEquality.equals);
-  testTypeTree(QualifiedTypeTreeN<Map<dynamic, List<dynamic>>, Map>([
-    QualifiedTypeTree.terminal<dynamic>(),
-    QualifiedTypeTree.list<dynamic>(),
-  ]), {
-    ModelA.variant0(): [ModelB.variant0()],
-    ModelA.variant1(): [ModelB.variant1()],
-  }, deepEquality.equals);
-  testTypeTree(QualifiedTypeTree.map<ModelA,ModelB>(), {
-    ModelA.variant0(): ModelB.variant0(),
-    ModelA.variant1(): ModelB.variant1(),
-  }, deepEquality.equals);
-  testTypeTree(QualifiedTypeTree.map<ModelC,ModelD>(), {
-    ModelC.variant0(): ModelD.variant0(),
-    ModelC.variant1(): ModelD.variant1(),
-  }, deepEquality.equals);
-  testTypeTree(QualifiedTypeTree.map<ModelE,ModelF>(), {
-    ModelE.variant0(): ModelF.variant0(),
-    ModelE.variant1(): ModelF.variant1(),
-  }, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.map<String, int>(), {"Hello": 12, "value": 35}, deepEquality.equals);
+  testTypeTree(
+      QualifiedTypeTreeN<Map<dynamic, List<dynamic>>, Map>([
+        QualifiedTypeTree.terminal<dynamic>(),
+        QualifiedTypeTree.list<dynamic>(),
+      ]),
+      {
+        ModelA.variant0(): [ModelB.variant0()],
+        ModelA.variant1(): [ModelB.variant1()],
+      },
+      deepEquality.equals);
+  testTypeTree(
+      QualifiedTypeTree.map<ModelA, ModelB>(),
+      {
+        ModelA.variant0(): ModelB.variant0(),
+        ModelA.variant1(): ModelB.variant1(),
+      },
+      deepEquality.equals);
+  testTypeTree(
+      QualifiedTypeTree.map<ModelC, ModelD>(),
+      {
+        ModelC.variant0(): ModelD.variant0(),
+        ModelC.variant1(): ModelD.variant1(),
+      },
+      deepEquality.equals);
+  testTypeTree(
+      QualifiedTypeTree.map<ModelE, ModelF>(),
+      {
+        ModelE.variant0(): ModelF.variant0(),
+        ModelE.variant1(): ModelF.variant1(),
+      },
+      deepEquality.equals);
 }
 
 void testValidators() {
@@ -163,12 +172,17 @@ void testToml() {
 
 void testTypeTree(TypeTree tree, dynamic initialValue, bool Function(dynamic a, dynamic b) comparator) {
   var converter = dogs.getTreeConverter(tree);
-  var resultGraph = converter.convertToGraph(initialValue, dogs);
-  var resultNative = converter.convertToNative(initialValue, dogs);
+  GraphSerializerMode graphMode = converter.resolveOperationMode(GraphSerializerMode)! as GraphSerializerMode;
+  NativeSerializerMode nativeMode = converter.resolveOperationMode(NativeSerializerMode)! as NativeSerializerMode;
+  graphMode.initialise(dogs);
+  nativeMode.initialise(dogs);
+
+  var resultGraph = graphMode.serialize(initialValue, dogs);
+  var resultNative = nativeMode.serialize(initialValue, dogs);
   //print(resultNative);
   //print(resultGraph.coerceString());
-  var reGraph = converter.convertFromGraph(resultGraph, dogs);
-  var reNative = converter.convertFromNative(resultNative, dogs);
+  var reGraph = graphMode.deserialize(resultGraph, dogs);
+  var reNative = nativeMode.deserialize(resultNative, dogs);
   if (!comparator(reGraph, initialValue)) throw Exception("Graph result not equal");
   if (!comparator(reNative, initialValue)) throw Exception("Native result not equal");
 }
@@ -178,8 +192,6 @@ void testOperation(Type type, dynamic initialValue, bool Function(dynamic a, dyn
   var graphOperation = dogs.modeRegistry.graphSerialization.forType(type, dogs);
   var resultGraph = graphOperation.serialize(initialValue, dogs);
   var resultNative = nativeOperation.serialize(initialValue, dogs);
-  print(resultNative);
-  print(resultGraph.toDescriptionString());
   //print(resultNative);
   //print(resultGraph.coerceString());
   var reGraph = graphOperation.deserialize(resultGraph, dogs);

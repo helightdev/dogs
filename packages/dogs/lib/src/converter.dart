@@ -34,22 +34,6 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   /// Describes the converts output using openapi3 component specs.
   APISchemaObject get output => APISchemaObject.empty();
 
-  /// Converts [T] to a [DogGraphValue].
-  DogGraphValue convertToGraph(T value, DogEngine engine);
-
-  /// Converts a [DogGraphValue] to [T].
-  T convertFromGraph(DogGraphValue value, DogEngine engine);
-
-  /// Aggressively converts [T] to a "primitive" dart type.
-  dynamic convertToNative(T value, DogEngine engine) {
-    return convertToGraph(value, engine).coerceNative();
-  }
-
-  /// Aggressively converts a "primitive" dart type to [T].
-  T convertFromNative(dynamic value, DogEngine engine) {
-    return convertFromGraph(engine.codec.fromNative(value), engine);
-  }
-
   bool validate(T src, DogEngine engine) => true;
 
   void registrationCallback(DogEngine engine) {}
@@ -134,48 +118,4 @@ class PropertyName {
 class PropertySerializer {
   final Type type;
   const PropertySerializer(this.type);
-}
-
-extension ConverterIterableExtension on DogConverter {
-  DogGraphValue convertIterableToGraph(
-      dynamic value, DogEngine engine, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertToGraph(value, engine);
-    } else {
-      if (value is! Iterable) throw Exception("Expected an iterable");
-      return DogList(value.map((e) => convertToGraph(e, engine)).toList());
-    }
-  }
-
-  dynamic convertIterableFromGraph(
-      DogGraphValue value, DogEngine engine, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertFromGraph(value, engine);
-    } else {
-      if (value is! DogList) throw Exception("Expected a list");
-      var items = value.value.map((e) => convertFromGraph(e, engine));
-      return adjustIterable(items, kind);
-    }
-  }
-
-  dynamic convertIterableToNative(
-      dynamic value, DogEngine engine, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertToNative(value, engine);
-    } else {
-      if (value is! Iterable) throw Exception("value is not iterable");
-      return value.map((e) => convertToNative(e, engine)).toList();
-    }
-  }
-
-  dynamic convertIterableFromNative(
-      dynamic value, DogEngine engine, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertFromNative(value, engine);
-    } else {
-      if (value is! Iterable) throw Exception("value is not iterable");
-      return adjustIterable(
-          value.map((e) => convertFromNative(e, engine)), kind);
-    }
-  }
 }

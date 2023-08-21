@@ -115,6 +115,7 @@ class DogEngine {
     _changeStreamController.add(true);
   }
 
+  //TODO: Fix/Check forks for operations
   DogEngine fork({DogNativeCodec? codec}) {
     DogEngine forked =
         DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
@@ -270,94 +271,43 @@ class DogEngine {
   /// Converts a [value] to its [DogGraphValue] representation using the
   /// converter associated with [serialType].
   DogGraphValue convertObjectToGraph(dynamic value, Type serialType) {
-    var converter = associatedConverters[serialType];
-    if (converter == null) {
-      throw Exception("Couldn't find an converter for $serialType");
-    }
-    return converter.convertToGraph(value, this);
+    return _graphSerialization.forType(serialType, this).serialize(value, this);
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the
   /// converter associated with [serialType].
-  dynamic convertIterableToGraph(dynamic value, Type type, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertObjectToGraph(value, type);
-    } else {
-      if (value is! Iterable) throw Exception("Expected an iterable");
-      return DogList(value.map((e) => convertObjectToGraph(e, type)).toList());
-    }
+  DogGraphValue convertIterableToGraph(dynamic value, Type serialType, IterableKind kind) {
+    return _graphSerialization.forType(serialType, this).serializeIterable(value, this, kind);
   }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
   dynamic convertObjectFromGraph(DogGraphValue value, Type serialType) {
-    var converter = associatedConverters[serialType]!;
-    return converter.convertFromGraph(value, this);
-  }
-
-  dynamic convertObjectFromNative(dynamic value, Type serialType) {
-    var converter = associatedConverters[serialType]!;
-    return converter.convertFromNative(value, this);
-  }
-
-  dynamic convertObjectToNative(dynamic value, Type serialType) {
-    var converter = associatedConverters[serialType];
-    if (converter == null) {
-      throw Exception("Couldn't find an converter for $serialType");
-    }
-    return converter.convertToNative(value, this);
-  }
-  
-  dynamic convertObjectFromNativeOperation(dynamic value, Type serialType) {
-    var converter = _nativeSerialization.forType(serialType, this);
-    return converter.deserialize(value, this);
-  }
-
-  dynamic convertObjectToNativeOperation(dynamic value, Type serialType) {
-    var converter = _nativeSerialization.forType(serialType, this);
-    return converter.serialize(value, this);
-  }
-
-  dynamic convertIterableToNative(
-      dynamic value, Type serialType, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertObjectToNative(value, serialType);
-    } else {
-      var converter = associatedConverters[serialType];
-      if (converter == null) {
-        throw Exception("Couldn't find an converter for $serialType");
-      }
-      if (value is! Iterable) throw Exception("value is not iterable");
-      return value.map((e) => converter.convertToNative(e, this)).toList();
-    }
-  }
-
-  dynamic convertIterableFromNative(
-      dynamic value, Type serialType, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertObjectFromNative(value, serialType);
-    } else {
-      var converter = associatedConverters[serialType];
-      if (converter == null) {
-        throw Exception("Couldn't find an converter for $serialType");
-      }
-      if (value is! Iterable) throw Exception("value is not iterable");
-      return adjustIterable(
-          value.map((e) => converter.convertFromNative(e, this)), kind);
-    }
+    return _graphSerialization.forType(serialType, this).deserialize(value, this);
   }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
-  dynamic convertIterableFromGraph(
-      DogGraphValue value, Type type, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return convertObjectFromGraph(value, type);
-    } else {
-      if (value is! DogList) throw Exception("Expected a list");
-      var items = value.value.map((e) => convertObjectFromGraph(e, type));
-      return adjustIterable(items, kind);
-    }
+  dynamic convertIterableFromGraph(DogGraphValue value, Type serialType, IterableKind kind) {
+    return _graphSerialization.forType(serialType, this).deserializeIterable(value, this, kind);
+  }
+
+  dynamic convertObjectToNative(dynamic value, Type serialType) {
+    return _nativeSerialization.forType(serialType, this).serialize(value, this);
+  }
+
+  dynamic convertObjectFromNative(dynamic value, Type serialType) {
+    return _nativeSerialization.forType(serialType, this).deserialize(value, this);
+  }
+
+  dynamic convertIterableToNative(
+      dynamic value, Type serialType, IterableKind kind) {
+    return _graphSerialization.forType(serialType, this).serializeIterable(value, this, kind);
+  }
+
+  dynamic convertIterableFromNative(
+      dynamic value, Type serialType, IterableKind kind) {
+    return _graphSerialization.forType(serialType, this).deserializeIterable(value, this, kind);
   }
 }
 

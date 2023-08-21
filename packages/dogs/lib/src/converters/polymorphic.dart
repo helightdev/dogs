@@ -67,64 +67,6 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
   };
 
   @override
-  dynamic convertFromGraph(DogGraphValue value, DogEngine engine) {
-    if (value is! DogMap && serializeNativeValues) {
-      return value.coerceNative();
-    }
-    var map = value.asMap!;
-    var typeValue = map.value[typePropertyKey]!.asString!;
-    var structure = engine.findSerialName(typeValue)!;
-    var converter = engine.associatedConverters[structure.typeArgument]!;
-    if (map.value.length == 2 && map.value.containsKey(valuePropertyKey)) {
-      var simpleValue = map.value[valuePropertyKey]!;
-      return converter.convertFromGraph(simpleValue, engine);
-    } else {
-      var clone = map.clone().asMap!;
-      clone.value.remove(typePropertyKey);
-      return converter.convertFromGraph(clone, engine);
-    }
-  }
-
-  @override
-  DogGraphValue convertToGraph(dynamic value, DogEngine engine) {
-    if (engine.codec.isNative(value.runtimeType) && serializeNativeValues) {
-      return engine.codec.fromNative(value);
-    }
-    var type = value.runtimeType;
-    var converter = engine.associatedConverters[type]!;
-    var structure = engine.structures[type]!;
-    var graphValue = converter.convertToGraph(value, engine);
-    if (graphValue is DogMap) {
-      var valueMap = graphValue.asMap!;
-      valueMap.value[typePropertyKey] = DogString(structure.serialName);
-      return valueMap;
-    } else {
-      return DogMap({
-        typePropertyKey: DogString(structure.serialName),
-        valuePropertyKey: graphValue
-      });
-    }
-  }
-
-  DogGraphValue iterableToGraph(Iterable iterable, DogEngine engine) {
-    return DogList(iterable.map((e) => convertToGraph(e, engine)).toList());
-  }
-
-  Iterable iterableFromGraph(DogGraphValue value, DogEngine engine) {
-    return value.asList!.value.map((e) => convertFromGraph(e, engine));
-  }
-
-  DogMap mapToGraph(Map map, DogEngine engine) {
-    return DogMap(map.map((key, value) =>
-        MapEntry(convertToGraph(key, engine), convertToGraph(value, engine))));
-  }
-
-  Map mapFromGraph(DogMap map, DogEngine engine) {
-    return map.value.map((key, value) => MapEntry(
-        convertFromGraph(key, engine), convertFromGraph(value, engine)));
-  }
-
-  @override
   APISchemaObject get output => APISchemaObject.object({
         "_type": APISchemaObject.string(),
       })
@@ -157,19 +99,6 @@ class DefaultListConverter extends DogConverter<List> with OperationMapMixin<Lis
   };
 
   @override
-  List convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var list =
-        polymorphicConverter.iterableFromGraph(value.asList!, engine).toList();
-    if (cast != null) return cast!.castList(list);
-    return list;
-  }
-
-  @override
-  DogGraphValue convertToGraph(List value, DogEngine engine) {
-    return polymorphicConverter.iterableToGraph(value, engine);
-  }
-
-  @override
   APISchemaObject get output =>
       APISchemaObject.array(ofSchema: polymorphicConverter.output)
         ..title = cast == null
@@ -187,7 +116,6 @@ class DefaultSetConverter extends DogConverter<Set> with OperationMapMixin<Set> 
       keepIterables: true
   );
 
-
   @override
   Map<Type, OperationMode<Set> Function()> get modes => {
     NativeSerializerMode: () => NativeSerializerMode.create(
@@ -200,19 +128,6 @@ class DefaultSetConverter extends DogConverter<Set> with OperationMapMixin<Set> 
     ),
     GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
-
-  @override
-  Set convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var set =
-        polymorphicConverter.iterableFromGraph(value.asList!, engine).toSet();
-    if (cast != null) return cast!.castSet(set);
-    return set;
-  }
-
-  @override
-  DogGraphValue convertToGraph(Set value, DogEngine engine) {
-    return polymorphicConverter.iterableToGraph(value, engine);
-  }
 
   @override
   APISchemaObject get output =>
@@ -232,7 +147,6 @@ class DefaultIterableConverter extends DogConverter<Iterable> with OperationMapM
       keepIterables: true
   );
 
-
   @override
   Map<Type, OperationMode<Iterable> Function()> get modes => {
     NativeSerializerMode: () => NativeSerializerMode.create(
@@ -247,19 +161,6 @@ class DefaultIterableConverter extends DogConverter<Iterable> with OperationMapM
   };
 
   @override
-  Iterable convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var iterable =
-        polymorphicConverter.iterableFromGraph(value.asList!, engine);
-    if (cast != null) return cast!.castIterable(iterable);
-    return iterable;
-  }
-
-  @override
-  DogGraphValue convertToGraph(Iterable value, DogEngine engine) {
-    return polymorphicConverter.iterableToGraph(value, engine);
-  }
-
-  @override
   APISchemaObject get output =>
       APISchemaObject.array(ofSchema: polymorphicConverter.output)
         ..title = cast == null
@@ -271,14 +172,4 @@ class DefaultMapConverter extends DogConverter<Map> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   DefaultMapConverter() : super(isAssociated: false);
-
-  @override
-  Map convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return polymorphicConverter.mapFromGraph(value.asMap!, engine);
-  }
-
-  @override
-  DogGraphValue convertToGraph(Map value, DogEngine engine) {
-    return polymorphicConverter.mapToGraph(value, engine);
-  }
 }

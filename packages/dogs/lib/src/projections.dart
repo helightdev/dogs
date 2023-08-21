@@ -46,18 +46,15 @@ extension ProjectionExtension on DogEngine {
           elementValue = e.$2;
           elementType = e.$1;
         }
-        var converter = findAssociatedConverterOrThrow(elementType);
-        return converter.convertToNative(elementValue, this) as Map;
+        return convertObjectToNative(elementValue, elementType);
       })) {
        m.addAll(childMap);
       }
       data = m;
     } else if (value is (dynamic, Type)) {
-      var converter = findAssociatedConverterOrThrow(value.$2);
-      data = converter.convertToNative(value.$1, this);
+      data = convertObjectToNative(value.$1, value.$2);
     } else {
-      var converter = findAssociatedConverterOrThrow(value.runtimeType);
-      data = converter.convertToNative(value, this);
+      data = convertObjectToNative(value, value.runtimeType);
     }
 
     // Instantiate target object

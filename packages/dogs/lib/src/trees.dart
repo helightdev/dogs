@@ -80,37 +80,6 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
     if (opmodeType == GraphSerializerMode) return GraphSerializerMode.auto(this);
     return null;
   }
-
-  @override
-  convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var dogList = value as DogList;
-    var convertedItems = dogList.value.map((e) => converter.convertFromGraph(e, engine));
-    return tree.qualified.consumeTypeArg(iterableCreator, convertedItems);
-  }
-
-  @override
-  DogGraphValue convertToGraph(value, DogEngine engine) {
-    if (value == null) return const DogNull();
-    var iterable = tree.qualified.consumeTypeArg(iterableDestructor, value);
-    var convertedItems = iterable.map((e) => converter.convertToGraph(e, engine));
-    return DogList(convertedItems.toList());
-  }
-
-  @override
-  dynamic convertFromNative(dynamic value, DogEngine engine) {
-    if (value == null) return iterableCreator(Iterable.empty());
-    var nativeIterable = value as Iterable;
-    var convertedItems = nativeIterable.map((e) => converter.convertFromNative(e, engine));
-    return tree.qualified.consumeTypeArg(iterableCreator, convertedItems);
-  }
-
-  @override
-  dynamic convertToNative(dynamic value, DogEngine engine) {
-    if (value == null) return [];
-    var iterable = tree.qualified.consumeTypeArg(iterableDestructor, value);
-    var convertedItems = iterable.map((e) => converter.convertToNative(e, engine));
-    return convertedItems.toList();
-  }
 }
 
 class ListTreeBaseConverterFactory extends TreeBaseConverterFactory {
@@ -270,47 +239,6 @@ class MapTreeBaseConverter extends DogConverter {
     _mapBuffer = map;
     container.consume(castMapBuffer);
     return map;
-  }
-
-  @override
-  convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var container = TypeContainers.arg2(tree.arguments[0].qualified, tree.arguments[1].qualified);
-    var dogMap = value as DogMap;
-    var convertedItems = dogMap.value.map((key, value) => MapEntry(
-        keyConverter.convertFromGraph(key, engine),
-        valueConverter.convertFromGraph(value, engine)
-    ));
-    return finalizeMap(convertedItems, container);
-  }
-
-  @override
-  DogGraphValue convertToGraph(value, DogEngine engine) {
-    if (value == null) return const DogNull();
-    var convertedItems = (value as Map).map((key, value) => MapEntry(
-        keyConverter.convertToGraph(key, engine),
-        valueConverter.convertToGraph(value, engine)
-    ));
-    return DogMap(convertedItems);
-  }
-
-  @override
-  dynamic convertFromNative(dynamic value, DogEngine engine) {
-    var container = TypeContainers.arg2(tree.arguments[0].qualified, tree.arguments[1].qualified);
-    var convertedItems = (value as Map).map((key, value) => MapEntry(
-        keyConverter.convertFromNative(key, engine),
-        valueConverter.convertFromNative(value, engine)
-    ));
-    return finalizeMap(convertedItems, container);
-  }
-
-  @override
-  dynamic convertToNative(dynamic value, DogEngine engine) {
-    if (value == null) return null;
-    var convertedItems = (value as Map).map((key, value) => MapEntry(
-        keyConverter.convertToNative(key, engine),
-        valueConverter.convertToNative(value, engine)
-    ));
-    return convertedItems;
   }
 
 }
