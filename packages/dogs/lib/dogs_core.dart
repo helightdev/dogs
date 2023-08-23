@@ -37,6 +37,9 @@ export 'src/schema/schema.dart';
 export 'src/schema/visitor.dart';
 
 export 'src/structure/field.dart';
+export 'src/structure/graph.dart';
+export 'src/structure/harbinger.dart';
+export 'src/structure/native.dart';
 export 'src/structure/proxy.dart';
 export 'src/structure/structure.dart';
 export 'src/structure/validator.dart';

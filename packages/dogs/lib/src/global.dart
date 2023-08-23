@@ -40,10 +40,5 @@ String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
 /// Decodes this [json] to an [T] instance, using the [DogConverter] associated with [T].
 T fromJson<T>(String json) => DogEngine.instance.jsonDecode(json);
 
-/// Copies the [src] object and applies [overrides] to the created instance
-/// using the [Copyable] mixin associated with [T].
-T copy<T>(T src, [Map<String, dynamic>? overrides]) =>
-    DogEngine.instance.copy(src, overrides);
-
 @internal
 int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);

@@ -144,7 +144,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
           "$genAlias.DefaultStructureConverter<${codeContext.className(element)}>");
 
       builder.constructors.add(Constructor((constr) => constr
-        ..initializers.add(Code("super(s: const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())})"))
+        ..initializers.add(Code("super(struct: const ${structurized.structure.code(structurized.fieldNames.map((e) => "_$e").toList())})"))
       ));
 
       _defaultProxyMethods(structurized, builder, codeContext, element);

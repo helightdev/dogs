@@ -22,10 +22,6 @@ import 'package:dogs_core/dogs_core.dart';
 export 'modes/native.dart';
 export 'modes/graph.dart';
 
-export 'structure/harbinger.dart';
-export 'structure/native.dart';
-export 'structure/graph.dart';
-
 abstract interface class OperationMode<T> implements TypeCapture<T> {
   void initialise(DogEngine engine) {}
 }
@@ -97,6 +93,16 @@ class OperationModeCacheEntry<T extends OperationMode> {
     typeMapping[type] = mode;
     return mode;
   }
+
+  T? forTypeNullable(Type type, DogEngine engine) {
+    var cached = typeMapping[type];
+    if (cached != null) return cached as T;
+    var converter = engine.findAssociatedConverter(type);
+    if (converter == null) return null;
+    var mode = forConverter(converter, engine);
+    typeMapping[type] = mode;
+    return mode;
+  }
 }
 
 abstract class ContinuousSerializerMode<T> implements OperationMode<T> {
@@ -106,4 +112,33 @@ abstract class ContinuousSerializerMode<T> implements OperationMode<T> {
 
 abstract class ValidationMode<T> implements OperationMode<T> {
   bool validate(T value, DogEngine engine);
+
+  static ValidationMode<T> create<T,IR>({
+    IR? Function(DogEngine engine)? initializer,
+    required bool Function(T value, DogEngine engine, IR? cached) validator
+  }) {
+    IR? Function(DogEngine) initializerFunc = initializer ?? _InlineValidationMode._noInit;
+    return _InlineValidationMode(initializerFunc, validator);
+  }
+}
+
+class _InlineValidationMode<T,IR> extends ValidationMode<T> with TypeCaptureMixin<T> {
+
+  static IR? _noInit<IR>(DogEngine engine) => null;
+
+  IR? Function(DogEngine engine) initializer;
+  bool Function(T value, DogEngine engine, IR? cached) validator;
+
+  IR? _ir;
+
+  _InlineValidationMode(this.initializer, this.validator);
+
+  @override
+  void initialise(DogEngine engine) {
+    _ir = initializer(engine);
+  }
+
+  @override
+  bool validate(T value, DogEngine engine) => validator(value, engine, _ir);
+
 }

@@ -34,8 +34,6 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   /// Describes the converts output using openapi3 component specs.
   APISchemaObject get output => APISchemaObject.empty();
 
-  bool validate(T src, DogEngine engine) => true;
-
   void registrationCallback(DogEngine engine) {}
 
   DogConverter<T> fork(DogEngine forkEngine) => this;

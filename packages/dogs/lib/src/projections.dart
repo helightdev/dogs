@@ -19,47 +19,57 @@ import 'package:dogs_core/dogs_core.dart';
 
 extension ProjectionExtension on DogEngine {
 
-  TARGET project<TARGET>(dynamic value, [dynamic a, dynamic b, dynamic c]) {
-    var struct = findStructureByType(TARGET)!;
-    Map data;
+  dynamic createProjection(Type target, {
+    Iterable<Map>? properties,
+    Iterable<Object>? objects,
+  }) {
+    var struct = findStructureByType(target)!;
+    Map buffer = <String,dynamic>{};
+    objects?.forEach((element) {
+      var structure = findStructureByType(element.runtimeType)!;
+      Map result = structure.getFieldMap(element);
+      buffer.addAll(result);
+    });
+    properties?.forEach((element) {
+      buffer.addAll(element);
+    });
+    var fieldValues = struct.fields.map((e) => buffer[e]).toList();
+    return struct.proxy.instantiate(fieldValues);
+  }
 
+  TARGET project<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
-    if (value != null && (a != null || b != null || c != null)) {
+    if ((a != null || b != null || c != null)) {
       value = [
-        value,
-        if (a != null) a,
-        if (b != null) b,
-        if (c != null) c
+        ...value.asIterable(),
+        if (a != null) ...a.asIterable(),
+        if (b != null) ...b.asIterable(),
+        if (c != null) ...c.asIterable()
       ];
     }
 
-    // Initialize final data map
-    if (value is Map) {
-      data = value;
-    } else if (value is Iterable) {
-      Map m = {};
-      for (var childMap in value.map((e) {
-        if (e is Map) return e;
-        var elementType = e.runtimeType;
-        var elementValue = e;
-        if (e is (Type,dynamic)) {
-          elementValue = e.$2;
-          elementType = e.$1;
-        }
-        return convertObjectToNative(elementValue, elementType);
-      })) {
-       m.addAll(childMap);
+    var properties = <Map>[];
+    var objects = <Object>[];
+    for (var element in value.asIterable()) {
+      if (element is Map) {
+        properties.add(element);
+      } else {
+        objects.add(element);
       }
-      data = m;
-    } else if (value is (dynamic, Type)) {
-      data = convertObjectToNative(value.$1, value.$2);
-    } else {
-      data = convertObjectToNative(value, value.runtimeType);
     }
 
-    // Instantiate target object
-    var fieldValues = struct.fields.map((e) => data[e]).toList();
-    return struct.proxy.instantiate(fieldValues) as TARGET;
+    return createProjection(TARGET,
+      properties: properties,
+      objects: objects
+    );
   }
+}
 
+extension on Object {
+  Iterable asIterable() {
+    if (this is Iterable) {
+      return this as Iterable;
+    }
+    return [this];
+  }
 }

@@ -19,6 +19,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/src/projections.dart';
 
 /*
 Note: This dataclass implementation is pretty optimised for being runtime-only
@@ -77,9 +78,8 @@ bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
   return provider;
 }
 
-bool kInjectProvidersOnConstruct = true;
-
 mixin Dataclass<T> {
+
   bool get isValid => DogEngine.instance.validateObject(this, T);
   void validate() => DogEngine.instance.validate<T>(this as T);
 

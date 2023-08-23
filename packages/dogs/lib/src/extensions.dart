@@ -16,6 +16,7 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 extension DogValueExtension on DogGraphValue {
@@ -104,12 +105,6 @@ extension DogEngineShortcuts on DogEngine {
     if (!isValid) throw ValidationException();
   }
 
-  /// Creates a copy of the supplied [value] using the [Copyable] associated
-  /// with [T]. All given [overrides] will be applied on the resulting object.
-  T copy<T>(T value, [Map<String, dynamic>? overrides]) {
-    return copyObject(value, overrides, T);
-  }
-
   /// Converts a [value] to its [DogGraphValue] representation using the
   /// converter associated with [T].
   DogGraphValue toGraph<T>(T value,
@@ -145,10 +140,6 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
   @override
   Iterable<T> castIterable(Iterable<T> iterable) => iterable.cast<T>();
 
-  T copy([Map<String, dynamic>? overrides]) {
-    return DogEngine.instance.copyObject(this, overrides, runtimeType);
-  }
-
   bool get isValid => DogEngine.instance.validateObject(this, T);
   void validate() => DogEngine.instance.validate<T>(this as T);
 
@@ -161,6 +152,10 @@ mixin DogsMixin<T> on Object implements TypeCapture<T> {
 extension StructureExtensions on DogStructure {
   List<dynamic Function(dynamic)> get getters => List.generate(
       fields.length, (index) => (obj) => this.proxy.getField(obj, index));
+
+  Map<String,dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
+      fields.mapIndexed((i,e) => MapEntry(e.name, proxy.getField(obj, i)))
+  );
 
   List<T> metadataOf<T>() {
     return annotations.whereType<T>().toList();

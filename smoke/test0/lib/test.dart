@@ -31,28 +31,20 @@ Future main() async {
 }
 
 void testOperations() {
-  print("-- A");
   testOperation(ModelA, ModelA.variant0(), deepEquality.equals);
   testOperation(ModelA, ModelA.variant1(), deepEquality.equals);
-  print("-- B");
   testOperation(ModelB, ModelB.variant0(), deepEquality.equals);
   testOperation(ModelB, ModelB.variant1(), deepEquality.equals);
-  print("-- C");
   testOperation(ModelC, ModelC.variant0(), deepEquality.equals);
   testOperation(ModelC, ModelC.variant1(), deepEquality.equals);
-  print("-- D");
   testOperation(ModelD, ModelD.variant0(), deepEquality.equals);
   testOperation(ModelD, ModelD.variant1(), deepEquality.equals);
-  print("-- E");
   testOperation(ModelE, ModelE.variant0(), deepEquality.equals);
   testOperation(ModelE, ModelE.variant1(), deepEquality.equals);
-  print("-- F");
   testOperation(ModelF, ModelF.variant0(), deepEquality.equals);
   testOperation(ModelF, ModelF.variant1(), deepEquality.equals);
-  print("-- G");
   testOperation(ModelG, ModelG.variant0(), deepEquality.equals);
   testOperation(ModelG, ModelG.variant1(), deepEquality.equals);
-  print("-- Done");
 }
 
 void testTrees() {
@@ -176,7 +168,6 @@ void testTypeTree(TypeTree tree, dynamic initialValue, bool Function(dynamic a, 
   NativeSerializerMode nativeMode = converter.resolveOperationMode(NativeSerializerMode)! as NativeSerializerMode;
   graphMode.initialise(dogs);
   nativeMode.initialise(dogs);
-
   var resultGraph = graphMode.serialize(initialValue, dogs);
   var resultNative = nativeMode.serialize(initialValue, dogs);
   //print(resultNative);

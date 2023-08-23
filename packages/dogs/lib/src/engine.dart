@@ -250,22 +250,13 @@ class DogEngine {
     }
   }
 
-  /// Creates a copy of the supplied [value] using the [Copyable] associated
-  /// with [type] or the [runtimeType] of value. All given [overrides] will
-  /// be applied on the resulting object.
-  dynamic copyObject(dynamic value,
-      [Map<String, dynamic>? overrides, Type? type]) {
-    var queryType = type ?? value;
-    var cloneable = copyables[queryType]!;
-    return cloneable.copy(value, this, overrides);
-  }
-
   /// Validates the supplied [value] using the [Validatable] mapped to the
   /// [value]s runtime type or [type] if specified.
   bool validateObject(dynamic value, [Type? type]) {
     var queryType = type ?? value.runtimeType;
-    var validatable = associatedConverters[queryType]!;
-    return validatable.validate(value, this);
+    var operation = _validation.forTypeNullable(queryType, this);
+    if (operation == null) return true;
+    return operation.validate(value, this);
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the
