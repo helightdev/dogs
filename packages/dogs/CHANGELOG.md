@@ -1,3 +1,12 @@
+## 6.0.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **REFACTOR**: fix new projection algorithm, finish operation mode refactoring.
+ - **BREAKING** **REFACTOR**: cleanup structure, modify projection algorithm.
+ - **BREAKING** **REFACTOR**: remove old non-operation methods.
+ - **BREAKING** **FEAT**: prepare switch to operations.
+
 ## 5.0.3
 
  - **FIX**: findConverter extension now works as expected.
