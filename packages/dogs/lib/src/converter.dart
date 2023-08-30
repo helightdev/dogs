@@ -23,7 +23,7 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   final bool keepIterables;
   final DogStructure<T>? struct;
 
-  DogConverter({
+  const DogConverter({
     this.struct,
     this.isAssociated = true,
     this.keepIterables = false

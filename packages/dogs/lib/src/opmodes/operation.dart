@@ -21,6 +21,7 @@ import 'package:dogs_core/dogs_core.dart';
 
 export 'modes/native.dart';
 export 'modes/graph.dart';
+export 'modes/validation.dart';
 
 abstract interface class OperationMode<T> implements TypeCapture<T> {
   void initialise(DogEngine engine) {}
@@ -39,13 +40,11 @@ class OperationModeRegistry {
   
   late OperationModeCacheEntry<NativeSerializerMode> nativeSerialization;
   late OperationModeCacheEntry<GraphSerializerMode> graphSerialization;
-  late OperationModeCacheEntry<ContinuousSerializerMode> continuousSerialization;
   late OperationModeCacheEntry<ValidationMode> validation;
 
   OperationModeRegistry() {
     nativeSerialization = entry<NativeSerializerMode>();
     graphSerialization = entry<GraphSerializerMode>();
-    continuousSerialization = entry<ContinuousSerializerMode>();
     validation = entry<ValidationMode>();
   }
 
@@ -103,42 +102,4 @@ class OperationModeCacheEntry<T extends OperationMode> {
     typeMapping[type] = mode;
     return mode;
   }
-}
-
-abstract class ContinuousSerializerMode<T> implements OperationMode<T> {
-  void write(T value, DogWriter writer, DogEngine engine);
-  T read(DogReader reader, DogEngine engine);
-}
-
-abstract class ValidationMode<T> implements OperationMode<T> {
-  bool validate(T value, DogEngine engine);
-
-  static ValidationMode<T> create<T,IR>({
-    IR? Function(DogEngine engine)? initializer,
-    required bool Function(T value, DogEngine engine, IR? cached) validator
-  }) {
-    IR? Function(DogEngine) initializerFunc = initializer ?? _InlineValidationMode._noInit;
-    return _InlineValidationMode(initializerFunc, validator);
-  }
-}
-
-class _InlineValidationMode<T,IR> extends ValidationMode<T> with TypeCaptureMixin<T> {
-
-  static IR? _noInit<IR>(DogEngine engine) => null;
-
-  IR? Function(DogEngine engine) initializer;
-  bool Function(T value, DogEngine engine, IR? cached) validator;
-
-  IR? _ir;
-
-  _InlineValidationMode(this.initializer, this.validator);
-
-  @override
-  void initialise(DogEngine engine) {
-    _ir = initializer(engine);
-  }
-
-  @override
-  bool validate(T value, DogEngine engine) => validator(value, engine, _ir);
-
 }

@@ -9,7 +9,7 @@ import 'package:benchmarks/dataclasses.dart';
 class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter<gen2.DogBenchmarkDataclassEntity> {
   DogBenchmarkDataclassEntityConverter()
       : super(
-            s: const gen.DogStructure<gen2.DogBenchmarkDataclassEntity>(
+            struct: const gen.DogStructure<gen2.DogBenchmarkDataclassEntity>(
                 'DogBenchmarkDataclassEntity',
                 gen.StructureConformity.dataclass,
                 [

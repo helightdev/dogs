@@ -115,7 +115,7 @@ class DogSchema {
   }
 
   APIComponents retrieveComponents() {
-    var schemas = Map.fromEntries(DogEngine.instance.structures.values
+    var schemas = Map<String, APISchemaObject>.fromEntries(DogEngine.instance.structures.values
         .where((element) => !element.isSynthetic)
         .map((e) => getStructureSchema(e)));
     return APIComponents()..schemas = schemas;

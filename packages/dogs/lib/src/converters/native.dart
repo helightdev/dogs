@@ -16,7 +16,24 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
-/// Interface for providing [DogEngine.copy]
-abstract class Copyable<T> {
-  T copy(T src, DogEngine engine, Map<String, dynamic>? overrides);
+class NativeRetentionConverter<T> extends DogConverter<T> with OperationMapMixin<T> {
+
+  const NativeRetentionConverter() : super();
+
+  @override
+  Map<Type, OperationMode<T> Function()> get modes => {
+    NativeSerializerMode: () => NativeSerializerMode.create(
+        serializer: (value,engine) => value,
+        deserializer: (value,engine) => value
+    ),
+    GraphSerializerMode: () => GraphSerializerMode.create(
+        serializer: (value,engine) => engine.codec.fromNative(value),
+        deserializer: (value,engine) => (value as DogNative).value as T
+    )
+  };
+
+  @override
+  String toString() {
+    return 'Native<$T>';
+  }
 }

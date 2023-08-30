@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 #    Copyright 2022, the DOGs authors
 #
@@ -14,6 +15,7 @@
 #    limitations under the License.
 #
 
+set -e
 
 # ======== Smoke Test 0 ========
 # Provides test covering the core

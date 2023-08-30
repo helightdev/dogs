@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 #    Copyright 2022, the DOGs authors
 #
@@ -15,5 +16,6 @@
 #
 
 dart pub get
+dart pub upgrade
 dart run build_runner build --delete-conflicting-outputs --verbose
 dart run lib/test.dart

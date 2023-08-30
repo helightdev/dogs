@@ -37,7 +37,6 @@ abstract class ClassValidator {
 
 class ValidationException implements Exception {}
 
-
 class StructureValidation<T> extends ValidationMode<T> with TypeCaptureMixin<T> {
   DogStructure<T> structure;
 

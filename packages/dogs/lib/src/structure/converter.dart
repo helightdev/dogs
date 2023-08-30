@@ -17,7 +17,7 @@
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-abstract class DefaultStructureConverter<T> extends DogConverter<T> implements Copyable<T> {
+abstract class DefaultStructureConverter<T> extends DogConverter<T> {
 
   DefaultStructureConverter({
     required super.struct
@@ -31,7 +31,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> implements C
     if (opmodeType == NativeSerializerMode) return StructureNativeSerialization(struct!);
     if (opmodeType == GraphSerializerMode) return StructureGraphSerialization(struct!);
     if (opmodeType == ValidationMode) return StructureValidation(struct!);
-    return null;
+    return structureOperationFactories[opmodeType]?.resolve(struct!) as OperationMode<T>?;
   }
 
   @override
@@ -54,6 +54,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> implements C
       ..referenceURI = Uri(path: "/components/schemas/${struct!.serialName}");
   }
 
+  /*
   @override
   T copy(T src, DogEngine engine, Map<String, dynamic>? overrides) {
     if (overrides == null) {
@@ -72,6 +73,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> implements C
       return struct!.proxy.instantiate(values);
     }
   }
+   */
 }
 
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {

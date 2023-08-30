@@ -8,7 +8,7 @@ import 'package:benchmarks/serializables.dart';
 class DogPersonConverter extends gen.DefaultStructureConverter<gen1.DogPerson> {
   DogPersonConverter()
       : super(
-            s: const gen.DogStructure<gen1.DogPerson>(
+            struct: const gen.DogStructure<gen1.DogPerson>(
                 'DogPerson',
                 gen.StructureConformity.basic,
                 [

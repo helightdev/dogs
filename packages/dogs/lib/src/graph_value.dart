@@ -82,7 +82,9 @@ abstract class DogGraphValue {
 
 class DogNative extends DogGraphValue {
   final Object value;
-  const DogNative(this.value);
+  final String? label;
+
+  const DogNative(this.value, [this.label]);
 
   @override
   dynamic coerceNative() {
@@ -107,6 +109,15 @@ class DogNative extends DogGraphValue {
   @override
   DogGraphValue clone() {
     return this;
+  }
+
+  @override
+  String describe(int indent) {
+    if (label == null) {
+      return "Native: $value";
+    } else {
+      return "Native[$label]: $value";
+    }
   }
 }
 

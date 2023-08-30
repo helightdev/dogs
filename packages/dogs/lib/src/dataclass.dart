@@ -15,11 +15,8 @@
  */
 
 import 'dart:collection';
-import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/src/projections.dart';
 
 /*
 Note: This dataclass implementation is pretty optimised for being runtime-only

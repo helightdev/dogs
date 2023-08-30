@@ -18,6 +18,7 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/dogs_validation.dart';
 import 'package:test/test.dart';
 
+//TODO: Fix this, currently doesn't work, but is also not really used since most stuff is only smoke tested
 void main() {
   var emptyEngine = DogEngine(); // Empty engine
   group("Strings", () {

@@ -16,6 +16,7 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
+@Deprecated("Will be removed in future version")
 abstract class DogSerializer {
   dynamic serialize(DogGraphValue value);
   DogGraphValue deserialize(dynamic value);

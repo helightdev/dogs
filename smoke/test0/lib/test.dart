@@ -5,29 +5,48 @@ import 'package:dogs_yaml/dogs_yaml.dart';
 import 'package:logging/logging.dart';
 import 'package:smoke_test_0/dogs.g.dart';
 import 'package:smoke_test_0/validation.dart';
+import 'dart:io';
 
 import 'conformities.dart';
 import 'models.dart';
 
 Future main() async {
-  await initialiseDogs();
-  testModels();
-  print("-- Model test passed");
-  testOperations();
-  print("-- Operations test passed");
-  testConformities();
-  print("-- Conformity test passed");
-  testValidators();
-  print("-- Validator test passed");
-  testTrees();
-  print("-- TypeTree test passed");
-  testCbor();
-  print("-- Cbor test passed");
-  testYaml();
-  print("-- Yaml test passed");
-  testToml();
-  print("-- Toml test passed");
-  print("All tests passed");
+  try {
+    await initialiseDogs();
+    testModels();
+    print("-- Model test passed");
+    testOperations();
+    print("-- Operations test passed");
+    testConformities();
+    print("-- Conformity test passed");
+    testValidators();
+    print("-- Validator test passed");
+    testTrees();
+    print("-- TypeTree test passed");
+    testCbor();
+    print("-- Cbor test passed");
+    testYaml();
+    print("-- Yaml test passed");
+    testToml();
+    print("-- Toml test passed");
+    testProjection();
+    print("-- Projection test passed");
+    print("All tests passed");
+  } catch(ex,st) {
+    print("$ex: $st");
+    exit(1);
+  }
+}
+
+void testProjection() {
+  var result = dogs.project<Note>(Note.variant0(), {
+    "tags": {"new"},
+  }, [{
+    "content": "AABBCC"
+  }]);
+  if (result.title != Note.variant0().title) throw Exception("Object to FieldMap doesn't work");
+  if (result.tags.first != "new") throw Exception("Properties don't work");
+  if (result.content != "AABBCC") throw Exception("Iterables don't work");
 }
 
 void testOperations() {
@@ -55,6 +74,7 @@ void testTrees() {
   testTypeTree(QualifiedTypeTree.iterable<ModelD>(), [ModelD.variant0(), ModelD.variant1()], deepEquality.equals);
   testTypeTree(QualifiedTypeTree.iterable<ModelE>(), [ModelE.variant0(), ModelE.variant1()], deepEquality.equals);
   testTypeTree(QualifiedTypeTree.iterable<ModelF>(), [ModelF.variant0(), ModelF.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.iterable<ModelG>(), [ModelG.variant0(), ModelG.variant1()], deepEquality.equals);
   testTypeTree(QualifiedTypeTree.iterable<dynamic>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
   // Lists
   testTypeTree(QualifiedTypeTree.list<ModelA>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
@@ -63,6 +83,7 @@ void testTrees() {
   testTypeTree(QualifiedTypeTree.list<ModelD>(), [ModelD.variant0(), ModelD.variant1()], deepEquality.equals);
   testTypeTree(QualifiedTypeTree.list<ModelE>(), [ModelE.variant0(), ModelE.variant1()], deepEquality.equals);
   testTypeTree(QualifiedTypeTree.list<ModelF>(), [ModelF.variant0(), ModelF.variant1()], deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.list<ModelG>(), [ModelG.variant0(), ModelG.variant1()], deepEquality.equals);
   testTypeTree(QualifiedTypeTree.list<dynamic>(), [ModelA.variant0(), ModelA.variant1()], deepEquality.equals);
   // Sets
   testTypeTree(QualifiedTypeTree.set<ModelA>(), {ModelA.variant0(), ModelA.variant1()}, deepEquality.equals);
@@ -71,6 +92,7 @@ void testTrees() {
   testTypeTree(QualifiedTypeTree.set<ModelD>(), {ModelD.variant0(), ModelD.variant1()}, deepEquality.equals);
   testTypeTree(QualifiedTypeTree.set<ModelE>(), {ModelE.variant0(), ModelE.variant1()}, deepEquality.equals);
   testTypeTree(QualifiedTypeTree.set<ModelF>(), {ModelF.variant0(), ModelF.variant1()}, deepEquality.equals);
+  testTypeTree(QualifiedTypeTree.set<ModelG>(), {ModelG.variant0(), ModelG.variant1()}, deepEquality.equals);
   testTypeTree(QualifiedTypeTree.set<dynamic>(), {ModelA.variant0(), ModelA.variant1()}, deepEquality.equals);
 
   testTypeTree(QualifiedTypeTree.map<String, int>(), {"Hello": 12, "value": 35}, deepEquality.equals);
@@ -123,6 +145,7 @@ void testModels() {
   testSingleModel(ModelD.variant0, ModelD.variant1);
   testSingleModel(ModelE.variant0, ModelE.variant1);
   testSingleModel(ModelF.variant0, ModelF.variant1);
+  testSingleModel(ModelG.variant0, ModelG.variant1);
   testSingleModel(Note.variant0, Note.variant1);
 }
 
@@ -181,6 +204,8 @@ void testTypeTree(TypeTree tree, dynamic initialValue, bool Function(dynamic a, 
 void testOperation(Type type, dynamic initialValue, bool Function(dynamic a, dynamic b) comparator) {
   var nativeOperation = dogs.modeRegistry.nativeSerialization.forType(type, dogs);
   var graphOperation = dogs.modeRegistry.graphSerialization.forType(type, dogs);
+  nativeOperation.initialise(dogs);
+  graphOperation.initialise(dogs);
   var resultGraph = graphOperation.serialize(initialValue, dogs);
   var resultNative = nativeOperation.serialize(initialValue, dogs);
   //print(resultNative);
@@ -241,7 +266,7 @@ void testSingleModel<T>(T Function() a, T Function() b) {
   var eb = dogs.jsonEncode<T>(vb0);
   var da = dogs.jsonDecode<T>(ea);
   var db = dogs.jsonDecode<T>(eb);
-  if (va1 != da || va0 != da) throw Exception("Non-pure serialization");
-  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization");
-  if (ea == eb) throw Exception("Wrong equality");
+  if (va1 != da || va0 != da) throw Exception("Non-pure serialization: $T");
+  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization: $T");
+  if (ea == eb) throw Exception("Wrong equality: $T");
 }

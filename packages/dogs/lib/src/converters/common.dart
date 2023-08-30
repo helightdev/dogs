@@ -21,143 +21,6 @@ import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/src/opmodes/operation.dart';
 
-
-class StringConverter extends DogConverter<String> with OperationMapMixin<String> {
-
-  StringConverter() : super();
-
-  @override
-  Map<Type, OperationMode<String> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value,
-        deserializer: (value, engine) => value
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
-
-  @override
-  String convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return (value as DogString).value;
-  }
-
-  @override
-  DogGraphValue convertToGraph(String value, DogEngine engine) {
-    return DogString(value);
-  }
-
-  @override
-  String convertFromNative(dynamic value, DogEngine engine) {
-    return value;
-  }
-
-  @override
-  dynamic convertToNative(String value, DogEngine engine) {
-    return value;
-  }
-}
-
-class IntConverter extends DogConverter<int> with OperationMapMixin<int> {
-
-  IntConverter() : super();
-
-  @override
-  Map<Type, OperationMode<int> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value,
-        deserializer: (value, engine) => value
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
-
-  @override
-  int convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return (value as DogInt).value;
-  }
-
-  @override
-  DogGraphValue convertToGraph(int value, DogEngine engine) {
-    return DogInt(value);
-  }
-
-  @override
-  int convertFromNative(dynamic value, DogEngine engine) {
-    return value;
-  }
-
-  @override
-  dynamic convertToNative(int value, DogEngine engine) {
-    return value;
-  }
-}
-
-class DoubleConverter extends DogConverter<double> with OperationMapMixin<double> {
-
-  DoubleConverter() : super();
-
-  @override
-  Map<Type, OperationMode<double> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value,
-        deserializer: (value, engine) => value
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
-
-  @override
-  double convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return (value as DogDouble).value;
-  }
-
-  @override
-  DogGraphValue convertToGraph(double value, DogEngine engine) {
-    return DogDouble(value);
-  }
-
-  @override
-  double convertFromNative(dynamic value, DogEngine engine) {
-    return value;
-  }
-
-  @override
-  dynamic convertToNative(double value, DogEngine engine) {
-    return value;
-  }
-}
-
-class BoolConverter extends DogConverter<bool> with OperationMapMixin<bool> {
-
-  BoolConverter() : super();
-
-  @override
-  Map<Type, OperationMode<bool> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value,
-        deserializer: (value, engine) => value
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
-
-  @override
-  bool convertFromGraph(DogGraphValue value, DogEngine engine) {
-    return (value as DogBool).value;
-  }
-
-  @override
-  DogGraphValue convertToGraph(bool value, DogEngine engine) {
-    return DogBool(value);
-  }
-
-  @override
-  bool convertFromNative(dynamic value, DogEngine engine) {
-    return value;
-  }
-
-  @override
-  dynamic convertToNative(bool value, DogEngine engine) {
-    return value;
-  }
-}
-
 /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
 /// Iso8601 string.
 class DateTimeConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
@@ -176,25 +39,12 @@ class DateTimeConverter extends DogConverter<DateTime> with OperationMapMixin<Da
   };
 
   @override
-  DateTime convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var stringValue = value.asString!;
-    var datetime = DateTime.parse(stringValue);
-    return datetime;
-  }
-
-  @override
-  DogGraphValue convertToGraph(DateTime value, DogEngine engine) {
-    var stringValue = value.toIso8601String();
-    return DogString(stringValue);
-  }
-
-  @override
   APISchemaObject get output => APISchemaObject.string(format: "date-time");
 
 }
 
-/// [DogConverter] for [Duration] instances which encode the time difference
-/// in milliseconds as an integer
+/// [DogConverter] for [Duration] instances which encode a duration as a
+/// Iso8601 string.
 class DurationConverter extends DogConverter<Duration> with OperationMapMixin<Duration> {
 
   DurationConverter() : super(
@@ -204,25 +54,86 @@ class DurationConverter extends DogConverter<Duration> with OperationMapMixin<Du
   @override
   Map<Type, OperationMode<Duration> Function()> get modes => {
     NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value.inMilliseconds,
-        deserializer: (value, engine) => Duration(milliseconds: value)
+        serializer: (value, engine) => _writeIso8601Duration(value),
+        deserializer: (value, engine) => _parseDuration(value)
     ),
     GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
 
   @override
-  Duration convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var intValue = value.asInt!;
-    return Duration(milliseconds: intValue);
-  }
-
-  @override
-  DogGraphValue convertToGraph(Duration value, DogEngine engine) {
-    return DogInt(value.inMilliseconds);
-  }
-
-  @override
   APISchemaObject get output => APISchemaObject.integer();
+
+  // From https://github.com/google/built_value.dart/blob/master/built_value/lib/iso_8601_duration_serializer.dart
+  Duration _parseDuration(String value) {
+    final match = _parseFormat.firstMatch(value);
+    if (match == null) {
+      throw FormatException('Invalid duration format', value);
+    }
+    // Iterate through the capture groups to build the unit mappings.
+    final unitMappings = <String, int>{};
+
+    // Start iterating at 1, because match[0] is the full match.
+    for (var i = 1; i <= match.groupCount; i++) {
+      final group = match[i];
+      if (group == null) continue;
+
+      // Get all but last character in group.
+      // The RegExp ensures this must be an int.
+      final value = int.parse(group.substring(0, group.length - 1));
+      // Get last character.
+      final unit = group.substring(group.length - 1);
+      unitMappings[unit] = value;
+    }
+    return Duration(
+      days: unitMappings[_dayToken] ?? 0,
+      hours: unitMappings[_hourToken] ?? 0,
+      minutes: unitMappings[_minuteToken] ?? 0,
+      seconds: unitMappings[_secondToken] ?? 0,
+    );
+  }
+
+  String _writeIso8601Duration(Duration duration) {
+    if (duration == Duration.zero) {
+      return 'PT0S';
+    }
+    final days = duration.inDays;
+    final hours = (duration - Duration(days: days)).inHours;
+    final minutes = (duration - Duration(days: days, hours: hours)).inMinutes;
+    final seconds =
+        (duration - Duration(days: days, hours: hours, minutes: minutes))
+            .inSeconds;
+    final remainder = duration -
+        Duration(days: days, hours: hours, minutes: minutes, seconds: seconds);
+
+    if (remainder != Duration.zero) {
+      throw ArgumentError.value(duration, 'duration',
+          'Contains sub-second data which cannot be serialized.');
+    }
+    final buffer = StringBuffer(_durationToken)
+      ..write(days == 0 ? '' : '$days$_dayToken');
+    if (!(hours == 0 && minutes == 0 && seconds == 0)) {
+      buffer
+        ..write(_timeToken)
+        ..write(hours == 0 ? '' : '$hours$_hourToken')
+        ..write(minutes == 0 ? '' : '$minutes$_minuteToken')
+        ..write(seconds == 0 ? '' : '$seconds$_secondToken');
+    }
+    return buffer.toString();
+  }
+
+  // The unit tokens.
+  static const _durationToken = 'P';
+  static const _dayToken = 'D';
+  static const _timeToken = 'T';
+  static const _hourToken = 'H';
+  static const _minuteToken = 'M';
+  static const _secondToken = 'S';
+
+  // The parse format for ISO8601 durations.
+  static final _parseFormat = RegExp(
+    '^P(?!\$)(0D|[1-9][0-9]*D)?'
+        '(?:T(?!\$)(0H|[1-9][0-9]*H)?(0M|[1-9][0-9]*M)?(0S|[1-9][0-9]*S)?)?\$',
+  );
 }
 
 /// [DogConverter] for [Uri] instances which encodes the uri into a string.
@@ -240,17 +151,6 @@ class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
     ),
     GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
-  
-  @override
-  Uri convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var stringValue = value.asString!;
-    return Uri.parse(stringValue);
-  }
-
-  @override
-  DogGraphValue convertToGraph(Uri value, DogEngine engine) {
-    return DogString(value.toString());
-  }
 
   @override
   APISchemaObject get output => APISchemaObject.string(format: "uri");
@@ -272,18 +172,6 @@ class Uint8ListConverter extends DogConverter<Uint8List> with OperationMapMixin<
     ),
     GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
-  
-  @override
-  Uint8List convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var stringValue = value.asString!;
-    return base64Decode(stringValue);
-  }
-
-  @override
-  DogGraphValue convertToGraph(Uint8List value, DogEngine engine) {
-    var stringValue = base64Encode(value);
-    return DogString(stringValue);
-  }
 
   @override
   APISchemaObject get output => APISchemaObject.string(format: "byte");

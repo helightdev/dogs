@@ -23,15 +23,11 @@ export 'package:lyell/lyell.dart';
 
 export 'src/converters/common.dart';
 export 'src/converters/enum.dart';
+export 'src/converters/native.dart';
 export 'src/converters/polymorphic.dart';
-export 'src/converters/structure.dart';
-
-export 'src/dataclass/copyable.dart';
-export 'src/dataclass/validatable.dart';
+export 'src/structure/converter.dart';
 
 export 'src/opmodes/operation.dart';
-export 'src/opmodes/primitive_buffer.dart';
-export 'src/opmodes/schemaless.dart';
 
 export 'src/schema/schema.dart';
 export 'src/schema/visitor.dart';
@@ -54,6 +50,8 @@ export 'src/extensions.dart';
 export 'src/global.dart';
 export 'src/graph_value.dart';
 export 'src/json.dart';
+export 'src/optional.dart';
+export 'src/projections.dart';
 export 'src/serializer.dart';
 export 'src/visitor.dart';
 export 'src/trees.dart';

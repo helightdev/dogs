@@ -15,8 +15,9 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_streamed/dogs_streamed.dart';
 
-/// Interface for providing [DogEngine.validate]
-abstract class Validatable<T> {
-  bool validate(T src, DogEngine engine);
+abstract class StreamedSerializationMode<T> implements OperationMode<T> {
+  void write(T value, DogWriter writer, DogEngine engine);
+  T read(DogReader reader, DogEngine engine);
 }

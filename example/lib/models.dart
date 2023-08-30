@@ -4,7 +4,7 @@ import 'package:example/example.dart';
 
 @serializable
 @Description("A random unique person")
-class Person with DogsMixin<Person> {
+class Person with Dataclass<Person> {
   @Description("The name of the person")
   @LengthRange(min: 1, max: 128)
   @Regex("([A-Z])+([a-z])*")
@@ -35,7 +35,7 @@ class Person with DogsMixin<Person> {
 
 @serializable
 @TestStructureAnnotation("Note Outer")
-class Note with DogsMixin<Note> {
+class Note with Dataclass<Note> {
   String text;
 
   @TestStructureAnnotation("Note Inner")

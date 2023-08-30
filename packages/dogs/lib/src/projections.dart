@@ -17,23 +17,35 @@
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
+typedef ProjectionTransformer = Map<String,dynamic> Function(Map<String,dynamic> data);
+
 extension ProjectionExtension on DogEngine {
 
   dynamic createProjection(Type target, {
     Iterable<Map>? properties,
     Iterable<Object>? objects,
+    Iterable<ProjectionTransformer>? transformers,
   }) {
     var struct = findStructureByType(target)!;
-    Map buffer = <String,dynamic>{};
+    var buffer = <String,dynamic>{};
     objects?.forEach((element) {
       var structure = findStructureByType(element.runtimeType)!;
-      Map result = structure.getFieldMap(element);
+      var result = structure.getFieldMap(element);
       buffer.addAll(result);
     });
     properties?.forEach((element) {
-      buffer.addAll(element);
+      if (element is Map<String,dynamic>) {
+        buffer.addAll(element);
+      } else {
+        buffer.addAll(element.cast<String,dynamic>());
+      }
     });
-    var fieldValues = struct.fields.map((e) => buffer[e]).toList();
+    if (transformers != null) {
+      for (var func in transformers) {
+        buffer = func(buffer);
+      }
+    }
+    var fieldValues = struct.fields.map((e) => buffer[e.name]).toList();
     return struct.proxy.instantiate(fieldValues);
   }
 

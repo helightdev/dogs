@@ -98,7 +98,7 @@ extension DogsListExtension<T> on List<T> {
 }
 
 extension DogEngineShortcuts on DogEngine {
-  /// Validates the supplied [value] using the [Validatable] mapped to [T].
+  /// Validates the supplied [value] using the [ValidationMode] mapped to [T].
   /// Throws a [ValidationException] if [validateObject] returns false.
   void validate<T>(T value) {
     var isValid = validateObject(value, T);
@@ -118,40 +118,9 @@ extension DogEngineShortcuts on DogEngine {
       convertIterableFromGraph(value, type ?? T, kind);
 }
 
-mixin DogsMixin<T> on Object implements TypeCapture<T> {
-  @override
-  Type get typeArgument => T;
-  @override
-  Type get deriveList => List<T>;
-  @override
-  Type get deriveSet => Set<T>;
-  @override
-  Type get deriveIterable => Iterable<T>;
-  @override
-  Type get deriveFuture => Future<T>;
-  @override
-  Type get deriveFutureOr => FutureOr<T>;
-  @override
-  Type get deriveStream => Stream<T>;
-  @override
-  List<T> castList(List<dynamic> list) => list.cast<T>();
-  @override
-  Set<T> castSet(Set<dynamic> set) => set.cast<T>();
-  @override
-  Iterable<T> castIterable(Iterable<T> iterable) => iterable.cast<T>();
-
-  bool get isValid => DogEngine.instance.validateObject(this, T);
-  void validate() => DogEngine.instance.validate<T>(this as T);
-
-  @override
-  String toString() {
-    return "$runtimeType ${DogEngine.instance.convertObjectToGraph(this, runtimeType).coerceString()}";
-  }
-}
-
 extension StructureExtensions on DogStructure {
   List<dynamic Function(dynamic)> get getters => List.generate(
-      fields.length, (index) => (obj) => this.proxy.getField(obj, index));
+      fields.length, (index) => (obj) => proxy.getField(obj, index));
 
   Map<String,dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
       fields.mapIndexed((i,e) => MapEntry(e.name, proxy.getField(obj, i)))

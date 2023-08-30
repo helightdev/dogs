@@ -4,6 +4,7 @@ import 'package:benchmarks/dataclasses.dart';
 import 'package:benchmarks/dogs.g.dart';
 import 'package:benchmarks/serializables.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:dogs_cbor/dogs_cbor.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 void benchmarkIndexOf() {
@@ -59,6 +60,17 @@ void benchmarkJsonSerialization() {
     return dogEngine.jsonEncode<DogPerson>(p);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
+
+  var dogsNative = _runJsonEncodeBenchmark(dogPerson, (p) {
+    return dogEngine.convertObjectToNative(p, DogPerson);
+  }, count, iterations);
+  print("> Dogs Native took $dogsNativeμs (${dogsNative / 1000}ms)  ");
+
+  var dogsGraph = _runJsonEncodeBenchmark(dogPerson, (p) {
+    return dogEngine.toGraph<DogPerson>(p);
+  }, count, iterations);
+  print("> Dogs Graph took $dogsGraphμs (${dogsGraph / 1000}ms)  ");
+
   var built = _runJsonEncodeBenchmark(builtPerson,
       (p) => jsonEncode(serializers.serialize(p)), count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
@@ -79,6 +91,20 @@ void benchmarkJsonDeserialization() {
     return dogEngine.jsonDecode<DogPerson>(s);
   }, count, iterations);
   print("Dogs took $dogsμs (${dogs / 1000}ms)  ");
+
+  var dogsNative = _runJsonDecodeBenchmark(dogPerson, (p) {
+    return dogEngine.convertObjectToNative(p, DogPerson);
+  }, (s) {
+    return dogEngine.convertObjectFromNative(s, DogPerson);
+  }, count, iterations);
+  print("> Dogs Native took $dogsNativeμs (${dogsNative / 1000}ms)  ");
+
+  var dogsGraph = _runJsonDecodeBenchmark(dogPerson, (p) {
+    return dogEngine.toGraph<DogPerson>(p);
+  }, (s) {
+    return dogEngine.fromGraph<DogPerson>(s);
+  }, count, iterations);
+  print("> Dogs Graph took $dogsGraphμs (${dogsGraph / 1000}ms)  ");
 
   var built = _runJsonDecodeBenchmark(
       builtPerson, (p) => jsonEncode(serializers.serialize(p)), (s) {
@@ -157,8 +183,8 @@ int _runJsonEncodeBenchmark<T>(T Function() generator,
 
 int _runJsonDecodeBenchmark<T>(
     T Function() generator,
-    String Function(T) converter,
-    dynamic Function(String) reconverter,
+    dynamic Function(T) converter,
+    dynamic Function(dynamic) reconverter,
     int count,
     int iterations) {
   var stopwatch = Stopwatch();

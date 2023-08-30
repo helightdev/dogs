@@ -111,3 +111,9 @@ enum StructureConformity {
   /// effectively final and should therefore also have the final modifier
   dataclass
 }
+
+abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode> with TypeCaptureMixin<MODE_TYPE> {
+  
+  MODE_TYPE resolve(DogStructure structure);
+  
+}

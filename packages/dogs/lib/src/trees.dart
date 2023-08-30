@@ -241,4 +241,9 @@ class MapTreeBaseConverter extends DogConverter {
     return map;
   }
 
+  @override
+  String toString() {
+    return 'MapTreeBaseNativeOperation{key: $keyConverter, value: $valueConverter, tree: $tree}';
+  }
+
 }

@@ -40,5 +40,27 @@ String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
 /// Decodes this [json] to an [T] instance, using the [DogConverter] associated with [T].
 T fromJson<T>(String json) => DogEngine.instance.jsonDecode(json);
 
+/// Converts an [T] instance to a native value, using the [DogConverter] associated with [T].
+/// Output follows the default [DogNativeCodec] implementation, [DefaultNativeCodec].
+dynamic toNative<T>(T value) => DogEngine.instance.convertObjectToNative(value, T);
+
+/// Converts an a native value to an [T] instance, using the [DogConverter] associated with [T].
+/// Input must follow the default [DogNativeCodec] implementation, [DefaultNativeCodec].
+T fromNative<T>(dynamic native) => DogEngine.instance.convertObjectFromNative(native, T);
+
+/// Creates a projection resulting in an instance of [T]. All input fields are dynamic and contain following:
+/// 1. Serializable Object (which is then converted to a field map)
+/// 2. String Keyed Maps
+/// 3. Iterables containing
+T project<T>(Object value, [Object? a, Object? b, Object? c]) => 
+    DogEngine.instance.project<T>(value, a, b, c);
+
 @internal
 int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);
+
+@internal
+Map<Type, StructureOperationModeFactory> structureOperationFactories = {};
+
+void registerStructureOperationFactory(StructureOperationModeFactory factory) {
+  structureOperationFactories[factory.typeArgument] = factory;
+}
