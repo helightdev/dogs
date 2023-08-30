@@ -715,5 +715,4 @@ class _Inner {
       ObjectFactoryStructureProxy(parse, [$text], (obj) => [$text(obj)]);
 }
 
-
  */
