@@ -8,10 +8,10 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  dogs_core: ^6.0.0
-  dogs_yaml: ^2.0.14
-  dogs_cbor: ^2.0.14
-  dogs_toml: ^2.0.14
+  dogs_core: ^6.0.1
+  dogs_yaml: ^2.0.15
+  dogs_cbor: ^2.0.15
+  dogs_toml: ^2.0.15
   aqueduct_isolates: 1.0.1
   equatable: ^2.0.5
   mock_data: ^2.0.0
@@ -24,7 +24,7 @@ dev_dependencies:
   lints: ^2.0.0
   test: ^1.16.0
 
-  dogs_generator: ^5.0.0
+  dogs_generator: ^5.0.1
   build_web_compilers: any
   built_value_generator: ^8.4.4
 

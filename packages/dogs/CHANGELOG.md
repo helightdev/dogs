@@ -1,3 +1,7 @@
+## 6.0.1
+
+ - **FIX**: disable test that needs a rework.
+
 ## 6.0.0
 
 > Note: This release has breaking changes.
