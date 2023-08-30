@@ -1,3 +1,8 @@
+## 6.0.1
+
+ - **FIX**: remove dart ffi import.
+ - **FIX**: disable test that needs a rework.
+
 ## 6.0.0
 
  - incremental version
