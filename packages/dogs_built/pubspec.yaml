@@ -1,0 +1,16 @@
+name: dogs_built
+description: Adds a basic interop for built_value serializers to dogs_core
+version: 1.0.0
+repository: https://github.com/DarwinFramework/dogs
+
+environment:
+  sdk: ^3.1.0
+
+dependencies:
+  built_collection: ^5.1.1
+  built_value: ^8.6.2
+  dogs_core: ^6.0.1
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
