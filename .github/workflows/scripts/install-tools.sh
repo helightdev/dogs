@@ -1,4 +1,4 @@
 #!/bin/bash
 
-dart pub global activate melos 2.9.0
+dart pub global activate melos
 melos bootstrap
