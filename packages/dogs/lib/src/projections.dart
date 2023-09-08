@@ -30,7 +30,12 @@ extension ProjectionExtension on DogEngine {
     var buffer = <String,dynamic>{};
     objects?.forEach((element) {
       var structure = findStructureByType(element.runtimeType)!;
-      var result = structure.getFieldMap(element);
+      Map<String,dynamic> result;
+      if (structure.isSynthetic) {
+        result = convertObjectToNative(element, element.runtimeType);
+      } else {
+        result = structure.getFieldMap(element);
+      }
       buffer.addAll(result);
     });
     properties?.forEach((element) {
