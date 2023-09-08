@@ -14,23 +14,23 @@
  *    limitations under the License.
  */
 
-import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-typedef ProjectionTransformer = Map<String,dynamic> Function(Map<String,dynamic> data);
+typedef ProjectionTransformer = Map<String, dynamic> Function(
+    Map<String, dynamic> data);
 
 extension ProjectionExtension on DogEngine {
-
-  dynamic createProjection(Type target, {
+  dynamic createProjection(
+    Type target, {
     Iterable<Map>? properties,
     Iterable<Object>? objects,
     Iterable<ProjectionTransformer>? transformers,
   }) {
     var struct = findStructureByType(target)!;
-    var buffer = <String,dynamic>{};
+    var buffer = <String, dynamic>{};
     objects?.forEach((element) {
       var structure = findStructureByType(element.runtimeType)!;
-      Map<String,dynamic> result;
+      Map<String, dynamic> result;
       if (structure.isSynthetic) {
         result = convertObjectToNative(element, element.runtimeType);
       } else {
@@ -39,10 +39,10 @@ extension ProjectionExtension on DogEngine {
       buffer.addAll(result);
     });
     properties?.forEach((element) {
-      if (element is Map<String,dynamic>) {
+      if (element is Map<String, dynamic>) {
         buffer.addAll(element);
       } else {
-        buffer.addAll(element.cast<String,dynamic>());
+        buffer.addAll(element.cast<String, dynamic>());
       }
     });
     if (transformers != null) {
@@ -75,10 +75,7 @@ extension ProjectionExtension on DogEngine {
       }
     }
 
-    return createProjection(TARGET,
-      properties: properties,
-      objects: objects
-    );
+    return createProjection(TARGET, properties: properties, objects: objects);
   }
 }
 

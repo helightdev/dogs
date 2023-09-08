@@ -56,7 +56,7 @@ class DogEngine {
   late final _validation = modeRegistry.validation;
 
   final StreamController<bool> _changeStreamController =
-  StreamController.broadcast();
+      StreamController.broadcast();
 
   Stream<bool> get changeStream => _changeStreamController.stream;
 
@@ -66,8 +66,9 @@ class DogEngine {
 
   /// Creates a new [DogEngine] with optional async capabilities which can
   /// be enabled via [enableAsync]. (Experimental)
-  DogEngine({bool registerBaseConverters = true,
-    this.codec = const DefaultNativeCodec()}) {
+  DogEngine(
+      {bool registerBaseConverters = true,
+      this.codec = const DefaultNativeCodec()}) {
     if (registerBaseConverters) {
       // Register polymorphic converters
       registerConverter(PolymorphicConverter(), false);
@@ -114,7 +115,7 @@ class DogEngine {
   //TODO: Fix/Check forks for operations
   DogEngine fork({DogNativeCodec? codec}) {
     DogEngine forked =
-    DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
+        DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked._forkSubscription = changeStream.listen((event) {
       forked.forkEngine(this);
     }, onDone: () {
@@ -140,10 +141,9 @@ class DogEngine {
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   /// or null if not present.
-  DogStructure? findSerialName(String name) =>
-      structures.entries
-          .firstWhereOrNull((element) => element.value.serialName == name)
-          ?.value;
+  DogStructure? findSerialName(String name) => structures.entries
+      .firstWhereOrNull((element) => element.value.serialName == name)
+      ?.value;
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   /// or throws an exception if not present.
@@ -208,12 +208,14 @@ class DogEngine {
     _changeStreamController.add(true);
   }
 
-  void registerAllTreeBaseFactories(Iterable<MapEntry<Type, TreeBaseConverterFactory>> entries) {
+  void registerAllTreeBaseFactories(
+      Iterable<MapEntry<Type, TreeBaseConverterFactory>> entries) {
     treeBaseFactories.addAll(Map.fromEntries(entries));
   }
 
   DogConverter getTreeConverter(TypeTree tree) {
-    var cachedConverter = runtimeTreeConverterCache[tree.qualified.typeArgument];
+    var cachedConverter =
+        runtimeTreeConverterCache[tree.qualified.typeArgument];
     if (cachedConverter != null) return cachedConverter;
     var created = _getTreeConverterUncached(tree);
     runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
@@ -232,8 +234,7 @@ class DogEngine {
         if (associated == null && kWarnPolymorphicTerminalNode) {
           print(
               "[WARN] Using polymorphic converter for terminal tree node ${tree.base.typeArgument}. "
-                  "If this intended, you can ignore this message or deactivate it using kWarnPolymorphicTerminalNode."
-          );
+              "If this intended, you can ignore this message or deactivate it using kWarnPolymorphicTerminalNode.");
         }
         return true;
       }());
@@ -245,7 +246,9 @@ class DogEngine {
 
       // Use factory
       var factory = treeBaseFactories[tree.base.typeArgument];
-      if (factory == null) throw ArgumentError("No type tree converter for ${tree.base} found");
+      if (factory == null) {
+        throw ArgumentError("No type tree converter for ${tree.base} found");
+      }
       return factory.getConverter(tree, this);
     }
   }
@@ -267,36 +270,54 @@ class DogEngine {
 
   /// Converts a [value] to its [DogGraphValue] representation using the
   /// converter associated with [serialType].
-  DogGraphValue convertIterableToGraph(dynamic value, Type serialType, IterableKind kind) {
-    return _graphSerialization.forType(serialType, this).serializeIterable(value, this, kind);
+  DogGraphValue convertIterableToGraph(
+      dynamic value, Type serialType, IterableKind kind) {
+    return _graphSerialization
+        .forType(serialType, this)
+        .serializeIterable(value, this, kind);
   }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
   dynamic convertObjectFromGraph(DogGraphValue value, Type serialType) {
-    return _graphSerialization.forType(serialType, this).deserialize(value, this);
+    return _graphSerialization
+        .forType(serialType, this)
+        .deserialize(value, this);
   }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
   /// by using the converter associated with [serialType].
-  dynamic convertIterableFromGraph(DogGraphValue value, Type serialType, IterableKind kind) {
-    return _graphSerialization.forType(serialType, this).deserializeIterable(value, this, kind);
+  dynamic convertIterableFromGraph(
+      DogGraphValue value, Type serialType, IterableKind kind) {
+    return _graphSerialization
+        .forType(serialType, this)
+        .deserializeIterable(value, this, kind);
   }
 
   dynamic convertObjectToNative(dynamic value, Type serialType) {
-    return _nativeSerialization.forType(serialType, this).serialize(value, this);
+    return _nativeSerialization
+        .forType(serialType, this)
+        .serialize(value, this);
   }
 
   dynamic convertObjectFromNative(dynamic value, Type serialType) {
-    return _nativeSerialization.forType(serialType, this).deserialize(value, this);
+    return _nativeSerialization
+        .forType(serialType, this)
+        .deserialize(value, this);
   }
 
-  dynamic convertIterableToNative(dynamic value, Type serialType, IterableKind kind) {
-    return _graphSerialization.forType(serialType, this).serializeIterable(value, this, kind);
+  dynamic convertIterableToNative(
+      dynamic value, Type serialType, IterableKind kind) {
+    return _graphSerialization
+        .forType(serialType, this)
+        .serializeIterable(value, this, kind);
   }
 
-  dynamic convertIterableFromNative(dynamic value, Type serialType, IterableKind kind) {
-    return _graphSerialization.forType(serialType, this).deserializeIterable(value, this, kind);
+  dynamic convertIterableFromNative(
+      dynamic value, Type serialType, IterableKind kind) {
+    return _graphSerialization
+        .forType(serialType, this)
+        .deserializeIterable(value, this, kind);
   }
 }
 
@@ -340,8 +361,7 @@ class DefaultNativeCodec extends DogNativeCodec {
   }
 
   @override
-  Map<Type, DogConverter> get bridgeConverters =>
-      const {
+  Map<Type, DogConverter> get bridgeConverters => const {
         String: NativeRetentionConverter<String>(),
         int: NativeRetentionConverter<int>(),
         double: NativeRetentionConverter<double>(),

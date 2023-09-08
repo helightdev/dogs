@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dogs_core/dogs_core.dart';
 import 'package:test/test.dart';
 
 void main() {
-  var dogs = DogEngine();
   test("structure converter", () {
     var engine = DogEngine();
     var structure = DogStructure(

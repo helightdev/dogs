@@ -23,11 +23,8 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   final bool keepIterables;
   final DogStructure<T>? struct;
 
-  const DogConverter({
-    this.struct,
-    this.isAssociated = true,
-    this.keepIterables = false
-  });
+  const DogConverter(
+      {this.struct, this.isAssociated = true, this.keepIterables = false});
 
   OperationMode<T>? resolveOperationMode(Type opmodeType) => null;
 

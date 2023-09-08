@@ -16,12 +16,14 @@
 
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
 
-typedef _FieldSerializer = void Function(dynamic v, Map<String, dynamic> map, DogEngine engine);
-typedef _FieldDeserializer = void Function(dynamic v, List<dynamic> args, DogEngine engine);
+typedef _FieldSerializer = void Function(
+    dynamic v, Map<String, dynamic> map, DogEngine engine);
+typedef _FieldDeserializer = void Function(
+    dynamic v, List<dynamic> args, DogEngine engine);
 
-class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeCaptureMixin<T> {
+class StructureNativeSerialization<T> extends NativeSerializerMode<T>
+    with TypeCaptureMixin<T> {
   final DogStructure<T> structure;
 
   StructureNativeSerialization(this.structure);
@@ -33,7 +35,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeC
   @override
   void initialise(DogEngine engine) {
     final harbinger = StructureHarbinger.create(structure, engine);
-    final List<({_FieldSerializer serialize, _FieldDeserializer deserialize})> functions = harbinger.fieldConverters.mapIndexed((i, e) {
+    final List<({_FieldSerializer serialize, _FieldDeserializer deserialize})>
+        functions = harbinger.fieldConverters.mapIndexed((i, e) {
       final field = e.field;
       final fieldName = field.name;
       final isOptional = field.optional;
@@ -61,7 +64,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeC
               } else if (iterableKind != IterableKind.none) {
                 args.add(adjustIterable([], field.iterableKind));
               } else {
-                throw Exception("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                throw Exception(
+                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
               }
             } else {
               args.add(adjustIterable(mapValue, iterableKind));
@@ -70,7 +74,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeC
         );
       } else {
         final converter = e.converter!;
-        final operation = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
+        final operation = engine.modeRegistry.nativeSerialization
+            .forConverter(converter, engine);
         final isKeepIterables = converter.keepIterables;
         return (
           serialize: (dynamic v, Map<String, dynamic> map, DogEngine engine) {
@@ -80,7 +85,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeC
             } else if (isKeepIterables) {
               map[fieldName] = operation.serialize(fieldValue, engine);
             } else {
-              map[fieldName] = operation.serializeIterable(fieldValue, engine, iterableKind);
+              map[fieldName] =
+                  operation.serializeIterable(fieldValue, engine, iterableKind);
             }
           },
           deserialize: (dynamic v, List args, DogEngine engine) {
@@ -91,13 +97,15 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeC
               } else if (iterableKind != IterableKind.none) {
                 args.add(adjustIterable([], iterableKind));
               } else {
-                throw Exception("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                throw Exception(
+                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
               }
             } else {
               if (isKeepIterables) {
                 args.add(operation.deserialize(mapValue, engine));
               } else {
-                args.add(operation.deserializeIterable(mapValue, engine, iterableKind));
+                args.add(operation.deserializeIterable(
+                    mapValue, engine, iterableKind));
               }
             }
           }

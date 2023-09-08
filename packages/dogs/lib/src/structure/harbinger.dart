@@ -18,14 +18,16 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:meta/meta.dart';
 
 class StructureHarbinger<T> {
-
   final DogStructure<T> structure;
   final DogEngine engine;
 
-  late List<({DogStructureField field, DogConverter? converter})> fieldConverters;
+  late List<({DogStructureField field, DogConverter? converter})>
+      fieldConverters;
 
   StructureHarbinger(this.structure, this.engine) {
-    fieldConverters = structure.fields.map((e) => (field: e, converter: getConverter(engine, e))).toList();
+    fieldConverters = structure.fields
+        .map((e) => (field: e, converter: getConverter(engine, e)))
+        .toList();
   }
 
   @internal
@@ -47,17 +49,19 @@ class StructureHarbinger<T> {
     }
 
     // Try resolving the type directly
-    var directConverter = engine.findAssociatedConverter(field.type.typeArgument);
+    var directConverter =
+        engine.findAssociatedConverter(field.type.typeArgument);
     if (directConverter != null) return directConverter;
 
     // Try resolving using the serial type argument (i.E. the first type argument)
-    var serialConverter = engine.findAssociatedConverter(field.serial.typeArgument);
+    var serialConverter =
+        engine.findAssociatedConverter(field.serial.typeArgument);
     if (serialConverter != null) return serialConverter;
 
     // Resolve using tree converter
     return engine.getTreeConverter(field.type);
   }
 
-  static StructureHarbinger create(DogStructure structure, DogEngine engine) => StructureHarbinger(structure, engine);
-
+  static StructureHarbinger create(DogStructure structure, DogEngine engine) =>
+      StructureHarbinger(structure, engine);
 }

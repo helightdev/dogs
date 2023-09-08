@@ -17,10 +17,13 @@
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-typedef _FieldSerializer = void Function(dynamic v, Map<DogGraphValue, DogGraphValue> map, DogEngine engine);
-typedef _FieldDeserializer = void Function(Map<DogGraphValue, DogGraphValue> v, List<dynamic> args, DogEngine engine);
+typedef _FieldSerializer = void Function(
+    dynamic v, Map<DogGraphValue, DogGraphValue> map, DogEngine engine);
+typedef _FieldDeserializer = void Function(
+    Map<DogGraphValue, DogGraphValue> v, List<dynamic> args, DogEngine engine);
 
-class StructureGraphSerialization<T> extends GraphSerializerMode<T> with TypeCaptureMixin<T> {
+class StructureGraphSerialization<T> extends GraphSerializerMode<T>
+    with TypeCaptureMixin<T> {
   DogStructure<T> structure;
 
   StructureGraphSerialization(this.structure);
@@ -32,7 +35,8 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T> with TypeCap
   @override
   void initialise(DogEngine engine) {
     final harbinger = StructureHarbinger.create(structure, engine);
-    final List<({_FieldSerializer serialize, _FieldDeserializer deserialize})> functions = harbinger.fieldConverters.mapIndexed((i, e) {
+    final List<({_FieldSerializer serialize, _FieldDeserializer deserialize})>
+        functions = harbinger.fieldConverters.mapIndexed((i, e) {
       final field = e.field;
       final fieldName = DogString(field.name);
       final isOptional = field.optional;
@@ -40,11 +44,13 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T> with TypeCap
       final iterableKind = field.iterableKind;
       if (e.converter == null) {
         return (
-          serialize: (dynamic v, Map<DogGraphValue, DogGraphValue> map, DogEngine engine) {
+          serialize: (dynamic v, Map<DogGraphValue, DogGraphValue> map,
+              DogEngine engine) {
             final fieldValue = proxy.getField(v, i);
             map[fieldName] = engine.codec.fromNative(fieldValue);
           },
-          deserialize: (Map<DogGraphValue, DogGraphValue> v, List<dynamic> args, DogEngine engine) {
+          deserialize: (Map<DogGraphValue, DogGraphValue> v, List<dynamic> args,
+              DogEngine engine) {
             final mapValue = v[fieldName] ?? DogNull();
             if (mapValue.isNull) {
               if (isOptional) {
@@ -52,7 +58,8 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T> with TypeCap
               } else if (iterableKind != IterableKind.none) {
                 args.add(adjustIterable([], field.iterableKind));
               } else {
-                throw Exception("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                throw Exception(
+                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
               }
             } else {
               args.add(adjustIterable(mapValue.coerceNative(), iterableKind));
@@ -61,20 +68,24 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T> with TypeCap
         );
       } else {
         final converter = e.converter!;
-        final operation = engine.modeRegistry.graphSerialization.forConverter(converter, engine);
+        final operation = engine.modeRegistry.graphSerialization
+            .forConverter(converter, engine);
         final isKeepIterables = converter.keepIterables;
         return (
-          serialize: (dynamic v, Map<DogGraphValue, DogGraphValue> map, DogEngine engine) {
+          serialize: (dynamic v, Map<DogGraphValue, DogGraphValue> map,
+              DogEngine engine) {
             final fieldValue = proxy.getField(v, i);
             if (fieldValue == null) {
               map[fieldName] = DogNull();
             } else if (isKeepIterables) {
               map[fieldName] = operation.serialize(fieldValue, engine);
             } else {
-              map[fieldName] = operation.serializeIterable(fieldValue, engine, iterableKind);
+              map[fieldName] =
+                  operation.serializeIterable(fieldValue, engine, iterableKind);
             }
           },
-          deserialize: (Map<DogGraphValue, DogGraphValue> v, List<dynamic> args, DogEngine engine) {
+          deserialize: (Map<DogGraphValue, DogGraphValue> v, List<dynamic> args,
+              DogEngine engine) {
             final mapValue = v[fieldName] ?? DogNull();
             if (mapValue.isNull) {
               if (isOptional) {
@@ -82,13 +93,15 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T> with TypeCap
               } else if (iterableKind != IterableKind.none) {
                 args.add(adjustIterable([], iterableKind));
               } else {
-                throw Exception("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                throw Exception(
+                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
               }
             } else {
               if (isKeepIterables) {
                 args.add(operation.deserialize(mapValue, engine));
               } else {
-                args.add(operation.deserializeIterable(mapValue, engine, iterableKind));
+                args.add(operation.deserializeIterable(
+                    mapValue, engine, iterableKind));
               }
             }
           }

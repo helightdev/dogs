@@ -16,21 +16,19 @@
 
 import 'package:dogs_core/dogs_core.dart';
 
-class NativeRetentionConverter<T> extends DogConverter<T> with OperationMapMixin<T> {
-
+class NativeRetentionConverter<T> extends DogConverter<T>
+    with OperationMapMixin<T> {
   const NativeRetentionConverter() : super();
 
   @override
   Map<Type, OperationMode<T> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value,engine) => value,
-        deserializer: (value,engine) => value
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.create(
-        serializer: (value,engine) => engine.codec.fromNative(value),
-        deserializer: (value,engine) => (value as DogNative).value as T
-    )
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => value,
+            deserializer: (value, engine) => value),
+        GraphSerializerMode: () => GraphSerializerMode.create(
+            serializer: (value, engine) => engine.codec.fromNative(value),
+            deserializer: (value, engine) => (value as DogNative).value as T)
+      };
 
   @override
   String toString() {

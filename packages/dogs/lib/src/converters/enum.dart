@@ -20,32 +20,19 @@ import 'package:dogs_core/dogs_core.dart';
 typedef EnumFromString<T> = T? Function(String);
 typedef EnumToString<T> = String Function(T?);
 
-abstract class GeneratedEnumDogConverter<T extends Enum>
-    extends DogConverter<T> with OperationMapMixin<T> {
+abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
+    with OperationMapMixin<T> {
   EnumToString<T?> get toStr;
   EnumFromString<T?> get fromStr;
   List<String> get values;
 
   @override
   Map<Type, OperationMode<T> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => toStr(value),
-        deserializer: (value, engine) => fromStr(value)!
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
-
-  @override
-  T convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var s = (value as DogString).value;
-    return fromStr(s)!;
-  }
-
-  @override
-  DogGraphValue convertToGraph(T value, DogEngine engine) {
-    var s = toStr(value);
-    return DogString(s);
-  }
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => toStr(value),
+            deserializer: (value, engine) => fromStr(value)!),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output {

@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
@@ -122,9 +120,8 @@ extension StructureExtensions on DogStructure {
   List<dynamic Function(dynamic)> get getters => List.generate(
       fields.length, (index) => (obj) => proxy.getField(obj, index));
 
-  Map<String,dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
-      fields.mapIndexed((i,e) => MapEntry(e.name, proxy.getField(obj, i)))
-  );
+  Map<String, dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
+      fields.mapIndexed((i, e) => MapEntry(e.name, proxy.getField(obj, i))));
 
   List<T> metadataOf<T>() {
     return annotations.whereType<T>().toList();
@@ -160,7 +157,8 @@ extension FieldExtension on DogStructureField {
       return null;
     }
 
-    var directConverter = engine.findAssociatedConverter(type.qualified.typeArgument);
+    var directConverter =
+        engine.findAssociatedConverter(type.qualified.typeArgument);
     if (directConverter != null) return directConverter;
     return engine.findAssociatedConverter(serial.typeArgument);
   }

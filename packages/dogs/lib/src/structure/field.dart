@@ -15,7 +15,6 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
 
 class DogStructureField extends RetainedAnnotationHolder
     implements StructureNode {
@@ -122,9 +121,9 @@ class DogStructureField extends RetainedAnnotationHolder
 
   static DogStructureField create<TYPE>(String name,
       {bool optional = false,
-        IterableKind iterable = IterableKind.none,
-        Type? converterType,
-        List<RetainedAnnotation> annotations = const []}) {
+      IterableKind iterable = IterableKind.none,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<TYPE>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<TYPE>();

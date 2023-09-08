@@ -50,7 +50,11 @@ class Optional<T> {
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is Optional && runtimeType == other.runtimeType && value == other.value;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Optional &&
+          runtimeType == other.runtimeType &&
+          value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -63,13 +67,14 @@ class OptionalTreeBaseConverter extends DogConverter with OperationMapMixin {
 
   @override
   Map<Type, OperationMode Function()> get modes => {
-    NativeSerializerMode: () => OptionalTreeBaseNativeOperation(converter, capture),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () =>
+            OptionalTreeBaseNativeOperation(converter, capture),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 }
 
-class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional> with TypeCaptureMixin<Optional> {
-
+class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional>
+    with TypeCaptureMixin<Optional> {
   DogConverter converter;
   TypeCapture capture;
   OptionalTreeBaseNativeOperation(this.converter, this.capture);
@@ -78,7 +83,8 @@ class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional> wit
 
   @override
   void initialise(DogEngine engine) {
-    mode = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
+    mode =
+        engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
   }
 
   Optional createOptional<T>(dynamic value) => Optional<T>(value);
@@ -88,7 +94,8 @@ class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional> wit
     if (value == null) {
       return capture.consumeTypeArg(createOptional, null);
     } else {
-      return capture.consumeTypeArg(createOptional, mode.deserialize(value, engine));
+      return capture.consumeTypeArg(
+          createOptional, mode.deserialize(value, engine));
     }
   }
 
@@ -101,15 +108,14 @@ class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional> wit
       return null;
     }
   }
-
 }
 
 class OptionalTreeBaseConverterFactory extends TreeBaseConverterFactory {
-
   @override
   DogConverter getConverter(TypeTree tree, DogEngine engine) {
-    var argumentConverter = TreeBaseConverterFactory.argumentConverters(tree, engine).first;
-    return OptionalTreeBaseConverter(argumentConverter, tree.arguments.first.qualified);
+    var argumentConverter =
+        TreeBaseConverterFactory.argumentConverters(tree, engine).first;
+    return OptionalTreeBaseConverter(
+        argumentConverter, tree.arguments.first.qualified);
   }
-
 }

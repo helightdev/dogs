@@ -45,7 +45,8 @@ class Validated extends StructureMetadata implements FieldValidator {
   @override
   bool validate(cached, value, DogEngine engine) {
     var entry = cached as _ValidatedCacheEntry;
-    var validatorMode = engine.modeRegistry.validation.forTypeNullable(entry.serial, engine);
+    var validatorMode =
+        engine.modeRegistry.validation.forTypeNullable(entry.serial, engine);
     if (validatorMode == null) return true;
     if (entry.iterable) {
       if (value == null) return true;

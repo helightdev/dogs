@@ -23,7 +23,8 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
   /// Aggressively converts a "primitive" dart type to [T].
   T deserialize(dynamic value, DogEngine engine);
 
-  dynamic serializeIterable(dynamic value, DogEngine engine, IterableKind kind) {
+  dynamic serializeIterable(
+      dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
       return serialize(value, engine);
     } else {
@@ -32,24 +33,25 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
     }
   }
 
-  dynamic deserializeIterable(dynamic value, DogEngine engine, IterableKind kind) {
+  dynamic deserializeIterable(
+      dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
       return deserialize(value, engine);
     } else {
       if (value is! Iterable) throw Exception("value is not iterable");
-      return adjustIterable(
-          value.map((e) => deserialize(e, engine)), kind);
+      return adjustIterable(value.map((e) => deserialize(e, engine)), kind);
     }
   }
 
-  static NativeSerializerMode<T> create<T>({
-    required dynamic Function(T value, DogEngine engine) serializer,
-    required T Function(dynamic value, DogEngine engine) deserializer
-  }) => _InlineNativeSerializer(serializer: serializer, deserializer: deserializer);
+  static NativeSerializerMode<T> create<T>(
+          {required dynamic Function(T value, DogEngine engine) serializer,
+          required T Function(dynamic value, DogEngine engine) deserializer}) =>
+      _InlineNativeSerializer(
+          serializer: serializer, deserializer: deserializer);
 }
 
-class _InlineNativeSerializer<T> extends NativeSerializerMode<T> with TypeCaptureMixin<T>{
-
+class _InlineNativeSerializer<T> extends NativeSerializerMode<T>
+    with TypeCaptureMixin<T> {
   dynamic Function(T value, DogEngine engine) serializer;
   T Function(dynamic value, DogEngine engine) deserializer;
 
@@ -62,8 +64,8 @@ class _InlineNativeSerializer<T> extends NativeSerializerMode<T> with TypeCaptur
   void initialise(DogEngine engine) {}
 
   @override
-  T deserialize(value, DogEngine engine) => deserializer(value,engine);
+  T deserialize(value, DogEngine engine) => deserializer(value, engine);
 
   @override
-  serialize(T value, DogEngine engine) => serializer(value,engine);
+  serialize(T value, DogEngine engine) => serializer(value, engine);
 }

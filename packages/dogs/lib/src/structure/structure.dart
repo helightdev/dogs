@@ -112,8 +112,7 @@ enum StructureConformity {
   dataclass
 }
 
-abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode> with TypeCaptureMixin<MODE_TYPE> {
-  
+abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode>
+    with TypeCaptureMixin<MODE_TYPE> {
   MODE_TYPE resolve(DogStructure structure);
-  
 }

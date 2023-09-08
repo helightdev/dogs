@@ -76,7 +76,6 @@ bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
 }
 
 mixin Dataclass<T> {
-
   bool get isValid => DogEngine.instance.validateObject(this, T);
   void validate() => DogEngine.instance.validate<T>(this as T);
 

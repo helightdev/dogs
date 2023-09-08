@@ -30,41 +30,45 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
 
   @override
   Map<Type, OperationMode Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) {
-          if (value is! Map && engine.codec.isNative(value.runtimeType) && serializeNativeValues) return value;
-          var type = value.runtimeType;
-          var operation = engine.modeRegistry.nativeSerialization.forType(type, engine);
-          var structure = engine.structures[type]!;
-          var nativeValue = operation.serialize(value, engine);
-          if (nativeValue is Map) {
-            nativeValue[typePropertyKeyStr] = structure.serialName;
-            return nativeValue;
-          } else {
-            return {
-              typePropertyKeyStr: structure.serialName,
-              valuePropertyKeyStr: nativeValue
-            };
-          }
-        },
-        deserializer: (value, engine) {
-          if (value is! Map && engine.codec.isNative(value.runtimeType) && serializeNativeValues) return value;
-          if (value is! Map) throw Exception("Expected an map");
-          String typeValue = value[typePropertyKeyStr]!;
-          var structure = engine.findSerialName(typeValue)!;
-          var operation = engine.modeRegistry.nativeSerialization.forType(structure.typeArgument, engine);
-          if (value.length == 2 && value.containsKey(valuePropertyKeyStr)) {
-            var simpleValue = value[valuePropertyKeyStr]!;
-            return operation.deserialize(simpleValue, engine);
-          } else {
-            var clone = Map.of(value);
-            clone.remove(typePropertyKeyStr);
-            return operation.deserialize(clone, engine);
-          }
-        }
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () =>
+            NativeSerializerMode.create(serializer: (value, engine) {
+              if (value is! Map &&
+                  engine.codec.isNative(value.runtimeType) &&
+                  serializeNativeValues) return value;
+              var type = value.runtimeType;
+              var operation =
+                  engine.modeRegistry.nativeSerialization.forType(type, engine);
+              var structure = engine.structures[type]!;
+              var nativeValue = operation.serialize(value, engine);
+              if (nativeValue is Map) {
+                nativeValue[typePropertyKeyStr] = structure.serialName;
+                return nativeValue;
+              } else {
+                return {
+                  typePropertyKeyStr: structure.serialName,
+                  valuePropertyKeyStr: nativeValue
+                };
+              }
+            }, deserializer: (value, engine) {
+              if (value is! Map &&
+                  engine.codec.isNative(value.runtimeType) &&
+                  serializeNativeValues) return value;
+              if (value is! Map) throw Exception("Expected an map");
+              String typeValue = value[typePropertyKeyStr]!;
+              var structure = engine.findSerialName(typeValue)!;
+              var operation = engine.modeRegistry.nativeSerialization
+                  .forType(structure.typeArgument, engine);
+              if (value.length == 2 && value.containsKey(valuePropertyKeyStr)) {
+                var simpleValue = value[valuePropertyKeyStr]!;
+                return operation.deserialize(simpleValue, engine);
+              } else {
+                var clone = Map.of(value);
+                clone.remove(typePropertyKeyStr);
+                return operation.deserialize(clone, engine);
+              }
+            }),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output => APISchemaObject.object({
@@ -75,28 +79,29 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
             "A polymorphic object discriminated using the _type field.";
 }
 
-class DefaultListConverter extends DogConverter<List> with OperationMapMixin<List> {
+class DefaultListConverter extends DogConverter<List>
+    with OperationMapMixin<List> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   final TypeCapture? cast;
 
-  DefaultListConverter([this.cast]) : super(
-      isAssociated: false,
-      keepIterables: true
-  );
+  DefaultListConverter([this.cast])
+      : super(isAssociated: false, keepIterables: true);
 
   @override
   Map<Type, OperationMode<List> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => engine.modeRegistry.nativeSerialization
-            .forConverter(polymorphicConverter, engine)
-            .serializeIterable(value, engine, IterableKind.list),
-        deserializer: (value, engine) => engine.modeRegistry.nativeSerialization
-            .forConverter(polymorphicConverter, engine)
-            .deserializeIterable(value, engine, IterableKind.list),
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => engine
+                  .modeRegistry.nativeSerialization
+                  .forConverter(polymorphicConverter, engine)
+                  .serializeIterable(value, engine, IterableKind.list),
+              deserializer: (value, engine) => engine
+                  .modeRegistry.nativeSerialization
+                  .forConverter(polymorphicConverter, engine)
+                  .deserializeIterable(value, engine, IterableKind.list),
+            ),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output =>
@@ -106,28 +111,29 @@ class DefaultListConverter extends DogConverter<List> with OperationMapMixin<Lis
             : "${cast!.typeArgument.toString()} List";
 }
 
-class DefaultSetConverter extends DogConverter<Set> with OperationMapMixin<Set> {
+class DefaultSetConverter extends DogConverter<Set>
+    with OperationMapMixin<Set> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   final TypeCapture? cast;
 
-  DefaultSetConverter([this.cast]) : super(
-      isAssociated: false,
-      keepIterables: true
-  );
+  DefaultSetConverter([this.cast])
+      : super(isAssociated: false, keepIterables: true);
 
   @override
   Map<Type, OperationMode<Set> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-      serializer: (value, engine) => engine.modeRegistry.nativeSerialization
-          .forConverter(polymorphicConverter, engine)
-          .serializeIterable(value, engine, IterableKind.set),
-      deserializer: (value, engine) => engine.modeRegistry.nativeSerialization
-          .forConverter(polymorphicConverter, engine)
-          .deserializeIterable(value, engine, IterableKind.set),
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => engine
+                  .modeRegistry.nativeSerialization
+                  .forConverter(polymorphicConverter, engine)
+                  .serializeIterable(value, engine, IterableKind.set),
+              deserializer: (value, engine) => engine
+                  .modeRegistry.nativeSerialization
+                  .forConverter(polymorphicConverter, engine)
+                  .deserializeIterable(value, engine, IterableKind.set),
+            ),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output =>
@@ -137,28 +143,29 @@ class DefaultSetConverter extends DogConverter<Set> with OperationMapMixin<Set> 
             : "${cast!.typeArgument.toString()} Set";
 }
 
-class DefaultIterableConverter extends DogConverter<Iterable> with OperationMapMixin<Iterable> {
+class DefaultIterableConverter extends DogConverter<Iterable>
+    with OperationMapMixin<Iterable> {
   PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   final TypeCapture? cast;
 
-  DefaultIterableConverter([this.cast]) : super(
-      isAssociated: false,
-      keepIterables: true
-  );
+  DefaultIterableConverter([this.cast])
+      : super(isAssociated: false, keepIterables: true);
 
   @override
   Map<Type, OperationMode<Iterable> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-      serializer: (value, engine) => engine.modeRegistry.nativeSerialization
-          .forConverter(polymorphicConverter, engine)
-          .serializeIterable(value, engine, IterableKind.list),
-      deserializer: (value, engine) => engine.modeRegistry.nativeSerialization
-          .forConverter(polymorphicConverter, engine)
-          .deserializeIterable(value, engine, IterableKind.list),
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => engine
+                  .modeRegistry.nativeSerialization
+                  .forConverter(polymorphicConverter, engine)
+                  .serializeIterable(value, engine, IterableKind.list),
+              deserializer: (value, engine) => engine
+                  .modeRegistry.nativeSerialization
+                  .forConverter(polymorphicConverter, engine)
+                  .deserializeIterable(value, engine, IterableKind.list),
+            ),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output =>

@@ -18,20 +18,23 @@ import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 abstract class DefaultStructureConverter<T> extends DogConverter<T> {
-
-  DefaultStructureConverter({
-    required super.struct
-  });
+  DefaultStructureConverter({required super.struct});
 
   @override
-  DogConverter<T> fork(DogEngine forkEngine) => DogStructureConverterImpl<T>(struct!);
+  DogConverter<T> fork(DogEngine forkEngine) =>
+      DogStructureConverterImpl<T>(struct!);
 
   @override
   OperationMode<T>? resolveOperationMode(Type opmodeType) {
-    if (opmodeType == NativeSerializerMode) return StructureNativeSerialization(struct!);
-    if (opmodeType == GraphSerializerMode) return StructureGraphSerialization(struct!);
+    if (opmodeType == NativeSerializerMode) {
+      return StructureNativeSerialization(struct!);
+    }
+    if (opmodeType == GraphSerializerMode) {
+      return StructureGraphSerialization(struct!);
+    }
     if (opmodeType == ValidationMode) return StructureValidation(struct!);
-    return structureOperationFactories[opmodeType]?.resolve(struct!) as OperationMode<T>?;
+    return structureOperationFactories[opmodeType]?.resolve(struct!)
+        as OperationMode<T>?;
   }
 
   @override
@@ -77,5 +80,6 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
 }
 
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
-  DogStructureConverterImpl(DogStructure<T> structure) : super(struct: structure);
+  DogStructureConverterImpl(DogStructure<T> structure)
+      : super(struct: structure);
 }

@@ -15,7 +15,6 @@
  */
 
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:dogs_core/dogs_core.dart';
 
@@ -31,13 +30,13 @@ mixin OperationMapMixin<T> on DogConverter<T> {
   Map<Type, OperationMode<T> Function()> get modes;
 
   @override
-  OperationMode<T>? resolveOperationMode(Type opmodeType) => modes[opmodeType]?.call();
+  OperationMode<T>? resolveOperationMode(Type opmodeType) =>
+      modes[opmodeType]?.call();
 }
 
 class OperationModeRegistry {
-
   final Map<Type, OperationModeCacheEntry> _cache = HashMap();
-  
+
   late OperationModeCacheEntry<NativeSerializerMode> nativeSerialization;
   late OperationModeCacheEntry<GraphSerializerMode> graphSerialization;
   late OperationModeCacheEntry<ValidationMode> validation;
@@ -59,11 +58,12 @@ class OperationModeRegistry {
     }
   }
 
-  T getType<T extends OperationMode>(Type type, DogEngine engine) => entry<T>()
-      .forType(type, engine);
-  
-  T getConverter<T extends OperationMode>(DogConverter converter, DogEngine engine) => entry<T>()
-      .forConverter(converter, engine);
+  T getType<T extends OperationMode>(Type type, DogEngine engine) =>
+      entry<T>().forType(type, engine);
+
+  T getConverter<T extends OperationMode>(
+          DogConverter converter, DogEngine engine) =>
+      entry<T>().forConverter(converter, engine);
 }
 
 class OperationModeCacheEntry<T extends OperationMode> {
@@ -78,7 +78,10 @@ class OperationModeCacheEntry<T extends OperationMode> {
     var cached = typeMapping[converter];
     if (cached != null) return cached as T;
     var resolved = converter.resolveOperationMode(modeType);
-    if (resolved == null) throw Exception("DogConverter $converter doesn't support opmode $modeType");
+    if (resolved == null) {
+      throw Exception(
+          "DogConverter $converter doesn't support opmode $modeType");
+    }
     resolved.initialise(engine);
     converterMapping[converter] = resolved;
     return resolved as T;

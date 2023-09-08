@@ -19,46 +19,40 @@ import 'dart:typed_data';
 
 import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/src/opmodes/operation.dart';
 
 /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
 /// Iso8601 string.
-class DateTimeConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
-
-  DateTimeConverter() : super(
-      struct: DogStructure<DateTime>.synthetic("DateTime")
-  );
+class DateTimeConverter extends DogConverter<DateTime>
+    with OperationMapMixin<DateTime> {
+  DateTimeConverter()
+      : super(struct: DogStructure<DateTime>.synthetic("DateTime"));
 
   @override
   Map<Type, OperationMode<DateTime> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value.toIso8601String(),
-        deserializer: (value, engine) => DateTime.parse(value)
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => value.toIso8601String(),
+            deserializer: (value, engine) => DateTime.parse(value)),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output => APISchemaObject.string(format: "date-time");
-
 }
 
 /// [DogConverter] for [Duration] instances which encode a duration as a
 /// Iso8601 string.
-class DurationConverter extends DogConverter<Duration> with OperationMapMixin<Duration> {
-
-  DurationConverter() : super(
-      struct: DogStructure<Duration>.synthetic("Duration")
-  );
+class DurationConverter extends DogConverter<Duration>
+    with OperationMapMixin<Duration> {
+  DurationConverter()
+      : super(struct: DogStructure<Duration>.synthetic("Duration"));
 
   @override
   Map<Type, OperationMode<Duration> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => _writeIso8601Duration(value),
-        deserializer: (value, engine) => _parseDuration(value)
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => _writeIso8601Duration(value),
+            deserializer: (value, engine) => _parseDuration(value)),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output => APISchemaObject.integer();
@@ -132,25 +126,21 @@ class DurationConverter extends DogConverter<Duration> with OperationMapMixin<Du
   // The parse format for ISO8601 durations.
   static final _parseFormat = RegExp(
     '^P(?!\$)(0D|[1-9][0-9]*D)?'
-        '(?:T(?!\$)(0H|[1-9][0-9]*H)?(0M|[1-9][0-9]*M)?(0S|[1-9][0-9]*S)?)?\$',
+    '(?:T(?!\$)(0H|[1-9][0-9]*H)?(0M|[1-9][0-9]*M)?(0S|[1-9][0-9]*S)?)?\$',
   );
 }
 
 /// [DogConverter] for [Uri] instances which encodes the uri into a string.
 class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
+  UriConverter() : super(struct: DogStructure<Uri>.synthetic("Uri"));
 
-  UriConverter() : super(
-      struct: DogStructure<Uri>.synthetic("Uri")
-  );
-  
   @override
   Map<Type, OperationMode<Uri> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => value.toString(),
-        deserializer: (value, engine) => Uri.parse(value)
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => value.toString(),
+            deserializer: (value, engine) => Uri.parse(value)),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output => APISchemaObject.string(format: "uri");
@@ -158,20 +148,18 @@ class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
 
 /// [DogConverter] for [Uint8List] instances which encodes the binary data
 /// as a base64 string using [base64Encode].
-class Uint8ListConverter extends DogConverter<Uint8List> with OperationMapMixin<Uint8List> {
-
-  Uint8ListConverter() : super(
-      struct: DogStructure<Uint8List>.synthetic("Uint8List")
-  );
+class Uint8ListConverter extends DogConverter<Uint8List>
+    with OperationMapMixin<Uint8List> {
+  Uint8ListConverter()
+      : super(struct: DogStructure<Uint8List>.synthetic("Uint8List"));
 
   @override
   Map<Type, OperationMode<Uint8List> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => base64Encode(value),
-        deserializer: (value, engine) => base64Decode(value)
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => base64Encode(value),
+            deserializer: (value, engine) => base64Decode(value)),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 
   @override
   APISchemaObject get output => APISchemaObject.string(format: "byte");

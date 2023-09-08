@@ -19,17 +19,18 @@ import 'package:dogs_core/dogs_core.dart';
 abstract class ValidationMode<T> implements OperationMode<T> {
   bool validate(T value, DogEngine engine);
 
-  static ValidationMode<T> create<T,IR>({
-    IR? Function(DogEngine engine)? initializer,
-    required bool Function(T value, DogEngine engine, IR? cached) validator
-  }) {
-    IR? Function(DogEngine) initializerFunc = initializer ?? _InlineValidationMode._noInit;
+  static ValidationMode<T> create<T, IR>(
+      {IR? Function(DogEngine engine)? initializer,
+      required bool Function(T value, DogEngine engine, IR? cached)
+          validator}) {
+    IR? Function(DogEngine) initializerFunc =
+        initializer ?? _InlineValidationMode._noInit;
     return _InlineValidationMode(initializerFunc, validator);
   }
 }
 
-class _InlineValidationMode<T,IR> extends ValidationMode<T> with TypeCaptureMixin<T> {
-
+class _InlineValidationMode<T, IR> extends ValidationMode<T>
+    with TypeCaptureMixin<T> {
   static IR? _noInit<IR>(DogEngine engine) => null;
 
   IR? Function(DogEngine engine) initializer;
@@ -46,5 +47,4 @@ class _InlineValidationMode<T,IR> extends ValidationMode<T> with TypeCaptureMixi
 
   @override
   bool validate(T value, DogEngine engine) => validator(value, engine, _ir);
-
 }

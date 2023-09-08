@@ -17,7 +17,6 @@
 import 'package:dogs_core/dogs_core.dart';
 
 abstract class GraphSerializerMode<T> implements OperationMode<T> {
-
   /// Converts [T] to a [DogGraphValue].
   DogGraphValue serialize(T value, DogEngine engine);
 
@@ -45,19 +44,24 @@ abstract class GraphSerializerMode<T> implements OperationMode<T> {
     }
   }
 
-  static GraphSerializerMode<T> create<T>({
-    required DogGraphValue Function(T value, DogEngine engine) serializer,
-    required T Function(DogGraphValue value, DogEngine engine) deserializer
-  }) => _InlineGraphSerializer(serializer: serializer, deserializer: deserializer);
+  static GraphSerializerMode<T> create<T>(
+          {required DogGraphValue Function(T value, DogEngine engine)
+              serializer,
+          required T Function(DogGraphValue value, DogEngine engine)
+              deserializer}) =>
+      _InlineGraphSerializer(
+          serializer: serializer, deserializer: deserializer);
 
-  static GraphSerializerMode<T> auto<T>(DogConverter<T> converter) => _NativeBridgeSerializer(
-    converter.resolveOperationMode(NativeSerializerMode) as NativeSerializerMode<T>
-  );
+  static GraphSerializerMode<T> auto<T>(DogConverter<T> converter) =>
+      _NativeBridgeSerializer(
+          converter.resolveOperationMode(NativeSerializerMode)
+              as NativeSerializerMode<T>);
 }
 
-class _NativeBridgeSerializer<T> extends GraphSerializerMode<T> with TypeCaptureMixin<T> {
+class _NativeBridgeSerializer<T> extends GraphSerializerMode<T>
+    with TypeCaptureMixin<T> {
   NativeSerializerMode<T> nativeMode;
-  
+
   _NativeBridgeSerializer(this.nativeMode);
 
   @override
@@ -66,15 +70,16 @@ class _NativeBridgeSerializer<T> extends GraphSerializerMode<T> with TypeCapture
   }
 
   @override
-  T deserialize(DogGraphValue value, DogEngine engine) => nativeMode.deserialize(value.coerceNative(),engine);
+  T deserialize(DogGraphValue value, DogEngine engine) =>
+      nativeMode.deserialize(value.coerceNative(), engine);
 
   @override
-  DogGraphValue serialize(T value, DogEngine engine) => engine.codec.fromNative(nativeMode.serialize(value,engine));
-
+  DogGraphValue serialize(T value, DogEngine engine) =>
+      engine.codec.fromNative(nativeMode.serialize(value, engine));
 }
 
-class _InlineGraphSerializer<T> extends GraphSerializerMode<T> with TypeCaptureMixin<T>{
-
+class _InlineGraphSerializer<T> extends GraphSerializerMode<T>
+    with TypeCaptureMixin<T> {
   DogGraphValue Function(T value, DogEngine engine) serializer;
   T Function(DogGraphValue value, DogEngine engine) deserializer;
 
@@ -87,8 +92,10 @@ class _InlineGraphSerializer<T> extends GraphSerializerMode<T> with TypeCaptureM
   void initialise(DogEngine engine) {}
 
   @override
-  T deserialize(DogGraphValue value, DogEngine engine) => deserializer(value,engine);
+  T deserialize(DogGraphValue value, DogEngine engine) =>
+      deserializer(value, engine);
 
   @override
-  DogGraphValue serialize(T value, DogEngine engine) => serializer(value,engine);
+  DogGraphValue serialize(T value, DogEngine engine) =>
+      serializer(value, engine);
 }

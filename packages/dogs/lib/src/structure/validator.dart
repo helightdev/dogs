@@ -37,7 +37,8 @@ abstract class ClassValidator {
 
 class ValidationException implements Exception {}
 
-class StructureValidation<T> extends ValidationMode<T> with TypeCaptureMixin<T> {
+class StructureValidation<T> extends ValidationMode<T>
+    with TypeCaptureMixin<T> {
   DogStructure<T> structure;
 
   StructureValidation(this.structure);
@@ -51,20 +52,20 @@ class StructureValidation<T> extends ValidationMode<T> with TypeCaptureMixin<T> 
     // Create and cache validators eagerly
     _cachedClassValidators =
         Map.fromEntries(structure.annotationsOf<ClassValidator>().where((e) {
-          var applicable = e.isApplicable(structure);
-          if (applicable) {
-            _hasValidation = true;
-          } else {
-            print("$e is not applicable in $structure");
-          }
-          return applicable;
-        }).map((e) => MapEntry(e, e.getCachedValue(structure))));
+      var applicable = e.isApplicable(structure);
+      if (applicable) {
+        _hasValidation = true;
+      } else {
+        print("$e is not applicable in $structure");
+      }
+      return applicable;
+    }).map((e) => MapEntry(e, e.getCachedValue(structure))));
 
     _cachedFieldValidators =
         Map.fromEntries(structure.fields.mapIndexed((index, field) {
-          var validators = field
-              .annotationsOf<FieldValidator>()
-              .where((e) {
+      var validators = field
+          .annotationsOf<FieldValidator>()
+          .where((e) {
             var applicable = e.isApplicable(structure, field);
             if (applicable) {
               _hasValidation = true;
@@ -73,20 +74,20 @@ class StructureValidation<T> extends ValidationMode<T> with TypeCaptureMixin<T> 
             }
             return applicable;
           })
-              .map((e) => MapEntry(e, e.getCachedValue(structure, field)))
-              .toList();
-          return MapEntry(index, validators);
-        }));
+          .map((e) => MapEntry(e, e.getCachedValue(structure, field)))
+          .toList();
+      return MapEntry(index, validators);
+    }));
   }
 
   @override
   bool validate(T value, DogEngine engine) {
     if (!_hasValidation) return true;
     return !_cachedFieldValidators.entries.any((pair) {
-      var fieldValue = structure.proxy.getField(value, pair.key);
-      return pair.value
-          .any((e) => !e.key.validate(e.value, fieldValue, engine));
-    }) &&
+          var fieldValue = structure.proxy.getField(value, pair.key);
+          return pair.value
+              .any((e) => !e.key.validate(e.value, fieldValue, engine));
+        }) &&
         !_cachedClassValidators.entries
             .any((e) => !e.key.validate(e.value, value, engine));
   }
