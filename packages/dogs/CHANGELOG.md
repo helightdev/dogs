@@ -1,3 +1,8 @@
+## 6.0.3
+
+ - **REFACTOR**: reformatted code and removed some unused imports.
+ - **DOCS**: add example.md.
+
 ## 6.0.2
 
  - **FIX**: dogs_core tests.

@@ -15,6 +15,46 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_built` - `v1.0.1`](#dogs_built---v101)
+ - [`dogs_core` - `v6.0.3`](#dogs_core---v603)
+ - [`dogs_generator` - `v5.0.5`](#dogs_generator---v505)
+ - [`dogs_cbor` - `v2.0.19`](#dogs_cbor---v2019)
+ - [`dogs_toml` - `v2.0.19`](#dogs_toml---v2019)
+ - [`dogs_yaml` - `v2.0.19`](#dogs_yaml---v2019)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.0.5`
+ - `dogs_cbor` - `v2.0.19`
+ - `dogs_toml` - `v2.0.19`
+ - `dogs_yaml` - `v2.0.19`
+
+---
+
+#### `dogs_built` - `v1.0.1`
+
+ - **REFACTOR**: reformatted code and removed some unused imports.
+
+#### `dogs_core` - `v6.0.3`
+
+ - **REFACTOR**: reformatted code and removed some unused imports.
+ - **DOCS**: add example.md.
+
+
+## 2023-09-08
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_built` - `v1.0.0`](#dogs_built---v100)
  - [`dogs_core` - `v6.0.2`](#dogs_core---v602)
  - [`dogs_generator` - `v5.0.4`](#dogs_generator---v504)
