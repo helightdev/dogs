@@ -1,9 +1,0 @@
-dependency_overrides:
-  dogs_core:
-    path: ../dogs
-  darwin_marshal:
-    path: /media/helight/Volume/Projects/darwin/sdk/darwin_marshal
-  darwin_sdk:
-    path: /media/helight/Volume/Projects/darwin/sdk/darwin
-  darwin_http:
-    path: /media/helight/Volume/Projects/darwin/sdk/darwin_http
