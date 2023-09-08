@@ -1,3 +1,9 @@
+## 6.0.2
+
+ - **FIX**: dogs_core tests.
+ - **FIX**: add case for synthetic structures.
+ - **FIX**: remove dart ffi import.
+
 ## 6.0.1
 
  - **FIX**: remove dart ffi import.
