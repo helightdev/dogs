@@ -18,8 +18,10 @@ void main() {
         [],
         MemoryDogStructureProxy());
     var converter = DogStructureConverterImpl(structure);
-    var graph = (converter.resolveOperationMode(GraphSerializerMode) as GraphSerializerMode)
-        .serialize(["Christoph", 19, "Hello!"], engine);
+    var operation = engine.modeRegistry
+        .entry<GraphSerializerMode>()
+        .forConverter(converter, engine);
+    var graph = operation.serialize(["Christoph", 19, "Hello!"], engine);
     expect("""{"name":"Christoph","age":19,"note":"Hello!"}""",
         engine.jsonSerializer.serialize(graph));
   });
