@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1
         with:
           channel: 'stable'
@@ -18,3 +18,15 @@ jobs:
         run: ./.github/workflows/scripts/install-tools.sh
       - name: "Run Smoke Tests"
         run: melos run smoke
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+        with:
+          channel: 'stable'
+      - name: "Install Tools"
+        run: ./.github/workflows/scripts/install-tools.sh
+      - name: "Run Unit Tests"
+        run: melos run test
