@@ -1,3 +1,8 @@
+## 6.1.0
+
+ - **FIX**: broken relative markdown link.
+ - **FEAT**: add support for deeper polymorphic serialization involving primitive types.
+
 ## 6.0.3
 
  - **REFACTOR**: reformatted code and removed some unused imports.
