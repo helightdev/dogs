@@ -33,6 +33,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       {NativeSerializerMode: () => NativeSerializerMode.create(serializer: serialize, deserializer: deserialize), GraphSerializerMode: () => GraphSerializerMode.auto(this)};
 
   deserialize(value, DogEngine engine) {
+    if (value == null) return null;
     if (value is! Map && engine.codec.isNative(value.runtimeType) && serializeNativeValues) return value;
     if (value is Iterable) {
       return value.map((e) => deserialize(e, engine)).toList();
@@ -55,6 +56,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
   }
 
   serialize(value, DogEngine engine) {
+    if (value == null) return null;
     if (value is! Map && engine.codec.isNative(value.runtimeType) && serializeNativeValues) return value;
     var type = value.runtimeType;
     var operation = engine.modeRegistry.nativeSerialization.forTypeNullable(type, engine);

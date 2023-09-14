@@ -209,6 +209,7 @@ class DeepPolymorphic with Dataclass<DeepPolymorphic> {
         "note": Note.variant0(),
         "list": [Note.variant1(), Note.variant0()],
         "self": DeepPolymorphic.variant0(),
+        "nullable": null,
         "even-deeper": [
           {
             "bool": true,
