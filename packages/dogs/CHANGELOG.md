@@ -1,3 +1,7 @@
+## 6.1.1
+
+ - **FIX**: handle null in serialization.
+
 ## 6.1.0
 
  - **FIX**: broken relative markdown link.

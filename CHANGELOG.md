@@ -15,6 +15,42 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_core` - `v6.1.1`](#dogs_core---v611)
+ - [`dogs_generator` - `v5.0.7`](#dogs_generator---v507)
+ - [`dogs_toml` - `v2.0.21`](#dogs_toml---v2021)
+ - [`dogs_cbor` - `v2.0.21`](#dogs_cbor---v2021)
+ - [`dogs_built` - `v1.0.3`](#dogs_built---v103)
+ - [`dogs_yaml` - `v2.0.21`](#dogs_yaml---v2021)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.0.7`
+ - `dogs_toml` - `v2.0.21`
+ - `dogs_cbor` - `v2.0.21`
+ - `dogs_built` - `v1.0.3`
+ - `dogs_yaml` - `v2.0.21`
+
+---
+
+#### `dogs_core` - `v6.1.1`
+
+ - **FIX**: handle null in serialization.
+
+
+## 2023-09-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_core` - `v6.1.0`](#dogs_core---v610)
  - [`dogs_generator` - `v5.0.6`](#dogs_generator---v506)
  - [`dogs_cbor` - `v2.0.20`](#dogs_cbor---v2020)
