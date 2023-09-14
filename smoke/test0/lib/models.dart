@@ -175,3 +175,51 @@ class Note with Dataclass<Note> {
     return Note(null, "Lorem Ipsum Dolor", true, DateTime(2022), {});
   }
 }
+
+@serializable
+class DeepPolymorphic with Dataclass<DeepPolymorphic> {
+  String name;
+  Map<String,dynamic> data;
+
+  DeepPolymorphic({
+    required this.name,
+    required this.data,
+  });
+
+  factory DeepPolymorphic.variant0() {
+    return DeepPolymorphic(name: "Hello World", data: {
+      "love": "dart",
+      "list": [1,2,3],
+      "deeper": {
+        "note": Note.variant0(),
+        "list": [Note.variant1(), Note.variant0()],
+        "even-deeper": {
+          "bool": true,
+          "double": 0.5,
+        }
+      }
+    });
+  }
+
+  factory DeepPolymorphic.variant1() {
+    return DeepPolymorphic(name: "Hello World", data: {
+      "love": "dart",
+      "list": [1,2,3],
+      "deeper": {
+        "note": Note.variant0(),
+        "list": [Note.variant1(), Note.variant0()],
+        "self": DeepPolymorphic.variant0(),
+        "even-deeper": [
+          {
+            "bool": true,
+            "double": 0.5,
+          },
+          {
+            "bool": false,
+            "double": 1.5,
+          }
+        ]
+      }
+    });
+  }
+}

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dogs_cbor/dogs_cbor.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_toml/dogs_toml.dart';
@@ -147,6 +149,7 @@ void testModels() {
   testSingleModel(ModelF.variant0, ModelF.variant1);
   testSingleModel(ModelG.variant0, ModelG.variant1);
   testSingleModel(Note.variant0, Note.variant1);
+  testSingleModel(DeepPolymorphic.variant0, DeepPolymorphic.variant1);
 }
 
 void testConformities() {
@@ -266,6 +269,8 @@ void testSingleModel<T>(T Function() a, T Function() b) {
   var eb = dogs.jsonEncode<T>(vb0);
   var da = dogs.jsonDecode<T>(ea);
   var db = dogs.jsonDecode<T>(eb);
+  print(ea);
+  print(eb);
   if (va1 != da || va0 != da) throw Exception("Non-pure serialization: $T");
   if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization: $T");
   if (ea == eb) throw Exception("Wrong equality: $T");

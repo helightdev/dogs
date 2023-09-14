@@ -69,10 +69,10 @@ packages:
     dependency: transitive
     description:
       name: build_resolvers
-      sha256: a7417cc44d9edb3f2c8760000270c99dba8c72ff66d0146772b8326565780745
+      sha256: d912852cce27c9e80a93603db721c267716894462e7033165178b91138587972
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   build_runner:
     dependency: "direct dev"
     description:
@@ -191,35 +191,35 @@ packages:
       path: "../../packages/dogs_cbor"
       relative: true
     source: path
-    version: "2.0.17"
+    version: "2.0.19"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../../packages/dogs"
       relative: true
     source: path
-    version: "6.0.1"
+    version: "6.0.3"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.0.3"
+    version: "5.0.5"
   dogs_toml:
     dependency: "direct main"
     description:
       path: "../../packages/dogs_toml"
       relative: true
     source: path
-    version: "2.0.17"
+    version: "2.0.19"
   dogs_yaml:
     dependency: "direct main"
     description:
       path: "../../packages/dogs_yaml"
       relative: true
     source: path
-    version: "2.0.17"
+    version: "2.0.19"
   duffer:
     dependency: transitive
     description:
@@ -351,16 +351,18 @@ packages:
   lyell:
     dependency: "direct main"
     description:
-      path: "/home/helight/StudioProjects/lyell/packages/lyell"
-      relative: false
-    source: path
+      name: lyell
+      sha256: "8fca9f4917b4a525d547f7c88e11842d712d6a48ec64abdeefebfdd5231f9966"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.1.0"
   lyell_gen:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "/home/helight/StudioProjects/lyell/packages/lyell_gen"
-      relative: false
-    source: path
+      name: lyell_gen
+      sha256: "09498cfeec197f184855512b502ed2f6fb465c0ca911b4487ce746f8f3d53bd2"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.1.0"
   matcher:
     dependency: transitive
