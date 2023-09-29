@@ -1,5 +1,5 @@
 <h1 align="left">
-    DOGs
+    Dart Object Graphs
     <a href="https://discord.gg/6HKuGSzYKJ">
         <img src="https://img.shields.io/discord/1060355106522017924?label=discord" alt="discord">
     </a>
