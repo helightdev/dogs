@@ -32,6 +32,7 @@ Future initialiseDogs() async {
     gen3.ConformityBeanConverter(),
     gen3.ConformityBasicConverter(),
     gen3.ConformityDataConverter(),
+    gen3.ConformityDataArgConverter(),
     gen4.ValidateAConverter(),
     gen4.ValidateBConverter(),
     gen4.ValidateCConverter(),

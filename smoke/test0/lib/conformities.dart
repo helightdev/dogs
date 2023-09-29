@@ -83,3 +83,22 @@ class ConformityData with Dataclass<ConformityData> {
     return ConformityData("p1", "Ben", 25);
   }
 }
+
+@serializable
+class ConformityDataArg with Dataclass<ConformityData> {
+
+  final String id;
+  final String? name;
+  final int? age;
+
+  ConformityDataArg({required this.id, this.name, this.age});
+
+
+  factory ConformityDataArg.variant0() {
+    return ConformityDataArg(id: "p0", name: "Alex", age: 20);
+  }
+
+  factory ConformityDataArg.variant1() {
+    return ConformityDataArg(id: "p1", name: "Ben", age: 25);
+  }
+}

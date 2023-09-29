@@ -141,20 +141,21 @@ void testValidators() {
 }
 
 void testModels() {
-  testSingleModel(ModelA.variant0, ModelA.variant1);
-  testSingleModel(ModelB.variant0, ModelB.variant1);
-  testSingleModel(ModelC.variant0, ModelC.variant1);
-  testSingleModel(ModelD.variant0, ModelD.variant1);
-  testSingleModel(ModelE.variant0, ModelE.variant1);
-  testSingleModel(ModelF.variant0, ModelF.variant1);
-  testSingleModel(ModelG.variant0, ModelG.variant1);
-  testSingleModel(Note.variant0, Note.variant1);
-  testSingleModel(DeepPolymorphic.variant0, DeepPolymorphic.variant1);
+  testSingleModel<ModelA>(ModelA.variant0, ModelA.variant1);
+  testSingleModel<ModelB>(ModelB.variant0, ModelB.variant1);
+  testSingleModel<ModelC>(ModelC.variant0, ModelC.variant1);
+  testSingleModel<ModelD>(ModelD.variant0, ModelD.variant1);
+  testSingleModel<ModelE>(ModelE.variant0, ModelE.variant1);
+  testSingleModel<ModelF>(ModelF.variant0, ModelF.variant1);
+  testSingleModel<ModelG>(ModelG.variant0, ModelG.variant1);
+  testSingleModel<Note>(Note.variant0, Note.variant1);
+  testSingleModel<DeepPolymorphic>(DeepPolymorphic.variant0, DeepPolymorphic.variant1);
 }
 
 void testConformities() {
   testSimple(ConformityBasic.variant0, ConformityBasic.variant1);
   testSimple(ConformityData.variant0, ConformityData.variant1);
+  testSimple(ConformityDataArg.variant0, ConformityDataArg.variant1);
   testSimple(ConformityBean.variant0, ConformityBean.variant1);
 }
 
@@ -232,8 +233,8 @@ void testEncoding<T>(DogSerializer serializer, T Function() a, T Function() b) {
   var gdb = serializer.deserialize(eb);
   var da = dogs.convertObjectFromGraph(gda, T);
   var db = dogs.convertObjectFromGraph(gdb, T);
-  if (va1 != da || va0 != da) throw Exception("Non-pure serialization");
-  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization");
+  if (va1 != da || va0 != da) throw Exception("Non-pure serialization.md");
+  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization.md");
   if (ea == eb) throw Exception("Wrong equality");
 }
 
@@ -269,9 +270,9 @@ void testSingleModel<T>(T Function() a, T Function() b) {
   var eb = dogs.jsonEncode<T>(vb0);
   var da = dogs.jsonDecode<T>(ea);
   var db = dogs.jsonDecode<T>(eb);
-  print(ea);
-  print(eb);
-  if (va1 != da || va0 != da) throw Exception("Non-pure serialization: $T");
-  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization: $T");
+  //print(ea);
+  //print(eb);
+  if (va1 != da || va0 != da) throw Exception("Non-pure serialization.md: $T");
+  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization.md: $T");
   if (ea == eb) throw Exception("Wrong equality: $T");
 }

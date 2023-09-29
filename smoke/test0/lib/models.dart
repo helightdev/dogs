@@ -141,7 +141,10 @@ class ModelG with Dataclass<ModelG> {
 
   List<List<int>>? ints;
   Map<String, Set<double>>? m;
+
+  @polymorphic
   Map<String, List<Object>> dyna;
+
   List<Optional<String>> opts;
 
   ModelG(this.ints, this.m, this.dyna, this.opts);
@@ -179,6 +182,8 @@ class Note with Dataclass<Note> {
 @serializable
 class DeepPolymorphic with Dataclass<DeepPolymorphic> {
   String name;
+
+  @polymorphic
   Map<String,dynamic> data;
 
   DeepPolymorphic({
