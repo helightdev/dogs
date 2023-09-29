@@ -97,8 +97,6 @@ String szPrefix = "sz";
 TypeChecker propertyNameChecker = TypeChecker.fromRuntime(PropertyName);
 TypeChecker propertySerializerChecker =
     TypeChecker.fromRuntime(PropertySerializer);
-TypeChecker polymorphicChecker =
-    TypeChecker.fromRuntime(polymorphic.runtimeType);
 TypeChecker dataclassChecker = TypeChecker.fromRuntime(Dataclass);
 TypeChecker mapChecker = TypeChecker.fromRuntime(Map);
 TypeChecker beanIgnoreChecker = TypeChecker.fromRuntime(beanIgnore.runtimeType);
