@@ -1,3 +1,8 @@
+## 5.0.8
+
+ - **REFACTOR**: remove unused variable.
+ - **FIX**: make the generator use escaped field getter names.
+
 ## 5.0.7
 
  - Update a dependency to the latest release.

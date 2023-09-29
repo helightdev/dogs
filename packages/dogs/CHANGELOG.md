@@ -1,3 +1,11 @@
+## 7.0.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: only query serial converters for native collections.
+ - **FEAT**: expand projection to allow for document projection.
+ - **BREAKING** **REFACTOR**: Require explicit handling of polymorphic tree serialization.
+
 ## 6.1.1
 
  - **FIX**: handle null in serialization.

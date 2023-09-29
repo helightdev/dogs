@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-09-29
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_core` - `v7.0.0`](#dogs_core---v700)
+
+Packages with other changes:
+
+ - [`dogs_generator` - `v5.0.8`](#dogs_generator---v508)
+ - [`dogs_cbor` - `v2.0.22`](#dogs_cbor---v2022)
+ - [`dogs_toml` - `v2.0.22`](#dogs_toml---v2022)
+ - [`dogs_built` - `v1.0.4`](#dogs_built---v104)
+ - [`dogs_yaml` - `v2.0.22`](#dogs_yaml---v2022)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_cbor` - `v2.0.22`
+ - `dogs_toml` - `v2.0.22`
+ - `dogs_built` - `v1.0.4`
+ - `dogs_yaml` - `v2.0.22`
+
+---
+
+#### `dogs_core` - `v7.0.0`
+
+ - **FIX**: only query serial converters for native collections.
+ - **FEAT**: expand projection to allow for document projection.
+ - **BREAKING** **REFACTOR**: Require explicit handling of polymorphic tree serialization.
+
+#### `dogs_generator` - `v5.0.8`
+
+ - **REFACTOR**: remove unused variable.
+ - **FIX**: make the generator use escaped field getter names.
+
+
 ## 2023-09-14
 
 ### Changes
