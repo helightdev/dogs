@@ -112,9 +112,9 @@ class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional>
 
 class OptionalTreeBaseConverterFactory extends TreeBaseConverterFactory {
   @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine) {
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     var argumentConverter =
-        TreeBaseConverterFactory.argumentConverters(tree, engine).first;
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic).first;
     return OptionalTreeBaseConverter(
         argumentConverter, tree.arguments.first.qualified);
   }

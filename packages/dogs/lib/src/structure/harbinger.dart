@@ -61,7 +61,7 @@ class StructureHarbinger<T> {
     }
 
     // Resolve using tree converter
-    return engine.getTreeConverter(field.type);
+    return engine.getTreeConverter(field.type, isPolymorphicField(field));
   }
 
   static StructureHarbinger create(DogStructure structure, DogEngine engine) =>

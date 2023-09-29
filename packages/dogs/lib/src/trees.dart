@@ -17,23 +17,23 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:meta/meta.dart';
 
 abstract class TreeBaseConverterFactory {
-  DogConverter getConverter(TypeTree tree, DogEngine engine);
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic);
 
   @internal
   static final PolymorphicConverter polymorphicConverter =
       PolymorphicConverter();
 
-  static DogConverter treeConverter(TypeTree tree, DogEngine engine) {
+  static DogConverter treeConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     if (tree.isTerminal && tree.qualified.typeArgument == dynamic) {
       return polymorphicConverter;
     }
-    return engine.getTreeConverter(tree);
+    return engine.getTreeConverter(tree, allowPolymorphic);
   }
 
   static List<DogConverter> argumentConverters(
-      TypeTree tree, DogEngine engine) {
+      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     return tree.arguments.map((e) {
-      return treeConverter(e, engine);
+      return treeConverter(e, engine, allowPolymorphic);
     }).toList();
   }
 }
@@ -92,9 +92,9 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
 
 class ListTreeBaseConverterFactory extends TreeBaseConverterFactory {
   @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine) {
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     var argumentConverters =
-        TreeBaseConverterFactory.argumentConverters(tree, engine);
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
     if (argumentConverters.length > 1) {
       throw ArgumentError("Lists can only have one generic type argument");
     }
@@ -105,9 +105,9 @@ class ListTreeBaseConverterFactory extends TreeBaseConverterFactory {
 
 class SetTreeBaseConverterFactory extends TreeBaseConverterFactory {
   @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine) {
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     var argumentConverters =
-        TreeBaseConverterFactory.argumentConverters(tree, engine);
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
     if (argumentConverters.length > 1) {
       throw ArgumentError("Lists can only have one generic type argument");
     }
@@ -117,9 +117,9 @@ class SetTreeBaseConverterFactory extends TreeBaseConverterFactory {
 
 class IterableTreeBaseConverterFactory extends TreeBaseConverterFactory {
   @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine) {
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     var argumentConverters =
-        TreeBaseConverterFactory.argumentConverters(tree, engine);
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
     if (argumentConverters.length > 1) {
       throw ArgumentError("Lists can only have one generic type argument");
     }
@@ -130,9 +130,9 @@ class IterableTreeBaseConverterFactory extends TreeBaseConverterFactory {
 
 class MapTreeBaseConverterFactory extends TreeBaseConverterFactory {
   @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine) {
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     var argumentConverters =
-        TreeBaseConverterFactory.argumentConverters(tree, engine);
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
     if (argumentConverters.length > 2 || argumentConverters.length < 2) {
       throw ArgumentError("Lists can only have two generic type arguments");
     }

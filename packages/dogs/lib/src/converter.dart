@@ -69,36 +69,17 @@ class _BeanIgnore {
 const beanIgnore = _BeanIgnore();
 
 /// Marks a property as polymorphic, meaning its values type can vary.
-class _Polymorphic extends ConverterSupplyingVisitor {
+class _Polymorphic extends StructureMetadata {
   const _Polymorphic();
-
-  @override
-  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field,
-      DogEngine engine) {
-    if (field.serial.typeArgument == dynamic) {
-      switch (field.iterableKind) {
-        case IterableKind.list:
-          return DefaultListConverter();
-        case IterableKind.set:
-          return DefaultSetConverter();
-        case IterableKind.none:
-          return PolymorphicConverter();
-      }
-    } else {
-      switch (field.iterableKind) {
-        case IterableKind.list:
-          return DefaultListConverter(field.serial);
-        case IterableKind.set:
-          return DefaultSetConverter(field.serial);
-        case IterableKind.none:
-          return PolymorphicConverter();
-      }
-    }
-  }
 }
 
 /// Marks a property as polymorphic, meaning its value's type can vary.
 const polymorphic = _Polymorphic();
+
+@internal
+bool isPolymorphicField(DogStructureField field) {
+  return field.annotationsOf<_Polymorphic>().isNotEmpty;
+}
 
 /// Overrides the name that will be used by the [GeneratedDogConverter] for this
 /// specific property. By default, the field name will be used.

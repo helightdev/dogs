@@ -213,16 +213,16 @@ class DogEngine {
     treeBaseFactories.addAll(Map.fromEntries(entries));
   }
 
-  DogConverter getTreeConverter(TypeTree tree) {
+  DogConverter getTreeConverter(TypeTree tree, [bool allowPolymorphic = true]) {
     var cachedConverter =
         runtimeTreeConverterCache[tree.qualified.typeArgument];
     if (cachedConverter != null) return cachedConverter;
-    var created = _getTreeConverterUncached(tree);
+    var created = _getTreeConverterUncached(tree, allowPolymorphic);
     runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
     return created;
   }
 
-  DogConverter<dynamic> _getTreeConverterUncached(TypeTree<dynamic> tree) {
+  DogConverter<dynamic> _getTreeConverterUncached(TypeTree<dynamic> tree, [bool allowPolymorphic = true]) {
     if (tree.isTerminal) {
       var associated = findAssociatedConverter(tree.base.typeArgument);
 
@@ -230,15 +230,9 @@ class DogEngine {
         return codec.bridgeConverters[tree.base.typeArgument]!;
       }
 
-      assert(() {
-        if (associated == null && kWarnPolymorphicTerminalNode) {
-          print(
-              "[WARN] Using polymorphic converter for terminal tree node ${tree.base.typeArgument}. "
-              "If this intended, you can ignore this message or deactivate it using kWarnPolymorphicTerminalNode.");
-        }
-        return true;
-      }());
-      return associated ?? TreeBaseConverterFactory.polymorphicConverter;
+      if (associated != null) return associated;
+      if (allowPolymorphic) return TreeBaseConverterFactory.polymorphicConverter;
+      throw ArgumentError("No type tree converter for tree ${tree.qualified} found. (Polymorphism disabled)");
     } else {
       // Use associated converter if present
       var associated = findAssociatedConverter(tree.qualified.typeArgument);
@@ -249,7 +243,7 @@ class DogEngine {
       if (factory == null) {
         throw ArgumentError("No type tree converter for ${tree.base} found");
       }
-      return factory.getConverter(tree, this);
+      return factory.getConverter(tree, this, allowPolymorphic);
     }
   }
 
@@ -308,14 +302,14 @@ class DogEngine {
 
   dynamic convertIterableToNative(
       dynamic value, Type serialType, IterableKind kind) {
-    return _graphSerialization
+    return _nativeSerialization
         .forType(serialType, this)
         .serializeIterable(value, this, kind);
   }
 
   dynamic convertIterableFromNative(
       dynamic value, Type serialType, IterableKind kind) {
-    return _graphSerialization
+    return _nativeSerialization
         .forType(serialType, this)
         .deserializeIterable(value, this, kind);
   }
