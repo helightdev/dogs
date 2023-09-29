@@ -20,13 +20,12 @@ typedef ProjectionTransformer = Map<String, dynamic> Function(
     Map<String, dynamic> data);
 
 extension ProjectionExtension on DogEngine {
-  dynamic createProjection(
-    Type target, {
+  
+  Map<String,dynamic> createProjectionDocument({
     Iterable<Map>? properties,
     Iterable<Object>? objects,
     Iterable<ProjectionTransformer>? transformers,
   }) {
-    var struct = findStructureByType(target)!;
     var buffer = <String, dynamic>{};
     objects?.forEach((element) {
       var structure = findStructureByType(element.runtimeType)!;
@@ -50,8 +49,43 @@ extension ProjectionExtension on DogEngine {
         buffer = func(buffer);
       }
     }
-    var fieldValues = struct.fields.map((e) => buffer[e.name]).toList();
+    return buffer;
+  }
+  
+  dynamic createProjection(
+    Type target, {
+    Iterable<Map>? properties,
+    Iterable<Object>? objects,
+    Iterable<ProjectionTransformer>? transformers,
+  }) {
+    var struct = findStructureByType(target)!;
+    var document = createProjectionDocument(objects: objects, properties: properties, transformers: transformers);
+    var fieldValues = struct.fields.map((e) => document[e.name]).toList();
     return struct.proxy.instantiate(fieldValues);
+  }
+
+  Map<String,dynamic> projectDocument(Object value, [Object? a, Object? b, Object? c]) {
+    // Combine additional args into an iterable value
+    if ((a != null || b != null || c != null)) {
+      value = [
+        ...value.asIterable(),
+        if (a != null) ...a.asIterable(),
+        if (b != null) ...b.asIterable(),
+        if (c != null) ...c.asIterable()
+      ];
+    }
+
+    var properties = <Map>[];
+    var objects = <Object>[];
+    for (var element in value.asIterable()) {
+      if (element is Map) {
+        properties.add(element);
+      } else {
+        objects.add(element);
+      }
+    }
+
+    return createProjectionDocument(properties: properties, objects: objects);
   }
 
   TARGET project<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
