@@ -127,6 +127,26 @@ extension StructureExtensions on DogStructure {
   Map<String, dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
       fields.mapIndexed((i, e) => MapEntry(e.name, proxy.getField(obj, i))));
 
+  /// Reconstructs a new instance of [T] using the supplied [map] as field values.
+  /// For more details on the map format, see [getFieldMap].
+  /// Throws an exception if a required field is missing.
+  dynamic instantiateFromFieldMap(dynamic obj, Map<String, dynamic> map) {
+    var values = [];
+    for (var i = 0; i < fields.length; i++) {
+      var field = fields[i];
+      var value = map[field.name];
+      if (value == null && field.optional) {
+        values.add(null);
+      } else if (value != null) {
+        values.add(value);
+      } else {
+        throw Exception("Missing required field ${field.name}");
+      }
+    }
+    return proxy.instantiate(values);
+  }
+
+  /// Returns all annotations of type [T] for this structure.
   List<T> metadataOf<T>() {
     return annotations.whereType<T>().toList();
   }
