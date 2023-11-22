@@ -117,9 +117,13 @@ extension DogEngineShortcuts on DogEngine {
 }
 
 extension StructureExtensions on DogStructure {
+
+  /// Returns all field getters for this structure.
   List<dynamic Function(dynamic)> get getters => List.generate(
       fields.length, (index) => (obj) => proxy.getField(obj, index));
 
+  /// Returns all field values of the supplied [obj] as a field name keyed map.
+  /// If a field defines a custom serial name, that name is used instead.
   Map<String, dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
       fields.mapIndexed((i, e) => MapEntry(e.name, proxy.getField(obj, i))));
 
@@ -127,6 +131,7 @@ extension StructureExtensions on DogStructure {
     return annotations.whereType<T>().toList();
   }
 
+  /// Returns the index of the field with the supplied [name] or null if not found.
   int? indexOfFieldName(String name) {
     for (var i = 0; i < fields.length; i++) {
       if (fields[i].name == name) {
