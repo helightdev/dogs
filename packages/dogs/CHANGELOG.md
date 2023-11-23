@@ -1,3 +1,9 @@
+## 7.1.0
+
+ - **REFACTOR**: use structure harbinger for findConverter instead of the outdated legacy algorithm.
+ - **FEAT**: add instantiateFromFieldMap to the structure extensions.
+ - **DOCS**: add some missing documentation.
+
 ## 7.0.0
 
 > Note: This release has breaking changes.

@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-11-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v7.1.0`](#dogs_core---v710)
+ - [`dogs_generator` - `v5.0.9`](#dogs_generator---v509)
+ - [`dogs_cbor` - `v2.0.23`](#dogs_cbor---v2023)
+ - [`dogs_toml` - `v2.0.23`](#dogs_toml---v2023)
+ - [`dogs_built` - `v1.0.5`](#dogs_built---v105)
+ - [`dogs_yaml` - `v2.0.23`](#dogs_yaml---v2023)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.0.9`
+ - `dogs_cbor` - `v2.0.23`
+ - `dogs_toml` - `v2.0.23`
+ - `dogs_built` - `v1.0.5`
+ - `dogs_yaml` - `v2.0.23`
+
+---
+
+#### `dogs_core` - `v7.1.0`
+
+ - **REFACTOR**: use structure harbinger for findConverter instead of the outdated legacy algorithm.
+ - **FEAT**: add instantiateFromFieldMap to the structure extensions.
+ - **DOCS**: add some missing documentation.
+
+
 ## 2023-09-29
 
 ### Changes
