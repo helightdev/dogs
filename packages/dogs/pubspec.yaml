@@ -1,6 +1,6 @@
 name: dogs_core
 description: a universal serialization library using code generation to reduce boilerplate massively.
-version: 7.1.0
+version: 7.1.1
 repository: https://github.com/DarwinFramework/dogs
 documentation: https://darwin-framework.gitbook.io/dogs/guides/1.-getting-started
 issue_tracker: https://github.com/DarwinFramework/dogs/issues

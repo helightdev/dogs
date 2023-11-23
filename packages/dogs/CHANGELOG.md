@@ -1,3 +1,7 @@
+## 7.1.1
+
+ - **FIX**: remove unused parameter.
+
 ## 7.1.0
 
  - **REFACTOR**: use structure harbinger for findConverter instead of the outdated legacy algorithm.
