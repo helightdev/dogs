@@ -15,6 +15,10 @@ nav:
   - serialization.md
   - projection.md
   - validation.md
+  - Forms:
+    - forms/start.md
+    - forms/customization.md
+    - forms/translation.md
   - Advanced:
     - advanced/structures.md
     - advanced/annotations.md
