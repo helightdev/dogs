@@ -21,9 +21,10 @@ typedef EnumFromString<T> = T? Function(String);
 typedef EnumToString<T> = String Function(T?);
 
 abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
-    with OperationMapMixin<T> {
+    with OperationMapMixin<T>, EnumConverter<T> {
   EnumToString<T?> get toStr;
   EnumFromString<T?> get fromStr;
+  @override
   List<String> get values;
 
   @override
@@ -40,4 +41,18 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
       ..title = T.toString()
       ..enumerated = values;
   }
+  @override
+  T? valueFromString(String value) => fromStr(value)!;
+
+  @override
+  String valueToString(T? value) => toStr(value);
+
+}
+
+mixin EnumConverter<T extends Enum> on DogConverter<T> {
+  
+  List<String> get values;
+  T? valueFromString(String value);
+  String valueToString(T? value);
+  
 }
