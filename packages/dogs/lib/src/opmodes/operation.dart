@@ -75,7 +75,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
   final Map<Type, OperationMode> typeMapping = {};
 
   T forConverter(DogConverter converter, DogEngine engine) {
-    var cached = typeMapping[converter];
+    var cached = converterMapping[converter];
     if (cached != null) return cached as T;
     var resolved = converter.resolveOperationMode(modeType);
     resolved ??= engine.modeFactories[T]?.forConverter(converter, engine);
