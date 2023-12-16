@@ -28,6 +28,7 @@ export 'src/converters/polymorphic.dart';
 export 'src/structure/converter.dart';
 
 export 'src/opmodes/operation.dart';
+export 'src/opmodes/factory.dart';
 
 export 'src/schema/schema.dart';
 export 'src/schema/visitor.dart';

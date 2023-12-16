@@ -31,7 +31,9 @@ class DogEngine {
   static DogEngine get instance => _instance!;
 
   /// Read-only list of [DogConverter]s.
-  List<DogConverter> converters = [];
+  final List<DogConverter> converters = [];
+
+  final Map<Type, OperationModeFactory> modeFactories = {};
 
   /// Read-only mapping of [DogConverter]s.
   Map<Type, DogConverter> associatedConverters = HashMap();
@@ -199,6 +201,13 @@ class DogEngine {
     converters.add(converter);
     converter.registrationCallback(this);
     if (emitChangeToStream) _changeStreamController.add(true);
+  }
+
+  /// Registers a [OperationModeFactory] in this [DogEngine] instance and emits
+  /// a event to the change stream.
+  void registerModeFactory(OperationModeFactory factory) {
+    modeFactories[factory.typeArgument] = factory;
+    _changeStreamController.add(true);
   }
 
   /// Registers multiple converters using [registerConverter].
