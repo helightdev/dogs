@@ -36,7 +36,7 @@ class DogEngine {
   final Map<Type, OperationModeFactory> modeFactories = {};
 
   /// Read-only mapping of [DogConverter]s.
-  Map<Type, DogConverter> associatedConverters = HashMap();
+  final Map<Type, DogConverter> associatedConverters = HashMap();
 
   /// Read-only mapping of [DogStructure]s.
   final Map<Type, DogStructure> structures = HashMap();
@@ -44,9 +44,9 @@ class DogEngine {
   final Map<String, String> annotationTranslations = {};
 
   @internal
-  Map<Type, DogConverter> runtimeTreeConverterCache = HashMap();
+  final Map<Type, DogConverter> runtimeTreeConverterCache = HashMap();
 
-  Map<Type, TreeBaseConverterFactory> treeBaseFactories = {
+  final Map<Type, TreeBaseConverterFactory> treeBaseFactories = {
     List: ListTreeBaseConverterFactory(),
     Iterable: ListTreeBaseConverterFactory(),
     Set: SetTreeBaseConverterFactory(),
@@ -66,10 +66,24 @@ class DogEngine {
 
   StreamSubscription? _forkSubscription;
 
+  /// The [DogNativeCodec] used by this [DogEngine] instance.
+  /// See [DogNativeCodec] for more details.
   final DogNativeCodec codec;
 
-  /// Creates a new [DogEngine] with optional async capabilities which can
-  /// be enabled via [enableAsync]. (Experimental)
+  /// Creates a new [DogEngine] instance.
+  /// If [registerBaseConverters] is true, the following converters will be
+  /// registered:
+  /// - [PolymorphicConverter]
+  /// - [DefaultMapConverter]
+  /// - [DefaultIterableConverter]
+  /// - [DefaultListConverter]
+  /// - [DefaultSetConverter]
+  /// - [DateTimeConverter]
+  /// - [DurationConverter]
+  /// - [UriConverter]
+  /// - [Uint8ListConverter]
+  ///
+  /// If [codec] is not specified, [DefaultNativeCodec] will be used.
   DogEngine(
       {bool registerBaseConverters = true,
       this.codec = const DefaultNativeCodec()}) {
@@ -299,18 +313,27 @@ class DogEngine {
         .deserializeIterable(value, this, kind);
   }
 
+  /// Converts a [value] to its native representation using the
+  /// converter associated with [serialType].
+
   dynamic convertObjectToNative(dynamic value, Type serialType) {
     return _nativeSerialization
         .forType(serialType, this)
         .serialize(value, this);
   }
 
+  /// Converts a [value] to its native representation using the
+  /// converter associated with [serialType].
   dynamic convertObjectFromNative(dynamic value, Type serialType) {
     return _nativeSerialization
         .forType(serialType, this)
         .deserialize(value, this);
   }
 
+  /// Converts the [value], which can be either a [Iterable] or instance of
+  /// the type associated with [serialType], depending on the [IterableKind],
+  /// to its native representation using the converter associated with
+  /// [serialType].
   dynamic convertIterableToNative(
       dynamic value, Type serialType, IterableKind kind) {
     return _nativeSerialization
@@ -318,6 +341,14 @@ class DogEngine {
         .serializeIterable(value, this, kind);
   }
 
+  /// Converts the [value], which can be either a [Iterable] or instance of
+  /// the type associated with [serialType], depending on the [IterableKind],
+  /// to its native representation using the converter associated with
+  /// [serialType].
+  ///
+  /// If the value is a [Iterable] implementation, it will converted to the
+  /// desired [IterableKind]. Trying to convert singular values to an [Iterable]
+  /// will result in an exception.
   dynamic convertIterableFromNative(
       dynamic value, Type serialType, IterableKind kind) {
     return _nativeSerialization
@@ -326,15 +357,34 @@ class DogEngine {
   }
 }
 
+/// Defines the native object types for a [DogEngine] and
+/// provides converters for them.
 abstract class DogNativeCodec {
   const DogNativeCodec();
 
+  /// Interop converters for native types.
+  /// These converters are most commonly used by [TreeBaseConverterFactory]s to
+  /// since they require a [DogConverter] for every type.
+  ///
+  /// Since the values of the mapped types are native, this map should only
+  /// contain [NativeRetentionConverter]s or similar converters.
   Map<Type, DogConverter> get bridgeConverters;
 
+  /// Returns true if the given [serial] is a native type.
   bool isNative(Type serial);
+
+  /// Converts a native value to a [DogGraphValue].
   DogGraphValue fromNative(dynamic value);
 }
 
+/// Default implementation of [DogNativeCodec].
+/// Defines the following native types:
+/// - String
+/// - int
+/// - double
+/// - bool
+///
+/// Can also convert [Iterable]s and [Map]s of native types.
 class DefaultNativeCodec extends DogNativeCodec {
   const DefaultNativeCodec();
 
