@@ -130,7 +130,7 @@ Future<StructurizeResult> structurizeConstructor(
     var iterableType = await getIterableType(fieldType, context);
 
     var optional = field.type.nullabilitySuffix == NullabilitySuffix.question;
-    if (fieldType.isDynamic) optional = true;
+    if (fieldType is DynamicType) optional = true;
 
     var propertyName = fieldName;
     if (propertyNameChecker.hasAnnotationOf(field)) {
@@ -206,7 +206,7 @@ Future<StructurizeResult> structurizeBean(
     var iterableType = await getIterableType(fieldType, context);
 
     var optional = field.type.nullabilitySuffix == NullabilitySuffix.question;
-    if (fieldType.isDynamic) optional = true;
+    if (fieldType is DynamicType) optional = true;
     if (field.isLate) optional = false;
 
     var propertyName = fieldName;
