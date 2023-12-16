@@ -1,4 +1,4 @@
 #!/bin/bash
 
-dart pub global activate melos
+flutter pub global activate melos
 melos bootstrap

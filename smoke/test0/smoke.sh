@@ -15,7 +15,7 @@
 #    limitations under the License.
 #
 
-dart pub get
-dart pub upgrade
-dart run build_runner build --delete-conflicting-outputs --verbose
-dart run lib/test.dart
+flutter pub get
+flutter pub upgrade
+flutter pub run build_runner build --delete-conflicting-outputs --verbose
+flutter pub run lib/test.dart
