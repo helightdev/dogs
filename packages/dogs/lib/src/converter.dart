@@ -36,6 +36,7 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   DogConverter<T> fork(DogEngine forkEngine) => this;
 }
 
+/// See @[serializable].
 class Serializable {
   const Serializable();
 }
