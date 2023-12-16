@@ -23,6 +23,10 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
   /// Aggressively converts a "primitive" dart type to [T].
   T deserialize(dynamic value, DogEngine engine);
 
+  /// Converts the [value], which can be either a [Iterable] or instance of
+  /// the type associated type, depending on the [IterableKind],
+  /// to its native representation using the converter associated with
+  /// [serialType].
   dynamic serializeIterable(
       dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
@@ -33,6 +37,14 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
     }
   }
 
+  /// Converts the [value], which can be either a [Iterable] or instance of
+  /// the associated type, depending on the [IterableKind],
+  /// to its native representation using the converter associated with
+  /// [serialType].
+  ///
+  /// If the value is a [Iterable] implementation, it will converted to the
+  /// desired [IterableKind]. Trying to convert singular values to an [Iterable]
+  /// will result in an exception.
   dynamic deserializeIterable(
       dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
