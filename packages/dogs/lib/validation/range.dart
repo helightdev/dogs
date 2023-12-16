@@ -37,6 +37,9 @@ class Range extends StructureMetadata
     this.maxExclusive = false,
   });
 
+
+  static const String messageId = "number-range";
+
   @override
   void visit(APISchemaObject object) {
     object.minimum = min;
@@ -87,6 +90,21 @@ class Range extends StructureMetadata
 
     return true;
   }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must be between %min% and %max% characters long.")]
+    ).withVariables({
+      "min": min.toString(),
+      "max": max.toString(),
+      "minExclusive": minExclusive ? "exclusive" : "inclusive",
+      "maxExclusive": maxExclusive ? "exclusive" : "inclusive",
+    });
+  }
+
 }
 
 class Minimum extends StructureMetadata
@@ -99,6 +117,9 @@ class Minimum extends StructureMetadata
     this.min, {
     this.minExclusive = false,
   });
+
+
+  static const String messageId = "number-minimum";
 
   @override
   void visit(APISchemaObject object) {
@@ -137,6 +158,18 @@ class Minimum extends StructureMetadata
       return n >= min!;
     }
   }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must be more than %min% (%minExclusive%).")]
+    ).withVariables({
+      "min": min.toString(),
+      "minExclusive": minExclusive ? "exclusive" : "inclusive",
+    });
+  }
 }
 
 class Maximum extends StructureMetadata
@@ -149,6 +182,9 @@ class Maximum extends StructureMetadata
     this.max, {
     this.maxExclusive = false,
   });
+
+
+  static const String messageId = "number-maximum";
 
   @override
   void visit(APISchemaObject object) {
@@ -186,5 +222,17 @@ class Maximum extends StructureMetadata
     } else {
       return n <= max!;
     }
+  }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must be less than %max% (%maxExclusive%).")]
+    ).withVariables({
+      "max": max.toString(),
+      "maxExclusive": maxExclusive ? "exclusive" : "inclusive",
+    });
   }
 }

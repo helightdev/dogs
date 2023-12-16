@@ -20,13 +20,21 @@ import 'package:dogs_core/dogs_core.dart';
 /// Reduced version of a RFC 5322 email regex from https://www.regular-expressions.info/email.html
 /// This regex omits IP addresses, double quotes and square brackets.
 const email = Regex(
-    "[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+    "[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+    messageId: "invalid-email",
+    message: "Invalid email address."
+);
 
 class Regex extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
   final String pattern;
+  final String? messageId;
+  final String? message;
 
-  const Regex(this.pattern);
+  const Regex(this.pattern, {this.messageId, this.message});
+
+
+  static const String defaultMessageId = "regex";
 
   @override
   getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
@@ -67,6 +75,15 @@ class Regex extends StructureMetadata
   @override
   void visit(APISchemaObject object) {
     object.pattern = pattern;
+  }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId ?? defaultMessageId, message: message ?? "Invalid format.")]
+    );
   }
 }
 

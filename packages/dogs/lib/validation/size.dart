@@ -25,6 +25,9 @@ class SizeRange extends StructureMetadata
   /// Restricts this [Iterable]s item count to [min] (inclusive) and/or [max] (inclusive).
   const SizeRange({this.min, this.max});
 
+
+  static const String messageId = "size-range";
+
   @override
   void visit(APISchemaObject object) {
     object.minItems = min;
@@ -55,5 +58,17 @@ class SizeRange extends StructureMetadata
     }
 
     return true;
+  }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must have between %min% and %max% items.")]
+    ).withVariables({
+      "min": min.toString(),
+      "max": max.toString(),
+    });
   }
 }

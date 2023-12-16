@@ -25,6 +25,8 @@ class LengthRange extends StructureMetadata
   /// Restricts the length of this [String] to [min] (inclusive) and/or [max] (inclusive).
   const LengthRange({this.min, this.max});
 
+  static const String messageId = "length-range";
+
   @override
   void visit(APISchemaObject object) {
     object.minLength = min;
@@ -63,5 +65,17 @@ class LengthRange extends StructureMetadata
     }
 
     return true;
+  }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must be between %min% and %max% characters long.")]
+    ).withVariables({
+      "min": min.toString(),
+      "max": max.toString(),
+    });
   }
 }

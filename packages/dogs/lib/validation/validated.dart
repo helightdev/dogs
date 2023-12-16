@@ -31,6 +31,9 @@ class Validated extends StructureMetadata implements FieldValidator {
   /// your container.
   const Validated();
 
+
+  static const String messageId = "validated";
+
   @override
   getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
     return _ValidatedCacheEntry(
@@ -60,6 +63,15 @@ class Validated extends StructureMetadata implements FieldValidator {
   bool validateSingle(value, ValidationMode mode, DogEngine engine) {
     if (value == null) return true;
     return mode.validate(value, engine);
+  }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Invalid subtree.")]
+    );
   }
 }
 

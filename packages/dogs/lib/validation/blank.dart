@@ -23,6 +23,8 @@ class NotBlank extends StructureMetadata implements FieldValidator {
   /// Requires non-null strings to not be blank.
   const NotBlank();
 
+  static const String messageId = "not-blank";
+
   @override
   getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
     return field.iterableKind != IterableKind.none;
@@ -47,5 +49,14 @@ class NotBlank extends StructureMetadata implements FieldValidator {
     if (value == null) return true;
     var str = value as String;
     return str.trim().isNotEmpty;
+  }
+
+  @override
+  AnnotationResult annotate(cached, value, DogEngine engine) {
+    var isValid = validate(cached, value, engine);
+    if (isValid) return AnnotationResult.empty();
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must not be blank.")]
+    );
   }
 }

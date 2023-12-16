@@ -37,7 +37,9 @@ class DogEngine {
   Map<Type, DogConverter> associatedConverters = HashMap();
 
   /// Read-only mapping of [DogStructure]s.
-  Map<Type, DogStructure> structures = HashMap();
+  final Map<Type, DogStructure> structures = HashMap();
+
+  final Map<String, String> annotationTranslations = {};
 
   @internal
   Map<Type, DogConverter> runtimeTreeConverterCache = HashMap();
