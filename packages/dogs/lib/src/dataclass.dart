@@ -34,10 +34,10 @@ Map<Type, int Function(dynamic)> _dataclassHashCode = HashMap();
 Map<Type, bool Function(dynamic, dynamic)> _dataclassEquals = HashMap();
 
 int Function(dynamic) _createDataclassHashCodeProvider<T>() {
-  var structure = dogs.structures[T]!;
-  var fieldCount = structure.fields.length;
-  var proxy = structure.proxy;
-  int Function(dynamic) provider;
+  final structure = dogs.structures[T]!;
+  final fieldCount = structure.fields.length;
+  final proxy = structure.proxy;
+  late final int Function(dynamic) provider;
   if (proxy.hashFunc == null) {
     provider = (obj) {
       var h = 0;
@@ -59,9 +59,9 @@ int Function(dynamic) _createDataclassHashCodeProvider<T>() {
 }
 
 bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
-  var structure = dogs.structures[T]!;
-  var proxy = structure.proxy;
-  bool Function(dynamic, dynamic) provider;
+  final structure = dogs.structures[T]!;
+  final proxy = structure.proxy;
+  late final bool Function(dynamic, dynamic) provider;
   if (proxy.equalsFunc == null) {
     provider = (a, b) {
       var va = proxy.getFieldValues(a);
@@ -76,7 +76,11 @@ bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
 }
 
 mixin Dataclass<T> {
+  /// Returns true if this object is valid.
+  /// Does not throw any exceptions if the object is invalid.
   bool get isValid => DogEngine.instance.validateObject(this, T);
+
+  /// Throws an exception if this object is invalid.
   void validate() => DogEngine.instance.validate<T>(this as T);
 
   @override
