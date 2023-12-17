@@ -106,8 +106,9 @@ abstract class AutoFormFieldFactory<T> with TypeCaptureMixin<T> implements Opera
 
   dynamic decode(dynamic value) => value;
 
+  void prepareFormField(BuildContext context, DogsFormField field) {}
+
   Widget build(BuildContext context, DogsFormField field);
-  
   
   String? Function(dynamic obj) $validator(DogsFormField field, BuildContext context) => (o) =>
       field.buildValidator(context)(decode(o));
@@ -126,4 +127,16 @@ abstract class DecoratingAutoFormFieldFactory extends AutoFormFieldFactory {
 
   @override
   Widget build(BuildContext context, DogsFormField field) => delegate.build(context, field);
+}
+
+mixin CachedFactoryData<T> on AutoFormFieldFactory {
+
+  void setCachedValue(DogsFormField field, T value) {
+    field.factoryData = value;
+  }
+
+  T getCachedValue(DogsFormField field) {
+    return field.factoryData as T;
+  }
+
 }

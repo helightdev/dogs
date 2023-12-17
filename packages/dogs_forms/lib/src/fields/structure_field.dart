@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 /// A [AutoFormFieldFactory] that embeds another [DogsForm] into the form.
-class StructureFormFieldFactory extends AutoFormFieldFactory {
+class StructureFormFieldFactory extends AutoFormFieldFactory with CachedFactoryData<DogsFormRef>{
 
   /// The [DogStructure] to embed.
   final DogStructure structure;
@@ -29,32 +29,37 @@ class StructureFormFieldFactory extends AutoFormFieldFactory {
   const StructureFormFieldFactory(this.structure);
 
   @override
-  Widget build(BuildContext context, DogsFormField field) {
+  void prepareFormField(BuildContext context, DogsFormField field) {
     var formKey = GlobalKey<FormBuilderState>();
-    var form = structure.consumeTypeArg(createForm, (
-      formKey: formKey,
-      field: field,
-      context: context,
-    ));
-    return form;
+    var ref = structure.consumeTypeArg(createRef, formKey);
+    setCachedValue(field, ref);
   }
 
+  @override
+  Widget build(BuildContext context, DogsFormField field) => structure.consumeTypeArg(createForm, (
+    field: field,
+    context: context,
+  ));
+
+  DogsFormRef createRef<T>(GlobalKey<FormBuilderState> formKey) {
+    return DogsFormRef<T>(formKey);
+  }
+  
   Widget createForm<T>(
       ({
-        GlobalKey<FormBuilderState> formKey,
         DogsFormField field,
         BuildContext context
       }) arg) {
     return InputDecorator(
       decoration: arg.field.buildInputDecoration(arg.context, DecorationPreference.container),
       child: FormBuilderField<T>(
-        builder: (FormFieldState<T> field) {
-          var reference = DogsFormRef<T>(arg.formKey);
+        builder: (FormFieldState<T> formField) {
+          var reference = getCachedValue(arg.field) as DogsFormRef<T>;
           return DogsForm<T>(
             reference: reference,
-            initialValue: field.value,
+            initialValue: formField.value,
             onChanged: () {
-              field.didChange(reference.read(false));
+              formField.didChange(reference.read(false));
             },
           );
         },
