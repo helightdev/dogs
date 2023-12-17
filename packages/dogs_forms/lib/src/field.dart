@@ -66,6 +66,26 @@ class AutoFormField implements StructureMetadata {
   /// The translation key to use for the subtitle. Multi language support is
   /// provided by [DogsFormTranslationResolver].
   final String? subtitleTranslationKey;
+  /// The hint text to use for the field. Will be used by [buildInputDecoration]
+  /// to create a [InputDecoration] if no [decoration] is specified.
+  final String? hint;
+  /// The translation key to use for the hint. Multi language support is
+  /// provided by [DogsFormTranslationResolver].
+  final String? hintTranslationKey;
+  /// The prefix widget to use for the field. Will be used by [buildInputDecoration]
+  /// to create a [InputDecoration] if no [decoration] is specified.
+  final Widget? prefix;
+  /// The suffix widget to use for the field. Will be used by [buildInputDecoration]
+  /// to create a [InputDecoration] if no [decoration] is specified.
+  final Widget? suffix;
+  /// The leading widget to use for the field. Will be used by [buildInputDecoration]
+  /// to create a [InputDecoration] if no [decoration] is specified. Uses the
+  /// [InputDecorationTheme.prefixIcon] by default.
+  final Widget? leading;
+  /// The trailing widget to use for the field. Will be used by [buildInputDecoration]
+  /// to create a [InputDecoration] if no [decoration] is specified. Uses the
+  /// [InputDecorationTheme.suffixIcon] by default.
+  final Widget? trailing;
   /// Defines the constraints to use for the field.
   final BoxConstraints? constraints;
 
@@ -86,6 +106,12 @@ class AutoFormField implements StructureMetadata {
     this.titleTranslationKey,
     this.subtitle,
     this.subtitleTranslationKey,
+    this.hint,
+    this.hintTranslationKey,
+    this.prefix,
+    this.suffix,
+    this.leading,
+    this.trailing,
   });
 
   static Widget defaultWrapper(
@@ -99,24 +125,33 @@ typedef FormFieldWrapper = Widget Function(
 class DogsFormField {
   final DogStructure parent;
   final DogStructureField delegate;
+  late final DogsForm form;
 
   DogsFormField(this.parent, this.delegate);
 
-  late final AutoFormFieldFactory factory = _getFactory();
+  late final AutoFormFieldFactory factory;
+
+  late final StructureValidation<dynamic> structureValidator;
+
+  /// Can be used by the [AutoFormFieldFactory] to store additional data.
+  Object? factoryData;
+
+  void hookEngine() {
+    structureValidator = form.engine.modeRegistry.validation
+        .forType(parent.typeArgument, form.engine) 
+        as StructureValidation;
+    factory = _getFactory();
+  }
 
   AutoFormFieldFactory _getFactory() {
     if (formAnnotation?.factory != null) {
       return formAnnotation!.factory!;
     }
-    var treeConverter = dogs.getTreeConverter(delegate.type);
-    return dogs.modeRegistry
-        .getConverter<AutoFormFieldFactory>(treeConverter, dogs);
+    var treeConverter = form.engine.getTreeConverter(delegate.type);
+    return form.engine.modeRegistry
+        .getConverter<AutoFormFieldFactory>(treeConverter, form.engine);
   }
-
-  late final StructureValidation<dynamic> structureValidator =
-      dogs.modeRegistry.validation.forType(parent.typeArgument, dogs)
-          as StructureValidation;
-
+  
   late AutoFormField? formAnnotation =
       delegate.annotationsOf<AutoFormField>().firstOrNull;
   late final Initializer initializer =
@@ -127,6 +162,7 @@ class DogsFormField {
       formAnnotation?.autovalidateMode ?? AutovalidateMode.onUserInteraction;
   late final String title = formAnnotation?.title ?? delegate.name;
   late final String? subtitle = formAnnotation?.subtitle;
+  late final String? hint = formAnnotation?.hint;
 
   // Lazy computed values
   FormFieldValidator buildValidator(BuildContext context) {
@@ -136,7 +172,7 @@ class DogsFormField {
       if (!delegate.optional) FormBuilderValidators.required(),
       (c) {
         var annotationResult = structureValidator.annotateFieldValue(
-            parent.indexOfFieldName(delegate.name)!, c, dogs);
+            parent.indexOfFieldName(delegate.name)!, c, form.engine);
         annotationResult = form.translationResolver.translateAnnotation(
             context, annotationResult, Localizations.maybeLocaleOf(context));
         return annotationResult.buildMessages().firstOrNull;

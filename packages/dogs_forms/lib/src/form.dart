@@ -86,6 +86,7 @@ class DogsForm<T> extends StatelessWidget {
   final PreferenceDecorationMutator? preferenceDecorationMutator;
   /// Override for the [FormDecorator] specified by [AutoForm].
   final FormDecorator<T>? decorator;
+  final DogEngine engine;
 
   DogsForm._(
       {super.key,
@@ -93,11 +94,13 @@ class DogsForm<T> extends StatelessWidget {
       Map<Symbol, dynamic>? attributes,
       required this.structure,
       required this.fields,
-      required this.translationResolver,
+      required this.translationResolver, 
+      required this.engine,
       this.initialValue,
       this.preferenceDecorationMutator,
       this.onChanged,
-      this.decorator}) {
+      this.decorator,
+      }) {
     this.formKey = formKey ?? GlobalKey<FormBuilderState>();
     this.attributes = attributes ?? {};
   }
@@ -116,8 +119,10 @@ class DogsForm<T> extends StatelessWidget {
     FormDecorator<T>? decorator,
     Function()? onChanged,
     required DogsFormRef reference,
+    DogEngine? engine,
   }) {
-    var structure = dogs.findStructureByType(T)!;
+    engine ??= DogEngine.instance;
+    var structure = engine.findStructureByType(T)!;
     var fields2 = structure.fields
         .map((e) => DogsFormField(structure, e))
         .toList();
@@ -131,7 +136,13 @@ class DogsForm<T> extends StatelessWidget {
       preferenceDecorationMutator: preferenceResolver,
       onChanged: onChanged,
       decorator: decorator,
+      engine: engine,
     );
+    // Link form reference
+    for (var element in fields2) {
+      element.form = form;
+      element.hookEngine();
+    }
     reference.form = form;
     return form;
   }
@@ -152,7 +163,7 @@ class DogsForm<T> extends StatelessWidget {
           e.delegate.name: e.factory.decode(map[e.delegate.name])
       };
       var instantiated = structure.instantiateFromFieldMap(fieldMap);
-      if (!dogs.validateObject(instantiated, T)) return null;
+      if (!engine.validateObject(instantiated, T)) return null;
       return instantiated;
     } on Exception catch (e, stackTrace) {
       if (kDebugMode) {
@@ -187,6 +198,7 @@ class DogsForm<T> extends StatelessWidget {
           formKey: formKey,
           form: this,
           child: Builder(builder: (context) {
+            for (var element in fields) { element.factory.prepareFormField(context, element); }
             return decorator.run(context, this);
           }),
         ));

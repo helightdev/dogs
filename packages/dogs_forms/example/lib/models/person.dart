@@ -37,6 +37,7 @@ class Person with Dataclass<Person> {
   @LengthRange(min: 2, max: 10)
   String surname;
   @Minimum(18)
+  @AutoFormField()
   int age;
 
   DateTime birthday;
@@ -50,7 +51,7 @@ class Person with Dataclass<Person> {
   @AutoFormField(
     factory: IntSliderFormFieldFactory(),
     subtitle: "Select how happy you are",
-    subtitleTranslationKey: "happy"
+    subtitleTranslationKey: "happy",
   )
   @Range(min: 0, max: 10)
   int happiness;

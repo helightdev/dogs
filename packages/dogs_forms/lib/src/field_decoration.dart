@@ -16,7 +16,6 @@
 
 import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// Class used by [AutoFormFieldFactory]s to describe how they want their
 /// [InputDecoration] to look like preferably. Currently only influences the
@@ -82,6 +81,10 @@ extension FieldDecorationExtension on DogsFormField {
       errorBorder: _defaultBorder(inputTheme.errorBorder, pref),
       disabledBorder: _defaultBorder(inputTheme.disabledBorder, pref),
       contentPadding: pref.contentPadding,
+      prefix: formAnnotation?.prefix,
+      suffix: formAnnotation?.suffix,
+      prefixIcon: formAnnotation?.leading,
+      suffixIcon: formAnnotation?.trailing,
     );
     if (form.preferenceDecorationMutator != null) {
       decoration = form.preferenceDecorationMutator!(decoration, pref) ??
@@ -92,6 +95,7 @@ extension FieldDecorationExtension on DogsFormField {
     var locale = Localizations.maybeLocaleOf(context);
     decoration = _applyTitle(decoration, form, context, locale);
     decoration = _applySubtitle(form, context, locale, decoration);
+    decoration = _applyHint(form, context, locale, decoration);
     return decoration;
   }
 
@@ -130,6 +134,20 @@ extension FieldDecorationExtension on DogsFormField {
         decoration = decoration.copyWith(helperText: translated);
       } else {
         decoration = decoration.copyWith(helperText: subtitle);
+      }
+    }
+    return decoration;
+  }
+
+  InputDecoration _applyHint(DogsForm<dynamic> form, BuildContext context,
+      Locale? locale, InputDecoration decoration) {
+    if (hint != null) {
+      if (formAnnotation?.hintTranslationKey != null) {
+        var translated = form.translationResolver.translate(
+            context, formAnnotation!.hintTranslationKey!, locale);
+        decoration = decoration.copyWith(hintText: translated);
+      } else {
+        decoration = decoration.copyWith(hintText: hint);
       }
     }
     return decoration;
