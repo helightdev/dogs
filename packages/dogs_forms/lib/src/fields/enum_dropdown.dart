@@ -32,7 +32,10 @@ class EnumDropdownFormFieldFactory extends AutoFormFieldFactory {
     var enumValues = converter.values;
     return FormBuilderDropdown(
       name: field.delegate.name,
-      decoration: field.buildInputDecoration(context, DecorationPreference.normal)!.copyWith(contentPadding: EdgeInsets.zero),
+      decoration: field.buildInputDecoration(context, const DecorationPreference(
+        borderPreference: BorderPreference.normal,
+        contentPadding: EdgeInsets.zero,
+      )),
       autovalidateMode: field.autovalidateMode,
       items: enumValues.map((e) => DropdownMenuItem(value: e, child: Text(capitalizeString(e)))).toList(),
       validator: $validator(field, context),
