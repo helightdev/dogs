@@ -24,12 +24,10 @@ abstract interface class FormDecorator<T> {
   const FormDecorator();
 
   Widget run(BuildContext context, DogsForm<T> form);
-
 }
 
 /// A [FormDecorator] that layouts a form by wrapping it in a [Column].
 abstract class FormColumnDecorator<T> implements FormDecorator<T> {
-
   const FormColumnDecorator();
 
   /// Performs the decoration run.
@@ -56,7 +54,6 @@ abstract class FormColumnDecorator<T> implements FormDecorator<T> {
       children: configurator.widgetStack,
     );
   }
-
 }
 
 /// Builder for a [FormColumnDecorator].

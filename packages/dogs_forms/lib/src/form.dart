@@ -20,7 +20,6 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 typedef PreferenceDecorationMutator = InputDecoration? Function(
@@ -57,6 +56,10 @@ class DogsFormRef<T> {
   }
 
   T? read([bool saveAndValidate = true]) => form.readValue(saveAndValidate);
+
+  void set(T? value) {
+    formKey.currentState!.patchValue(form.createInitialValue(value));
+  }
 }
 
 /// Auto-generated form for a dog managed data structure,
@@ -64,43 +67,51 @@ class DogsFormRef<T> {
 class DogsForm<T> extends StatelessWidget {
   /// The structure of the data type [T].
   final DogStructure<T> structure;
+
   /// The fields of the form.
   final List<DogsFormField> fields;
+
   /// The initial value of the form. If not specified, the form will be
   /// initialized with [createInitialValue] using the [Initializer]s of the
   /// fields.
   final T? initialValue;
+
   /// The key of the form. If not specified, a new [GlobalKey<FormBuilderState>]
   /// will be created.
   late final GlobalKey<FormBuilderState> formKey;
+
   /// Additional attributes for the form.
   /// May be used to provide additional non constant context dependent data
   /// to [AutoFormFieldFactory]s.
   late final Map<Symbol, dynamic> attributes;
+
   /// Callback that is called when the form data changes.
   late final Function()? onChanged;
+
   /// The [TranslationResolver] to use for the form.
 
   final TranslationResolver translationResolver;
+
   /// The [PreferenceDecorationMutator] to use for the form.
   final PreferenceDecorationMutator? preferenceDecorationMutator;
+
   /// Override for the [FormDecorator] specified by [AutoForm].
   final FormDecorator<T>? decorator;
   final DogEngine engine;
 
-  DogsForm._(
-      {super.key,
-      GlobalKey<FormBuilderState>? formKey,
-      Map<Symbol, dynamic>? attributes,
-      required this.structure,
-      required this.fields,
-      required this.translationResolver, 
-      required this.engine,
-      this.initialValue,
-      this.preferenceDecorationMutator,
-      this.onChanged,
-      this.decorator,
-      }) {
+  DogsForm._({
+    super.key,
+    GlobalKey<FormBuilderState>? formKey,
+    Map<Symbol, dynamic>? attributes,
+    required this.structure,
+    required this.fields,
+    required this.translationResolver,
+    required this.engine,
+    this.initialValue,
+    this.preferenceDecorationMutator,
+    this.onChanged,
+    this.decorator,
+  }) {
     this.formKey = formKey ?? GlobalKey<FormBuilderState>();
     this.attributes = attributes ?? {};
   }
@@ -110,22 +121,21 @@ class DogsForm<T> extends StatelessWidget {
 
   /// Auto-generated form for a dog managed data structure,
   /// identified by its type [T].
-  factory DogsForm({
-    T? initialValue,
-    Map<Symbol, dynamic>? attributes,
-    TranslationResolver translationResolver =
-        const DefaultTranslationResolver(),
-    PreferenceDecorationMutator? preferenceResolver,
-    FormDecorator<T>? decorator,
-    Function()? onChanged,
-    required DogsFormRef reference,
-    DogEngine? engine,
-  }) {
+  factory DogsForm(
+      {T? initialValue,
+      Map<Symbol, dynamic>? attributes,
+      TranslationResolver translationResolver =
+          const DefaultTranslationResolver(),
+      PreferenceDecorationMutator? preferenceResolver,
+      FormDecorator<T>? decorator,
+      Function()? onChanged,
+      required DogsFormRef reference,
+      DogEngine? engine,
+      bool enabled = true}) {
     engine ??= DogEngine.instance;
     var structure = engine.findStructureByType(T)!;
-    var fields2 = structure.fields
-        .map((e) => DogsFormField(structure, e))
-        .toList();
+    var fields2 =
+        structure.fields.map((e) => DogsFormField(structure, e)).toList();
     var form = DogsForm<T>._(
       structure: structure as DogStructure<T>,
       fields: fields2,
@@ -147,8 +157,8 @@ class DogsForm<T> extends StatelessWidget {
     return form;
   }
 
-  DogsFormField findField(String name) => fields
-      .firstWhere((element) => element.delegate.name == name);
+  DogsFormField findField(String name) =>
+      fields.firstWhere((element) => element.delegate.name == name);
 
   T? readValue([bool saveAndValidate = true]) {
     var isValid = saveAndValidate
@@ -198,7 +208,9 @@ class DogsForm<T> extends StatelessWidget {
           formKey: formKey,
           form: this,
           child: Builder(builder: (context) {
-            for (var element in fields) { element.factory.prepareFormField(context, element); }
+            for (var element in fields) {
+              element.factory.prepareFormField(context, element);
+            }
             return decorator.run(context, this);
           }),
         ));

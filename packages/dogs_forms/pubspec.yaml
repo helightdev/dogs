@@ -17,6 +17,7 @@ dependencies:
   uuid: ^4.2.1
   canister: ^1.2.0
   intl: ^0.18.1
+  flutter_hooks: ^0.20.3
 
 dev_dependencies:
   flutter_test:

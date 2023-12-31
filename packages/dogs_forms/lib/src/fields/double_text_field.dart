@@ -22,28 +22,30 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 
 /// A [AutoFormFieldFactory] that creates [FormBuilderTextField]s for [double]s.
 class DoubleTextFieldFormFieldFactory extends AutoFormFieldFactory {
-
   const DoubleTextFieldFormFieldFactory();
 
   @override
   Widget build(BuildContext context, DogsFormField field) {
     field.expectType(double);
     if (field.delegate.iterableKind != IterableKind.none) {
-      ListFieldFactory<String> listFieldFactory = ListFieldFactory<String>(const TypeToken<String>(), (context, name, callback) =>
-          FormBuilderTextField(
-            name: name,
-            onChanged: callback,
-            validator: FormBuilderValidators.compose([
-              FormBuilderValidators.numeric(),
-            ]),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ), const ValueInitializer(0.0));
-      return listFieldFactory.build(context, field);
+      return DogsFormList.field(
+        field,
+        elementFactory: (context, name, callback) => FormBuilderTextField(
+          name: name,
+          onChanged: callback,
+          validator: FormBuilderValidators.compose([
+            FormBuilderValidators.numeric(),
+            FormBuilderValidators.required()
+          ]),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+        ),
+      );
     }
 
     return FormBuilderTextField(
       name: field.delegate.name,
-      decoration: field.buildInputDecoration(context, DecorationPreference.normal),
+      decoration:
+          field.buildInputDecoration(context, DecorationPreference.normal),
       autofillHints: field.formAnnotation?.autofillHints,
       autovalidateMode: field.autovalidateMode,
       validator: FormBuilderValidators.compose([
@@ -54,14 +56,16 @@ class DoubleTextFieldFormFieldFactory extends AutoFormFieldFactory {
   }
 
   @override
-  dynamic encode(dynamic value) {
-    if (value is List) return value.map((e) => e.toString()).toList();
-    return value?.toString();
-  }
+  dynamic encode(dynamic value) => switch(value) {
+    null => null,
+    List() => value.map((e) => e.toString()).toList(),
+    _ => value?.toString()
+  };
 
   @override
-  dynamic decode(dynamic value) {
-    if (value is List) return value.map((e) => double.tryParse(e ?? "0.0")).toList();
-    return double.tryParse(value ?? "0.0");
-  }
+  dynamic decode(dynamic value) => switch(value) {
+    null => null,
+    List() => value.map((e) => double.tryParse(e ?? "0.0")).toList(),
+    _ => double.tryParse(value)
+  };
 }

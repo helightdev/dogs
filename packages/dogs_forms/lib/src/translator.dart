@@ -17,7 +17,6 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:flutter/widgets.dart';
 
-
 /// Resolves translations for [DogForm]s.
 /// Default implementations:
 /// - [DefaultTranslationResolver] returns null for all keys
@@ -31,9 +30,12 @@ abstract class TranslationResolver {
   String? translate(BuildContext context, String key, Locale? locale);
 
   /// Translates the messages in the given [AnnotationResult] using [translate].
-  AnnotationResult translateAnnotation(BuildContext context, AnnotationResult result, Locale? locale) {
-    var messages = result.messages.map((e) =>
-      e.withMessage(translate(context, e.id, locale) ?? e.message)).toList();
+  AnnotationResult translateAnnotation(
+      BuildContext context, AnnotationResult result, Locale? locale) {
+    var messages = result.messages
+        .map(
+            (e) => e.withMessage(translate(context, e.id, locale) ?? e.message))
+        .toList();
     return AnnotationResult(messages: messages);
   }
 }

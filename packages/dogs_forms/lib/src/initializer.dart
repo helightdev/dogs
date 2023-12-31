@@ -45,7 +45,6 @@ class ValueInitializer implements Initializer {
 /// Similar to [NullInitializer] but will get replaced with a possible default
 /// value by a [AutoFormFieldFactory].
 class DefaultInitializer implements Initializer {
-
   const DefaultInitializer();
 
   @override

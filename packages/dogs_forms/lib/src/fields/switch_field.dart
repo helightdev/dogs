@@ -18,34 +18,28 @@ import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-/// A [AutoFormFieldFactory] that creates [FormBuilderChoiceChip]s.
-class DataChoiceChipFormFieldFactory extends AutoFormFieldFactory {
-  /// The key of the [SelectionDataProvider] to use.
-  /// The data provider must be registered in the [DogsForm] attributes.
-  final Symbol providerKey;
+/// A [AutoFormFieldFactory] that creates [FormBuilderSwitch]s.
+class SwitchFormFieldFactory extends AutoFormFieldFactory {
+  /// The [ListTileControlAffinity] of the [FormBuilderSwitch]s.
+  final ListTileControlAffinity controlAffinity;
 
-  /// A [AutoFormFieldFactory] that creates [FormBuilderChoiceChip]s.
-  const DataChoiceChipFormFieldFactory(this.providerKey);
+  /// A [AutoFormFieldFactory] that creates [FormBuilderSwitch]s.
+  const SwitchFormFieldFactory(
+      {this.controlAffinity = ListTileControlAffinity.leading});
 
   @override
   Widget build(BuildContext context, DogsFormField field) {
+    field.expectType(bool);
     field.expectNonIterable();
-    var form = DogsFormProvider.formOf(context)!;
-    var provider = form.attributes[providerKey]! as SelectionDataProvider;
-    var items = provider
-        .getData(context)
-        .map((e) => FormBuilderChipOption(
-            value: e, child: provider.represent(context, e)))
-        .toList();
-    return FormBuilderChoiceChip(
+    return FormBuilderSwitch(
       name: field.delegate.name,
+      controlAffinity: controlAffinity,
       decoration:
-          field.buildInputDecoration(context, DecorationPreference.borderless),
+          field.buildBorderDecoration(context, DecorationPreference.borderless),
       autovalidateMode: field.autovalidateMode,
-      runSpacing: 8,
-      spacing: 8,
-      options: items,
       validator: $validator(field, context),
+      title: Text(field.title, style: Theme.of(context).textTheme.titleMedium),
+      subtitle: field.subtitle == null ? null : Text(field.subtitle!),
     );
   }
 }

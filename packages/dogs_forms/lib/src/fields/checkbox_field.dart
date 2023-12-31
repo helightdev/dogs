@@ -20,7 +20,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 /// A [AutoFormFieldFactory] that creates [FormBuilderCheckbox]s.
 class CheckboxFormFieldFactory extends AutoFormFieldFactory {
-
   /// A [AutoFormFieldFactory] that creates [FormBuilderCheckbox]s.
   const CheckboxFormFieldFactory();
 
@@ -30,7 +29,8 @@ class CheckboxFormFieldFactory extends AutoFormFieldFactory {
     field.expectNonIterable();
     return FormBuilderCheckbox(
       name: field.delegate.name,
-      decoration: field.buildBorderDecoration(context, DecorationPreference.borderless),
+      decoration:
+          field.buildBorderDecoration(context, DecorationPreference.borderless),
       autovalidateMode: field.autovalidateMode,
       validator: $validator(field, context),
       title: Text(field.title, style: Theme.of(context).textTheme.titleMedium),

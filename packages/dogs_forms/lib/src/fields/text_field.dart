@@ -16,13 +16,13 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 /// A [AutoFormFieldFactory] that creates [FormBuilderTextField]s.
 class TextFieldFormFieldFactory extends AutoFormFieldFactory {
-
   /// A [AutoFormFieldFactory] that creates [FormBuilderTextField]s.
   const TextFieldFormFieldFactory();
 
@@ -30,22 +30,35 @@ class TextFieldFormFieldFactory extends AutoFormFieldFactory {
   Widget build(BuildContext context, DogsFormField field) {
     field.expectType(String);
     if (field.delegate.iterableKind != IterableKind.none) {
-      ListFieldFactory<String> listFieldFactory = ListFieldFactory<String>(const TypeToken<String>(), (context, name, callback) =>
-          FormBuilderTextField(
-            name: name,
-            onChanged: callback,
-            validator: FormBuilderValidators.required(),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ));
-      return listFieldFactory.build(context, field);
+      return DogsFormList.field<String>(field,
+          encoder: (v) => v ?? "",
+          decoder: (v) => v ?? "",
+          defaultInit: const ValueInitializer(""),
+          elementFactory: (BuildContext context, String name,
+              dynamic Function(dynamic) callback) {
+            return FormBuilderTextField(
+              name: name,
+              onChanged: callback,
+              validator: FormBuilderValidators.required(),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            );
+          });
     }
 
     return FormBuilderTextField(
       name: field.delegate.name,
-      decoration: field.buildInputDecoration(context, DecorationPreference.normal),
+      decoration:
+          field.buildInputDecoration(context, DecorationPreference.normal),
       autofillHints: field.formAnnotation?.autofillHints,
       validator: $validator(field, context),
       autovalidateMode: field.autovalidateMode,
     );
   }
+
+  @override
+  dynamic decode(dynamic value) => switch (value) {
+        null => null,
+        String() => value == "" ? null : value,
+        _ => value
+      };
 }

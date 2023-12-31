@@ -14,15 +14,12 @@
  *    limitations under the License.
  */
 
-
-import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 /// A [AutoFormFieldFactory] that creates [FormBuilderDropdown]s.
 class DataDropdownFormFieldFactory extends AutoFormFieldFactory {
-
   /// The key of the [SelectionDataProvider] to use.
   /// The data provider must be registered in the [DogsForm] attributes.
   final Symbol providerKey;
@@ -31,21 +28,26 @@ class DataDropdownFormFieldFactory extends AutoFormFieldFactory {
   final bool allowNullSelection;
 
   /// A [AutoFormFieldFactory] that creates [FormBuilderDropdown]s.
-  const DataDropdownFormFieldFactory(this.providerKey, {this.allowNullSelection = false});
+  const DataDropdownFormFieldFactory(this.providerKey,
+      {this.allowNullSelection = false});
 
   @override
   Widget build(BuildContext context, DogsFormField field) {
     field.expectNonIterable();
     var form = DogsFormProvider.formOf(context)!;
     var provider = form.attributes[providerKey]! as SelectionDataProvider;
-    var items = provider.getData(context).map((e) => DropdownMenuItem(
-        value: e,
-        child: provider.represent(context, e)
-    )).toList();
-    if (allowNullSelection) items.add(DropdownMenuItem(value: null, child: provider.represent(context, null)));
+    var items = provider
+        .getData(context)
+        .map((e) =>
+            DropdownMenuItem(value: e, child: provider.represent(context, e)))
+        .toList();
+    if (allowNullSelection)
+      items.add(DropdownMenuItem(
+          value: null, child: provider.represent(context, null)));
     return FormBuilderDropdown(
       name: field.delegate.name,
-      decoration: field.buildInputDecoration(context, DecorationPreference.borderless),
+      decoration:
+          field.buildInputDecoration(context, DecorationPreference.borderless),
       autovalidateMode: field.autovalidateMode,
       items: items,
       validator: $validator(field, context),

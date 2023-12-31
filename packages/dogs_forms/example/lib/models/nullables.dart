@@ -17,29 +17,17 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/dogs_validation.dart';
 import 'package:dogs_forms/dogs_forms.dart';
-import 'package:flutter/material.dart';
+import 'package:example/models/address.dart';
 
 @serializable
-@AutoForm(decorator: AddressDecorator())
-class Address with Dataclass<Address> {
-  @AutoFormField(flex: 6)
-  final String street;
-  @AutoFormField(flex: 3)
-  final String city;
+class Nullables {
+  String? string;
+  int? integer;
+  double? float;
 
-  @AutoFormField(constraints: BoxConstraints(maxWidth: 96), flex: -1)
-  @LengthRange(min: 5, max: 5)
-  final String zip;
+  DateTime? date;
 
-  Address(this.street, this.city, this.zip);
-}
+  Address? address;
 
-class AddressDecorator extends FormColumnDecorator<Address> {
-  const AddressDecorator();
-
-  @override
-  void decorate(BuildContext context, FormStackConfigurator configurator) {
-    configurator.row(["street", "city", "zip"]);
-    return super.decorate(context, configurator);
-  }
+  Nullables(this.string, this.integer, this.float, this.date, this.address);
 }

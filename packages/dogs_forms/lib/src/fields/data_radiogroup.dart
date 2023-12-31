@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-
-import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -34,13 +32,15 @@ class DataRadioGroupFormFieldFactory extends AutoFormFieldFactory {
     field.expectNonIterable();
     var form = DogsFormProvider.formOf(context)!;
     var provider = form.attributes[providerKey]! as SelectionDataProvider;
-    var items = provider.getData(context).map((e) => FormBuilderFieldOption(
-        value: e,
-        child: provider.represent(context, e)
-    )).toList();
+    var items = provider
+        .getData(context)
+        .map((e) => FormBuilderFieldOption(
+            value: e, child: provider.represent(context, e)))
+        .toList();
     return FormBuilderRadioGroup(
       name: field.delegate.name,
-      decoration: field.buildInputDecoration(context, DecorationPreference.borderless),
+      decoration:
+          field.buildInputDecoration(context, DecorationPreference.borderless),
       autovalidateMode: field.autovalidateMode,
       options: items,
       validator: $validator(field, context),

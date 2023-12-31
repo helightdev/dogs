@@ -18,12 +18,13 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
 import 'package:dogs_forms/src/fields/list_field.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 /// A [AutoFormFieldFactory] that creates [FormBuilderDateTimePicker]s.
-class DateTimeFormFieldFactory extends AutoFormFieldFactory {
+class DateTimeFormFieldFactory extends AutoFormFieldFactory<DateTime> {
 
   const DateTimeFormFieldFactory();
 
@@ -31,14 +32,31 @@ class DateTimeFormFieldFactory extends AutoFormFieldFactory {
   Widget build(BuildContext context, DogsFormField field) {
     field.expectType(DateTime);
     if (field.delegate.iterableKind != IterableKind.none) {
-      ListFieldFactory<DateTime> listFieldFactory = ListFieldFactory<DateTime>(const TypeToken<DateTime>(), (context, name, callback) =>
-          FormBuilderDateTimePicker(
+      return DogsFormList.field<DateTime>(
+        field,
+        elementFactory: (context, name, callback) =>
+            FormBuilderDateTimePicker(
+              name: name,
+              onChanged: callback,
+              validator: FormBuilderValidators.required(),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+            ),
+      );
+    }
+
+    if (field.delegate.optional) {
+      return FormBuilderField<DateTime>(builder: (fieldState) => DogsFormOptional<DateTime?>(
+          initialValue: fieldState.value,
+          elementFactory: (context, name, callback) => FormBuilderDateTimePicker(
             name: name,
+            decoration: field.buildInputDecoration(context, DecorationPreference.normal).copyWith(
+              errorText: fieldState.errorText,
+            ),
             onChanged: callback,
-            validator: FormBuilderValidators.required(),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ));
-      return listFieldFactory.build(context, field);
+          ), onChanged: (v) => fieldState.didChange(v)),
+          name: field.delegate.name,
+        validator: $validator(field, context),
+      );
     }
 
     return FormBuilderDateTimePicker(

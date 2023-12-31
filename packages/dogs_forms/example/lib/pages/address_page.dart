@@ -14,14 +14,25 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/dogs_validation.dart';
-import 'package:dogs_forms/dogs_forms.dart';
+import 'package:example/form_print_wrapper.dart';
+import 'package:example/models/address.dart';
 import 'package:flutter/material.dart';
 
+class AddressPage extends StatelessWidget {
+  const AddressPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FormPrintWrapper<Address>(
+      exampleValue: Address(
+        "123 Main Street",
+        "Anytown",
+        "12345",
+      ),
+      modelCode: """
 @serializable
 @AutoForm(decorator: AddressDecorator())
-class Address with Dataclass<Address> {
+class Address {
   @AutoFormField(flex: 6)
   final String street;
   @AutoFormField(flex: 3)
@@ -41,5 +52,9 @@ class AddressDecorator extends FormColumnDecorator<Address> {
   void decorate(BuildContext context, FormStackConfigurator configurator) {
     configurator.row(["street", "city", "zip"]);
     return super.decorate(context, configurator);
+  }
+}
+""".trim(),
+    );
   }
 }

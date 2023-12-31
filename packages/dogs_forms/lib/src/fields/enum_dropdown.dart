@@ -16,6 +16,7 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
+import 'package:dogs_forms/src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -33,7 +34,7 @@ class EnumDropdownFormFieldFactory extends AutoFormFieldFactory {
     return FormBuilderDropdown(
       name: field.delegate.name,
       decoration: field.buildInputDecoration(context, const DecorationPreference(
-        borderPreference: BorderPreference.normal,
+        borderPreference: BorderPreference.underline,
         contentPadding: EdgeInsets.zero,
       )),
       autovalidateMode: field.autovalidateMode,

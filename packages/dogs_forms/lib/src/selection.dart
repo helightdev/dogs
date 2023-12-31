@@ -19,23 +19,21 @@ import 'package:flutter/widgets.dart';
 /// A data provider for dogs_forms selection fields like [DataDropdownFormField],
 /// [DataRadioGroupFormField] or [DataChoiceChipFormField].
 abstract class SelectionDataProvider<T> {
-
   /// A data provider for dogs_forms selection fields like [DataDropdownFormField],
   /// [DataRadioGroupFormField] or [DataChoiceChipFormField].
   const SelectionDataProvider();
 
   /// Returns a widget that represents the given value.
-  Widget represent(BuildContext context, T? value) => Text(value?.toString() ?? "---");
+  Widget represent(BuildContext context, T? value) =>
+      Text(value?.toString() ?? "---");
 
   /// Returns the data to be used for the selection field.
   List<T> getData(BuildContext context);
-
 }
 
 /// A [SelectionDataProvider] that provides a list of [String]s.
 
 class StringSelectionDataProvider extends SelectionDataProvider<String> {
-
   /// The list of selectable [String]s.
   final List<String> values;
 

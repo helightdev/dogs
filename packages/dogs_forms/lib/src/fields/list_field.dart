@@ -23,121 +23,175 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:uuid/uuid.dart';
 
-/// Utility [AutoFormFieldFactory] that creates a [List] of [ITEM_TYPE]s.
-class ListFieldFactory<ITEM_TYPE> extends AutoFormFieldFactory {
-  /// The [TypeCapture] of the [ITEM_TYPE].
-  final TypeCapture itemType;
+typedef ListElementBuilder = Widget Function(
+    BuildContext context, String name, Function(dynamic) callback);
 
-  /// The default [Initializer] for the [ITEM_TYPE].
-  final Initializer itemInitializer;
+/// An complimentary [FormBuilderField] for lists intended to be used inside
+/// [AutoFormFieldFactory]s to create [FormBuilderField]s for lists.
+class DogsFormList<T> extends StatefulWidget {
+  /// The initial value of the list.
+  final List<T>? initialValue;
+  /// The callback that is called when the value of the list changes.
+  final Function(List<T>?) onChanged;
+  /// The [ListElementBuilder] that is used to create the fields of list elements.
+  final ListElementBuilder elementFactory;
+  /// The [Initializer] that is selected by the implementation.
+  final Initializer itemInit;
+  /// The [Initializer] that is used as the default initializer for the items of the list.
+  final Initializer defaultInit;
+  /// The encoder that is used to encode the values of the list.
+  final dynamic Function(dynamic) encoder;
+  /// The decoder that is used to decode the values of the list.
+  final dynamic Function(dynamic) decoder;
 
-  /// The [Function] that creates the widgets for list elements.
-  final Widget Function(
-          BuildContext context, String name, Function(dynamic) callback)
-      elementFactory;
+  static dynamic keepValue(value) => value;
 
-  /// Utility [AutoFormFieldFactory] that creates a [List] of [ITEM_TYPE]s.
-  const ListFieldFactory(this.itemType, this.elementFactory, [this.itemInitializer = defaultInitializer]);
+  // Private so you don't accidentally use it. You are meant
+  // to use the [DogsFormList.field] constructor if you don't
+  // know what you are doing. If you do know what you are doing,
+  // use the [DogsFormList.raw] constructor.
+  const DogsFormList._(
+      {super.key,
+      required this.initialValue,
+      required this.onChanged,
+      required this.elementFactory,
+      this.itemInit = defaultInitializer,
+      this.defaultInit = nullInitializer,
+      this.encoder = keepValue,
+      this.decoder = keepValue});
 
-  @override
-  Widget build(BuildContext context, DogsFormField field) {
-    final GlobalKey<FormBuilderState> formKey = GlobalKey();
-    var rootFormKey = DogsFormProvider.keyOf(context)!;
-    return InputDecorator(
-      decoration: field.buildInputDecoration(context, DecorationPreference.container),
-      child: FormBuilderField(
-        name: field.delegate.name,
-        builder: (formField) => ListFieldWidget(
-          fieldState: formField,
-          parent: this,
-          formKey: formKey,
-          rootFormKey: rootFormKey,
-          dogField: field,
-        ),
-        validator: FormBuilderValidators.compose([
-          $validator(field, context),
-          (v) => formKey.currentState!.isValid
-              ? null
-              : "Individual fields are invalid."
-        ]),
-      ),
-    );
+  /// Creates a [DogsFormList] from a [DogsFormField].
+  const DogsFormList.raw(
+      {super.key,
+      required this.initialValue,
+      required this.onChanged,
+      required this.elementFactory,
+      this.itemInit = defaultInitializer,
+      this.defaultInit = nullInitializer,
+      this.encoder = keepValue,
+      this.decoder = keepValue});
+
+  /// Creates a [DogsFormList] from a [DogsFormField].
+  /// This automatically handles decoration, validation and error messages.
+  /// If you want a more fine-grained control over the [DogsFormList], use the
+  /// [DogsFormList.raw] constructor.
+  static Widget field<T>(DogsFormField field,
+      {required ListElementBuilder elementFactory,
+      Initializer defaultInit = nullInitializer,
+      dynamic Function(dynamic) encoder = keepValue,
+      dynamic Function(dynamic) decoder = keepValue}) {
+    return Builder(builder: (context) {
+      var locale = Localizations.maybeLocaleOf(context);
+      var translationResolver =
+          DogsFormProvider.formOf(context)!.translationResolver;
+      return FormBuilderField<List<T>>(
+          validator:
+              FormBuilderValidators.compose([field.buildValidator(context)]),
+          autovalidateMode: field.autovalidateMode,
+          name: field.delegate.name,
+          builder: (fieldState) => InputDecorator(
+              decoration: field
+                  .buildInputDecoration(context, DecorationPreference.container)
+                  .copyWith(
+                      errorText: switch (fieldState.errorText) {
+                    null => null,
+                    String() => translationResolver.translate(
+                            context, "invalid-list", locale) ??
+                        "This list contains invalid items."
+                  }),
+              child: DogsFormList<T>._(
+                  initialValue: fieldState.value,
+                  itemInit: field.itemInitializer,
+                  onChanged: (v) {
+                    fieldState.didChange(v);
+                  },
+                  encoder: (v) => v ?? "",
+                  decoder: (v) => v ?? "",
+                  defaultInit: defaultInit,
+                  elementFactory: elementFactory)));
+    });
   }
 
   @override
-  dynamic decode(dynamic value) =>
-      value == null ? null : (value as Iterable).toList();
-
-  @override
-  dynamic encode(dynamic value) =>
-      value == null ? null : (value as List).toList();
+  State<DogsFormList> createState() => _DogsFormListState<T>();
 }
 
-class ListFieldWidget extends StatefulWidget {
-  final FormFieldState fieldState;
-  final ListFieldFactory parent;
-  final GlobalKey<FormBuilderState> formKey;
-  final GlobalKey<FormBuilderState> rootFormKey;
-  final DogsFormField dogField;
-
-  const ListFieldWidget(
-      {super.key,
-      required this.fieldState,
-      required this.parent,
-      required this.formKey,
-      required this.rootFormKey,
-      required this.dogField});
-
-  @override
-  State<ListFieldWidget> createState() => _ListFieldWidgetState();
-}
-
-class _ListFieldWidgetState extends State<ListFieldWidget> {
+class _DogsFormListState<T> extends State<DogsFormList<T>> {
+  GlobalKey<FormBuilderState> formKey = GlobalKey();
   List<String> children = [];
   Map<String, dynamic> initialData = {};
 
+  Initializer get itemInitializer => switch (widget.itemInit) {
+        DefaultInitializer() => widget.defaultInit,
+        _ => widget.itemInit
+      };
+
+  // If silent change is true, don't rebuild on parent widget changes.
+  // Is set when an individual element field is changed.
+  bool silentChange = false;
+  bool get canRebuild {
+    var result = !silentChange;
+    silentChange = false;
+    return result;
+  }
+
   @override
   void initState() {
-    var initialData = widget.rootFormKey.currentState!.fields[widget.dogField.delegate.name]?.initialValue as List?;
-    if (initialData != null) {
-      children = initialData.map((e) => const Uuid().v4()).toList();
+    if (widget.initialValue != null) {
+      children = widget.initialValue!.map((e) => const Uuid().v4()).toList();
       for (var i = 0; i < children.length; i++) {
-        this.initialData["item-${children[i]}"] = initialData[i];
+        this.initialData["item-${children[i]}"] =
+            widget.encoder(widget.initialValue![i]);
       }
     }
-    
+
+    if (widget.initialValue == null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        widget.onChanged([]);
+      });
+    }
+
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
-        key: widget.formKey,
+        key: formKey,
         initialValue: initialData,
         child: Column(
           children: [
             for (var i = 0; i < children.length; i++)
-              Row(
-                key: ValueKey(children[i]),
-                children: [
-                  Expanded(
-                      child: widget.parent.elementFactory(
-                          context, "item-${children[i]}", (newValue) {
-                    widget.fieldState.didChange(buildList());
-                  })),
-                  IconButton(
-                      onPressed: () => setState(() {
-                            var id = children[i];
-                            children.removeAt(i);
-                            widget.formKey.currentState!.fields["item-$id"]!
-                                .setValue(null);
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((timeStamp) {
-                              widget.fieldState.didChange(buildList());
-                            });
-                          }),
-                      icon: const Icon(Icons.delete)),
-                ],
+              Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Row(
+                  key: ValueKey(children[i]),
+                  children: [
+                    Expanded(
+                        child: widget.elementFactory(
+                            context, "item-${children[i]}", (newValue) {
+                      silentChange = true;
+                      // This fixes a bug where the value is not updated for the first
+                      // time the field is changed. This shouldn't have any side effects.
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        silentChange = true;
+                        widget.onChanged(buildList());
+                      });
+                    })),
+                    IconButton(
+                        onPressed: () => setState(() {
+                              var id = children[i];
+                              children.removeAt(i);
+                              formKey.currentState!.fields["item-$id"]!
+                                  .setValue(null);
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback((timeStamp) {
+                                widget.onChanged(buildList());
+                              });
+                            }),
+                        icon: const Icon(Icons.delete)),
+                  ],
+                ),
               ),
             IconButton(
                 onPressed: () {
@@ -145,14 +199,9 @@ class _ListFieldWidgetState extends State<ListFieldWidget> {
                   children.add(id);
                   setState(() {
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      var initializer = widget.dogField.itemInitializer;
-                      if (initializer is DefaultInitializer) {
-                        initializer = widget.parent.itemInitializer;
-                      }
-                      widget.formKey.currentState!.fields["item-$id"]!.didChange(
-                          widget.dogField.factory.encode(initializer())
-                      );
-                      widget.fieldState.didChange(buildList());
+                      formKey.currentState!.fields["item-$id"]!
+                          .didChange(itemInitializer());
+                      widget.onChanged(buildList());
                     });
                   });
                 },
@@ -161,7 +210,30 @@ class _ListFieldWidgetState extends State<ListFieldWidget> {
         ));
   }
 
-  List buildList() => widget.parent.itemType.castList(children
-      .map((e) => widget.formKey.currentState!.instantValue["item-$e"])
-      .toList());
+  @override
+  void didUpdateWidget(DogsFormList<T> oldWidget) {
+    if (oldWidget.initialValue != widget.initialValue && canRebuild) {
+      children = widget.initialValue!.map((e) => const Uuid().v4()).toList();
+      for (var i = 0; i < children.length; i++) {
+        if (widget.initialValue != null) {
+          this.initialData["item-${children[i]}"] =
+              widget.encoder(widget.initialValue![i]);
+        } else {
+          this.initialData["item-${children[i]}"] =
+              widget.encoder(itemInitializer());
+        }
+      }
+      setState(() {});
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  List<T>? buildList() {
+    return formKey.currentState!.isValid
+        ? TypeToken<T>().castList(children
+            .map((e) =>
+                widget.decoder(formKey.currentState!.instantValue["item-$e"]))
+            .toList())
+        : null;
+  }
 }

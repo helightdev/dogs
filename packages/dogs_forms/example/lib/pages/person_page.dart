@@ -14,12 +14,27 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/dogs_validation.dart';
-import 'package:dogs_forms/dogs_forms.dart';
+import 'package:example/form_print_wrapper.dart';
 import 'package:example/models/address.dart';
+import 'package:example/models/person.dart';
 import 'package:flutter/material.dart';
 
+class PersonPage extends StatelessWidget {
+  const PersonPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FormPrintWrapper<Person>(
+      exampleValue: Person(
+          name: "John",
+          surname: "Doe",
+          age: 42,
+          active: true,
+          birthday: DateTime(1981, 12, 1),
+          gender: Gender.male,
+          happiness: 8
+      ),
+      modelCode: """
 @serializable
 @AutoForm(decorator: PersonDecorator())
 class Person with Dataclass<Person> {
@@ -82,5 +97,9 @@ class PersonDecorator extends FormColumnDecorator<Person> {
     configurator.field("gender");
     configurator.field("active");
     super.decorate(context, configurator);
+  }
+}
+""".trim(),
+    );
   }
 }

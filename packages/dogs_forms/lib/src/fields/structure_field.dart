@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 /// A [AutoFormFieldFactory] that embeds another [DogsForm] into the form.
-class StructureFormFieldFactory extends AutoFormFieldFactory with CachedFactoryData<DogsFormRef>{
-
+class StructureFormFieldFactory extends AutoFormFieldFactory
+    with CachedFactoryData<DogsFormRef> {
   /// The [DogStructure] to embed.
   final DogStructure structure;
 
@@ -36,22 +36,25 @@ class StructureFormFieldFactory extends AutoFormFieldFactory with CachedFactoryD
   }
 
   @override
-  Widget build(BuildContext context, DogsFormField field) => structure.consumeTypeArg(createForm, (
-    field: field,
-    context: context,
-  ));
+  Widget build(BuildContext context, DogsFormField field) =>
+      structure.consumeTypeArg(createForm, (
+        field: field,
+        context: context,
+      ));
 
   DogsFormRef createRef<T>(GlobalKey<FormBuilderState> formKey) {
     return DogsFormRef<T>(formKey);
   }
-  
-  Widget createForm<T>(
-      ({
-        DogsFormField field,
-        BuildContext context
-      }) arg) {
+
+  Widget createForm<T>(({DogsFormField field, BuildContext context}) arg) {
+    var reference = getCachedValue(arg.field) as DogsFormRef<T>;
+    if (arg.field.delegate.optional) {
+      return _buildOptional<T>(arg, reference);
+    }
+
     return InputDecorator(
-      decoration: arg.field.buildInputDecoration(arg.context, DecorationPreference.container),
+      decoration: arg.field
+          .buildInputDecoration(arg.context, DecorationPreference.container),
       child: FormBuilderField<T>(
         builder: (FormFieldState<T> formField) {
           var reference = getCachedValue(arg.field) as DogsFormRef<T>;
@@ -66,6 +69,57 @@ class StructureFormFieldFactory extends AutoFormFieldFactory with CachedFactoryD
         validator: $validator(arg.field, arg.context),
         name: arg.field.delegate.name,
       ),
+    );
+  }
+
+  FormBuilderField<dynamic> _buildOptional<T>(({BuildContext context, DogsFormField field}) arg, DogsFormRef<dynamic> reference) {
+    return FormBuilderField<T>(
+      builder: (FormFieldState<T> formField) {
+        return DogsFormOptional<T>(
+          initialValue: formField.value,
+          elementFactory: (context, name, callback) {
+            return InputDecorator(
+              decoration: arg.field.buildInputDecoration(
+                  arg.context, DecorationPreference.container),
+              child: FormBuilderField<T>(
+                  name: name,
+                  onChanged: callback,
+                  validator: $validator(arg.field, context),
+                  onReset: () {
+                    context
+                        .findAncestorStateOfType<DogsFormOptionalState>()!
+                        .applyManually(formField.value);
+                    reference.set(formField.value);
+                    // This still doesn't work right, but most of the times:
+                    // Load Value > Modify until Invalid > Disable > Load Value > !!!
+                    // But since this is out of scope for the current project, I'll leave it as is.
+                    // dogs_forms is not meant to actively reload values after the user modified them.
+                    // TODO: Anyways, if someone wants to fix this, feel free to do so.
+                  },
+                  builder: (FormFieldState<T> innerField) {
+                    var isEnabled = FormBuilder.of(context)!.enabled;
+                    return ExcludeFocus(
+                      excluding: !isEnabled,
+                      child: Opacity(
+                        opacity: isEnabled ? 1 : 0.5,
+                        child: DogsForm<T>(
+                          reference: reference,
+                          initialValue: innerField.value,
+                          onChanged: () {
+                            innerField.didChange(reference.read(false));
+                          },
+                        ),
+                      ),
+                    );
+                  }),
+            );
+          },
+          onChanged: (value) {
+            formField.didChange(value);
+          },
+        );
+      },
+      name: arg.field.delegate.name,
     );
   }
 }

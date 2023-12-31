@@ -15,6 +15,7 @@
  */
 
 import 'package:dogs_forms/dogs_forms.dart';
+import 'package:dogs_forms/src/utils.dart';
 import 'package:flutter/material.dart';
 
 /// Class used by [AutoFormFieldFactory]s to describe how they want their
@@ -60,11 +61,11 @@ class DecorationPreference {
 enum BorderPreference {
   normal,
   outline,
+  underline,
   borderless,
 }
 
 extension FieldDecorationExtension on DogsFormField {
-
   /// Builds a [InputDecoration] using the [DecorationPreference] of this field
   /// for the [DogsForm] of the [context].
   InputDecoration buildInputDecoration(
@@ -87,8 +88,8 @@ extension FieldDecorationExtension on DogsFormField {
       suffixIcon: formAnnotation?.trailing,
     );
     if (form.preferenceDecorationMutator != null) {
-      decoration = form.preferenceDecorationMutator!(decoration, pref) ??
-          decoration;
+      decoration =
+          form.preferenceDecorationMutator!(decoration, pref) ?? decoration;
     }
     decoration = formAnnotation?.decoration ?? decoration;
     // Apply data transformation
@@ -99,12 +100,12 @@ extension FieldDecorationExtension on DogsFormField {
     return decoration;
   }
 
-  InputBorder? _defaultBorder(
-          InputBorder? border, DecorationPreference pref) =>
+  InputBorder? _defaultBorder(InputBorder? border, DecorationPreference pref) =>
       border == null
           ? null
           : switch (pref.borderPreference) {
-              BorderPreference.normal =>
+              BorderPreference.normal => border,
+              BorderPreference.underline =>
                 UnderlineInputBorder(borderSide: border.borderSide),
               BorderPreference.outline =>
                 OutlineInputBorder(borderSide: border.borderSide),
@@ -117,7 +118,8 @@ extension FieldDecorationExtension on DogsFormField {
       if (formAnnotation?.titleTranslationKey != null) {
         var translated = form.translationResolver
             .translate(context, formAnnotation!.titleTranslationKey!, locale);
-        decoration = decoration.copyWith(helperText: translated);
+        decoration = decoration.copyWith(
+            helperText: translated ?? capitalizeString(title));
       } else {
         decoration = decoration.copyWith(labelText: capitalizeString(title));
       }
@@ -131,7 +133,7 @@ extension FieldDecorationExtension on DogsFormField {
       if (formAnnotation?.subtitleTranslationKey != null) {
         var translated = form.translationResolver.translate(
             context, formAnnotation!.subtitleTranslationKey!, locale);
-        decoration = decoration.copyWith(helperText: translated);
+        decoration = decoration.copyWith(helperText: translated ?? subtitle);
       } else {
         decoration = decoration.copyWith(helperText: subtitle);
       }
@@ -143,9 +145,9 @@ extension FieldDecorationExtension on DogsFormField {
       Locale? locale, InputDecoration decoration) {
     if (hint != null) {
       if (formAnnotation?.hintTranslationKey != null) {
-        var translated = form.translationResolver.translate(
-            context, formAnnotation!.hintTranslationKey!, locale);
-        decoration = decoration.copyWith(hintText: translated);
+        var translated = form.translationResolver
+            .translate(context, formAnnotation!.hintTranslationKey!, locale);
+        decoration = decoration.copyWith(hintText: translated ?? hint);
       } else {
         decoration = decoration.copyWith(hintText: hint);
       }
