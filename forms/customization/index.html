@@ -1,0 +1,951 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../start/">
+      
+      
+        <link rel="next" href="../translation/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.3.1">
+    
+    
+      
+        <title>Customization - Dart Object Graphs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.046329b4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.85d0ee34.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#customization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Dart Object Graphs" class="md-header__button md-logo" aria-label="Dart Object Graphs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Dart Object Graphs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Customization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Dart Object Graphs" class="md-nav__button md-logo" aria-label="Dart Object Graphs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Dart Object Graphs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../serializables/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Serializable Classes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../serialization/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Serialization
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../projection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Projection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Forms
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Forms
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Customization
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Customization
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-options" class="md-nav__link">
+    Important Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Important Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldtitle" class="md-nav__link">
+    AutoFormField.title
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldsubtitle" class="md-nav__link">
+    AutoFormField.subtitle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldfactory" class="md-nav__link">
+    AutoFormField.factory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldinitializer" class="md-nav__link">
+    AutoFormField.initializer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfielddecoration" class="md-nav__link">
+    AutoFormField.decoration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decorators" class="md-nav__link">
+    Decorators
+  </a>
+  
+    <nav class="md-nav" aria-label="Decorators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#row" class="md-nav__link">
+    Row
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrap" class="md-nav__link">
+    Wrap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-field" class="md-nav__link">
+    Single Field
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#push-widget" class="md-nav__link">
+    Push Widget
+  </a>
+  
+    <nav class="md-nav" aria-label="Push Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#field-builders" class="md-nav__link">
+    Field Builders
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-buildcontext" class="md-nav__link">
+    Access BuildContext
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../translation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Translation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Advanced
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/structures/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Structures
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/annotations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Annotations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-options" class="md-nav__link">
+    Important Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Important Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldtitle" class="md-nav__link">
+    AutoFormField.title
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldsubtitle" class="md-nav__link">
+    AutoFormField.subtitle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldfactory" class="md-nav__link">
+    AutoFormField.factory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfieldinitializer" class="md-nav__link">
+    AutoFormField.initializer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autoformfielddecoration" class="md-nav__link">
+    AutoFormField.decoration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decorators" class="md-nav__link">
+    Decorators
+  </a>
+  
+    <nav class="md-nav" aria-label="Decorators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#row" class="md-nav__link">
+    Row
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrap" class="md-nav__link">
+    Wrap
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-field" class="md-nav__link">
+    Single Field
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#push-widget" class="md-nav__link">
+    Push Widget
+  </a>
+  
+    <nav class="md-nav" aria-label="Push Widget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#field-builders" class="md-nav__link">
+    Field Builders
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-buildcontext" class="md-nav__link">
+    Access BuildContext
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="customization">Customization</h1>
+<p>Most of the customization of the form is done through the annotations of the serializable classes.
+The layout of the form is determined by the <code>@Form</code> annotation, specifically the <code>FomrDecorator</code>
+parameter, both of the <code>@AutoForm</code> annotation as well as the <code>DogsForm</code> widget.</p>
+<h2 id="example">Example</h2>
+<div class="language-dart annotate highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nd">@serializable</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nd">@AutoForm</span><span class="p">(</span><span class="nl">decorator:</span><span class="w"> </span><span class="n">AddressDecorator</span><span class="p">())</span><span class="cm">/*(4)!*/</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kd">class</span><span class="w"> </span><span class="nc">Address</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nd">@AutoFormField</span><span class="p">(</span><span class="nl">flex:</span><span class="w"> </span><span class="m">6</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">street</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nd">@AutoFormField</span><span class="p">(</span><span class="nl">flex:</span><span class="w"> </span><span class="m">3</span><span class="cm">/*(2)!*/</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">city</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="c1">// No @AutoFormField required (1)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="nd">@LengthRange</span><span class="p">(</span><span class="nl">min:</span><span class="w"> </span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="nl">max:</span><span class="w"> </span><span class="m">5</span><span class="p">)</span><span class="cm">/*(3)!*/</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">zip</span><span class="p">;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="n">Address</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">street</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">city</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">zip</span><span class="p">);</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="kd">class</span><span class="w"> </span><span class="nc">AddressDecorator</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FormColumnDecorator</span><span class="o">&lt;</span><span class="n">Address</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="k">const</span><span class="cm">/*(7)!*/</span><span class="w"> </span><span class="n">AddressDecorator</span><span class="p">();</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="nd">@override</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">decorate</span><span class="p">(</span><span class="n">BuildContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">FormStackConfigurator</span><span class="w"> </span><span class="n">configurator</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="n">configurator</span><span class="p">.</span><span class="n">row</span><span class="p">([</span><span class="s2">&quot;street&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;city&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;zip&quot;</span><span class="p">]);</span><span class="cm">/*(5)!*/</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">super</span><span class="p">.</span><span class="n">decorate</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">configurator</span><span class="p">);</span><span class="cm">/*(6)!*/</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>You don't have to use the <code>@AutoFormField</code> annotation if you don't want to apply any additional 
+    visual customization to the field.</li>
+<li>This field will be rendered with a flex of 3 inside the row specified by the <code>AddressDecorator</code>.</li>
+<li>Specifying the length range of the zip field will automatically add a validator to the field.</li>
+<li>Here, we tell to dogs_forms to use the <code>AddressDecorator</code> as a default to render the form.
+    Otherwise, the default decorator would be used.</li>
+<li>We now tell the decorator to render all the fields in a row, respecting their flex values specified
+    in the <code>@AutoFormField</code> annotation.</li>
+<li>You normally call the <code>super.decorate</code> method at the end of your decorator to automatically add
+    fields you forgot to customize manually.</li>
+<li>The decorator should be const, so that you can use it as an argument to the <code>@AutoForm</code> annotation.</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">My customization annotations are getting to long!</p>
+<p>If your annotations are getting to long, you can extract the form logic into a separate 
+serializable class and use the projection capabilities of dogs to convert between the two.
+This helps keeping your original serializable class clean and readable.</p>
+<p>Otherwise, you can also use custom factories to create your form fields. There, you can isolate
+the logic without having to create really long annotations. Since this is relatively easy to 
+refactor aftwards, you can always start with the annotations and refactor later.</p>
+</div>
+<p>To find out all the customization options, head to the [API Reference] for the <code>@AutoForm</code> and
+<code>@AutoFormField</code> annotations. A few of the most important ones are listed below:</p>
+<h2 id="important-options">Important Options</h2>
+<h3 id="autoformfieldtitle">AutoFormField.title</h3>
+<p>The title of the field, that will be used as the labelText for most form fields.
+If you want to localize this later, you can also specify 'titleTranslationKey'.</p>
+<h3 id="autoformfieldsubtitle">AutoFormField.subtitle</h3>
+<p>The title of the field, that will be used as the labelText for most form fields.
+If you want to localize this later, you can also specify 'subtitleTranslationKey'.</p>
+<h3 id="autoformfieldfactory">AutoFormField.factory</h3>
+<p>Specify a custom factory used to create the form field. If you generally want to use a custom factory
+for all fields of a specific datatype, consider customizing the mode factory registration in your
+main method by using a composed mode factory with your custom type bound factory.</p>
+<h3 id="autoformfieldinitializer">AutoFormField.initializer</h3>
+<p>Specify a custom initializer used to create the initial value of the form field.
+If you want to specify a custom initializer for items of iterable fields, use the <code>itemInitialzer</code>
+parameter instead.</p>
+<h3 id="autoformfielddecoration">AutoFormField.decoration</h3>
+<p>Specify a custom decoration used to decorate the form field.</p>
+<h2 id="decorators">Decorators</h2>
+<p>Decorators are used to specify the layout of the form. The default decorator is the <code>FormColumnDecorator</code>,
+which uses an imperative builder approach to specify the layout of the form. The builders pushes
+the fields into a list in the order you call the builder methods. Possible builder methods are:</p>
+<h3 id="row">Row</h3>
+<p>Rows are specified by calling the <code>row</code> method of the <code>FormStackConfigurator</code> class. The row method
+takes a list of field names as an argument. The order of the fields in the list determines the order
+of the fields in the row. The flex values of the fields and constraints are respected, so that the
+fields are rendered with the correct width.</p>
+<h3 id="wrap">Wrap</h3>
+<p>Wraps are specified by calling the <code>wrap</code> method of the <code>FormStackConfigurator</code> class. The wrap method
+takes a list of field names as an argument. The order of the fields in the list determines the order
+of the fields in the wrap. The constraints of the fields are respected, so that the fields are rendered
+with the correct width and height.</p>
+<h3 id="single-field">Single Field</h3>
+<p>You can also push a single field by calling the <code>field</code> method of the <code>FormStackConfigurator</code> class.
+This will add the field to the form column, respecting the constraints of the field.</p>
+<h3 id="push-widget">Push Widget</h3>
+<p>You can also push any arbitrary widget by calling the <code>push</code> method of the <code>FormStackConfigurator</code> class.</p>
+<h4 id="field-builders">Field Builders</h4>
+<p>In case you want to use your own container widgets, you can build individual fields using the
+<code>buildField</code> and the <code>buildFlexibleField</code> methods of the <code>FormStackConfigurator</code> class. These
+methods take a dog field and a BuildContext as an argument and return the built widget.
+You can retrieve the dog field for a specific field name by calling the <code>popNamed</code> method of the
+<code>FormStackConfigurator</code> class. This also automatically removes the field from the remaining fields.</p>
+<h4 id="access-buildcontext">Access BuildContext</h4>
+<p>You can retrieve the current BuildContext by using the <code>context</code> field of the <code>FormStackConfigurator</code>.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      
+    
+  </body>
+</html>
