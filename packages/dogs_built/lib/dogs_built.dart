@@ -33,10 +33,10 @@ void installBuiltSerializers(Serializers serializers, [DogEngine? engine]) {
   for (var value in serializers.serializers) {
     var converter = BuiltDogConverter(value, serializers);
     for (var type in value.types) {
-      instance.associatedConverters[type] = converter;
-      instance.structures[type] = converter.struct!;
+      instance.registerAssociatedConverter(converter, type: type);
+      instance.registerStructure(converter.struct!, type: type);
     }
-    instance.registerConverter(converter);
+    instance.registerShelvedConverter(converter);
   }
 }
 
