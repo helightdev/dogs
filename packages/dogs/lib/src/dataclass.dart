@@ -34,7 +34,7 @@ Map<Type, int Function(dynamic)> _dataclassHashCode = HashMap();
 Map<Type, bool Function(dynamic, dynamic)> _dataclassEquals = HashMap();
 
 int Function(dynamic) _createDataclassHashCodeProvider<T>() {
-  final structure = dogs.structures[T]!;
+  final structure = dogs.findStructureByType(T)!;
   final fieldCount = structure.fields.length;
   final proxy = structure.proxy;
   late final int Function(dynamic) provider;
@@ -59,7 +59,7 @@ int Function(dynamic) _createDataclassHashCodeProvider<T>() {
 }
 
 bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
-  final structure = dogs.structures[T]!;
+  final structure = dogs.findStructureByType(T)!;
   final proxy = structure.proxy;
   late final bool Function(dynamic, dynamic) provider;
   if (proxy.equalsFunc == null) {

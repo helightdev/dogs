@@ -31,44 +31,34 @@ class DogEngine {
   static DogEngine get instance => _instance!;
 
   /// Read-only list of [DogConverter]s.
-  final List<DogConverter> converters = [];
-
-  final Map<Type, OperationModeFactory> modeFactories = {};
-
+  final List<DogConverter> _converters = [];
+  final Map<Type, OperationModeFactory> _modeFactories = {};
   /// Read-only mapping of [DogConverter]s.
-  final Map<Type, DogConverter> associatedConverters = HashMap();
-
+  final Map<Type, DogConverter> _associatedConverters = HashMap();
   /// Read-only mapping of [DogStructure]s.
-  final Map<Type, DogStructure> structures = HashMap();
+  final Map<Type, DogStructure> _structures = HashMap();
+  final Map<String, String> _annotationTranslations = {};
+  final Map<Type, DogConverter> _runtimeTreeConverterCache = HashMap();
 
-  final Map<String, String> annotationTranslations = {};
-
-  @internal
-  final Map<Type, DogConverter> runtimeTreeConverterCache = HashMap();
-
-  final Map<Type, TreeBaseConverterFactory> treeBaseFactories = {
+  final Map<Type, TreeBaseConverterFactory> _treeBaseFactories = {
     List: ListTreeBaseConverterFactory(),
     Iterable: ListTreeBaseConverterFactory(),
     Set: SetTreeBaseConverterFactory(),
     Map: MapTreeBaseConverterFactory(),
     Optional: OptionalTreeBaseConverterFactory()
   };
-
-  final OperationModeRegistry modeRegistry = OperationModeRegistry();
-  late final _nativeSerialization = modeRegistry.nativeSerialization;
-  late final _graphSerialization = modeRegistry.graphSerialization;
-  late final _validation = modeRegistry.validation;
-
-  final StreamController<bool> _changeStreamController =
-      StreamController.broadcast();
-
-  Stream<bool> get changeStream => _changeStreamController.stream;
-
-  StreamSubscription? _forkSubscription;
+  
+  final List<DogEngine> _children = [];
 
   /// The [DogNativeCodec] used by this [DogEngine] instance.
   /// See [DogNativeCodec] for more details.
   final DogNativeCodec codec;
+
+  late OperationModeRegistry modeRegistry = OperationModeRegistry();
+  late var _nativeSerialization = modeRegistry.nativeSerialization;
+  late var _graphSerialization = modeRegistry.graphSerialization;
+  late var _validation = modeRegistry.validation;
+  DogEngine? _parent;
 
   /// Creates a new [DogEngine] instance.
   /// If [registerBaseConverters] is true, the following converters will be
@@ -89,17 +79,17 @@ class DogEngine {
       this.codec = const DefaultNativeCodec()}) {
     if (registerBaseConverters) {
       // Register polymorphic converters
-      registerConverter(PolymorphicConverter(), false);
-      registerConverter(DefaultMapConverter(), false);
-      registerConverter(DefaultIterableConverter(), false);
-      registerConverter(DefaultListConverter(), false);
-      registerConverter(DefaultSetConverter(), false);
+      registerAutomatic(PolymorphicConverter(), false);
+      registerAutomatic(DefaultMapConverter(), false);
+      registerAutomatic(DefaultIterableConverter(), false);
+      registerAutomatic(DefaultListConverter(), false);
+      registerAutomatic(DefaultSetConverter(), false);
 
       // Register common converters
-      registerConverter(DateTimeConverter(), false);
-      registerConverter(DurationConverter(), false);
-      registerConverter(UriConverter(), false);
-      registerConverter(Uint8ListConverter(), false);
+      registerAutomatic(DateTimeConverter(), false);
+      registerAutomatic(DurationConverter(), false);
+      registerAutomatic(UriConverter(), false);
+      registerAutomatic(Uint8ListConverter(), false);
 
       // Register primitives
       // registerConverter(StringConverter(), false);
@@ -112,138 +102,198 @@ class DogEngine {
   /// Sets this current instance as [_instance].
   void setSingleton() => _instance = this;
 
-  void clear() {
-    treeBaseFactories.clear();
-    runtimeTreeConverterCache.clear();
-    converters.clear();
-    associatedConverters.clear();
-    structures.clear();
+  /// Resets the [DogEngine]'s operation mode cache.
+  /// All registered converters and structures will not be affected.
+  void reset() {
+    modeRegistry = OperationModeRegistry();
+    _nativeSerialization = modeRegistry.nativeSerialization;
+    _graphSerialization = modeRegistry.graphSerialization;
+    _validation = modeRegistry.validation;
+    _runtimeTreeConverterCache.clear();
+  }
+
+  /// Fully clears the [DogEngine] instance, effectively resetting it to its
+  /// initial state.
+  ///
+  /// Warning: Do not invoke on the root [DogEngine] instance which has been
+  /// automatically created by the dogs_generator.
+  void clear({
+    bool clearStructures = true,
+  }) {
+    _treeBaseFactories.clear();
+    _converters.clear();
+    _associatedConverters.clear();
+    reset();
+    if (clearStructures) _structures.clear();
+    populateChange();
   }
 
   @internal
-  void forkEngine(DogEngine engine) {
-    clear();
-    var forks = engine.converters.map((e) => e.fork(this));
-    var treeFactories = engine.treeBaseFactories.entries;
-    registerAllConverters(forks);
-    registerAllTreeBaseFactories(treeFactories);
-    _changeStreamController.add(true);
+  void rebuildFrom(DogEngine engine) {
+    _parent = engine;
+    reset();
+    populateChange();
   }
 
   //TODO: Fix/Check forks for operations
   DogEngine fork({DogNativeCodec? codec}) {
-    DogEngine forked =
-        DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
-    forked._forkSubscription = changeStream.listen((event) {
-      forked.forkEngine(this);
-    }, onDone: () {
-      print("Closing dog engine because the parent has been closed.");
-      forked.close();
-    }, onError: (_) {
-      print(
-          "Closing dog engine because the parent event stream threw an error");
-      forked.close();
-    });
-    forked.forkEngine(this);
+    DogEngine forked = DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
+    forked.rebuildFrom(this);
     return forked;
+  }
+  
+  void populateChange() {
+    reset(); // After a change we need to reset the cache
+    for (var child in _children) {
+      try {
+        child.rebuildFrom(this); // Also rebuild children
+      } on Exception catch (e) {
+        print("Error while populating change to child: $e");
+        _children.remove(child);
+      }
+    }
   }
 
   void close() {
-    _changeStreamController.close();
-    _forkSubscription?.cancel();
     clear();
+    _children.clear();
+    _parent?._children.remove(this);
   }
 
+  Map<Type, DogStructure> get allStructures => {
+    if (_parent != null) ..._parent!.allStructures,
+    ..._structures,
+  };
+  Map<Type, DogConverter> get allAssociatedConverters => {
+    if (_parent != null) ..._parent!.allAssociatedConverters,
+    ..._associatedConverters,
+  };
+  Map<Type, TreeBaseConverterFactory> get allTreeBaseFactories => {
+    if (_parent != null) ..._parent!.allTreeBaseFactories,
+    ..._treeBaseFactories,
+  };
+  List<DogConverter> get allConverters => List.of([
+    if (_parent != null) ..._parent!.allConverters,
+    ..._converters,
+  ]);
+
+  String? findAnnotationTranslation(String id) {
+    return _annotationTranslations[id] ?? _parent?.findAnnotationTranslation(id);
+  }
+  
   /// Returns the [DogStructure] associated with [type].
-  DogStructure? findStructureByType(Type type) => structures[type];
+  DogStructure? findStructureByType(Type type) => _structures[type] ?? _parent?.findStructureByType(type);
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   /// or null if not present.
-  DogStructure? findSerialName(String name) => structures.entries
-      .firstWhereOrNull((element) => element.value.serialName == name)
-      ?.value;
+  DogStructure? findStructureBySerialName(String name) => _structures.entries
+      .firstWhereOrNull((element) => element.value.serialName == name)?.value
+      ?? _parent?.findStructureBySerialName(name);
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
-  /// or throws an exception if not present.
-  DogStructure findSerialNameOrThrow(String name) {
-    var structure = findSerialName(name);
-    if (structure == null) {
-      throw ArgumentError.value(
-          name, "name", "No structure for given serial name found");
+  DogConverter? findConverterBySerialName(String name) {
+    var associatedStructureType = _structures.entries
+        .firstWhereOrNull((element) => element.value.serialName == name)?.key;
+    if (associatedStructureType == null) {
+      return _parent?.findConverterBySerialName(name);
     }
-    return structure;
-  }
-
-  /// Returns the [DogConverter] that is associated with [type] or
-  /// null if not present.
-  DogConverter? findAssociatedConverter(Type type) {
-    return associatedConverters[type];
+    return findAssociatedConverter(associatedStructureType);
   }
 
   /// Returns the first registered [DogConverter] of the given [type].
   DogConverter? findConverter(Type type) =>
-      converters.firstWhereOrNull((element) => element.runtimeType == type);
-
+      _converters.firstWhereOrNull((element) => element.runtimeType == type)
+      ?? _parent?.findConverter(type);
+  
   /// Returns the [DogConverter] that is associated with [type] or
-  /// throws an exception if not present.
-  DogConverter findAssociatedConverterOrThrow(Type type) {
-    var converter = findAssociatedConverter(type);
-    if (converter == null) {
-      if (type == dynamic) {
-        throw Exception("Tried to resolve the converter for 'dynamic'. "
-            "Consider explicitly specifying a type to resolve.");
-      } else {
-        throw ArgumentError.value(
-            type, "type", "No converter for given type found");
+  /// null if not present.
+  DogConverter? findAssociatedConverter(Type type) {
+    return _associatedConverters[type] ?? _parent?.findAssociatedConverter(type);
+  }
+
+  /// Returns the [OperationModeFactory] that is associated with [type] or
+  /// null if not present.
+  OperationModeFactory? findModeFactory(Type type) {
+    return _modeFactories[type] ?? _parent?.findModeFactory(type);
+  }
+  
+  /// Registers a [converter] in this [DogEngine] instance and emits a event to
+  /// the change stream if [emitChangeToStream] is true.
+  Future<void> registerAutomatic(DogConverter converter,
+      [bool emitChangeToStream = true]) async {
+    if (converter.isAssociated) {
+      if (converter.struct != null) {
+        _structures[converter.struct!.typeArgument] = converter.struct!;
       }
+      _associatedConverters[converter.typeArgument] = converter;
     }
-    return converter;
+    _converters.add(converter);
+    if (emitChangeToStream) populateChange();
   }
 
   /// Registers a [converter] in this [DogEngine] instance and emits a event to
-  /// the change stream if [emitChangeToStream] is true. If this converter also
-  /// has the [StructureEmitter] mixin, the supplied structure will be linked.
-  /// If this converter also has the [Copyable] mixin, it will also be linked.
-  void registerConverter(DogConverter converter,
-      [bool emitChangeToStream = true]) {
-    if (converter.isAssociated) {
-      if (converter.struct != null) {
-        structures[converter.struct!.typeArgument] = converter.struct!;
-      }
-      associatedConverters[converter.typeArgument] = converter;
-    }
-    converters.add(converter);
-    converter.registrationCallback(this);
-    if (emitChangeToStream) _changeStreamController.add(true);
+  /// the change stream if [emitChangeToStream] is true. Shelved converters are
+  /// converters that are not associated with a type, but can be used by querying
+  /// the explicit type of the converter.
+  void registerShelvedConverter(DogConverter converter, {
+    bool emitChangeToStream = true
+  }) {
+    _converters.add(converter);
+    if (emitChangeToStream) populateChange();
+  }
+
+  /// Registers a [converter] in this [DogEngine] instance and emits a event to
+  /// the change stream if [emitChangeToStream] is true.
+  void registerAssociatedConverter(DogConverter converter, {
+    bool emitChangeToStream = true,
+    Type? type
+  }) {
+    _associatedConverters[type ?? converter.typeArgument] = converter;
+    if (!_converters.contains(converter)) _converters.add(converter);
+    if (emitChangeToStream) populateChange();
+  }
+
+  void registerStructure(DogStructure structure, {
+    bool emitChangeToStream = true,
+    Type? type
+  }) {
+    _structures[type ?? structure.typeArgument] = structure;
+    if (emitChangeToStream) populateChange();
   }
 
   /// Registers a [OperationModeFactory] in this [DogEngine] instance and emits
   /// a event to the change stream.
-  void registerModeFactory(OperationModeFactory factory) {
-    modeFactories[factory.typeArgument] = factory;
-    _changeStreamController.add(true);
+  void registerModeFactory(OperationModeFactory factory, {
+    bool emitChangeToStream = true,
+    Type? type
+  }) {
+    _modeFactories[type ?? factory.typeArgument] = factory;
+    if (emitChangeToStream) populateChange();
   }
 
-  /// Registers multiple converters using [registerConverter].
-  /// For more details see [DogEngine.registerConverter].
+  /// Registers multiple converters using [registerAutomatic].
+  /// For more details see [DogEngine.registerAutomatic].
   void registerAllConverters(Iterable<DogConverter> converters) {
     for (var x in converters) {
-      registerConverter(x, false);
+      registerAutomatic(x, false);
     }
-    _changeStreamController.add(true);
+    populateChange();
   }
 
-  void registerAllTreeBaseFactories(
-      Iterable<MapEntry<Type, TreeBaseConverterFactory>> entries) {
-    treeBaseFactories.addAll(Map.fromEntries(entries));
+  void registerTreeBaseFactory(Type type, TreeBaseConverterFactory factory) {
+    _treeBaseFactories[type] = factory;
+  }
+
+  void registerAllTreeBaseFactories(Iterable<MapEntry<Type, TreeBaseConverterFactory>> entries) {
+    _treeBaseFactories.addAll(Map.fromEntries(entries));
   }
 
   DogConverter getTreeConverter(TypeTree tree, [bool allowPolymorphic = true]) {
     var cachedConverter =
-        runtimeTreeConverterCache[tree.qualified.typeArgument];
+        _runtimeTreeConverterCache[tree.qualified.typeArgument];
     if (cachedConverter != null) return cachedConverter;
     var created = _getTreeConverterUncached(tree, allowPolymorphic);
-    runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
+    _runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
     return created;
   }
 
@@ -264,14 +314,60 @@ class DogEngine {
       if (associated != null) return associated;
 
       // Use factory
-      var factory = treeBaseFactories[tree.base.typeArgument];
+      var factory = _treeBaseFactories[tree.base.typeArgument];
       if (factory == null) {
         throw ArgumentError("No type tree converter for ${tree.base} found");
       }
       return factory.getConverter(tree, this, allowPolymorphic);
     }
   }
+  
+  // --- Deprecated methods ---
+  /// Returns the [DogStructure] that is associated with the serial name [name]
+  /// or null if not present.
+  /// 
+  /// Deprecated: Use findStructureBySerialName instead
+  @Deprecated("Use findStructureBySerialName instead")
+  DogStructure? findSerialName(String name) => findStructureBySerialName(name);
 
+  /// Registers a [converter] in this [DogEngine] instance and emits a event to
+  /// the change stream if [emitChangeToStream] is true.
+  /// 
+  /// Deprecated: Use registerAutomatic instead
+  @Deprecated("Use registerAutomatic instead")
+  Future<void> registerConverter(DogConverter converter,
+      [bool emitChangeToStream = true]) async => registerAutomatic(converter, emitChangeToStream);
+
+  /// Returns the [DogStructure] that is associated with the serial name [name]
+  /// or throws an exception if not present.
+  @Deprecated("Perform a null check instead")
+  DogStructure findSerialNameOrThrow(String name) {
+    var structure = findStructureBySerialName(name);
+    if (structure == null) {
+      throw ArgumentError.value(
+          name, "name", "No structure for given serial name found");
+    }
+    return structure;
+  }
+
+  /// Returns the [DogConverter] that is associated with [type] or
+  /// throws an exception if not present.
+  @Deprecated("Perform a null check instead")
+  DogConverter findAssociatedConverterOrThrow(Type type) {
+    var converter = findAssociatedConverter(type);
+    if (converter == null) {
+      if (type == dynamic) {
+        throw Exception("Tried to resolve the converter for 'dynamic'. "
+            "Consider explicitly specifying a type to resolve.");
+      } else {
+        throw ArgumentError.value(
+            type, "type", "No converter for given type found");
+      }
+    }
+    return converter;
+  }
+
+  
   /// Validates the supplied [value] using the [ValidationMode] mapped to the
   /// [value]s runtime type or [type] if specified.
   bool validateObject(dynamic value, [Type? type]) {
@@ -279,6 +375,20 @@ class DogEngine {
     var operation = _validation.forTypeNullable(queryType, this);
     if (operation == null) return true;
     return operation.validate(value, this);
+  }
+  
+  AnnotationResult validateAnnotated(dynamic value, [Type? type]) {
+    var queryType = type ?? value.runtimeType;
+    var operation = _validation.forTypeNullable(queryType, this);
+    if (operation == null) return AnnotationResult.empty();
+    if (operation.validate(value, this)) return AnnotationResult.empty();
+    var result = operation.annotate(value, this).translate(this);
+    if (result.messages.isEmpty) {
+      return AnnotationResult(messages: [
+        AnnotationMessage(id: "no-message", message: "Validation failed")
+      ]).translate(this);
+    }
+    return result;
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the

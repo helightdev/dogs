@@ -21,10 +21,6 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
   DefaultStructureConverter({required super.struct});
 
   @override
-  DogConverter<T> fork(DogEngine forkEngine) =>
-      DogStructureConverterImpl<T>(struct!);
-
-  @override
   OperationMode<T>? resolveOperationMode(Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
       return StructureNativeSerialization(struct!);
@@ -38,45 +34,11 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
   }
 
   @override
-  void registrationCallback(DogEngine engine) {
-    // Run annotation callbacks
-    struct!.annotationsOf<RegistrationHook>().forEach((e) {
-      e.onRegistration(engine, this);
-    });
-    struct!.fields
-        .expand((e) => e.annotationsOf<RegistrationHook>())
-        .forEach((e) {
-      e.onRegistration(engine, this);
-    });
-  }
-
-  @override
   APISchemaObject get output {
     if (struct!.isSynthetic) return APISchemaObject.empty();
     return APISchemaObject()
       ..referenceURI = Uri(path: "/components/schemas/${struct!.serialName}");
   }
-
-  /*
-  @override
-  T copy(T src, DogEngine engine, Map<String, dynamic>? overrides) {
-    if (overrides == null) {
-      return struct!.proxy.instantiate(struct!.proxy.getFieldValues(src));
-    } else {
-      var map = overrides.map(
-          (key, value) => MapEntry(struct!.indexOfFieldName(key)!, value));
-      var values = [];
-      for (var i = 0; i < struct!.fields.length; i++) {
-        if (map.containsKey(i)) {
-          values.add(map[i]);
-        } else {
-          values.add(struct!.proxy.getField(src, i));
-        }
-      }
-      return struct!.proxy.instantiate(values);
-    }
-  }
-   */
 }
 
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {

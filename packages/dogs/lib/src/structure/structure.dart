@@ -20,12 +20,6 @@ abstract class StructureMetadata extends RetainedAnnotation {
   const StructureMetadata();
 }
 
-abstract class RegistrationHook {
-  const RegistrationHook();
-
-  void onRegistration(DogEngine engine, DefaultStructureConverter converter);
-}
-
 abstract class ConverterSupplyingVisitor extends StructureMetadata {
   const ConverterSupplyingVisitor();
 

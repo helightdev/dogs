@@ -78,7 +78,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
     var cached = converterMapping[converter];
     if (cached != null) return cached as T;
     var resolved = converter.resolveOperationMode(modeType);
-    resolved ??= engine.modeFactories[T]?.forConverter(converter, engine);
+    resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
     if (resolved == null) {
       throw Exception(
           "DogConverter $converter doesn't support opmode $modeType");
@@ -91,7 +91,8 @@ class OperationModeCacheEntry<T extends OperationMode> {
   T forType(Type type, DogEngine engine) {
     var cached = typeMapping[type];
     if (cached != null) return cached as T;
-    var converter = engine.findAssociatedConverterOrThrow(type);
+    var converter = engine.findAssociatedConverter(type);
+    if (converter == null) throw Exception("No converter found for type $type");
     var mode = forConverter(converter, engine);
     typeMapping[type] = mode;
     return mode;

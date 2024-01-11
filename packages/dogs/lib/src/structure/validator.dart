@@ -98,7 +98,7 @@ class AnnotationMessage {
   });
 
   AnnotationMessage translate(DogEngine engine) {
-    var translation = engine.annotationTranslations[id];
+    var translation = engine.findAnnotationTranslation(id);
     translation ??= message;
     return AnnotationMessage(
         id: id, message: translation, variables: variables);

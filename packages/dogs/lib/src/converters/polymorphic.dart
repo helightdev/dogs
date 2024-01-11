@@ -43,7 +43,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     if (typeValue == null) {
       return value.map((key, value) => MapEntry(key as String, deserialize(value, engine)));
     }
-    var structure = engine.findSerialName(typeValue)!;
+    var structure = engine.findStructureBySerialName(typeValue)!;
     var operation = engine.modeRegistry.nativeSerialization.forType(structure.typeArgument, engine);
     if (value.length == 2 && value.containsKey(valuePropertyKeyStr)) {
       var simpleValue = value[valuePropertyKeyStr]!;
@@ -68,7 +68,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       }
       throw Exception("No operation found for type $type");
     }
-    var structure = engine.structures[type]!;
+    var structure = engine.findStructureByType(type)!;
     var nativeValue = operation.serialize(value, engine);
     if (nativeValue is Map) {
       nativeValue[typePropertyKeyStr] = structure.serialName;
