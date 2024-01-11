@@ -18,11 +18,11 @@ class DogPersonConverter extends gen.DefaultStructureConverter<gen1.DogPerson> {
                       gen.IterableKind.list, 'tags', false, false, [])
                 ],
                 [],
-                gen.ObjectFactoryStructureProxy<gen1.DogPerson>(_activator, [_name, _age, _tags], _values)));
+                gen.ObjectFactoryStructureProxy<gen1.DogPerson>(_activator, [_$name, _$age, _$tags], _values)));
 
-  static dynamic _name(gen1.DogPerson obj) => obj.name;
-  static dynamic _age(gen1.DogPerson obj) => obj.age;
-  static dynamic _tags(gen1.DogPerson obj) => obj.tags;
+  static dynamic _$name(gen1.DogPerson obj) => obj.name;
+  static dynamic _$age(gen1.DogPerson obj) => obj.age;
+  static dynamic _$tags(gen1.DogPerson obj) => obj.tags;
   static List<dynamic> _values(gen1.DogPerson obj) => [obj.name, obj.age, obj.tags];
   static gen1.DogPerson _activator(List list) {
     return DogPerson(list[0], list[1], list[2].cast<gen0.String>());

@@ -32,6 +32,7 @@ class Address with Dataclass<Address> {
   final String zip;
 
   Address(this.street, this.city, this.zip);
+
 }
 
 class AddressDecorator extends FormColumnDecorator<Address> {

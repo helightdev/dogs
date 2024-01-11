@@ -243,11 +243,19 @@ void testValidation<T extends Dataclass<T>>(List<T> Function() trues, List<T> Fu
     if (!element.isValid) {
       throw Exception("Valid input is marked as invalid ${element}");
     }
+
+    if (dogs.validateAnnotated(element).messages.isNotEmpty) {
+      throw Exception("Valid input has validation messages ${element}");
+    }
   });
 
   falses().forEach((element) {
     if (element.isValid) {
       throw Exception("Invalid input is marked as valid ${element}");
+    }
+
+    if (dogs.validateAnnotated(element).messages.isEmpty) {
+      throw Exception("Invalid input has no validation messages ${element}");
     }
   });
 }

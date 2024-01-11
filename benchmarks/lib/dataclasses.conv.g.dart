@@ -28,12 +28,12 @@ class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter
                       [gen1.polymorphic])
                 ],
                 [],
-                gen.ObjectFactoryStructureProxy<gen2.DogBenchmarkDataclassEntity>(_activator, [_name, _age, _tags, _fields], _values, _hash, _equals)));
+                gen.ObjectFactoryStructureProxy<gen2.DogBenchmarkDataclassEntity>(_activator, [_$name, _$age, _$tags, _$fields], _values, _hash, _equals)));
 
-  static dynamic _name(gen2.DogBenchmarkDataclassEntity obj) => obj.name;
-  static dynamic _age(gen2.DogBenchmarkDataclassEntity obj) => obj.age;
-  static dynamic _tags(gen2.DogBenchmarkDataclassEntity obj) => obj.tags;
-  static dynamic _fields(gen2.DogBenchmarkDataclassEntity obj) => obj.fields;
+  static dynamic _$name(gen2.DogBenchmarkDataclassEntity obj) => obj.name;
+  static dynamic _$age(gen2.DogBenchmarkDataclassEntity obj) => obj.age;
+  static dynamic _$tags(gen2.DogBenchmarkDataclassEntity obj) => obj.tags;
+  static dynamic _$fields(gen2.DogBenchmarkDataclassEntity obj) => obj.fields;
   static List<dynamic> _values(gen2.DogBenchmarkDataclassEntity obj) => [obj.name, obj.age, obj.tags, obj.fields];
   static gen2.DogBenchmarkDataclassEntity _activator(List list) {
     return DogBenchmarkDataclassEntity(list[0], list[1], list[2].cast<gen0.String>(), list[3]);
