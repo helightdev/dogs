@@ -8,6 +8,12 @@ theme:
   features:
     - content.code.copy
     - content.tabs.link
+    - navigation.indexes
+    - navigation.path
+    - navigation.sections
+
+extra_css:
+  - stylesheets/extra.css
 
 nav:
   - index.md
@@ -16,14 +22,18 @@ nav:
   - serialization.md
   - projection.md
   - validation.md
-  - Forms:
-    - forms/start.md
-    - forms/customization.md
-    - forms/translation.md
-  - Advanced:
-    - advanced/structures.md
-    - advanced/annotations.md
-
+  - "Advanced Concepts":
+      - advanced/structures.md
+      - advanced/annotations.md
+  - "Official Packages":
+      - "Forms [dogs_forms]":
+          - forms/index.md
+          - forms/start.md
+          - forms/customization.md
+          - forms/translation.md
+      - "Firestore [dogs_firestore]":
+          - firestore/index.md
+          - firestore/start.md
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
