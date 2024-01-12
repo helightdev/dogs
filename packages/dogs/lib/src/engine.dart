@@ -20,6 +20,8 @@ import 'dart:collection';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:meta/meta.dart';
 
+import 'codec.dart';
+
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
 class DogEngine {
   static DogEngine? _instance;
@@ -467,73 +469,6 @@ class DogEngine {
   }
 }
 
-/// Defines the native object types for a [DogEngine] and
-/// provides converters for them.
-abstract class DogNativeCodec {
-  const DogNativeCodec();
-
-  /// Interop converters for native types.
-  /// These converters are most commonly used by [TreeBaseConverterFactory]s to
-  /// since they require a [DogConverter] for every type.
-  ///
-  /// Since the values of the mapped types are native, this map should only
-  /// contain [NativeRetentionConverter]s or similar converters.
-  Map<Type, DogConverter> get bridgeConverters;
-
-  /// Returns true if the given [serial] is a native type.
-  bool isNative(Type serial);
-
-  /// Converts a native value to a [DogGraphValue].
-  DogGraphValue fromNative(dynamic value);
-}
-
-/// Default implementation of [DogNativeCodec].
-/// Defines the following native types:
-/// - String
-/// - int
-/// - double
-/// - bool
-///
-/// Can also convert [Iterable]s and [Map]s of native types.
-class DefaultNativeCodec extends DogNativeCodec {
-  const DefaultNativeCodec();
-
-  @override
-  DogGraphValue fromNative(value) {
-    if (value == null) return DogNull();
-    if (value is String) return DogString(value);
-    if (value is int) return DogInt(value);
-    if (value is double) return DogDouble(value);
-    if (value is bool) return DogBool(value);
-    if (value is Iterable) {
-      return DogList(value.map((e) => fromNative(e)).toList());
-    }
-    if (value is Map) {
-      return DogMap(value
-          .map((key, value) => MapEntry(fromNative(key), fromNative(value))));
-    }
-
-    throw ArgumentError.value(
-        value, null, "Can't coerce native value to dart object graph");
-  }
-
-  @override
-  bool isNative(Type serial) {
-    return serial == String ||
-        serial == int ||
-        serial == double ||
-        serial == bool;
-  }
-
-  @override
-  Map<Type, DogConverter> get bridgeConverters => const {
-        String: NativeRetentionConverter<String>(),
-        int: NativeRetentionConverter<int>(),
-        double: NativeRetentionConverter<double>(),
-        bool: NativeRetentionConverter<bool>()
-      };
-}
-
 /// Converts a [value] to the given [IterableKind]. If the value is a [Iterable]
 /// implementation, it will converted to the desired [IterableKind]. Trying to
 /// convert singular values to a iterable will result in an exception.
@@ -545,6 +480,28 @@ dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
       return (value as Iterable).toList();
     case IterableKind.set:
       return (value as Iterable).toSet();
+  }
+}
+
+dynamic adjustWithCoercion(dynamic value, IterableKind kind, TypeCapture target, CodecPrimitiveCoercion coercion, String? fieldName) {
+  if (kind == IterableKind.none) {
+    if (target.isAssignable(value)) return value;
+    return coercion.coerce(target, value, fieldName);
+  }
+
+  var typeArg = target.typeArgument;
+  var iterable = (value as Iterable).map((e) {
+    if (target.isAssignable(e)) return e;
+    return coercion.coerce(target, e, fieldName);
+  });
+
+  switch (kind) {
+    case IterableKind.none:
+      throw Exception("Unreachable");
+    case IterableKind.list:
+      return iterable.toList();
+    case IterableKind.set:
+      return iterable.toSet();
   }
 }
 

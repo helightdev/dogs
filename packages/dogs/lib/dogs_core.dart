@@ -45,6 +45,7 @@ export 'src/visitors/null_exclusion.dart';
 export 'src/visitors/string_keyed.dart';
 
 export 'src/converter.dart';
+export 'src/codec.dart';
 export 'src/dataclass.dart';
 export 'src/engine.dart';
 export 'src/extensions.dart';
@@ -54,5 +55,5 @@ export 'src/json.dart';
 export 'src/optional.dart';
 export 'src/projections.dart';
 export 'src/serializer.dart';
-export 'src/visitor.dart';
 export 'src/trees.dart';
+export 'src/visitor.dart';

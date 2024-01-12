@@ -42,6 +42,8 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
       final isOptional = field.optional;
       final proxy = structure.proxy;
       final iterableKind = field.iterableKind;
+      final fieldType = field.type;
+      final serialType = field.serial;
       if (e.converter == null) {
         return (
           serialize: (dynamic v, Map<DogGraphValue, DogGraphValue> map,
@@ -56,13 +58,12 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
               if (isOptional) {
                 args.add(null);
               } else if (iterableKind != IterableKind.none) {
-                args.add(adjustIterable([], field.iterableKind));
+                args.add(adjustWithCoercion([], iterableKind, field.serial, engine.codec.primitiveCoercion, fieldName.asString));
               } else {
-                throw Exception(
-                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                args.add(engine.codec.primitiveCoercion.coerce(serialType, null, fieldName.asString));
               }
             } else {
-              args.add(adjustIterable(mapValue.coerceNative(), iterableKind));
+              args.add(adjustWithCoercion(mapValue.coerceNative(), iterableKind, field.serial, engine.codec.primitiveCoercion, fieldName.asString));
             }
           },
         );

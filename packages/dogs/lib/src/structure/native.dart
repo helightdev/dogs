@@ -42,6 +42,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
       final isOptional = field.optional;
       final proxy = structure.proxy;
       final iterableKind = field.iterableKind;
+      final fieldType = field.type;
+      final serialType = field.serial;
       if (e.converter == null) {
         return (
           serialize: (dynamic v, Map<String, dynamic> map, DogEngine engine) {
@@ -62,13 +64,16 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
               if (isOptional) {
                 args.add(null);
               } else if (iterableKind != IterableKind.none) {
-                args.add(adjustIterable([], field.iterableKind));
+                args.add(adjustWithCoercion([], iterableKind, serialType, engine.codec.primitiveCoercion, fieldName));
               } else {
-                throw Exception(
-                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                args.add(engine.codec.primitiveCoercion.coerce(serialType,null, fieldName));
               }
             } else {
-              args.add(adjustIterable(mapValue, iterableKind));
+              if (fieldType.isAssignable(mapValue)) {
+                args.add(mapValue);
+              } else {
+                args.add(adjustWithCoercion(mapValue, iterableKind,serialType, engine.codec.primitiveCoercion, fieldName));
+              }
             }
           },
         );
