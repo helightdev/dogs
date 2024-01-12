@@ -1,4 +1,4 @@
-# Projection
+# 3. Projection
 
 You can project multiple objects and maps into a single object by using the `project` method.
 

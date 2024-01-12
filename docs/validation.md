@@ -1,4 +1,4 @@
-# Validation
+# 4. Validation
 
 By default, all objects and structures are considered valid. You can change this behavior for
 all your serializable classes by using class and field validators. All validators have to

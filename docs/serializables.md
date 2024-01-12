@@ -1,4 +1,4 @@
-# Serializable Classes
+# 1. Serializable Classes
 
 To create a serializable class, just annotate it with `@serializable` and mixin
 `Dataclass<T>`. The code generator will then generate the required structure definition of

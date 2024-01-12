@@ -1,4 +1,4 @@
-# Serialization
+# 2. Object Serialization
 
 You can use the global variable `dogs` to easily access any dogs related functionality.
 All default encoders and decoders expose extension methods on the `DogEngine` class

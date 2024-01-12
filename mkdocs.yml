@@ -18,10 +18,11 @@ extra_css:
 nav:
   - index.md
   - installation.md
-  - serializables.md
-  - serialization.md
-  - projection.md
-  - validation.md
+  - "Getting Started":
+      - serializables.md
+      - serialization.md
+      - projection.md
+      - validation.md
   - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md
