@@ -39,6 +39,10 @@ class ModelA with Dataclass<ModelA> implements ABInterface {
   factory ModelA.variant1() {
     return ModelA("_", 100, -420.420, true, DateTime(2023), Note.variant1());
   }
+
+  factory ModelA.variant2() {
+    return ModelA("", 100, -420.420, true, DateTime(2023), Note.variant1());
+  }
 }
 
 @serializable
