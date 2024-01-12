@@ -1,3 +1,17 @@
+## 7.2.0
+
+ - **REFACTOR**: use the new mode factories in operation mode resolution.
+ - **REFACTOR**: use final more often, add some docs along the way.
+ - **REFACTOR**: make fields final and add some docs.
+ - **REFACTOR**: add EnumConverter mixin for better readability when used in external packages.
+ - **FIX**: replace the wrongly used typeMapping with converterMapping.
+ - **FEAT**: implement native coercion in codec.
+ - **FEAT**: cleanup DogEngine, fully implement child converters.
+ - **FEAT**: add opmode factories for extending converter opmodes externally.
+ - **FEAT**: add annotations for validators in preparation for dogs_forms.
+ - **DOCS**: add missing documentation.
+ - **DOCS**: add docs comment.
+
 ## 7.1.1
 
  - **FIX**: remove unused parameter.

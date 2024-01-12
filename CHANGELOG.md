@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-01-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_built` - `v1.0.7`](#dogs_built---v107)
+ - [`dogs_core` - `v7.2.0`](#dogs_core---v720)
+ - [`dogs_firestore` - `v0.0.1`](#dogs_firestore---v001)
+ - [`dogs_forms` - `v0.0.1`](#dogs_forms---v001)
+ - [`dogs_generator` - `v5.0.11`](#dogs_generator---v5011)
+ - [`dogs_yaml` - `v2.0.25`](#dogs_yaml---v2025)
+ - [`dogs_cbor` - `v2.0.25`](#dogs_cbor---v2025)
+ - [`dogs_toml` - `v2.0.25`](#dogs_toml---v2025)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_cbor` - `v2.0.25`
+ - `dogs_toml` - `v2.0.25`
+
+---
+
+#### `dogs_built` - `v1.0.7`
+
+ - **REFACTOR**: use new renamed methods.
+
+#### `dogs_core` - `v7.2.0`
+
+ - **REFACTOR**: use the new mode factories in operation mode resolution.
+ - **REFACTOR**: use final more often, add some docs along the way.
+ - **REFACTOR**: make fields final and add some docs.
+ - **REFACTOR**: add EnumConverter mixin for better readability when used in external packages.
+ - **FIX**: replace the wrongly used typeMapping with converterMapping.
+ - **FEAT**: implement native coercion in codec.
+ - **FEAT**: cleanup DogEngine, fully implement child converters.
+ - **FEAT**: add opmode factories for extending converter opmodes externally.
+ - **FEAT**: add annotations for validators in preparation for dogs_forms.
+ - **DOCS**: add missing documentation.
+ - **DOCS**: add docs comment.
+
+#### `dogs_firestore` - `v0.0.1`
+
+ - **FEAT**: changes, queries and snapshot system for document reference.
+ - **FEAT**: first working version of dogs_firestore 🎉.
+
+#### `dogs_forms` - `v0.0.1`
+
+ - **REFACTOR**: use custom preference.
+ - **FEAT**: add optional factory and a whole lot of reworks.
+ - **FEAT**: add hint and prefix, suffix fields.
+ - **FEAT**: add mechanism for precaching form field data that is then.
+ - **FEAT**: add first working version of dogs_forms 🎉.
+
+#### `dogs_generator` - `v5.0.11`
+
+ - **REFACTOR**: replace deprecated isDynamic with is DynamicType.
+
+#### `dogs_yaml` - `v2.0.25`
+
+ - **FIX**: Handle empty string for yaml serializer and add test case.
+
+
 ## 2023-11-23
 
 ### Changes

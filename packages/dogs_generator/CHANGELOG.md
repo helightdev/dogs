@@ -1,3 +1,7 @@
+## 5.0.11
+
+ - **REFACTOR**: replace deprecated isDynamic with is DynamicType.
+
 ## 5.0.10
 
  - Update a dependency to the latest release.
