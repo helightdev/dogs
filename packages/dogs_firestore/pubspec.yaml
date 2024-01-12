@@ -1,7 +1,7 @@
 name: dogs_firestore
-description: "A new Flutter package project."
+description: "Support for using dogs object mapper as an odm for firestore."
 version: 0.0.1
-homepage:
+homepage: https://dogs.helight.dev/
 
 environment:
   sdk: '>=3.2.0-210.4.beta <4.0.0'

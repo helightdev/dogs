@@ -1,7 +1,7 @@
 name: dogs_forms
-description: "A new Flutter package project."
+description: "Support for creating form_builder forms for DOGs structures."
 version: 0.0.1
-homepage:
+homepage: https://dogs.helight.dev/
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
