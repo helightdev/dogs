@@ -1,3 +1,8 @@
+## 0.0.2
+
+ - **FIX**: rename example package to not have the same name as a dependency.
+ - **FEAT**: add more query methods and $store.
+
 ## 0.0.1
 
  - **FEAT**: changes, queries and snapshot system for document reference.

@@ -1,6 +1,6 @@
 name: dogs_firestore
 description: "Support for using dogs object mapper as an odm for firestore."
-version: 0.0.1
+version: 0.0.2
 homepage: https://dogs.helight.dev/
 
 environment:
