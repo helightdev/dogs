@@ -18,11 +18,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_firestore/dogs_firestore.dart';
 import 'package:dogs_firestore/src/engine.dart';
+import 'package:flutter/foundation.dart';
+
+/// If this is set to true, the latest snapshot of a document will be cached and reused.
+/// This is useful if you want to reduce the amount of reads to Firestore, but it will increase
+/// the amount of memory used by the application and has also slightly higher performance costs.
+bool kConserveSnapshot = true;
 
 /// This drop-in replacement for [Dataclass] adds support for common Firestore operations and allows
 /// access to the Firestore document ID.
 abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
-
   /// This is the Firestore ID of the document. Will be automatically set when storing a new
   /// document, but can also be set manually.
   String? id;
@@ -31,6 +36,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
   /// Will be automatically set by the framework when reading from Firestore, otherwise must
   /// be set manually using [withParent]. Do not modify this field manually.
   String? _injectedPath;
+
+  DocumentSnapshot? _latestSnapshot;
 
   CollectionReference<T> get selfCollection {
     return DogFirestoreEngine.instance.collection<T>(_injectedPath);
@@ -42,14 +49,45 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
     return reference;
   }
 
+  /// Returns a future of the latest snapshot of this document.
+  /// This is purely for use with queries, and should not be used for anything else.
+  ///
+  /// **Note that this feature is not optimized for performance, but for a lower amount of reads to
+  /// reduce Firestore costs.**
+  Future<DocumentSnapshot> snapshot() async {
+    var latestSnapshot = _latestSnapshot;
+    if (latestSnapshot != null && latestSnapshot.exists && latestSnapshot.id == id) {
+      // This object is injected, we need to deserialize it again to compare it
+      if (latestSnapshot is DocumentSnapshot<Map<String, dynamic>>) {
+        var capableEngine = DogFirestoreEngine.instance.engine;
+        var decoded = DogFirestoreEngine.instance.mode.forType(T, capableEngine).deserialize(latestSnapshot, capableEngine);
+        if (decoded == this) return latestSnapshot; // Compare if the object is the same
+        // This object is not injected, we can compare it directly
+      } else if (latestSnapshot.data() == this) {
+        return latestSnapshot;
+      }
+    }
+    if (kDebugMode) print("Snapshot cache miss for $id");
+
+    // No similar snapshot exists - This is either a new object, or the object has been modified
+    var currentSnapshot = selfDocument.get();
+    _latestSnapshot = await currentSnapshot;
+    return currentSnapshot;
+  }
+
+  /// Returns a stream of the document changes.
+  /// This stream will emit the current document immediately, and then emit any changes to the document.
+  Stream<T?> get documentChanges => selfDocument.snapshots().map((event) => event.data());
+
   CollectionReference<R> getSubCollection<R extends FirestoreEntity<R>>() {
-    assert(DogFirestoreEngine.instance.checkSubcollection<T,R>());
+    assert(DogFirestoreEngine.instance.checkSubcollection<T, R>());
     var subcollectionName = DogFirestoreEngine.instance.collectionName<R>();
     return selfCollection.doc(id).collection(subcollectionName).withStructure<R>();
   }
 
+  /// Sets the parent collection of this document. This is required for subcollections.
   T withParent<R extends FirestoreEntity<R>>(R parent) {
-    assert(DogFirestoreEngine.instance.checkSubcollection<R,T>());
+    assert(DogFirestoreEngine.instance.checkSubcollection<R, T>());
     _injectedPath = "${parent.selfDocument.path}/${DogFirestoreEngine.instance.collectionName<T>()}";
     return this as T;
   }
@@ -59,7 +97,9 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
   /// you don't have to wait for the Future to complete to get the ID.
   Future<T> save() async {
     if (_injectedPath == null) {
-      assert(DogFirestoreEngine.instance.checkRootCollection<T>(), "This entity is not a root "
+      assert(
+          DogFirestoreEngine.instance.checkRootCollection<T>(),
+          "This entity is not a root "
           "collection, and no parent has been set. Use withParent() to set the parent.");
     }
     var document = selfCollection.doc(id);
@@ -81,19 +121,52 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
     return snapshot.exists;
   }
 
+  Future<List<R>> querySubcollection<R extends FirestoreEntity<R>>({Query<R> Function(Query<R> query)? query, R? startAfter, R? endBefore, R? startAt, R? endAt}) async {
+    var subCollection = getSubCollection<R>();
+    Query<R> q = subCollection;
+    // Cursor start
+    if (startAfter != null) {
+      q = q.startAfterDocument(await startAfter.snapshot());
+    } else if (startAt != null) {
+      q = q.startAtDocument(await startAt.snapshot());
+    }
+
+    // Cursor end
+    if (endBefore != null) {
+      q = q.endBeforeDocument(await endBefore.snapshot());
+    } else if (endAt != null) {
+      q = q.endAtDocument(await endAt.snapshot());
+    }
+
+    if (query != null) {
+      q = query(q);
+    }
+    var snapshot = await q.get();
+    return snapshot.docs.map((e) => e.data()).toList();
+  }
+
   /// Gets the document from Firestore. If the document does not exist, this method returns null.
-  static Future<T?> get<T extends FirestoreEntity<T>>(String id) async {
+  static Future<T?> get<T extends FirestoreEntity<T>>(String id, {T Function()? orCreate}) async {
     assert(DogFirestoreEngine.instance.checkRootCollection<T>());
     var documentReference = DogFirestoreEngine.instance.collection<T>().doc(id);
     var snapshot = await documentReference.get();
     if (snapshot.exists) {
       return snapshot.data()!;
     } else {
+      if (orCreate != null) {
+        var entity = orCreate();
+        entity.id = id;
+        return await entity.save();
+      }
       return null;
     }
   }
 }
 
-void setInjectedPath(FirestoreEntity entity, String path) {
-  entity._injectedPath = path;
+void setInjectedSnapshot(FirestoreEntity entity, DocumentSnapshot snapshot) {
+  var id = snapshot.id;
+  var path = snapshot.reference.path;
+  entity.id = id;
+  entity._injectedPath = path.substring(0, path.length - id.length - 1);
+  if (kConserveSnapshot) entity._latestSnapshot = snapshot;
 }

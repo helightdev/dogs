@@ -20,9 +20,10 @@ void main() async {
   );
 
 
-  var town = Town("Amberg", "de");
-  await town.delete();
-  await town.save();
+  var town = await FirestoreEntity.get<Town>("amberg",
+      orCreate: () => Town("Amberg", "de")
+  );
+  town!;
 
   var person = Person("Christoph", 20, DateTime(11, 11, 2003), Timestamp.now(), GeoPoint(51.165691, 10.451526));
   await person.withParent(town).save();
@@ -30,6 +31,12 @@ void main() async {
   var subCollection = town.getSubCollection<Person>();
   var resolved = await subCollection.doc(person.id).get();
   print("Got person with id ${resolved.data()?.id} at path ${resolved.data()?.selfCollection.path}: ${resolved.data()}");
+
+  var cursor = resolved.data();
+  town.querySubcollection<Person>(
+    startAt: cursor,
+    query: (query) => query.where("timestamp", isLessThanOrEqualTo: Timestamp.now()),
+  ).then((value) => print("Got ${value.length} persons: $value"));
 
   // This app doesn't do anything
   runApp(const MyApp());

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_firestore/src/engine.dart';
 
 export 'src/annotations.dart';
-export 'src/entity.dart' hide setInjectedPath;
+export 'src/entity.dart' hide setInjectedSnapshot;
 export 'src/opmode.dart';
 export 'src/interop.dart';
 

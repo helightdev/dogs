@@ -35,10 +35,7 @@ class DefaultFirestoreDocumentOpmode<T> extends FirestoreDocumentOpmode<T> {
   T deserialize(DocumentSnapshot<Map<String, dynamic>> snapshot, DogEngine engine) {
     var obj = engine.convertObjectFromNative(snapshot.data() ?? <String,dynamic>{}, T);
     if (obj is FirestoreEntity) {
-      var id = snapshot.id;
-      var path = snapshot.reference.path;
-      obj.id = id;
-      setInjectedPath(obj, path.substring(0, path.length - id.length - 1));
+      setInjectedSnapshot(obj, snapshot);
     }
     return obj;
   }
