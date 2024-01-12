@@ -26,17 +26,26 @@ void main() async {
   town!;
 
   var person = Person("Christoph", 20, DateTime(11, 11, 2003), Timestamp.now(), GeoPoint(51.165691, 10.451526));
-  await person.withParent(town).save();
+  await town.$store(person);
   print("Saved person with id ${person.id} at path ${person.selfCollection.path}");
   var subCollection = town.getSubCollection<Person>();
   var resolved = await subCollection.doc(person.id).get();
   print("Got person with id ${resolved.data()?.id} at path ${resolved.data()?.selfCollection.path}: ${resolved.data()}");
 
   var cursor = resolved.data();
-  town.querySubcollection<Person>(
+  await town.$query<Person>(
     startAt: cursor,
-    query: (query) => query.where("timestamp", isLessThanOrEqualTo: Timestamp.now()),
+    query: (query) => query
+        .orderBy("timestamp", descending: true)
+        .where("timestamp", isLessThanOrEqualTo: Timestamp.now()),
   ).then((value) => print("Got ${value.length} persons: $value"));
+  await town.$find<Person>(
+    query: (query) => query
+        .orderBy("timestamp", descending: true)
+        .where("timestamp", isLessThanOrEqualTo: Timestamp.now()),
+  ).then((value) => print("Got person: $value"));
+  await town.$get<Person>(person.id!)
+      .then((value) => print("Got person: $value"));
 
   // This app doesn't do anything
   runApp(const MyApp());

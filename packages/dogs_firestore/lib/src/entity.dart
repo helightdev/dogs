@@ -37,12 +37,15 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
   /// be set manually using [withParent]. Do not modify this field manually.
   String? _injectedPath;
 
+  /// This is the latest snapshot of this document, used for cursor queries.
   DocumentSnapshot? _latestSnapshot;
 
+  /// Returns the collection reference of this document.
   CollectionReference<T> get selfCollection {
     return DogFirestoreEngine.instance.collection<T>(_injectedPath);
   }
 
+  /// Returns the document reference of this document.
   DocumentReference<T> get selfDocument {
     var reference = selfCollection.doc(id);
     id = reference.id; // Set the auto-generated ID that is created by using a null ID
@@ -108,6 +111,21 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
     return this as T;
   }
 
+  /// Updates the document in Firestore. If the document does not exist, this method does nothing.
+  /// Warning: This method takes normal firestore data and does not use converters.
+  Future<T> update(Map<String, dynamic> data) async {
+    if (_injectedPath == null) {
+      assert(
+          DogFirestoreEngine.instance.checkRootCollection<T>(),
+          "This entity is not a root "
+          "collection, and no parent has been set. Use withParent() to set the parent.");
+    }
+    var document = selfCollection.doc(id);
+    id = document.id; // Set the auto-generated ID that is created by using a null ID
+    await document.update(data);
+    return this as T;
+  }
+
   /// Deletes the document from Firestore. If the document does not exist, this method does nothing.
   Future delete() async {
     var documentReference = selfCollection.doc(id);
@@ -121,9 +139,15 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
     return snapshot.exists;
   }
 
-  Future<List<R>> querySubcollection<R extends FirestoreEntity<R>>({Query<R> Function(Query<R> query)? query, R? startAfter, R? endBefore, R? startAt, R? endAt}) async {
+  // <editor-fold desc="Instance DAO methods">
+  /// Returns all [R] entities in the corresponding subcollection of this entity matching the [query].
+  Future<List<R>> $query<R extends FirestoreEntity<R>>({Query<R> Function(Query<R> query)? query, R? startAfter, R? endBefore, R? startAt, R? endAt}) async {
     var subCollection = getSubCollection<R>();
     Query<R> q = subCollection;
+    if (query != null) {
+      q = query(q);
+    }
+
     // Cursor start
     if (startAfter != null) {
       q = q.startAfterDocument(await startAfter.snapshot());
@@ -137,14 +161,47 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
     } else if (endAt != null) {
       q = q.endAtDocument(await endAt.snapshot());
     }
-
-    if (query != null) {
-      q = query(q);
-    }
     var snapshot = await q.get();
     return snapshot.docs.map((e) => e.data()).toList();
   }
 
+  /// Finds the first [R] entity in the corresponding subcollection of this entity matching the [query].
+  /// Returns null if no entity was found.
+  Future<R?> $find<R extends FirestoreEntity<R>>({Query<R> Function(Query<R> query)? query}) async {
+    var subCollection = getSubCollection<R>();
+    Query<R> q = subCollection;
+    if (query != null) {
+      q = query(q);
+    }
+    var snapshot = await q.get();
+    if (snapshot.size == 0) return null;
+    return snapshot.docs.first.data();
+  }
+
+  Future<R?> $get<R extends FirestoreEntity<R>>(String id, {R Function()? orCreate}) async {
+    assert(DogFirestoreEngine.instance.checkSubcollection<T, R>());
+    var documentReference = getSubCollection<R>().doc(id);
+    var snapshot = await documentReference.get();
+    if (snapshot.exists) {
+      return snapshot.data()!;
+    } else {
+      if (orCreate != null) {
+        var entity = orCreate();
+        entity.id = id;
+        entity.withParent(this as T);
+        return await entity.save();
+      }
+      return null;
+    }
+  }
+
+  /// Stores an [R] entity which in the corresponding subcollection of this entity.
+  Future<R?> $store<R extends FirestoreEntity<R>>(R entity) async {
+    return await entity.withParent(this as T).save();
+  }
+  // </editor-fold>
+
+  // <editor-fold desc="Static DAO methods">
   /// Gets the document from Firestore. If the document does not exist, this method returns null.
   static Future<T?> get<T extends FirestoreEntity<T>>(String id, {T Function()? orCreate}) async {
     assert(DogFirestoreEngine.instance.checkRootCollection<T>());
@@ -161,6 +218,43 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
       return null;
     }
   }
+
+  static Future<List<T>> query<T extends FirestoreEntity<T>>({Query<T> Function(Query<T> query)? query, T? startAfter, T? endBefore, T? startAt, T? endAt}) async {
+    var collection = DogFirestoreEngine.instance.collection<T>();
+    Query<T> q = collection;
+    if (query != null) {
+      q = query(q);
+    }
+
+    // Cursor start
+    if (startAfter != null) {
+      q = q.startAfterDocument(await startAfter.snapshot());
+    } else if (startAt != null) {
+      q = q.startAtDocument(await startAt.snapshot());
+    }
+
+    // Cursor end
+    if (endBefore != null) {
+      q = q.endBeforeDocument(await endBefore.snapshot());
+    } else if (endAt != null) {
+      q = q.endAtDocument(await endAt.snapshot());
+    }
+
+    var snapshot = await q.get();
+    return snapshot.docs.map((e) => e.data()).toList();
+  }
+
+  static Future<T?> find<T extends FirestoreEntity<T>>({Query<T> Function(Query<T> query)? query}) async {
+    var collection = DogFirestoreEngine.instance.collection<T>();
+    Query<T> q = collection;
+    if (query != null) {
+      q = query(q);
+    }
+    var snapshot = await q.get();
+    if (snapshot.size == 0) return null;
+    return snapshot.docs.first.data();
+  }
+  // </editor-fold>
 }
 
 void setInjectedSnapshot(FirestoreEntity entity, DocumentSnapshot snapshot) {
