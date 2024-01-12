@@ -6,68 +6,55 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:json2yaml/json2yaml.dart';
 import 'package:yaml/yaml.dart';
 
-class DogYamlSerializer extends DogSerializer {
-
-  final codec = DefaultNativeCodec();
-
+class YamlCoercion implements CodecPrimitiveCoercion {
   @override
-  DogGraphValue deserialize(value) {
-    var decoded = loadYaml(value);
-    return codec.fromNative(decoded);
+  dynamic coerce(TypeCapture expected,value, String? fieldName) {
+    if (expected.typeArgument == String && value == null) return "";
+    if (expected.typeArgument == double && value is int) return value.toDouble();
+
+    throw ArgumentError.value(value, fieldName, "Can't coerce $value to expected $expected");
   }
 
-  @override
-  dynamic serialize(DogGraphValue value) {
-    var map = value.asMap!;
-    var visitor = StringKeyedMapVisitor();
-    var skm = visitor.visitFinal(map);
-    return json2yaml(skm);
-  }
 }
 
-class StringMapImpl with MapMixin<String, dynamic> {
-  final Map<dynamic, dynamic> delegate;
-  StringMapImpl(this.delegate);
+class YamlCodec extends DefaultNativeCodec {
+  const YamlCodec();
 
   @override
-  operator [](Object? key) {
-    return delegate[key];
+  CodecPrimitiveCoercion get primitiveCoercion => YamlCoercion();
+}
+
+class YamlSerializer {
+
+  late DogEngine engine;
+
+  void init(DogEngine engine) {
+    this.engine = engine.fork(codec: YamlCodec());
   }
 
-  @override
-  void operator []=(String key, value) {
-    delegate[key] = value;
+  dynamic deserialize(value, Type type) {
+    var decoded = loadYaml(value);
+    return engine.convertObjectFromNative(decoded, type);
   }
 
-  @override
-  void clear() {
-    delegate.clear();
-  }
-
-  @override
-  Iterable<String> get keys => delegate.keys.cast<String>();
-
-  @override
-  remove(Object? key) {
-    delegate.remove(key);
+  dynamic serialize(value, Type type) {
+    var map = engine.convertObjectToNative(value, type);
+    return json2yaml(map, yamlStyle: YamlStyle.generic);
   }
 }
 
 extension DogYamlExtension on DogEngine {
-  static final _yamlSerializer = DogYamlSerializer();
+  static YamlSerializer? _yamlSerializer;
 
-  DogYamlSerializer get yamlSerializer => _yamlSerializer;
+  YamlSerializer get yamlSerializer {
+    _yamlSerializer ??= YamlSerializer()..init(this);
+    return _yamlSerializer!;
+  }
 
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  String yamlEncode<T>(T value) {
-    var graph = convertObjectToGraph(value, T);
-    return _yamlSerializer.serialize(graph);
-  }
+  String yamlEncode<T>(T value) => yamlSerializer.serialize(value, T);
 
   /// Decodes this [encoded] json to an [T] instance,
   /// using the [DogConverter] associated with [T].
-  T yamlDecode<T>(String encoded) {
-    var graph = _yamlSerializer.deserialize(encoded);
-    return convertObjectFromGraph(graph, T);
-  }
+  T yamlDecode<T>(String encoded) => yamlSerializer.deserialize(encoded, T);
 }

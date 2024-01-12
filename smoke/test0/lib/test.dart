@@ -34,7 +34,7 @@ Future main() async {
     testProjection();
     print("-- Projection test passed");
     print("All tests passed");
-  } catch(ex,st) {
+  } catch (ex, st) {
     print("$ex: $st");
     exit(1);
   }
@@ -43,9 +43,9 @@ Future main() async {
 void testProjection() {
   var result = dogs.project<Note>(Note.variant0(), {
     "tags": {"new"},
-  }, [{
-    "content": "AABBCC"
-  }]);
+  }, [
+    {"content": "AABBCC"}
+  ]);
   if (result.title != Note.variant0().title) throw Exception("Object to FieldMap doesn't work");
   if (result.tags.first != "new") throw Exception("Properties don't work");
   if (result.content != "AABBCC") throw Exception("Iterables don't work");
@@ -54,6 +54,7 @@ void testProjection() {
 void testOperations() {
   testOperation(ModelA, ModelA.variant0(), deepEquality.equals);
   testOperation(ModelA, ModelA.variant1(), deepEquality.equals);
+  testOperation(ModelA, ModelA.variant2(), deepEquality.equals);
   testOperation(ModelB, ModelB.variant0(), deepEquality.equals);
   testOperation(ModelB, ModelB.variant1(), deepEquality.equals);
   testOperation(ModelC, ModelC.variant0(), deepEquality.equals);
@@ -161,6 +162,7 @@ void testConformities() {
 
 void testCbor() {
   testEncoding(dogs.cborSerializer, ModelA.variant0, ModelA.variant1);
+  testEncoding(dogs.cborSerializer, ModelA.variant1, ModelA.variant2);
   testEncoding(dogs.cborSerializer, ModelB.variant0, ModelB.variant1);
   testEncoding(dogs.cborSerializer, ModelC.variant0, ModelC.variant1);
   testEncoding(dogs.cborSerializer, ModelD.variant0, ModelD.variant1);
@@ -170,17 +172,22 @@ void testCbor() {
 }
 
 void testYaml() {
-  testEncoding(dogs.yamlSerializer, ModelA.variant0, ModelA.variant1);
-  testEncoding(dogs.yamlSerializer, ModelB.variant0, ModelB.variant1);
-  testEncoding(dogs.yamlSerializer, ModelC.variant0, ModelC.variant1);
-  testEncoding(dogs.yamlSerializer, ModelD.variant0, ModelD.variant1);
-  testEncoding(dogs.yamlSerializer, ModelE.variant0, ModelE.variant1);
-  testEncoding(dogs.yamlSerializer, ModelF.variant0, ModelF.variant1);
-  testEncoding(dogs.yamlSerializer, Note.variant0, Note.variant1);
+  var serializer = dogs.yamlSerializer;
+  var decode = (v, t) => serializer.deserialize(v, t);
+  var encode = (v, t) => serializer.serialize(v, t);
+  testNewEncoding<ModelA>(encode, decode, ModelA.variant0, ModelA.variant1);
+  testNewEncoding<ModelA>(encode, decode, ModelA.variant1, ModelA.variant2);
+  testNewEncoding<ModelB>(encode, decode, ModelB.variant0, ModelB.variant1);
+  testNewEncoding<ModelC>(encode, decode, ModelC.variant0, ModelC.variant1);
+  testNewEncoding<ModelD>(encode, decode, ModelD.variant0, ModelD.variant1);
+  testNewEncoding<ModelE>(encode, decode, ModelE.variant0, ModelE.variant1);
+  testNewEncoding<ModelF>(encode, decode, ModelF.variant0, ModelF.variant1);
+  testNewEncoding<Note>(encode, decode, Note.variant0, Note.variant1);
 }
 
 void testToml() {
   testEncoding(dogs.tomlSerializer, ModelA.variant0, ModelA.variant1);
+  testEncoding(dogs.tomlSerializer, ModelA.variant1, ModelA.variant2);
   testEncoding(dogs.tomlSerializer, ModelB.variant0, ModelB.variant1);
   testEncoding(dogs.tomlSerializer, ModelC.variant0, ModelC.variant1);
   testEncoding(dogs.tomlSerializer, ModelD.variant0, ModelD.variant1);
@@ -233,6 +240,20 @@ void testEncoding<T>(DogSerializer serializer, T Function() a, T Function() b) {
   var gdb = serializer.deserialize(eb);
   var da = dogs.convertObjectFromGraph(gda, T);
   var db = dogs.convertObjectFromGraph(gdb, T);
+  if (va1 != da || va0 != da) throw Exception("Non-pure serialization.md");
+  if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization.md");
+  if (ea == eb) throw Exception("Wrong equality");
+}
+
+void testNewEncoding<T>(dynamic Function(dynamic, Type) encode, dynamic Function(dynamic, Type) decode, T Function() a, T Function() b) {
+  var va0 = a();
+  var va1 = a();
+  var vb0 = b();
+  var vb1 = b();
+  var ea = encode(va0, T);
+  var eb = encode(vb0, T);
+  var da = decode(ea, T);
+  var db = decode(eb, T);
   if (va1 != da || va0 != da) throw Exception("Non-pure serialization.md");
   if (vb1 != db || vb0 != db) throw Exception("Non-pure serialization.md");
   if (ea == eb) throw Exception("Wrong equality");
