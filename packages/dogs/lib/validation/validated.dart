@@ -31,7 +31,6 @@ class Validated extends StructureMetadata implements FieldValidator {
   /// your container.
   const Validated();
 
-
   static const String messageId = "validated";
 
   @override
@@ -69,9 +68,9 @@ class Validated extends StructureMetadata implements FieldValidator {
   AnnotationResult annotate(cached, value, DogEngine engine) {
     var isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
-    return AnnotationResult(
-        messages: [AnnotationMessage(id: messageId, message: "Invalid subtree.")]
-    );
+    return AnnotationResult(messages: [
+      AnnotationMessage(id: messageId, message: "Invalid subtree.")
+    ]);
   }
 }
 

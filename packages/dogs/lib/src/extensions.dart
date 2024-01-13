@@ -117,7 +117,6 @@ extension DogEngineShortcuts on DogEngine {
 }
 
 extension StructureExtensions on DogStructure {
-
   /// Returns all field getters for this structure.
   List<dynamic Function(dynamic)> get getters => List.generate(
       fields.length, (index) => (obj) => proxy.getField(obj, index));

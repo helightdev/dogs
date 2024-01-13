@@ -71,9 +71,11 @@ class LengthRange extends StructureMetadata
   AnnotationResult annotate(cached, value, DogEngine engine) {
     var isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
-    return AnnotationResult(
-        messages: [AnnotationMessage(id: messageId, message: "Must be between %min% and %max% characters long.")]
-    ).withVariables({
+    return AnnotationResult(messages: [
+      AnnotationMessage(
+          id: messageId,
+          message: "Must be between %min% and %max% characters long.")
+    ]).withVariables({
       "min": min.toString(),
       "max": max.toString(),
     });

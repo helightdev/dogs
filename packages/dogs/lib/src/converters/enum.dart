@@ -41,18 +41,16 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
       ..title = T.toString()
       ..enumerated = values;
   }
+
   @override
   T? valueFromString(String value) => fromStr(value)!;
 
   @override
   String valueToString(T? value) => toStr(value);
-
 }
 
 mixin EnumConverter<T extends Enum> on DogConverter<T> {
-  
   List<String> get values;
   T? valueFromString(String value);
   String valueToString(T? value);
-  
 }

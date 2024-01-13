@@ -64,15 +64,18 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
               if (isOptional) {
                 args.add(null);
               } else if (iterableKind != IterableKind.none) {
-                args.add(adjustWithCoercion([], iterableKind, serialType, engine.codec.primitiveCoercion, fieldName));
+                args.add(adjustWithCoercion([], iterableKind, serialType,
+                    engine.codec.primitiveCoercion, fieldName));
               } else {
-                args.add(engine.codec.primitiveCoercion.coerce(serialType,null, fieldName));
+                args.add(engine.codec.primitiveCoercion
+                    .coerce(serialType, null, fieldName));
               }
             } else {
               if (fieldType.isAssignable(mapValue)) {
                 args.add(mapValue);
               } else {
-                args.add(adjustWithCoercion(mapValue, iterableKind,serialType, engine.codec.primitiveCoercion, fieldName));
+                args.add(adjustWithCoercion(mapValue, iterableKind, serialType,
+                    engine.codec.primitiveCoercion, fieldName));
               }
             }
           },

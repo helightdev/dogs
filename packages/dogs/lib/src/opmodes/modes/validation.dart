@@ -22,7 +22,8 @@ abstract class ValidationMode<T> implements OperationMode<T> {
 
   static ValidationMode<T> create<T, IR>(
       {IR? Function(DogEngine engine)? initializer,
-        AnnotationResult Function(T value, DogEngine engine, IR? cached)? annotator,
+      AnnotationResult Function(T value, DogEngine engine, IR? cached)?
+          annotator,
       required bool Function(T value, DogEngine engine, IR? cached)
           validator}) {
     IR? Function(DogEngine) initializerFunc =
@@ -37,7 +38,8 @@ class _InlineValidationMode<T, IR> extends ValidationMode<T>
     with TypeCaptureMixin<T> {
   static IR? _noInit<IR>(DogEngine engine) => null;
   static AnnotationResult _noAnnotate<T, IR>(
-          T value, DogEngine engine, IR? cached) => AnnotationResult.empty();
+          T value, DogEngine engine, IR? cached) =>
+      AnnotationResult.empty();
 
   IR? Function(DogEngine engine) initializer;
   bool Function(T value, DogEngine engine, IR? cached) validator;
@@ -56,5 +58,6 @@ class _InlineValidationMode<T, IR> extends ValidationMode<T>
   bool validate(T value, DogEngine engine) => validator(value, engine, _ir);
 
   @override
-  AnnotationResult annotate(T value, DogEngine engine) => annotator(value, engine, _ir);
+  AnnotationResult annotate(T value, DogEngine engine) =>
+      annotator(value, engine, _ir);
 }

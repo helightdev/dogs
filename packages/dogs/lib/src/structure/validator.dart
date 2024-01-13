@@ -60,17 +60,19 @@ class AnnotationResult {
   }
 
   AnnotationResult withVariables(Map<String, String> variables) {
-    return AnnotationResult(messages: messages.map((e) => e.withVariables(variables)).toList());
+    return AnnotationResult(
+        messages: messages.map((e) => e.withVariables(variables)).toList());
   }
 
   AnnotationResult withTarget(String target) {
-    return AnnotationResult(messages: messages.map((e) => e.withTarget(target)).toList());
+    return AnnotationResult(
+        messages: messages.map((e) => e.withTarget(target)).toList());
   }
-  
+
   List<String> buildMessages() {
     return messages.map((e) => e.buildMessage()).toList();
   }
-  
+
   /// Creates an empty [AnnotationResult].
   AnnotationResult.empty() : messages = const [];
 
@@ -83,7 +85,7 @@ class AnnotationResult {
 class AnnotationMessage {
   /// Unique identifier of the message.
   final String id;
-  
+
   final String? target;
 
   /// The message itself.
@@ -111,9 +113,10 @@ class AnnotationMessage {
   AnnotationMessage withMessage(String message) {
     return AnnotationMessage(id: id, message: message, variables: variables);
   }
-  
+
   AnnotationMessage withTarget(String target) {
-    return AnnotationMessage(id: id, message: message, variables: variables, target: target);
+    return AnnotationMessage(
+        id: id, message: message, variables: variables, target: target);
   }
 
   String buildMessage() {
@@ -190,8 +193,9 @@ class StructureValidation<T> extends ValidationMode<T>
       var fieldValue = structure.proxy.getField(value, pair.key);
       var fieldName = structure.fields[pair.key].name;
       return AnnotationResult.combine(pair.value
-          .map((e) => e.key.annotate(e.value, fieldValue, engine))
-          .toList()).withTarget(fieldName);
+              .map((e) => e.key.annotate(e.value, fieldValue, engine))
+              .toList())
+          .withTarget(fieldName);
     }).toList());
     var classAnnotations = AnnotationResult.combine(_cachedClassValidators
         .entries
@@ -219,16 +223,19 @@ class StructureValidation<T> extends ValidationMode<T>
     return AnnotationResult.combine(_cachedFieldValidators[index]!
             .map((e) => e.key.annotate(e.value, fieldValue, engine))
             .toList())
-        .withTarget(fieldName).translate(engine);
+        .withTarget(fieldName)
+        .translate(engine);
   }
 
   /// Annotates the field at [index] with [fieldValue].
-  AnnotationResult annotateFieldValue(int index, dynamic fieldValue, DogEngine engine) {
+  AnnotationResult annotateFieldValue(
+      int index, dynamic fieldValue, DogEngine engine) {
     if (!_hasValidation) return AnnotationResult.empty();
     var fieldName = structure.fields[index].name;
     return AnnotationResult.combine(_cachedFieldValidators[index]!
             .map((e) => e.key.annotate(e.value, fieldValue, engine))
             .toList())
-        .withTarget(fieldName).translate(engine);
+        .withTarget(fieldName)
+        .translate(engine);
   }
 }

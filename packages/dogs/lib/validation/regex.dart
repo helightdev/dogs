@@ -22,8 +22,7 @@ import 'package:dogs_core/dogs_core.dart';
 const email = Regex(
     "[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
     messageId: "invalid-email",
-    message: "Invalid email address."
-);
+    message: "Invalid email address.");
 
 class Regex extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
@@ -32,7 +31,6 @@ class Regex extends StructureMetadata
   final String? message;
 
   const Regex(this.pattern, {this.messageId, this.message});
-
 
   static const String defaultMessageId = "regex";
 
@@ -81,9 +79,11 @@ class Regex extends StructureMetadata
   AnnotationResult annotate(cached, value, DogEngine engine) {
     var isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
-    return AnnotationResult(
-        messages: [AnnotationMessage(id: messageId ?? defaultMessageId, message: message ?? "Invalid format.")]
-    );
+    return AnnotationResult(messages: [
+      AnnotationMessage(
+          id: messageId ?? defaultMessageId,
+          message: message ?? "Invalid format.")
+    ]);
   }
 }
 

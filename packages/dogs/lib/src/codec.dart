@@ -44,8 +44,9 @@ abstract interface class CodecPrimitiveCoercion {
 
 class NoCodecPrimitiveCoercion implements CodecPrimitiveCoercion {
   @override
-  dynamic coerce(TypeCapture expected,value, String? fieldName) {
-    throw ArgumentError.value(value, fieldName, "Can't coerce $value to expected ${expected.typeArgument}");
+  dynamic coerce(TypeCapture expected, value, String? fieldName) {
+    throw ArgumentError.value(value, fieldName,
+        "Can't coerce $value to expected ${expected.typeArgument}");
   }
 }
 
@@ -89,9 +90,9 @@ class DefaultNativeCodec extends DogNativeCodec {
 
   @override
   Map<Type, DogConverter> get bridgeConverters => const {
-    String: NativeRetentionConverter<String>(),
-    int: NativeRetentionConverter<int>(),
-    double: NativeRetentionConverter<double>(),
-    bool: NativeRetentionConverter<bool>()
-  };
+        String: NativeRetentionConverter<String>(),
+        int: NativeRetentionConverter<int>(),
+        double: NativeRetentionConverter<double>(),
+        bool: NativeRetentionConverter<bool>()
+      };
 }

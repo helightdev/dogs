@@ -17,8 +17,8 @@
 import 'package:dogs_core/dogs_core.dart';
 
 /// Factory for [OperationMode]s.
-abstract class OperationModeFactory<T extends OperationMode> with TypeCaptureMixin<T> {
-
+abstract class OperationModeFactory<T extends OperationMode>
+    with TypeCaptureMixin<T> {
   const OperationModeFactory();
 
   /// Creates a new instance of [T] for the given [converter] and [engine].
@@ -26,21 +26,25 @@ abstract class OperationModeFactory<T extends OperationMode> with TypeCaptureMix
   T? forConverter(DogConverter converter, DogEngine engine);
 
   /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
-  static OperationModeFactory<T> converterSingleton<TARGET extends DogConverter, T extends OperationMode>(T mode) =>
-      SingletonConverterOperationModeFactory(TARGET, mode);
+  static OperationModeFactory<T>
+      converterSingleton<TARGET extends DogConverter, T extends OperationMode>(
+              T mode) =>
+          SingletonConverterOperationModeFactory(TARGET, mode);
 
   /// A [OperationModeFactory] that returns a singleton [OperationMode] for a specific type.
-  static OperationModeFactory<T> typeSingleton<TARGET, T extends OperationMode>(T mode) =>
+  static OperationModeFactory<T> typeSingleton<TARGET, T extends OperationMode>(
+          T mode) =>
       SingletonTypeOperationModeFactory(TARGET, mode);
 
   /// A [OperationModeFactory] that composes multiple other factories.
-  static OperationModeFactory<T> compose<T extends OperationMode>(List<OperationModeFactory> factories) =>
+  static OperationModeFactory<T> compose<T extends OperationMode>(
+          List<OperationModeFactory> factories) =>
       ComposableOperationModeFactory<T>(factories);
 }
 
 /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
-class SingletonConverterOperationModeFactory<T extends OperationMode> extends OperationModeFactory<T> {
-
+class SingletonConverterOperationModeFactory<T extends OperationMode>
+    extends OperationModeFactory<T> {
   final Type targetType;
   final T mode;
 
@@ -54,8 +58,8 @@ class SingletonConverterOperationModeFactory<T extends OperationMode> extends Op
 }
 
 /// A [OperationModeFactory] that returns a singleton [OperationMode] for a specific type.
-class SingletonTypeOperationModeFactory<T extends OperationMode> extends OperationModeFactory<T> {
-
+class SingletonTypeOperationModeFactory<T extends OperationMode>
+    extends OperationModeFactory<T> {
   final Type targetType;
   final T mode;
 
@@ -68,10 +72,9 @@ class SingletonTypeOperationModeFactory<T extends OperationMode> extends Operati
   }
 }
 
-
 /// A [OperationModeFactory] that composes multiple other factories.
-class ComposableOperationModeFactory<T extends OperationMode> extends OperationModeFactory<T> {
-
+class ComposableOperationModeFactory<T extends OperationMode>
+    extends OperationModeFactory<T> {
   final List<OperationModeFactory> _factories;
 
   const ComposableOperationModeFactory(this._factories);

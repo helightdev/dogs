@@ -20,8 +20,7 @@ typedef ProjectionTransformer = Map<String, dynamic> Function(
     Map<String, dynamic> data);
 
 extension ProjectionExtension on DogEngine {
-  
-  Map<String,dynamic> createProjectionDocument({
+  Map<String, dynamic> createProjectionDocument({
     Iterable<Map>? properties,
     Iterable<Object>? objects,
     Iterable<ProjectionTransformer>? transformers,
@@ -51,7 +50,7 @@ extension ProjectionExtension on DogEngine {
     }
     return buffer;
   }
-  
+
   dynamic createProjection(
     Type target, {
     Iterable<Map>? properties,
@@ -59,12 +58,14 @@ extension ProjectionExtension on DogEngine {
     Iterable<ProjectionTransformer>? transformers,
   }) {
     var struct = findStructureByType(target)!;
-    var document = createProjectionDocument(objects: objects, properties: properties, transformers: transformers);
+    var document = createProjectionDocument(
+        objects: objects, properties: properties, transformers: transformers);
     var fieldValues = struct.fields.map((e) => document[e.name]).toList();
     return struct.proxy.instantiate(fieldValues);
   }
 
-  Map<String,dynamic> projectDocument(Object value, [Object? a, Object? b, Object? c]) {
+  Map<String, dynamic> projectDocument(Object value,
+      [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
     if ((a != null || b != null || c != null)) {
       value = [

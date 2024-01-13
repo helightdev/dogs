@@ -51,13 +51,13 @@ class StructureHarbinger<T> {
 
     // Try resolving the type directly
     var directConverter =
-    engine.findAssociatedConverter(field.type.typeArgument);
+        engine.findAssociatedConverter(field.type.typeArgument);
     if (directConverter != null) return directConverter;
 
     if (field.iterableKind != IterableKind.none) {
       // Try resolving using the serial type argument (i.E. the first type argument)
       var serialConverter =
-      engine.findAssociatedConverter(field.serial.typeArgument);
+          engine.findAssociatedConverter(field.serial.typeArgument);
       if (serialConverter != null) return serialConverter;
     }
 

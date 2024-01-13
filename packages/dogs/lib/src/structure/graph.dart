@@ -42,7 +42,6 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
       final isOptional = field.optional;
       final proxy = structure.proxy;
       final iterableKind = field.iterableKind;
-      final fieldType = field.type;
       final serialType = field.serial;
       if (e.converter == null) {
         return (
@@ -58,12 +57,19 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
               if (isOptional) {
                 args.add(null);
               } else if (iterableKind != IterableKind.none) {
-                args.add(adjustWithCoercion([], iterableKind, field.serial, engine.codec.primitiveCoercion, fieldName.asString));
+                args.add(adjustWithCoercion([], iterableKind, field.serial,
+                    engine.codec.primitiveCoercion, fieldName.asString));
               } else {
-                args.add(engine.codec.primitiveCoercion.coerce(serialType, null, fieldName.asString));
+                args.add(engine.codec.primitiveCoercion
+                    .coerce(serialType, null, fieldName.asString));
               }
             } else {
-              args.add(adjustWithCoercion(mapValue.coerceNative(), iterableKind, field.serial, engine.codec.primitiveCoercion, fieldName.asString));
+              args.add(adjustWithCoercion(
+                  mapValue.coerceNative(),
+                  iterableKind,
+                  field.serial,
+                  engine.codec.primitiveCoercion,
+                  fieldName.asString));
             }
           },
         );

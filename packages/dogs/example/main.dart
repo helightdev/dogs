@@ -15,8 +15,5 @@
  */
 
 void main() {
-  print({
-    "hello": 1,
-    "hello": 2
-  });
+  print({"hello": 1, "hello": 2});
 }

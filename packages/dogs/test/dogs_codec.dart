@@ -26,17 +26,16 @@ class DateTimeWrapper {
   DateTimeWrapper(this.dateTime);
 }
 
-class DateTimeWrapperConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
-
+class DateTimeWrapperConverter extends DogConverter<DateTime>
+    with OperationMapMixin<DateTime> {
   @override
   Map<Type, OperationMode<DateTime> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => DateTimeWrapper(value),
-        deserializer: (value, engine) => value.dateTime,
-    ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
-  };
-
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => DateTimeWrapper(value),
+              deserializer: (value, engine) => value.dateTime,
+            ),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
 }
 
 class CustomCodec extends DogNativeCodec {
@@ -73,13 +72,13 @@ class CustomCodec extends DogNativeCodec {
 
   @override
   Map<Type, DogConverter> get bridgeConverters => const {
-    String: NativeRetentionConverter<String>(),
-    int: NativeRetentionConverter<int>(),
-    double: NativeRetentionConverter<double>(),
-    bool: NativeRetentionConverter<bool>(),
-    CustomNative: NativeRetentionConverter<CustomNative>(),
-    DateTimeWrapper: NativeRetentionConverter<DateTimeWrapper>()
-  };
+        String: NativeRetentionConverter<String>(),
+        int: NativeRetentionConverter<int>(),
+        double: NativeRetentionConverter<double>(),
+        bool: NativeRetentionConverter<bool>(),
+        CustomNative: NativeRetentionConverter<CustomNative>(),
+        DateTimeWrapper: NativeRetentionConverter<DateTimeWrapper>()
+      };
 }
 
 void main() {
@@ -97,7 +96,8 @@ void main() {
     var engine = DogEngine();
     var converter = DogStructureConverterImpl(structure);
     var forked = engine.fork(codec: CustomCodec());
-    var nativeOpmode = forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
+    var nativeOpmode =
+        forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
     var encoded = nativeOpmode.serialize(["Hello", CustomNative()], forked);
     var decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<String?>());
@@ -120,18 +120,19 @@ void main() {
     forked.registerAssociatedConverter(DateTimeWrapperConverter());
 
     // Test forked
-    var nativeOpmode = forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
+    var nativeOpmode =
+        forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
     var encoded = nativeOpmode.serialize([DateTime.now()], forked);
     expect(encoded["a"], isA<DateTimeWrapper>());
     var decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<DateTime>());
 
     // Test original
-    var nativeOpmode2 = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
+    var nativeOpmode2 =
+        engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
     var encoded2 = nativeOpmode2.serialize([DateTime.now()], engine);
     expect(encoded2["a"], isA<String>());
     var decoded2 = nativeOpmode2.deserialize(encoded2, engine);
     expect(decoded2[0], isA<DateTime>());
-
   });
 }
