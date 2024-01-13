@@ -1,3 +1,7 @@
+## 2.0.26
+
+ - Update a dependency to the latest release.
+
 ## 2.0.25
 
  - **FIX**: Handle empty string for yaml serializer and add test case.

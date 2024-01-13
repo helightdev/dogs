@@ -1,3 +1,7 @@
+## 0.0.2+1
+
+ - Update a dependency to the latest release.
+
 ## 0.0.2
 
  - **FIX**: rename example package to not have the same name as a dependency.

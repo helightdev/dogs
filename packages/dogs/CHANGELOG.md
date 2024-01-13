@@ -1,3 +1,7 @@
+## 7.2.1
+
+ - **REFACTOR**: update pubspec.yaml.
+
 ## 7.2.0
 
  - **REFACTOR**: use the new mode factories in operation mode resolution.
