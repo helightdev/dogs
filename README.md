@@ -1,5 +1,5 @@
 <h1 align="left">
-    <img src="docs/assets/logo.png" align="left" width="48" alt="Frosty">
+    <img src="https://github.com/helightdev/dogs/blob/main/docs/assets/logo.png?raw=true" align="left" width="48" alt="Frosty">
     Dart Object Graphs
     <a href="">
         <img src="https://img.shields.io/pub/v/dogs_core" alt="pub">
