@@ -1,19 +1,20 @@
 <h1 align="left">
+    <img src="https://github.com/helightdev/dogs/blob/main/docs/assets/logo.png?raw=true" align="left" width="48" alt="Frosty">
     Dart Object Graphs
+    <a href="">
+        <img src="https://img.shields.io/pub/v/dogs_core" alt="pub">
+    </a>
     <a href="https://discord.gg/6HKuGSzYKJ">
-        <img src="https://img.shields.io/discord/1060355106522017924?label=discord" alt="discord">
+        <img src="https://img.shields.io/github/actions/workflow/status/helightdev/dogs/dart.yaml" alt="Build">
     </a>
     <a href="https://dogs.helight.dev/">
-        <img src="https://img.shields.io/badge/docs-dogs.helight.dev-346ddb.svg" alt="gitbook">
-    </a>
-    <a href="https://github.com/invertase/melos">
-        <img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg" alt="melos">
+        <img src="https://img.shields.io/badge/docs-dogs.helight.dev-007ec6.svg" alt="gitbook">
     </a>
 </h1>
 
-DOGs, short for Dart Object Graphs, is a universal serialization library making strong use of code
-generation to make your code more concise and fluent to write. The core package can be easily extended
-to support a wide array of encodings and comes with json support out of the box.
+DOGs, short for Dart Object Graphs, is a object mapping and serialization library that use
+code generation to create a structure definition of your serializable classes, which is usable at
+runtime.
 
 ```dart
 @serializable
@@ -38,63 +39,77 @@ class Person with Dataclass<Person>{
 * 🚀 **Fast** Similar or increased performance compared to alternatives
 * 🧩 **Extensible** Modify and customize any part of your serialization
 * 📦 **Adaptive** Use one of the various formats or bring your own
-
-## Features
-* **Builder extensions** (supporting nullability)
-* **Copyable** types (supporting map overrides)
-* **OpenApi Schema** Generation (using conduit_open_api)
-* **Validation** API (similar to javax.validation)
-* **Generator-less extensibility** (using annotations)
+* 📚 **Documented** Comprehensive documentation and examples
+* ⚡ **Unmatched DX** No part files, no dollar signs, no getters, no hassle
 
 ## Format Support
 - **JSON** (included in dogs_core)
-- **YAML** (package dogs_yaml)
-- **TOML** (package dogs_toml)
-- **CBOR** (package dogs_cbor)
+- **YAML** <a href="https://pub.dev/packages/dogs_yaml"><img src="https://img.shields.io/pub/v/dogs_yaml?label=dogs_yaml" alt="pub"></a>
+- **TOML** <a href="https://pub.dev/packages/dogs_toml"><img src="https://img.shields.io/pub/v/dogs_toml?label=dogs_toml" alt="pub"></a>
+- **CBOR** <a href="https://pub.dev/packages/dogs_cbor"><img src="https://img.shields.io/pub/v/dogs_cbor?label=dogs_cbor" alt="pub"></a>
 
-## Silent Code Generation
-A neat point about dogs 'darwin like' **non-intrusive** code generation is,
-that it has almost **zero boilerplate** and generally **doesn't require
-importing or referencing generated source code**, except for use cases which
-involve builders or generated extensions. This allows you to keep on working
-on your code, without having to wait for the build runner to create your
-required files for every new service you create and plan to use.
-This also **minimizes conflicts** with other external generators and helps to
-prevent unexpected build runner crashes.
+## Core Package <a href="https://pub.dev/packages/dogs_core"><img src="https://img.shields.io/pub/v/dogs_core?label=dogs_core" alt="pub"></a>
+- **Json**  
+  The core package comes with json support out of the box and requires no additional dependencies.
 
-## Benchmarks
-Benchmarks
-A simple comparison between dogs, equatable and built_value has been peformed with following results.
-The benchmarks has been run on a single isolate, the code of the benchmark can be found at 'benchmark/'.  
-<br>
-Dart: 2.19.6  
-OS: Ubuntu 22.04.2  
-Processor: Intel® Core™ i9-9920X CPU @ 3.50GHz × 24  
-Memory: 64GiB DDR4 2133 MT/s  
-Results:  
-==== Running JsonSerialization Benchmarks (500 items, 1000 iterations)  
-Dogs took 921979μs (921.979ms)  
-Built took 1180312μs (1180.312ms)  
-Native took 835845μs (835.845ms)  
-==== Running JsonDeserialization Benchmarks (500 items, 1000 iterations)  
-Dogs took 732607μs (732.607ms)  
-Built took 968599μs (968.599ms)  
-Native took 637777μs (637.777ms)  
-==== Running Builder Benchmarks (500 items, 1000 iterations)  
-Dogs took 34505μs (34.505ms)  
-Built took 47435μs (47.435ms)  
-==== Running IndexOf Benchmarks (500 items, 1000 iterations)  
-Dogs took 1137425μs (1137.425ms)  
-BuiltValue took 1023607μs (1023.607ms)  
-Equatable took 4796078μs (4796.078ms)  
-Native took 1218228μs (1218.228ms)  
-==== Running DirectEquality Benchmarks (1000000 iterations)  
-Dogs took 10687μs (10.687ms)  
-BuiltValue took 9135μs (9.135ms)  
-Equatable took 38516μs (38.516ms)  
-Native took 12485μs (12.485ms)  
-==== Running MapKey Benchmarks (500 items, 1000 iterations)  
-Dogs took 10433μs (10.433ms)  
-BuiltValue took 18113μs (18.113ms)  
-Equatable took 472721μs (472.721ms)  
-Native took 231494μs (231.494ms)  
+
+- **Builders**  
+  We provide autogenerated builders, similar to built_value, which allow you to easily create
+  immutable objects with a fluent api.
+
+
+- **Dataclasses**  
+  Using our dataclass mixin automatically implements toString, equals and hashCode for your
+  serializable classes. This removes the requirement for a package like equatable or
+  ungodly amounts of boilerplate code.
+
+
+- **Projections**  
+  Dogs offers a powerful projection api, which allows you to transform your objects into
+  other objects, without having to write additional boilerplate code.
+
+
+- **Polymorphism**  
+  Dogs supports polymorphic serialization, which allows you to serialize and deserialize
+  objects of different types. You can even use interfaces and abstract classes as types,
+  including `Object`.
+
+
+- **Validation**  
+  Using the validation api, you can easily validate your objects, without having the struggle
+  of writing your own validation logic for most common use cases.
+
+
+- **OpenApi Schema** (preview)  
+  Dogs offers a schema generation api, which allows you to generate an OpenApi schema for your
+  objects, to be used with OpenApi tools like Swagger.
+
+[Package on pub.dev](https://pub.dev/packages/dogs_core)  
+[Documentation](https://dogs.helight.dev)
+
+## Firestore <a href="https://pub.dev/packages/dogs_firestore"><img src="https://img.shields.io/pub/v/dogs_firestore?label=dogs_firestore" alt="pub"></a>
+Dogs offers a firestore api, which allows you to easily create firestore documents from your
+serializable objects and vice versa. You can either use our lightweight extensions on the Firestore
+classes or make use of our entity api, which offers you a simplified and more object oriented way of
+interacting with firestore.  
+[Package on pub.dev](https://pub.dev/packages/dogs_firestore)  
+[Documentation](https://dogs.helight.dev/firestore/)
+
+## Forms <a href="https://pub.dev/packages/dogs_forms"><img src="https://img.shields.io/pub/v/dogs_forms?label=dogs_forms" alt="pub"></a>
+Use our forms api to easily create forms for any serializable object, without having
+to write boilerplate code. The package uses flutter_form_builder under the hood, so you can
+benefit from its large ecosystem of form fields.  
+[Package on pub.dev](https://pub.dev/packages/dogs_forms)  
+[Documentation](https://dogs.helight.dev/forms/)
+
+## ✨ Fancy Code Generation ✨
+Dogs doesn't use part files for generated code but instead
+generated files for all serializable classes, which then get exported in the
+dogs.g.dart file at the root of your lib folder. This massively improves the
+developer experience, as you **don't** have to write **annoying part statements** with
+missing files everytime. In fact, you don't need do **import anything generated** in
+your **model files** at all! Generally, the api of dogs is designed to be independent
+of generated code, where it makes sense. All serialization and deserialization
+methods don't require any reference to generated code and can be used without
+any imports. The only exception to this are the builders, which are generated
+for each serializable class and require the dogs.g.dart file to be imported.
