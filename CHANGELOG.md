@@ -15,6 +15,46 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_core` - `v7.2.2`](#dogs_core---v722)
+ - [`dogs_firestore` - `v0.0.2+2`](#dogs_firestore---v0022)
+ - [`dogs_forms` - `v0.0.1+2`](#dogs_forms---v0012)
+ - [`dogs_generator` - `v5.0.13`](#dogs_generator---v5013)
+ - [`dogs_cbor` - `v2.0.27`](#dogs_cbor---v2027)
+ - [`dogs_toml` - `v2.0.27`](#dogs_toml---v2027)
+ - [`dogs_built` - `v1.0.9`](#dogs_built---v109)
+ - [`dogs_yaml` - `v2.0.27`](#dogs_yaml---v2027)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.0.2+2`
+ - `dogs_forms` - `v0.0.1+2`
+ - `dogs_generator` - `v5.0.13`
+ - `dogs_cbor` - `v2.0.27`
+ - `dogs_toml` - `v2.0.27`
+ - `dogs_built` - `v1.0.9`
+ - `dogs_yaml` - `v2.0.27`
+
+---
+
+#### `dogs_core` - `v7.2.2`
+
+ - **REFACTOR**: reformat code and remove some unused variables.
+
+
+## 2024-01-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_core` - `v7.2.1`](#dogs_core---v721)
  - [`dogs_firestore` - `v0.0.2+1`](#dogs_firestore---v0021)
  - [`dogs_generator` - `v5.0.12`](#dogs_generator---v5012)

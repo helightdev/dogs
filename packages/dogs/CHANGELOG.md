@@ -1,3 +1,7 @@
+## 7.2.2
+
+ - **REFACTOR**: reformat code and remove some unused variables.
+
 ## 7.2.1
 
  - **REFACTOR**: update pubspec.yaml.
