@@ -1,15 +1,15 @@
 name: dogs_core
-description: a universal serialization library using code generation to reduce boilerplate massively.
+description: universal object mapping and serialization library with a focus on dx.
 version: 7.2.0
-repository: https://github.com/DarwinFramework/dogs
-documentation: https://darwin-framework.gitbook.io/dogs/guides/1.-getting-started
-issue_tracker: https://github.com/DarwinFramework/dogs/issues
+repository: https://github.com/helightdev/dogs
+documentation: https://dogs.helight.dev
+issue_tracker: https://github.com/helightdev/dogs/issues
 
 topics:
   - serialization
   - dataclass
   - json
-  - projection
+  - orm
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
