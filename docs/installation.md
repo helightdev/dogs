@@ -2,7 +2,7 @@ To install the base package, modify your `pubspec.yaml` to include following pac
 
 ```yaml
 dependencies:
-  dogs_core: ^7.1.1
+  dogs_core: ^7.2.2
 
 dev_dependencies:
   build_runner: any
