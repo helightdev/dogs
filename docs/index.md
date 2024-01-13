@@ -21,4 +21,11 @@ to support a wide array of encodings and comes with json support out of the box.
 [GitHub :simple-github:](https://github.com/DarwinFramework/dogs){ .md-button .md-button--primary }
 [Discord :simple-discord:](https://discord.gg/6HKuGSzYKJ){ .md-button .md-button--primary }
 
-
+## Mascot
+<img src="/assets/logo.png" align="left" width="100px" alt="Frosty" onclick="alert('As you pet Frosty, he wiggles his tail happily and his eyes light up with joy 🤗✨🐾💙')">
+This is **Frosty**, our AI generated mascot!  
+You can pet him, by clicking on him. He loves it!  
+<span style="font-size: 0.8em">
+<br>
+_Though please don't feed him, he is on a diet ~ Christoph_
+</span>

@@ -11,6 +11,7 @@ theme:
     - navigation.indexes
     - navigation.path
     - navigation.sections
+    - attr_list
 
 extra_css:
   - stylesheets/extra.css
