@@ -48,21 +48,6 @@ class Person with Dataclass<Person>{
 - **TOML** <a href="https://pub.dev/packages/dogs_toml"><img src="https://img.shields.io/pub/v/dogs_toml?label=dogs_toml" alt="pub"></a>
 - **CBOR** <a href="https://pub.dev/packages/dogs_cbor"><img src="https://img.shields.io/pub/v/dogs_cbor?label=dogs_cbor" alt="pub"></a>
 
-## Firestore <a href="https://pub.dev/packages/dogs_firestore"><img src="https://img.shields.io/pub/v/dogs_firestore?label=dogs_firestore" alt="pub"></a>
-Dogs offers a firestore api, which allows you to easily create firestore documents from your
-serializable objects and vice versa. You can either use our lightweight extensions on the Firestore
-classes or make use of our entity api, which offers you a simplified and more object oriented way of
-interacting with firestore.  
-[Package on pub.dev](https://pub.dev/packages/dogs_firestore)  
-[Documentation](https://dogs.helight.dev/firestore/)
-
-## Forms <a href="https://pub.dev/packages/dogs_forms"><img src="https://img.shields.io/pub/v/dogs_forms?label=dogs_forms" alt="pub"></a>
-Use our forms api to easily create forms for any serializable object, without having
-to write boilerplate code. The package uses flutter_form_builder under the hood, so you can
-benefit from its large ecosystem of form fields.  
-[Package on pub.dev](https://pub.dev/packages/dogs_forms)  
-[Documentation](https://dogs.helight.dev/forms/)
-
 ## Core Package <a href="https://pub.dev/packages/dogs_core"><img src="https://img.shields.io/pub/v/dogs_core?label=dogs_core" alt="pub"></a>
 - **Json**  
   The core package comes with json support out of the box and requires no additional dependencies.
@@ -99,13 +84,31 @@ benefit from its large ecosystem of form fields.
   Dogs offers a schema generation api, which allows you to generate an OpenApi schema for your
   objects, to be used with OpenApi tools like Swagger.
 
+[Package on pub.dev](https://pub.dev/packages/dogs_core)  
+[Documentation](https://dogs.helight.dev)
+
+## Firestore <a href="https://pub.dev/packages/dogs_firestore"><img src="https://img.shields.io/pub/v/dogs_firestore?label=dogs_firestore" alt="pub"></a>
+Dogs offers a firestore api, which allows you to easily create firestore documents from your
+serializable objects and vice versa. You can either use our lightweight extensions on the Firestore
+classes or make use of our entity api, which offers you a simplified and more object oriented way of
+interacting with firestore.  
+[Package on pub.dev](https://pub.dev/packages/dogs_firestore)  
+[Documentation](https://dogs.helight.dev/firestore/)
+
+## Forms <a href="https://pub.dev/packages/dogs_forms"><img src="https://img.shields.io/pub/v/dogs_forms?label=dogs_forms" alt="pub"></a>
+Use our forms api to easily create forms for any serializable object, without having
+to write boilerplate code. The package uses flutter_form_builder under the hood, so you can
+benefit from its large ecosystem of form fields.  
+[Package on pub.dev](https://pub.dev/packages/dogs_forms)  
+[Documentation](https://dogs.helight.dev/forms/)
+
 ## ✨ Fancy Code Generation ✨
 Dogs doesn't use part files for generated code but instead
 generated files for all serializable classes, which then get exported in the
 dogs.g.dart file at the root of your lib folder. This massively improves the
-developer experience, as you don't have to write annoying part statements with
-missing files everytime. In fact, you don't need do import anything generated in
-your model files at all! Generally, the api of dogs is designed to be independent
+developer experience, as you **don't** have to write **annoying part statements** with
+missing files everytime. In fact, you don't need do **import anything generated** in
+your **model files** at all! Generally, the api of dogs is designed to be independent
 of generated code, where it makes sense. All serialization and deserialization
 methods don't require any reference to generated code and can be used without
 any imports. The only exception to this are the builders, which are generated
