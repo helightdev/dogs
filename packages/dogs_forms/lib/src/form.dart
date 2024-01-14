@@ -22,8 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-typedef PreferenceDecorationMutator = InputDecoration? Function(
-    InputDecoration decoration, DecorationPreference)?;
+typedef PreferenceDecorationMutator = InputDecoration? Function(InputDecoration decoration, DecorationPreference)?;
 
 /// Marks a dog structure as a form.
 /// Additionally allows to specify form specific attributes.
@@ -50,6 +49,8 @@ class AutoForm implements StructureMetadata {
 class DogsFormRef<T> {
   late GlobalKey<FormBuilderState> formKey;
   late DogsForm form;
+
+  List<DogsFormField>? persistedFields;
 
   DogsFormRef([GlobalKey<FormBuilderState>? formKey]) {
     this.formKey = formKey ?? GlobalKey<FormBuilderState>();
@@ -116,16 +117,14 @@ class DogsForm<T> extends StatelessWidget {
     this.attributes = attributes ?? {};
   }
 
-  late final AutoForm formAnnotation =
-      structure.annotationsOf<AutoForm>().firstOrNull ?? const AutoForm();
+  late final AutoForm formAnnotation = structure.annotationsOf<AutoForm>().firstOrNull ?? const AutoForm();
 
   /// Auto-generated form for a dog managed data structure,
   /// identified by its type [T].
   factory DogsForm(
       {T? initialValue,
       Map<Symbol, dynamic>? attributes,
-      TranslationResolver translationResolver =
-          const DefaultTranslationResolver(),
+      TranslationResolver translationResolver = const DefaultTranslationResolver(),
       PreferenceDecorationMutator? preferenceResolver,
       FormDecorator<T>? decorator,
       Function()? onChanged,
@@ -134,8 +133,14 @@ class DogsForm<T> extends StatelessWidget {
       bool enabled = true}) {
     engine ??= DogEngine.instance;
     var structure = engine.findStructureByType(T)!;
-    var fields2 =
-        structure.fields.map((e) => DogsFormField(structure, e)).toList();
+
+    List<DogsFormField> fields2;
+    if (reference.persistedFields != null) {
+      fields2 = reference.persistedFields!;
+    } else {
+      fields2 = structure.fields.map((e) => DogsFormField(structure, e)).toList();
+      reference.persistedFields = fields2;
+    }
     var form = DogsForm<T>._(
       structure: structure as DogStructure<T>,
       fields: fields2,
@@ -153,25 +158,19 @@ class DogsForm<T> extends StatelessWidget {
       element.form = form;
       element.hookEngine();
     }
+
     reference.form = form;
     return form;
   }
 
-  DogsFormField findField(String name) =>
-      fields.firstWhere((element) => element.delegate.name == name);
+  DogsFormField findField(String name) => fields.firstWhere((element) => element.delegate.name == name);
 
   T? readValue([bool saveAndValidate = true]) {
-    var isValid = saveAndValidate
-        ? formKey.currentState!.saveAndValidate()
-        : formKey.currentState!.validate(
-            focusOnInvalid: false, autoScrollWhenFocusOnInvalid: false);
+    var isValid = saveAndValidate ? formKey.currentState!.saveAndValidate() : formKey.currentState!.validate(focusOnInvalid: false, autoScrollWhenFocusOnInvalid: false);
     if (!isValid) return null;
     try {
       var map = formKey.currentState!.instantValue;
-      var fieldMap = {
-        for (var e in fields)
-          e.delegate.name: e.factory.decode(map[e.delegate.name])
-      };
+      var fieldMap = {for (var e in fields) e.delegate.name: e.factory.decode(map[e.delegate.name])};
       var instantiated = structure.instantiateFromFieldMap(fieldMap);
       if (!engine.validateObject(instantiated, T)) return null;
       return instantiated;
@@ -186,14 +185,9 @@ class DogsForm<T> extends StatelessWidget {
   Map<String, dynamic> createInitialValue(T? obj) {
     if (obj != null) {
       var fieldValues = structure.getFieldMap(obj);
-      return {
-        for (var e in fields)
-          e.delegate.name: e.factory.encode(fieldValues[e.delegate.name])
-      };
+      return {for (var e in fields) e.delegate.name: e.factory.encode(fieldValues[e.delegate.name])};
     } else {
-      return {
-        for (var e in fields) e.delegate.name: e.factory.encode(e.initializer())
-      };
+      return {for (var e in fields) e.delegate.name: e.factory.encode(e.initializer())};
     }
   }
 
@@ -209,7 +203,9 @@ class DogsForm<T> extends StatelessWidget {
           form: this,
           child: Builder(builder: (context) {
             for (var element in fields) {
-              element.factory.prepareFormField(context, element);
+              var firstPass = element.isFirstPass;
+              element.isFirstPass = false;
+              element.factory.prepareFormField(context, element, firstPass);
             }
             return decorator.run(context, this);
           }),
@@ -221,21 +217,14 @@ class DogsFormProvider extends InheritedWidget {
   final GlobalKey<FormBuilderState> formKey;
   final DogsForm form;
 
-  const DogsFormProvider(
-      {super.key,
-      required this.formKey,
-      required this.form,
-      required Widget child})
-      : super(child: child);
+  const DogsFormProvider({super.key, required this.formKey, required this.form, required Widget child}) : super(child: child);
 
   static DogsForm? formOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<DogsFormProvider>()?.form;
   }
 
   static GlobalKey<FormBuilderState>? keyOf(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<DogsFormProvider>()
-        ?.formKey;
+    return context.dependOnInheritedWidgetOfExactType<DogsFormProvider>()?.formKey;
   }
 
   @override

@@ -29,7 +29,8 @@ class StructureFormFieldFactory extends AutoFormFieldFactory
   const StructureFormFieldFactory(this.structure);
 
   @override
-  void prepareFormField(BuildContext context, DogsFormField field) {
+  void prepareFormField(BuildContext context, DogsFormField field, bool firstPass) {
+    if (!firstPass) return;
     var formKey = GlobalKey<FormBuilderState>();
     var ref = structure.consumeTypeArg(createRef, formKey);
     setCachedValue(field, ref);

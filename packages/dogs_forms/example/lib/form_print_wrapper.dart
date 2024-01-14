@@ -89,6 +89,9 @@ class _FormPrintWrapperState<T> extends State<FormPrintWrapper<T>> {
                 Text("Value & Code")
               ],
             )),
+            TextButton(onPressed: () {
+              setState(() {});
+            }, child: Text("Rebuild"))
           ],
         )
       ],

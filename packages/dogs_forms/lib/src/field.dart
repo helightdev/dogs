@@ -149,16 +149,17 @@ typedef FormFieldWrapper = Widget Function(
 class DogsFormField {
   final DogStructure parent;
   final DogStructureField delegate;
-  late final DogsForm form;
-
   DogsFormField(this.parent, this.delegate);
 
-  late final AutoFormFieldFactory factory;
+  late DogsForm form;
 
-  late final StructureValidation<dynamic> structureValidator;
+  late AutoFormFieldFactory factory;
+
+  late StructureValidation<dynamic> structureValidator;
 
   /// Can be used by the [AutoFormFieldFactory] to store additional data.
   Object? factoryData;
+  bool isFirstPass = true;
 
   void hookEngine() {
     structureValidator = form.engine.modeRegistry.validation

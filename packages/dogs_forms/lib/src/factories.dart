@@ -115,7 +115,7 @@ abstract class AutoFormFieldFactory<T>
 
   dynamic decode(dynamic value) => value;
 
-  void prepareFormField(BuildContext context, DogsFormField field) {}
+  void prepareFormField(BuildContext context, DogsFormField field, bool firstPass) {}
 
   Widget build(BuildContext context, DogsFormField field);
 
