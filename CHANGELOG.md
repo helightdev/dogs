@@ -11,6 +11,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_forms` - `v0.1.0+1`](#dogs_forms---v0101)
+
+---
+
+#### `dogs_forms` - `v0.1.0+1`
+
+ - **FIX**: persist latest form values and fix set not propagating to form fields.
+
+
+## 2024-01-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`dogs_forms` - `v0.1.0`](#dogs_forms---v010)
 
 Packages with other changes:

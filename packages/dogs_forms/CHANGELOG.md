@@ -1,3 +1,7 @@
+## 0.1.0+1
+
+ - **FIX**: persist latest form values and fix set not propagating to form fields.
+
 ## 0.1.0
 
 > Note: This release has breaking changes.
