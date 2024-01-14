@@ -125,6 +125,41 @@ conformities:
     To instantiate a bean, you should use the generated `{name}Factory` class with its 
     static `create` method.
 
+## Restrictions
+To make your serializable classes work with the serialization system, you must follow a few
+restrictions:
+
+??? failure "No Class-Level Generics"
+    You cannot use generics on the class level. This is due to the fact that the generator
+    generates a structure definition for your class, which erases all generic information which
+    is not used in the fields of your class.  
+    **Generics on fields are allowed, though!**
+
+??? failure "Don't use Records"
+    You cannot use records as field types. This is due to the fact that records can't be easily
+    represented by the structure format and make the overall system more unnecessarily complex and
+    possible generated model schemas obscure.
+
+??? success "Types inside Field-Level Generics must be non-nullable -> Use `Optional<T>` instead"
+    You cannot use generic field types with nullable type arguments, as the type tree does not
+    store the nullability of the type arguments. If you require nullable items, consider using
+    the `Optional<T>` type instead, which is a wrapper for nullable types.  
+    **The root type of the field can be nullable!**
+
+??? success "All leaf types must be serializable"
+    All fields of your serializable class must be **serializable recursively** themselves.
+    For sealed classes for example, this means that all possible subclasses must be serializable. 
+    This also means, that they need to be marked as `@serializable` if they don't have a custom
+    converter registered.  
+    See [Polymorphism](/polymorphism) for more information.
+
+??? abstract "Terminology: Leaf Type"
+    Objects which are possible terminal values of a type boundary are referred to as **leaf types**.
+    In practice, this refers to the `runtimeType` of the object in question.
+
+    If you have a field of type `Animal`, `Animal` is the type boundary and possible leaf types
+    would be `Dog` or `Cat`. For DOGs, this would mean `Dog` and `Cat` need to be serializable.
+
 ## Modifications
 
 You can use the automatically generated builder to modify serializable classes easily.

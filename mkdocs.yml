@@ -24,6 +24,7 @@ nav:
       - serialization.md
       - projection.md
       - validation.md
+      - polymorphism.md
   - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md

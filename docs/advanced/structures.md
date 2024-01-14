@@ -67,7 +67,7 @@ to retrieve the operation mode for the field.
 ??? abstract "Terminology: Serial Converter"
 
     Serial converters and tree converters are similar, in that they both serialize collection types.
-    Though **a tree converter is more powerful** and can also be used for other types then dart native ones
+    Though **a tree converter is more powerful** and can also be used for other types than dart native ones
     and with deeper nesting. Serial converters **support only lists and sets** of serializable types and
     are **not able to serialize polymorphic types**. Every dart converter is by default able to handle
     serial conversion through the "{mode}Iterable" methods on the respective operation modes. This
