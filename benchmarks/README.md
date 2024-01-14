@@ -1,5 +1,6 @@
 # Benchmarks: dogs vs other similar libraries
 ## Latest Results
+```
 ==== Running JsonSerialization Benchmarks (1000 items, 1000 iterations)  
 Dogs took 2042789μs (2042.789ms)
 > Dogs Native took 232850μs (232.85ms)  
@@ -35,4 +36,5 @@ Dogs took 11084μs (11.084ms)
 BuiltValue took 19980μs (19.98ms)  
 Equatable took 532177μs (532.177ms)  
 Native took 283582μs (283.582ms)  
-Mappable took 1027565μs (1027.565ms)  
+Mappable took 1027565μs (1027.565ms)
+```
