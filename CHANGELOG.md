@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_forms` - `v0.1.0+2`](#dogs_forms---v0102)
+
+---
+
+#### `dogs_forms` - `v0.1.0+2`
+
+ - **FIX**: remove debug print and use instantValue instead of value.
+
+
+## 2024-01-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_forms` - `v0.1.0+1`](#dogs_forms---v0101)
 
 ---

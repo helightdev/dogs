@@ -1,3 +1,7 @@
+## 0.1.0+2
+
+ - **FIX**: remove debug print and use instantValue instead of value.
+
 ## 0.1.0+1
 
  - **FIX**: persist latest form values and fix set not propagating to form fields.

@@ -1,6 +1,6 @@
 name: dogs_forms
 description: "Support for creating form_builder forms for DOGs structures."
-version: 0.1.0+1
+version: 0.1.0+2
 homepage: https://dogs.helight.dev/
 
 environment:
