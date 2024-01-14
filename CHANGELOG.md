@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-01-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_forms` - `v0.1.0`](#dogs_forms---v010)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `dogs_forms` - `v0.1.0`
+
+ - **BREAKING** **FEAT**: make form fields persistent between form rebuild and add the firstPass parameter to prepareFormField.
+
+
 ## 2024-01-13
 
 ### Changes

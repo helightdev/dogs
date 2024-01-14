@@ -1,3 +1,9 @@
+## 0.1.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: make form fields persistent between form rebuild and add the firstPass parameter to prepareFormField.
+
 ## 0.0.1+2
 
  - Update a dependency to the latest release.
