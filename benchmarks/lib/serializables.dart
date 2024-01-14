@@ -17,10 +17,12 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart' as dogs;
 import 'package:mock_data/mock_data.dart';
 
 part 'serializables.g.dart';
+part 'serializables.mapper.dart';
 
 DogPerson dogPerson() {
   return DogPerson(
@@ -40,6 +42,12 @@ NativePerson nativePerson() {
       age: mockInteger(),
       tags: List.generate(5, (index) => mockString()));
 }
+
+MappablePerson mappablePerson() {
+  return MappablePerson(
+      mockString(), mockInteger(), List.generate(5, (index) => mockString()));
+}
+
 
 @dogs.serializable
 class DogPerson {
@@ -87,6 +95,15 @@ class NativePerson {
     required this.age,
     required this.tags,
   });
+}
+
+@MappableClass()
+class MappablePerson with MappablePersonMappable {
+  String name;
+  int age;
+  List<String> tags;
+
+  MappablePerson(this.name, this.age, this.tags);
 }
 
 @SerializersFor([BuiltPerson])

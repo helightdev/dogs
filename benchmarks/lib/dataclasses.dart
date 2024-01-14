@@ -17,11 +17,13 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mock_data/mock_data.dart';
 
 part 'dataclasses.g.dart';
+part 'dataclasses.mapper.dart';
 
 @serializable
 class DogBenchmarkDataclassEntity with Dataclass<DogBenchmarkDataclassEntity> {
@@ -29,7 +31,6 @@ class DogBenchmarkDataclassEntity with Dataclass<DogBenchmarkDataclassEntity> {
   final int age;
   final List<String> tags;
 
-  @polymorphic
   final Map<String, String> fields;
 
   DogBenchmarkDataclassEntity(this.name, this.age, this.tags, this.fields);
@@ -92,6 +93,16 @@ abstract class BuiltBenchmarkDataclassEntity
   BuiltBenchmarkDataclassEntity._();
 }
 
+@MappableClass()
+class MappableBenchmarkDataclassEntity with MappableBenchmarkDataclassEntityMappable {
+  final String name;
+  final int age;
+  final List<String> tags;
+  final Map<String, String> fields;
+
+  MappableBenchmarkDataclassEntity(this.name, this.age, this.tags, this.fields);
+}
+
 Map<DogBenchmarkDataclassEntity, int> dogMap(int count) {
   var map = <DogBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
@@ -147,6 +158,21 @@ Map<BuiltBenchmarkDataclassEntity, int> builtMap(int count) {
           ListBuilder(List.generate(mockInteger(), (index) => mockString()))
       ..fields = MapBuilder(Map.fromEntries(List.generate(mockInteger(),
           (index) => MapEntry<String, String>("$index-k", mockColor())))))] = i;
+  }
+  return map;
+}
+
+Map<MappableBenchmarkDataclassEntity, int> mappableMap(int count) {
+  var map = <MappableBenchmarkDataclassEntity, int>{};
+  for (var i = 0; i < count; i++) {
+    map[MappableBenchmarkDataclassEntity(
+        mockName(),
+        mockInteger(),
+        List.generate(mockInteger(), (index) => mockString()),
+        Map.fromEntries(List.generate(
+            mockInteger(),
+            (index) =>
+                MapEntry<String, String>("$index-k", mockColor()))))] = i;
   }
   return map;
 }

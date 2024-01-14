@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
+  ansicolor:
+    dependency: transitive
+    description:
+      name: ansicolor
+      sha256: "8bf17a8ff6ea17499e40a2d2542c2f481cd7615760c6d34065cb22bfd22e6880"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   aqueduct_isolates:
     dependency: "direct main"
     description:
@@ -225,6 +233,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  dart_mappable:
+    dependency: "direct main"
+    description:
+      name: dart_mappable
+      sha256: "7b6d38ae95f1ae8ffa65df9a5464f14b56c2de94699a035202ca4cd3a0ba249e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
+  dart_mappable_builder:
+    dependency: "direct dev"
+    description:
+      name: dart_mappable_builder
+      sha256: "98c058f7e80a98ea42d357d888ed1648d96bedac8b16872b58fc7024faefcdfe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.0"
   dart_style:
     dependency: transitive
     description:
@@ -239,35 +263,35 @@ packages:
       path: "../packages/dogs_cbor"
       relative: true
     source: path
-    version: "2.0.24"
+    version: "2.0.27"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../packages/dogs"
       relative: true
     source: path
-    version: "7.1.1"
+    version: "7.2.2"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.0.10"
+    version: "5.0.13"
   dogs_toml:
     dependency: "direct main"
     description:
       path: "../packages/dogs_toml"
       relative: true
     source: path
-    version: "2.0.24"
+    version: "2.0.27"
   dogs_yaml:
     dependency: "direct main"
     description:
       path: "../packages/dogs_yaml"
       relative: true
     source: path
-    version: "2.0.24"
+    version: "2.0.27"
   duffer:
     dependency: transitive
     description:
@@ -708,6 +732,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.14.0"
+  type_plus:
+    dependency: transitive
+    description:
+      name: type_plus
+      sha256: "2e33cfac2e129297d5874567bdf7587502ec359881e9318551e014d91b02f84a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   typed_data:
     dependency: transitive
     description:

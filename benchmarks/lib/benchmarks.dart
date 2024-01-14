@@ -6,6 +6,7 @@ import 'package:benchmarks/dataclasses.dart';
 import 'package:benchmarks/dogs.g.dart';
 import 'package:benchmarks/serializables.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 void benchmarkIndexOf() {
@@ -21,6 +22,8 @@ void benchmarkIndexOf() {
   print("Equatable took $equatableμs (${equatable / 1000}ms)  ");
   var native = _runIndexOfBenchmark(nativeMap, count, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
+  var mappable = _runIndexOfBenchmark(mappableMap, count, iterations);
+  print("Mappable took $mappableμs (${mappable / 1000}ms)  ");
 }
 
 void benchmarkDirectEquality() {
@@ -34,6 +37,8 @@ void benchmarkDirectEquality() {
   print("Equatable took $equatableμs (${equatable / 1000}ms)  ");
   var native = _runDirectEquality(nativeMap, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
+  var mappable = _runDirectEquality(mappableMap, iterations);
+  print("Mappable took $mappableμs (${mappable / 1000}ms)  ");
 }
 
 void benchmarkMapKey() {
@@ -49,6 +54,8 @@ void benchmarkMapKey() {
   print("Equatable took $equatableμs (${equatable / 1000}ms)  ");
   var native = _runMapKeyBenchmark(nativeMap, count, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
+  var mappable = _runMapKeyBenchmark(mappableMap, count, iterations);
+  print("Mappable took $mappableμs (${mappable / 1000}ms)  ");
 }
 
 void benchmarkJsonSerialization() {
@@ -75,9 +82,14 @@ void benchmarkJsonSerialization() {
   var built = _runJsonEncodeBenchmark(builtPerson,
       (p) => jsonEncode(serializers.serialize(p)), count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
+
   var native = _runJsonEncodeBenchmark(
       nativePerson, (p) => jsonEncode(p.toMap()), count, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
+
+  var mappable = _runJsonEncodeBenchmark(
+      mappablePerson, (p) => MapperContainer.globals.toJson<MappablePerson>(p), count, iterations);
+  print("Mappable took $mappableμs (${mappable / 1000}ms)  ");
 }
 
 void benchmarkJsonDeserialization() {
@@ -112,11 +124,18 @@ void benchmarkJsonDeserialization() {
     return serializers.deserialize(jsonDecode(s));
   }, count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
+
   var native =
       _runJsonDecodeBenchmark(nativePerson, (p) => jsonEncode(p.toMap()), (s) {
     return NativePerson.fromMap(jsonDecode(s));
   }, count, iterations);
   print("Native took $nativeμs (${native / 1000}ms)  ");
+
+  var mappable = _runJsonDecodeBenchmark(
+      mappablePerson, (p) => jsonEncode(MapperContainer.globals.toJson<MappablePerson>(p)), (s) {
+    return MapperContainer.globals.fromJson<MappablePerson>(jsonDecode(s));
+  }, count, iterations);
+  print("Mappable took $mappableμs (${mappable / 1000}ms)  ");
 }
 
 void benchmarkBuilders() {
@@ -136,6 +155,10 @@ void benchmarkBuilders() {
       ..tags = ListBuilder<String>(b.tags));
   }, count, iterations);
   print("Built took $builtμs (${built / 1000}ms)  ");
+  var mappable = _runBuilderBenchmark(mappablePerson, (a, b) {
+    return a.copyWith(name: b.name, tags: b.tags);
+  }, count, iterations);
+  print("Mappable took $mappableμs (${mappable / 1000}ms)  ");
 }
 
 // ----

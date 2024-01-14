@@ -2,14 +2,13 @@ import 'dart:core';
 import 'package:dogs_core/dogs_core.dart' as gen;
 import 'package:lyell/lyell.dart' as gen;
 import 'dart:core' as gen0;
-import 'package:dogs_core/src/converter.dart' as gen1;
-import 'package:benchmarks/dataclasses.dart' as gen2;
+import 'package:benchmarks/dataclasses.dart' as gen1;
 import 'package:benchmarks/dataclasses.dart';
 
-class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter<gen2.DogBenchmarkDataclassEntity> {
+class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter<gen1.DogBenchmarkDataclassEntity> {
   DogBenchmarkDataclassEntityConverter()
       : super(
-            struct: const gen.DogStructure<gen2.DogBenchmarkDataclassEntity>(
+            struct: const gen.DogStructure<gen1.DogBenchmarkDataclassEntity>(
                 'DogBenchmarkDataclassEntity',
                 gen.StructureConformity.dataclass,
                 [
@@ -24,31 +23,30 @@ class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter
                       gen.IterableKind.none,
                       'fields',
                       false,
-                      true,
-                      [gen1.polymorphic])
+                      true, [])
                 ],
                 [],
-                gen.ObjectFactoryStructureProxy<gen2.DogBenchmarkDataclassEntity>(_activator, [_$name, _$age, _$tags, _$fields], _values, _hash, _equals)));
+                gen.ObjectFactoryStructureProxy<gen1.DogBenchmarkDataclassEntity>(_activator, [_$name, _$age, _$tags, _$fields], _values, _hash, _equals)));
 
-  static dynamic _$name(gen2.DogBenchmarkDataclassEntity obj) => obj.name;
-  static dynamic _$age(gen2.DogBenchmarkDataclassEntity obj) => obj.age;
-  static dynamic _$tags(gen2.DogBenchmarkDataclassEntity obj) => obj.tags;
-  static dynamic _$fields(gen2.DogBenchmarkDataclassEntity obj) => obj.fields;
-  static List<dynamic> _values(gen2.DogBenchmarkDataclassEntity obj) => [obj.name, obj.age, obj.tags, obj.fields];
-  static gen2.DogBenchmarkDataclassEntity _activator(List list) {
+  static dynamic _$name(gen1.DogBenchmarkDataclassEntity obj) => obj.name;
+  static dynamic _$age(gen1.DogBenchmarkDataclassEntity obj) => obj.age;
+  static dynamic _$tags(gen1.DogBenchmarkDataclassEntity obj) => obj.tags;
+  static dynamic _$fields(gen1.DogBenchmarkDataclassEntity obj) => obj.fields;
+  static List<dynamic> _values(gen1.DogBenchmarkDataclassEntity obj) => [obj.name, obj.age, obj.tags, obj.fields];
+  static gen1.DogBenchmarkDataclassEntity _activator(List list) {
     return DogBenchmarkDataclassEntity(list[0], list[1], list[2].cast<gen0.String>(), list[3]);
   }
 
-  static int _hash(gen2.DogBenchmarkDataclassEntity obj) => obj.name.hashCode ^ obj.age.hashCode ^ gen.deepEquality.hash(obj.tags) ^ gen.deepEquality.hash(obj.fields);
+  static int _hash(gen1.DogBenchmarkDataclassEntity obj) => obj.name.hashCode ^ obj.age.hashCode ^ gen.deepEquality.hash(obj.tags) ^ gen.deepEquality.hash(obj.fields);
   static bool _equals(
-    gen2.DogBenchmarkDataclassEntity a,
-    gen2.DogBenchmarkDataclassEntity b,
+    gen1.DogBenchmarkDataclassEntity a,
+    gen1.DogBenchmarkDataclassEntity b,
   ) =>
       (a.name == b.name && a.age == b.age && gen.deepEquality.equals(a.tags, b.tags) && gen.deepEquality.equals(a.fields, b.fields));
 }
 
 class DogBenchmarkDataclassEntityBuilder {
-  DogBenchmarkDataclassEntityBuilder([gen2.DogBenchmarkDataclassEntity? $src]) {
+  DogBenchmarkDataclassEntityBuilder([gen1.DogBenchmarkDataclassEntity? $src]) {
     if ($src == null) {
       $values = List.filled(4, null);
     } else {
@@ -78,18 +76,18 @@ class DogBenchmarkDataclassEntityBuilder {
   }
 
   gen0.Map<gen0.String, gen0.String> get fields => $values[3];
-  gen2.DogBenchmarkDataclassEntity build() => DogBenchmarkDataclassEntityConverter._activator($values);
+  gen1.DogBenchmarkDataclassEntity build() => DogBenchmarkDataclassEntityConverter._activator($values);
 }
 
-extension DogBenchmarkDataclassEntityDogsExtension on gen2.DogBenchmarkDataclassEntity {
+extension DogBenchmarkDataclassEntityDogsExtension on gen1.DogBenchmarkDataclassEntity {
   @Deprecated("Use rebuild() instead")
-  gen2.DogBenchmarkDataclassEntity builder(Function(DogBenchmarkDataclassEntityBuilder builder) func) {
+  gen1.DogBenchmarkDataclassEntity builder(Function(DogBenchmarkDataclassEntityBuilder builder) func) {
     var builder = DogBenchmarkDataclassEntityBuilder(this);
     func(builder);
     return builder.build();
   }
 
-  gen2.DogBenchmarkDataclassEntity rebuild(Function(DogBenchmarkDataclassEntityBuilder b) f) {
+  gen1.DogBenchmarkDataclassEntity rebuild(Function(DogBenchmarkDataclassEntityBuilder b) f) {
     var builder = DogBenchmarkDataclassEntityBuilder(this);
     f(builder);
     return builder.build();
@@ -100,6 +98,6 @@ extension DogBenchmarkDataclassEntityDogsExtension on gen2.DogBenchmarkDataclass
   }
 
   Map<String, dynamic> toNative() {
-    return gen.dogs.convertObjectToNative(this, gen2.DogBenchmarkDataclassEntity);
+    return gen.dogs.convertObjectToNative(this, gen1.DogBenchmarkDataclassEntity);
   }
 }
