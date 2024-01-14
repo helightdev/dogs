@@ -53,16 +53,25 @@ class StructureFormFieldFactory extends AutoFormFieldFactory
       return _buildOptional<T>(arg, reference);
     }
 
+    bool isSelfUpdate = false;
     return InputDecorator(
       decoration: arg.field
           .buildInputDecoration(arg.context, DecorationPreference.container),
       child: FormBuilderField<T>(
+        onChanged: (value) {
+          if (isSelfUpdate) {
+            isSelfUpdate = false;
+          } else {
+            reference.set(value);
+          }
+        },
         builder: (FormFieldState<T> formField) {
           var reference = getCachedValue(arg.field) as DogsFormRef<T>;
           return DogsForm<T>(
             reference: reference,
             initialValue: formField.value,
             onChanged: () {
+              isSelfUpdate = true;
               formField.didChange(reference.read(false));
             },
           );

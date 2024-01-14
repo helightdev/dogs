@@ -51,6 +51,7 @@ class DogsFormRef<T> {
   late DogsForm form;
 
   List<DogsFormField>? persistedFields;
+  Map<String,dynamic>? persistedValues;
 
   DogsFormRef([GlobalKey<FormBuilderState>? formKey]) {
     this.formKey = formKey ?? GlobalKey<FormBuilderState>();
@@ -59,7 +60,8 @@ class DogsFormRef<T> {
   T? read([bool saveAndValidate = true]) => form.readValue(saveAndValidate);
 
   void set(T? value) {
-    formKey.currentState!.patchValue(form.createInitialValue(value));
+    var updatedValue = form.createInitialValue(value);
+    formKey.currentState!.patchValue(updatedValue);
   }
 }
 
@@ -119,6 +121,8 @@ class DogsForm<T> extends StatelessWidget {
 
   late final AutoForm formAnnotation = structure.annotationsOf<AutoForm>().firstOrNull ?? const AutoForm();
 
+  DogsFormRef? _ref;
+
   /// Auto-generated form for a dog managed data structure,
   /// identified by its type [T].
   factory DogsForm(
@@ -153,6 +157,7 @@ class DogsForm<T> extends StatelessWidget {
       decorator: decorator,
       engine: engine,
     );
+    form._ref = reference;
     // Link form reference
     for (var element in fields2) {
       element.form = form;
@@ -196,8 +201,12 @@ class DogsForm<T> extends StatelessWidget {
     var decorator = this.decorator ?? formAnnotation.decorator;
     return FormBuilder(
         key: formKey,
-        initialValue: createInitialValue(initialValue),
-        onChanged: () => onChanged?.call(),
+        initialValue: _ref?.persistedValues ?? createInitialValue(initialValue),
+        onChanged: () {
+          _ref?.persistedValues = formKey.currentState!.value;
+          print("Saving form values: ${formKey.currentState!.value}");
+          onChanged?.call();
+        },
         child: DogsFormProvider(
           formKey: formKey,
           form: this,
