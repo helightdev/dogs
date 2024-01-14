@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../../validation/">
+        <link rel="prev" href="../../polymorphism/">
       
       
         <link rel="next" href="../annotations/">
@@ -248,6 +248,8 @@
       
         
       
+        
+      
     
     
       
@@ -349,6 +351,26 @@
   
   <span class="md-ellipsis">
     4. Validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../polymorphism/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    5. Polymorphism
   </span>
   
 
@@ -992,7 +1014,7 @@ will not try to find a tree converter for <code>Person</code>.</p>
 <details class="abstract">
 <summary>Terminology: Serial Converter</summary>
 <p>Serial converters and tree converters are similar, in that they both serialize collection types.
-Though <strong>a tree converter is more powerful</strong> and can also be used for other types then dart native ones
+Though <strong>a tree converter is more powerful</strong> and can also be used for other types than dart native ones
 and with deeper nesting. Serial converters <strong>support only lists and sets</strong> of serializable types and
 are <strong>not able to serialize polymorphic types</strong>. Every dart converter is by default able to handle
 serial conversion through the "{mode}Iterable" methods on the respective operation modes. This

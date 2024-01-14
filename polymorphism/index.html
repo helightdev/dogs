@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../serialization/">
+        <link rel="prev" href="../validation/">
       
       
-        <link rel="next" href="../validation/">
+        <link rel="next" href="../advanced/structures/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>3. Projection - Dart Object Graphs</title>
+        <title>5. Polymorphism - Dart Object Graphs</title>
       
     
     
@@ -73,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#3-projection" class="md-skip">
+        <a href="#5-polymorphism" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              3. Projection
+              5. Polymorphism
             
           </span>
         </div>
@@ -326,18 +326,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../projection/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -346,7 +337,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -376,9 +366,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../polymorphism/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    5. Polymorphism
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -387,6 +397,47 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#discriminator" class="md-nav__link">
+    Discriminator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-do-i-need-to-use-polymorphic" class="md-nav__link">
+    When do I need to use @polymorphic?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -831,6 +882,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#discriminator" class="md-nav__link">
+    Discriminator
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-do-i-need-to-use-polymorphic" class="md-nav__link">
+    When do I need to use @polymorphic?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -844,24 +924,123 @@
                   
 
 
-<h1 id="3-projection">3. Projection</h1>
-<p>You can project multiple objects and maps into a single object by using the <code>project</code> method.</p>
-<div class="admonition tip">
-<p class="admonition-title">Data Transfer Objects (DTO)</p>
-<p>When working with DTOs, you can use this method to create a new object from the
-data of the original object while also allowing you to merge in additional data from other
-serializable objects or maps.</p>
+<h1 id="5-polymorphism">5. Polymorphism</h1>
+<p>DOGs supports polymorphism on a per-field basis. This means that you can have a field with any type
+you want, as long as all leaf types are serializable. If you want to use polymorphism, you need to
+add the <code>@polymorphic</code> annotation - This is required so you don't accidentally use polymorphism
+without knowing it.</p>
+<div class="admonition warning">
+<p class="admonition-title">Abstract classes and interfaces can't be annotated with @serializable</p>
+<p>You only need to annotate leaf classes with <code>@serializable</code>. Abstract classes and interfaces
+can't be instantiated and therefore can't use automatic structure generation, for which
+<code>@serializable</code> is the marker.</p>
+<p>Therefore: Only annotate leaf types with <code>@serializable</code>.</p>
 </div>
-<div class="language-dart highlight"><span class="filename">Projection Expansion</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dogs</span><span class="p">.</span><span class="n">project</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">NameAndAge</span><span class="p">(</span><span class="s2">&quot;Alex&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">22</span><span class="p">),</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;1234&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;isAdmin&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">}</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">);</span>
+<div class="admonition warning">
+<p class="admonition-title">Limitations</p>
+<p>All leaf types must be serializable. This means that you can use <code>dynamic</code> or <code>Object</code> as long as
+the actual runtime type is serializable i.E. the runtime type is associated with a structure definition
+and has a converter.</p>
+</div>
+<h2 id="discriminator">Discriminator</h2>
+<p>To identity a leaf type in a polymorphic field, DOGs uses a <code>_type</code> discriminator, that is added
+to the serialized data of the object in question. If the leaf object is not a map, tha value will
+be wrapped in a map and stored in the <code>_value</code> field.</p>
+<h2 id="when-do-i-need-to-use-polymorphic">When do I need to use @polymorphic?</h2>
+<p>If all leaf node of your fields type tree are concrete classes, or have an associated structure
+and converter, you don't need to use <code>@polymorphic</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Polymorphic?</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/274c.svg" title=":x:" /></td>
+<td><code>int</code> is a serializable class and therefore does not need to be annotated.</td>
+</tr>
+<tr>
+<td><code>List&lt;int&gt;</code></td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/274c.svg" title=":x:" /></td>
+<td><code>int</code> is a serializable class and therefore does not need to be annotated.</td>
+</tr>
+<tr>
+<td><code>List&lt;Animal&gt;</code></td>
+<td><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td><code>Animal</code> is an abstract class and therefore needs to be annotated.</td>
+</tr>
+<tr>
+<td><code>List&lt;Object&gt;</code></td>
+<td><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td><code>Object</code> is an abstract class and therefore needs to be annotated.</td>
+</tr>
+<tr>
+<td><code>Map&lt;String,String&gt;</code></td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/274c.svg" title=":x:" /></td>
+<td>All leaf types are serializable classes therefore no annotation is required.</td>
+</tr>
+<tr>
+<td><code>Map&lt;String,Animal&gt;</code></td>
+<td><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td><code>Animal</code> is an abstract class and therefore needs to be annotated.</td>
+</tr>
+<tr>
+<td><code>Map&lt;String,Object&gt;</code></td>
+<td><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td><code>Object</code> is an abstract class and therefore needs to be annotated.</td>
+</tr>
+<tr>
+<td><code>Map&lt;String,Person&gt;</code></td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/274c.svg" title=":x:" /></td>
+<td><code>Person</code> is a serializable class and therefore does not need to be annotated.</td>
+</tr>
+<tr>
+<td><code>Map&lt;String, List&lt;String&gt;&gt;</code></td>
+<td><img alt="❌" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@14.1.2/assets/svg/274c.svg" title=":x:" /></td>
+<td>All leaf types are serializable classes therefore no annotation is required.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="examples">Examples</h2>
+<div class="language-dart highlight"><span class="filename">Sealed Classes</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">sealed</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">Animal</span><span class="w"> </span><span class="p">{}</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nd">@serializable</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kd">class</span><span class="w"> </span><span class="nc">Dog</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Animal</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="n">Dog</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">age</span><span class="p">);</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nd">@serializable</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="kd">class</span><span class="w"> </span><span class="nc">Dolphin</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Animal</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">isNamedFlipper</span><span class="p">;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="n">Dolphin</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">isNamedFlipper</span><span class="p">);</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="nd">@serializable</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="kd">class</span><span class="w"> </span><span class="nc">Zoo</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="nd">@polymorphic</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Animal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">animals</span><span class="p">;</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">  </span><span class="n">Zoo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">animals</span><span class="p">);</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="p">}</span>
 </span></code></pre></div>
-<div class="language-dart highlight"><span class="filename">Projection Reduction</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">var</span><span class="w"> </span><span class="n">reduced</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dogs</span><span class="p">.</span><span class="n">project</span><span class="o">&lt;</span><span class="n">NameAndAge</span><span class="o">&gt;</span><span class="p">(</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="n">User</span><span class="p">(</span><span class="s2">&quot;1234&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Alex&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">22</span><span class="p">,</span><span class="w"> </span><span class="kc">true</span><span class="p">),</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">);</span>
+<div class="language-dart highlight"><span class="filename">Object Field</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@serializable</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">class</span><span class="w"> </span><span class="nc">Person</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nd">@polymorphic</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="kt">Object</span><span class="w"> </span><span class="n">attachment</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="n">Person</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">attachment</span><span class="p">);</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><a class="md-button md-button--primary" href="/validation/">Continue Reading! <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg></span></a></p>
 
 
 

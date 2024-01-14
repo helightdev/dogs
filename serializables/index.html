@@ -250,6 +250,8 @@
       
         
       
+        
+      
     
     
       
@@ -339,6 +341,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#restrictions" class="md-nav__link">
+    Restrictions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#modifications" class="md-nav__link">
     Modifications
   </a>
@@ -405,6 +414,26 @@
   
   <span class="md-ellipsis">
     4. Validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../polymorphism/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    5. Polymorphism
   </span>
   
 
@@ -867,6 +896,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#restrictions" class="md-nav__link">
+    Restrictions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#modifications" class="md-nav__link">
     Modifications
   </a>
@@ -1006,6 +1042,44 @@ static <code>create</code> method.</p>
 </div>
 </div>
 </div>
+<h2 id="restrictions">Restrictions</h2>
+<p>To make your serializable classes work with the serialization system, you must follow a few
+restrictions:</p>
+<details class="failure">
+<summary>No Class-Level Generics</summary>
+<p>You cannot use generics on the class level. This is due to the fact that the generator
+generates a structure definition for your class, which erases all generic information which
+is not used in the fields of your class.<br />
+<strong>Generics on fields are allowed, though!</strong></p>
+</details>
+<details class="failure">
+<summary>Don't use Records</summary>
+<p>You cannot use records as field types. This is due to the fact that records can't be easily
+represented by the structure format and make the overall system more unnecessarily complex and
+possible generated model schemas obscure.</p>
+</details>
+<details class="success">
+<summary>Types inside Field-Level Generics must be non-nullable -&gt; Use <code>Optional&lt;T&gt;</code> instead</summary>
+<p>You cannot use generic field types with nullable type arguments, as the type tree does not
+store the nullability of the type arguments. If you require nullable items, consider using
+the <code>Optional&lt;T&gt;</code> type instead, which is a wrapper for nullable types.<br />
+<strong>The root type of the field can be nullable!</strong></p>
+</details>
+<details class="success">
+<summary>All leaf types must be serializable</summary>
+<p>All fields of your serializable class must be <strong>serializable recursively</strong> themselves.
+For sealed classes for example, this means that all possible subclasses must be serializable. 
+This also means, that they need to be marked as <code>@serializable</code> if they don't have a custom
+converter registered.<br />
+See <a href="/polymorphism">Polymorphism</a> for more information.</p>
+</details>
+<details class="abstract">
+<summary>Terminology: Leaf Type</summary>
+<p>Objects which are possible terminal values of a type boundary are referred to as <strong>leaf types</strong>.
+In practice, this refers to the <code>runtimeType</code> of the object in question.</p>
+<p>If you have a field of type <code>Animal</code>, <code>Animal</code> is the type boundary and possible leaf types
+would be <code>Dog</code> or <code>Cat</code>. For DOGs, this would mean <code>Dog</code> and <code>Cat</code> need to be serializable.</p>
+</details>
 <h2 id="modifications">Modifications</h2>
 <p>You can use the automatically generated builder to modify serializable classes easily.
 Depending on your prefer code style, you can use either the imperative or lambda builder.</p>
