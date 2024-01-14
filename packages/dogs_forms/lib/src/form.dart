@@ -199,12 +199,13 @@ class DogsForm<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var decorator = this.decorator ?? formAnnotation.decorator;
+    var initialFormValue = _ref?.persistedValues ?? createInitialValue(initialValue);
+    _ref?.persistedValues = initialFormValue;
     return FormBuilder(
         key: formKey,
-        initialValue: _ref?.persistedValues ?? createInitialValue(initialValue),
+        initialValue: initialFormValue,
         onChanged: () {
-          _ref?.persistedValues = formKey.currentState!.value;
-          print("Saving form values: ${formKey.currentState!.value}");
+          _ref?.persistedValues = formKey.currentState!.instantValue;
           onChanged?.call();
         },
         child: DogsFormProvider(
