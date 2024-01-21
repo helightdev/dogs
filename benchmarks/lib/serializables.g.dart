@@ -192,3 +192,37 @@ class BuiltPersonBuilder implements Builder<BuiltPerson, BuiltPersonBuilder> {
 }
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+JsonSerializablePerson _$JsonSerializablePersonFromJson(
+        Map<String, dynamic> json) =>
+    JsonSerializablePerson(
+      json['name'] as String,
+      json['age'] as int,
+      (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+    );
+
+Map<String, dynamic> _$JsonSerializablePersonToJson(
+        JsonSerializablePerson instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'age': instance.age,
+      'tags': instance.tags,
+    };
+
+_$FreezedPersonImpl _$$FreezedPersonImplFromJson(Map<String, dynamic> json) =>
+    _$FreezedPersonImpl(
+      name: json['name'] as String,
+      age: json['age'] as int,
+      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+    );
+
+Map<String, dynamic> _$$FreezedPersonImplToJson(_$FreezedPersonImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'age': instance.age,
+      'tags': instance.tags,
+    };

@@ -19,13 +19,27 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart' as dogs;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mock_data/mock_data.dart';
+import 'package:dart_json_mapper/dart_json_mapper.dart' as djm show JsonMapper, jsonSerializable, JsonProperty;
 
 part 'serializables.g.dart';
 part 'serializables.mapper.dart';
+part 'serializables.freezed.dart';
 
 DogPerson dogPerson() {
   return DogPerson(
+      mockString(), mockInteger(), List.generate(5, (index) => mockString()));
+}
+
+JsonSerializablePerson jsonSerializablePerson() {
+  return JsonSerializablePerson(
+      mockString(), mockInteger(), List.generate(5, (index) => mockString()));
+}
+
+DartJsonMapperPerson dartJsonMapperPerson() {
+  return DartJsonMapperPerson(
       mockString(), mockInteger(), List.generate(5, (index) => mockString()));
 }
 
@@ -38,6 +52,13 @@ BuiltPerson builtPerson() {
 
 NativePerson nativePerson() {
   return NativePerson(
+      name: mockString(),
+      age: mockInteger(),
+      tags: List.generate(5, (index) => mockString()));
+}
+
+FreezedPerson freezedPerson() {
+  return FreezedPerson(
       name: mockString(),
       age: mockInteger(),
       tags: List.generate(5, (index) => mockString()));
@@ -104,6 +125,41 @@ class MappablePerson with MappablePersonMappable {
   List<String> tags;
 
   MappablePerson(this.name, this.age, this.tags);
+}
+
+@JsonSerializable()
+class JsonSerializablePerson {
+  String name;
+  int age;
+  List<String> tags;
+
+  JsonSerializablePerson(this.name, this.age, this.tags);
+  /// factory.
+  factory JsonSerializablePerson.fromJson(Map<String, dynamic> json) => _$JsonSerializablePersonFromJson(json);
+
+  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$JsonSerializablePersonToJson(this);
+}
+
+@djm.jsonSerializable
+class DartJsonMapperPerson {
+  String name;
+  int age;
+  List<String> tags;
+
+  DartJsonMapperPerson(this.name, this.age, this.tags);
+}
+
+@freezed
+class FreezedPerson with _$FreezedPerson {
+  const factory FreezedPerson({
+    required String name,
+    required int age,
+    required List<String> tags,
+  }) = _FreezedPerson;
+
+  factory FreezedPerson.fromJson(Map<String, dynamic> json) => _$FreezedPersonFromJson(json);
+
 }
 
 @SerializersFor([BuiltPerson])

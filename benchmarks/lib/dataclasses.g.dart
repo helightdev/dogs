@@ -232,3 +232,26 @@ class BuiltBenchmarkDataclassEntityBuilder
 }
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$FreezedBenchmarkDataclassEntityImpl
+    _$$FreezedBenchmarkDataclassEntityImplFromJson(Map<String, dynamic> json) =>
+        _$FreezedBenchmarkDataclassEntityImpl(
+          name: json['name'] as String,
+          age: json['age'] as int,
+          tags:
+              (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+          fields: Map<String, String>.from(json['fields'] as Map),
+        );
+
+Map<String, dynamic> _$$FreezedBenchmarkDataclassEntityImplToJson(
+        _$FreezedBenchmarkDataclassEntityImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'age': instance.age,
+      'tags': instance.tags,
+      'fields': instance.fields,
+    };

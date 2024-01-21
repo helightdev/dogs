@@ -34,7 +34,7 @@ class DogBenchmarkDataclassEntityConverter extends gen.DefaultStructureConverter
   static dynamic _$fields(gen1.DogBenchmarkDataclassEntity obj) => obj.fields;
   static List<dynamic> _values(gen1.DogBenchmarkDataclassEntity obj) => [obj.name, obj.age, obj.tags, obj.fields];
   static gen1.DogBenchmarkDataclassEntity _activator(List list) {
-    return DogBenchmarkDataclassEntity(list[0], list[1], list[2].cast<gen0.String>(), list[3]);
+    return gen1.DogBenchmarkDataclassEntity(list[0], list[1], list[2].cast<gen0.String>(), list[3]);
   }
 
   static int _hash(gen1.DogBenchmarkDataclassEntity obj) => obj.name.hashCode ^ obj.age.hashCode ^ gen.deepEquality.hash(obj.tags) ^ gen.deepEquality.hash(obj.fields);

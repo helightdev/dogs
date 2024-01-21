@@ -20,10 +20,12 @@ import 'package:built_value/serializer.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mock_data/mock_data.dart';
 
 part 'dataclasses.g.dart';
 part 'dataclasses.mapper.dart';
+part 'dataclasses.freezed.dart';
 
 @serializable
 class DogBenchmarkDataclassEntity with Dataclass<DogBenchmarkDataclassEntity> {
@@ -103,11 +105,26 @@ class MappableBenchmarkDataclassEntity with MappableBenchmarkDataclassEntityMapp
   MappableBenchmarkDataclassEntity(this.name, this.age, this.tags, this.fields);
 }
 
+@freezed
+class FreezedBenchmarkDataclassEntity with _$FreezedBenchmarkDataclassEntity {
+
+  const factory FreezedBenchmarkDataclassEntity({
+    required String name,
+    required int age,
+    required List<String> tags,
+    required Map<String, String> fields,
+  }) = _FreezedBenchmarkDataclassEntity;
+
+  factory FreezedBenchmarkDataclassEntity.fromJson(Map<String, dynamic> json) =>
+      _$FreezedBenchmarkDataclassEntityFromJson(json);
+
+}
+
 Map<DogBenchmarkDataclassEntity, int> dogMap(int count) {
   var map = <DogBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
     map[DogBenchmarkDataclassEntity(
-        mockName(),
+       "${mockName()}$i",
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
         Map.fromEntries(List.generate(
@@ -122,7 +139,7 @@ Map<NativeBenchmarkDataclassEntity, int> nativeMap(int count) {
   var map = <NativeBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
     map[NativeBenchmarkDataclassEntity(
-        mockName(),
+        "${mockName()}$i",
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
         Map.fromEntries(List.generate(
@@ -137,10 +154,25 @@ Map<EquatableBenchmarkDataclassEntity, int> equatableMap(int count) {
   var map = <EquatableBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
     map[EquatableBenchmarkDataclassEntity(
-        mockName(),
+        "${mockName()}$i",
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
         Map.fromEntries(List.generate(
+            mockInteger(),
+            (index) =>
+                MapEntry<String, String>("$index-k", mockColor()))))] = i;
+  }
+  return map;
+}
+
+Map<FreezedBenchmarkDataclassEntity,int> freezedMap(int count) {
+  var map = <FreezedBenchmarkDataclassEntity, int>{};
+  for (var i = 0; i < count; i++) {
+    map[FreezedBenchmarkDataclassEntity(
+        name: "${mockName()}$i",
+        age: mockInteger(),
+        tags: List.generate(mockInteger(), (index) => mockString()),
+        fields: Map.fromEntries(List.generate(
             mockInteger(),
             (index) =>
                 MapEntry<String, String>("$index-k", mockColor()))))] = i;
@@ -152,7 +184,7 @@ Map<BuiltBenchmarkDataclassEntity, int> builtMap(int count) {
   var map = <BuiltBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
     map[BuiltBenchmarkDataclassEntity((builder) => builder
-      ..name = mockName()
+      ..name = "${mockName()}$i"
       ..age = mockInteger()
       ..tags =
           ListBuilder(List.generate(mockInteger(), (index) => mockString()))
@@ -166,7 +198,7 @@ Map<MappableBenchmarkDataclassEntity, int> mappableMap(int count) {
   var map = <MappableBenchmarkDataclassEntity, int>{};
   for (var i = 0; i < count; i++) {
     map[MappableBenchmarkDataclassEntity(
-        mockName(),
+        "${mockName()}$i",
         mockInteger(),
         List.generate(mockInteger(), (index) => mockString()),
         Map.fromEntries(List.generate(

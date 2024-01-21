@@ -25,7 +25,7 @@ class DogPersonConverter extends gen.DefaultStructureConverter<gen1.DogPerson> {
   static dynamic _$tags(gen1.DogPerson obj) => obj.tags;
   static List<dynamic> _values(gen1.DogPerson obj) => [obj.name, obj.age, obj.tags];
   static gen1.DogPerson _activator(List list) {
-    return DogPerson(list[0], list[1], list[2].cast<gen0.String>());
+    return gen1.DogPerson(list[0], list[1], list[2].cast<gen0.String>());
   }
 }
 
