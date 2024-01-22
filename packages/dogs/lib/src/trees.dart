@@ -38,7 +38,53 @@ abstract class TreeBaseConverterFactory {
       return treeConverter(e, engine, allowPolymorphic);
     }).toList();
   }
+  
+  static TreeBaseConverterFactory createIterableFactory<BASE>({
+    required BASE Function<T>(Iterable<T> entries) wrap,
+    required Iterable Function<T>(BASE value) unwrap,
+  }) => _IterableTreeBaseConverterFactory<BASE>(wrap, unwrap);
 }
+
+class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
+
+  final BASE Function<T>(Iterable<T> entries) wrap;
+  final Iterable Function<T>(BASE value) unwrap;
+
+  _IterableTreeBaseConverterFactory(this.wrap, this.unwrap);
+
+  @override
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
+    var argumentConverters = TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
+    if (argumentConverters.length > 1) {
+      throw ArgumentError("Lists can only have one generic type argument");
+    }
+    return _IterableTreeBaseConverter<BASE>(this, argumentConverters.first, tree);
+  }
+}
+
+class _IterableTreeBaseConverter<BASE> extends DogConverter with IterableTreeBaseConverterMixin {
+
+  _IterableTreeBaseConverterFactory<BASE> factory;
+
+  @override
+  DogConverter converter;
+
+  @override
+  TypeTree tree;
+
+  _IterableTreeBaseConverter(this.factory, this.converter, this.tree) : super(keepIterables: true);
+
+  @override
+  iterableCreator<T>(Iterable entries) {
+    return factory.wrap<T>(entries.cast<T>());
+  }
+
+  @override
+  Iterable iterableDestructor<T>(value) {
+    return factory.unwrap<T>(value as BASE);
+  }
+}
+
 
 class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
     with TypeCaptureMixin<dynamic> {
