@@ -115,3 +115,22 @@ class PropertySerializer {
   final Type type;
   const PropertySerializer(this.type);
 }
+
+abstract class SimpleDogConverter<T> extends DogConverter<T> with OperationMapMixin<T> {
+
+  SimpleDogConverter({required String serialName}) : super(struct: DogStructure<T>.synthetic(serialName));
+
+  @override
+  Map<Type, OperationMode<T> Function()> get modes =>
+      {
+        NativeSerializerMode: () =>
+            NativeSerializerMode.create(
+                serializer: (value, engine) => serialize(value, engine),
+                deserializer: (value, engine) => deserialize(value, engine)
+            ),
+        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+      };
+
+  dynamic serialize(T value, DogEngine engine);
+  T deserialize(dynamic value, DogEngine engine);
+}
