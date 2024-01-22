@@ -163,7 +163,7 @@ Future<StructurizeResult> structurizeConstructor(
   // Create proxy arguments
   var getters = fields.map((e) => e.accessor).toList();
   var activator =
-      "return ${element.name}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
+      "return ${counter.get(element.thisType)}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
     var y = fields[i];
     if (e.isNamed) {
       if (y.iterableKind == IterableKind.none) return "${e.name}: list[$i]";
