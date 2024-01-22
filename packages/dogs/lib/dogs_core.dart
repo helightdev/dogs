@@ -51,6 +51,7 @@ export 'src/engine.dart';
 export 'src/extensions.dart';
 export 'src/global.dart';
 export 'src/graph_value.dart';
+export 'src/hooks.dart';
 export 'src/json.dart';
 export 'src/optional.dart';
 export 'src/projections.dart';
