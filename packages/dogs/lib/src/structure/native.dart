@@ -31,9 +31,13 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
   late final DogStructureProxy _proxy = structure.proxy;
   late List<_FieldSerializer> _serializers;
   late List<_FieldDeserializer> _deserializers;
+  late List<SerializationHook> _hooks;
+  bool hasHooks = false;
 
   @override
   void initialise(DogEngine engine) {
+    _hooks = structure.annotationsOf<SerializationHook>().toList();
+    hasHooks = _hooks.isNotEmpty;
     final harbinger = StructureHarbinger.create(structure, engine);
     final List<({_FieldSerializer serialize, _FieldDeserializer deserialize})>
         functions = harbinger.fieldConverters.mapIndexed((i, e) {
@@ -128,6 +132,13 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
   T deserialize(value, DogEngine engine) {
     if (value is! Map) throw Exception("Expected a map");
     var args = <dynamic>[];
+    if (hasHooks) {
+      var clonedMap = Map<String,dynamic>.from(value);
+      for (var hook in _hooks) {
+        hook.beforeDeserialization(clonedMap, structure, engine);
+      }
+      value = clonedMap;
+    }
     for (var deserializer in _deserializers) {
       deserializer(value, args, engine);
     }
@@ -139,6 +150,11 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
     var data = <String, dynamic>{};
     for (var serializer in _serializers) {
       serializer(value, data, engine);
+    }
+    if (hasHooks) {
+      for (var hook in _hooks) {
+        hook.postSerialization(value, data, structure, engine);
+      }
     }
     return data;
   }
