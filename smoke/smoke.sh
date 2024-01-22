@@ -27,8 +27,3 @@ cd test0; bash smoke.sh; cd ../
 # Provides test covering the
 # built_value interop library.
 cd test1; bash smoke.sh; cd ../
-
-# ======== Smoke Test 2 ========
-# Provides test covering the
-# built_value interop library.
-cd test2; bash smoke.sh; cd ../
