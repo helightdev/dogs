@@ -37,6 +37,29 @@ class Serializable {
   const Serializable();
 }
 
+
+/// Marks a library import as dogs serializable.
+///
+/// All types defined inside or exported by the library will be considered
+/// serializable. The [include] and [exclude] parameters can be used to
+/// further restrict the set of serializable types.
+///
+/// Types that semantically match a structure conformity or compatibility check must also be
+/// correct, invalid items will not be skipped but throw an exception. You must explicitly exclude
+/// types that are not serializable using the [exclude] parameter, or only include types that are
+/// serializable using the [include] parameter.
+///
+/// For built_value types, the not serializable builder will automatically be excluded, but will be
+/// used for the generation of the actual type converter.
+class SerializableLibrary {
+  /// A list of regex patterns that match the type identifiers to include in the serialization.
+  final List<String>? include;
+
+  /// A list of regex patterns that match the type identifiers to exclude from the serialization.
+  final List<String>? exclude;
+  const SerializableLibrary({this.include, this.exclude});
+}
+
 /// Marks a class or enum as serializable.
 /// The dogs_generator will then generate a [DefaultStructureConverter] which
 /// also implements [Copyable] and [Validatable]. The generator will also
