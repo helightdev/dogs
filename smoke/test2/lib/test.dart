@@ -20,7 +20,6 @@ Future main() async {
   installBuiltSerializers(PetstoreApi().serializers);
 
   // Does the generated api actually kinda work?
-  print(await PetstoreApi().getPetApi().findPetsByStatus(status: BuiltList(["available"])));
   Pet pet = (PetBuilder()
     ..id = 1
     ..name = "Fido"
