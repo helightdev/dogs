@@ -20,7 +20,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     return binding;
   }
 
-  Future generateForEnum(
+  static Future generateForEnum(
       EnumElement element,
       SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
@@ -63,7 +63,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  Future generateForClass(
+  static Future generateForClass(
       ClassElement element,
       SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
@@ -103,7 +103,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     }
   }
 
-  void writeBeanFactory(ClassElement element, StructurizeResult structurized,
+  static void writeBeanFactory(ClassElement element, StructurizeResult structurized,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var factoryName = "${element.name}Factory";
@@ -130,7 +130,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  void writeGeneratedConverter(
+  static void writeGeneratedConverter(
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
@@ -156,7 +156,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  void _defaultProxyMethods(
+  static void _defaultProxyMethods(
       StructurizeResult structurized,
       ClassBuilder builder,
       SubjectCodeContext codeContext,
@@ -195,7 +195,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       ..body = Code(structurized.activator)));
   }
 
-  void _dataclassProxyMethods(
+  static void _dataclassProxyMethods(
       ClassBuilder builder,
       SubjectCodeContext codeContext,
       ClassElement element,
@@ -240,7 +240,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       }).join("&&")})")));
   }
 
-  void writeGeneratedBuilder(
+  static void writeGeneratedBuilder(
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,
@@ -288,7 +288,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  void writeGeneratedExtension(
+  static void writeGeneratedExtension(
       ClassElement element,
       StructurizeResult structurized,
       String constructorName,

@@ -15,10 +15,40 @@
  */
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
 import 'package:lyell_gen/lyell_gen.dart';
+import 'package:collection/collection.dart';
+import 'package:source_gen/builder.dart';
 
 abstract class DogsAdapter<TAnnotation>
     extends SubjectAdapter<TAnnotation, Element> {
   DogsAdapter({required super.archetype})
       : super(descriptorExtension: 'dogs', annotation: TAnnotation);
+}
+
+class CombinedBuilder implements Builder {
+  final List<Builder> builders;
+
+  CombinedBuilder(this.builders);
+
+  @override
+  Future<void> build(BuildStep buildStep) async {
+    for (var builder in builders) {
+      await builder.build(buildStep);
+    }
+  }
+
+  @override
+  Map<String, List<String>> get buildExtensions {
+    var map = <String, List<String>>{};
+    for (var builder in builders) {
+      builder.buildExtensions.forEach((key, value) {
+        var list = map[key] ?? [];
+        list.addAll(value);
+        map[key] = list;
+      });
+    }
+
+    return map;
+  }
 }

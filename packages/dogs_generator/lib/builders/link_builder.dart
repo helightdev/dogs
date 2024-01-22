@@ -22,6 +22,8 @@ class LinkBuilder extends DogsAdapter<LinkSerializer> {
   @override
   FutureOr<void> generateSubject(
       SubjectGenContext<Element> genContext, SubjectCodeContext codeContext) {
-    codeContext.noGenerate = true;
+    bool didGenerate = false;
+    // Reserved
+    codeContext.noGenerate = !didGenerate;
   }
 }

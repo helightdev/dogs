@@ -13,14 +13,14 @@ builders:
   dogs_bindings:
     import: "package:dogs_generator/integrations.dart"
     builder_factories: [ "dogsBindings" ]
-    build_extensions: { ".dart": [ ".conv.dogs" ] }
+    build_extensions: { ".dart": [ ".conv.dogs", ".slib.dogs" ] }
     runs_before: [ "dogs_generator:dogs_reactor" ]
     auto_apply: dependents
     build_to: cache
   dogs_descriptors:
     import: "package:dogs_generator/integrations.dart"
     builder_factories: [ "dogsConverters" ]
-    build_extensions: { ".dart": [ ".conv.g.dart" ] }
+    build_extensions: { ".dart": [ ".conv.g.dart", "slib.g.dart" ] }
     auto_apply: dependents
     build_to: source
   dogs_reactor:
