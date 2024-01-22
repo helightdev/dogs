@@ -1,0 +1,7 @@
+dependency_overrides:
+  dogs_core:
+    path: ../../packages/dogs
+  dogs_generator:
+    path: ../../packages/dogs_generator
+  dogs_built:
+    path: ../../packages/dogs_built

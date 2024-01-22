@@ -6,6 +6,8 @@ import 'package:built_value/serializer.dart';
 
 part 'values.g.dart';
 
+class NonBuiltType {}
+
 /// Example of how to use built_value.
 ///
 /// The value class must implement [Built]. It must be abstract, and have

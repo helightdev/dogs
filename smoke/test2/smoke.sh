@@ -15,20 +15,7 @@
 #    limitations under the License.
 #
 
-set -e
-
-# ======== Smoke Test 0 ========
-# Provides test covering the core
-# library as well as the default
-# generator backend.
-cd test0; bash smoke.sh; cd ../
-
-# ======== Smoke Test 1 ========
-# Provides test covering the
-# built_value interop library.
-cd test1; bash smoke.sh; cd ../
-
-# ======== Smoke Test 2 ========
-# Provides test covering the
-# built_value interop library.
-cd test2; bash smoke.sh; cd ../
+flutter pub get
+flutter pub upgrade
+flutter pub run build_runner build --delete-conflicting-outputs --verbose
+flutter pub run lib/test.dart
