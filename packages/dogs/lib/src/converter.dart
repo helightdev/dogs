@@ -116,6 +116,9 @@ class PropertySerializer {
   const PropertySerializer(this.type);
 }
 
+/// Simple converter base that only requires a [serialize] and [deserialize]
+/// method. Automatically adds [NativeSerializerMode] and [GraphSerializerMode]s,
+/// as well as a synthetic [DogStructure] with the given [serialName].
 abstract class SimpleDogConverter<T> extends DogConverter<T> with OperationMapMixin<T> {
 
   SimpleDogConverter({required String serialName}) : super(struct: DogStructure<T>.synthetic(serialName));
