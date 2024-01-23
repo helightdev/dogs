@@ -9,21 +9,25 @@
       
       
       
+        <link rel="prev" href="../polymorphism/">
       
       
-      <link rel="icon" href="/assets/images/favicon.png">
+        <link rel="next" href="../advanced/structures/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.3.1">
     
     
       
-        <title>Dart Object Graphs</title>
+        <title>6. Custom Converters - Dart Object Graphs</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.046329b4.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.85d0ee34.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
       
       
 
@@ -42,9 +46,9 @@
       
     
     
-      <link rel="stylesheet" href="/stylesheets/extra.css">
+      <link rel="stylesheet" href="../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -68,6 +72,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#6-custom-converters" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -80,7 +89,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="Dart Object Graphs" class="md-header__button md-logo" aria-label="Dart Object Graphs" data-md-component="logo">
+    <a href=".." title="Dart Object Graphs" class="md-header__button md-logo" aria-label="Dart Object Graphs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -100,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              6. Custom Converters
             
           </span>
         </div>
@@ -174,7 +183,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="Dart Object Graphs" class="md-nav__button md-logo" aria-label="Dart Object Graphs" data-md-component="logo">
+    <a href=".." title="Dart Object Graphs" class="md-nav__button md-logo" aria-label="Dart Object Graphs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -191,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -210,7 +219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -227,6 +236,8 @@
       
   
   
+    
+  
   
     
     
@@ -247,13 +258,13 @@
     
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
@@ -266,7 +277,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Getting Started
@@ -279,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/serializables/" class="md-nav__link">
+      <a href="../serializables/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -299,7 +310,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/serialization/" class="md-nav__link">
+      <a href="../serialization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -319,7 +330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/projection/" class="md-nav__link">
+      <a href="../projection/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -339,7 +350,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/validation/" class="md-nav__link">
+      <a href="../validation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -359,7 +370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/polymorphism/" class="md-nav__link">
+      <a href="../polymorphism/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -377,9 +388,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="/converters/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    6. Custom Converters
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -388,6 +419,33 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#collections-and-generic-types" class="md-nav__link">
+    Collections and generic types
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -452,7 +510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/advanced/structures/" class="md-nav__link">
+      <a href="../advanced/structures/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -472,7 +530,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/advanced/annotations/" class="md-nav__link">
+      <a href="../advanced/annotations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -492,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/advanced/operation_modes/" class="md-nav__link">
+      <a href="../advanced/operation_modes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -512,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/advanced/tree_converters/" class="md-nav__link">
+      <a href="../advanced/tree_converters/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -604,7 +662,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="/built/" class="md-nav__link ">
+            <a href="../built/" class="md-nav__link ">
               
   
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4.105 4.105S9.158 1.58 11.684.316a3.079 3.079 0 0 1 1.481-.315c.766.047 1.677.788 1.677.788L24 9.948v9.789h-4.263V24H9.789l-9-9C.303 14.5 0 13.795 0 13.105c0-.319.18-.818.316-1.105l3.789-7.895zm.679.679v11.787c.002.543.021 1.024.498 1.508L10.204 23h8.533v-4.263L4.784 4.784zm12.055-.678c-.899-.896-1.809-1.78-2.74-2.643-.302-.267-.567-.468-1.07-.462-.37.014-.87.195-.87.195L6.341 4.105l10.498.001z"/></svg>
@@ -637,7 +695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/built/start/" class="md-nav__link">
+      <a href="../built/start/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -690,7 +748,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="/forms/" class="md-nav__link ">
+            <a href="../forms/" class="md-nav__link ">
               
   
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.314 0 2.3 12 6 15.7 21.684.013h-7.357zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/></svg>
@@ -723,7 +781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/forms/start/" class="md-nav__link">
+      <a href="../forms/start/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -743,7 +801,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/forms/customization/" class="md-nav__link">
+      <a href="../forms/customization/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -763,7 +821,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/forms/translation/" class="md-nav__link">
+      <a href="../forms/translation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -818,7 +876,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="/firestore/" class="md-nav__link ">
+            <a href="../firestore/" class="md-nav__link ">
               
   
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.89 15.672 6.255.461A.542.542 0 0 1 7.27.288l2.543 4.771zm16.794 3.692-2.25-14a.54.54 0 0 0-.919-.295L3.316 19.365l7.856 4.427a1.621 1.621 0 0 0 1.588 0zM14.3 7.147l-1.82-3.482a.542.542 0 0 0-.96 0L3.53 17.984z"/></svg>
@@ -851,7 +909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/firestore/start/" class="md-nav__link">
+      <a href="../firestore/start/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -871,7 +929,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/firestore/queries/" class="md-nav__link">
+      <a href="../firestore/queries/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -891,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/firestore/subcollections/" class="md-nav__link">
+      <a href="../firestore/subcollections/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -911,7 +969,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/firestore/mappings/" class="md-nav__link">
+      <a href="../firestore/mappings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -957,6 +1015,23 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#collections-and-generic-types" class="md-nav__link">
+    Collections and generic types
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -968,8 +1043,67 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+<h1 id="6-custom-converters">6. Custom Converters</h1>
+<p>Dog provides a number of built-in converters for common types. However, you may need to create your
+own converters for custom types. This section will explain how to create custom converters and how 
+to register them in the <code>DogEngine</code>.</p>
+<div class="language-dart annotate highlight"><span class="filename">Example using the SimpleDogConverter</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">class</span><span class="w"> </span><span class="nc">LatLng</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">lat</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">lng</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="n">LatLng</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">lng</span><span class="p">);</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nd">@override</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="kt">String</span><span class="w"> </span><span class="n">toString</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s2">&quot;LatLng(</span><span class="si">$</span><span class="n">lat</span><span class="s2">, </span><span class="si">$</span><span class="n">lng</span><span class="s2">)&quot;</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nd">@linkSerializer</span><span class="cm">/*(1)!*/</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="kd">class</span><span class="w"> </span><span class="nc">LatLngConverter</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">SimpleDogConverter</span><span class="o">&lt;</span><span class="n">LatLng</span><span class="o">&gt;</span><span class="cm">/*(2)!*/</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="n">LatLngConverter</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">super</span><span class="p">(</span><span class="nl">serialName:</span><span class="w"> </span><span class="s2">&quot;LatLng&quot;</span><span class="p">);</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="nd">@override</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="n">LatLng</span><span class="w"> </span><span class="n">deserialize</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">DogEngine</span><span class="w"> </span><span class="n">engine</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">List</span><span class="p">;</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">LatLng</span><span class="p">(</span><span class="n">list</span><span class="p">[</span><span class="m">0</span><span class="p">],</span><span class="w"> </span><span class="n">list</span><span class="p">[</span><span class="m">1</span><span class="p">]);</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">  </span><span class="nd">@override</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">  </span><span class="n">serialize</span><span class="p">(</span><span class="n">LatLng</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">DogEngine</span><span class="w"> </span><span class="n">engine</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="n">value</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">lng</span><span class="p">];</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li>The <code>@linkSerializer</code> annotation is used to automatically register the converter in the <code>DogEngine</code>.</li>
+<li>The <code>SimpleDogConverter</code> class is a convenience class that implements <code>DogConverter</code> and provides
+both the NativeSerializerMode and the GraphSerializerMode. It also creates a synthetic structure for
+the converter type that uses the <code>serialName</code>.</li>
+</ol>
+<p>In this example, we created a converter for the <code>LatLng</code> class. The converter is registered in the
+<code>DogEngine</code> using the <code>@linkSerializer</code> annotation. The 'SimpleDogConverter' base class is the easiest
+way to create a converter. It implements the <code>DogConverter</code> interface and provides both the
+<code>NativeSerializerMode</code> and the <code>GraphSerializerMode</code>. It also creates a synthetic structure for the
+converter type that uses the <code>serialName</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Manual Registration</p>
+<p>To manually register a converter in the <code>DogEngine</code>, you can use the <code>registerAutomatic</code> method to
+register converter and also link both the structure and it's associated type.  </p>
+<p>To <strong>only</strong> register the converter for a <strong>specific type</strong>, use <code>registerAssociatedConverter</code>.<br />
+To <strong>only</strong> register a <strong>structure</strong>, use <code>registerStructure</code>.<br />
+To <strong>only</strong> register a converter, <strong>without associating</strong> it with a type, use <code>registerShelvedConverter</code>.</p>
+</div>
+<h2 id="collections-and-generic-types">Collections and generic types</h2>
+<p>For custom collections and generic types, you need to create a <code>TreeBaseConverterFactory</code>. This
+is relatively easy, refer to <a href="/advanced/tree_converters">Tree Converters</a> for more information.</p>
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1003,10 +1137,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "/", "features": ["content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.path", "navigation.sections", "attr_list"], "search": "/assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.path", "navigation.sections", "attr_list"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="/assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
     
   </body>
