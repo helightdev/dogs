@@ -43,11 +43,11 @@ class DogEngine {
   final Map<Type, DogConverter> _runtimeTreeConverterCache = HashMap();
 
   final Map<Type, TreeBaseConverterFactory> _treeBaseFactories = {
-    List: ListTreeBaseConverterFactory(),
-    Iterable: ListTreeBaseConverterFactory(),
-    Set: SetTreeBaseConverterFactory(),
-    Map: MapTreeBaseConverterFactory(),
-    Optional: OptionalTreeBaseConverterFactory()
+    List: DefaultTreeBaseFactories.list,
+    Iterable: DefaultTreeBaseFactories.iterable,
+    Set: DefaultTreeBaseFactories.set,
+    Map: DefaultTreeBaseFactories.map,
+    Optional: DefaultTreeBaseFactories.optional
   };
 
   final List<DogEngine> _children = [];
@@ -137,7 +137,9 @@ class DogEngine {
     populateChange();
   }
 
-  //TODO: Fix/Check forks for operations
+  /// Creates a new [DogEngine] instance that is a child of this instance.
+  /// The [DogNativeCodec] will be inherited from this instance but can be
+  /// overridden by supplying a [codec].
   DogEngine fork({DogNativeCodec? codec}) {
     DogEngine forked =
         DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
@@ -145,6 +147,9 @@ class DogEngine {
     return forked;
   }
 
+  /// Populates an engine change to all children.
+  /// This will cause all children to rebuild their cache and emit a change
+  /// events to their children.
   void populateChange() {
     reset(); // After a change we need to reset the cache
     for (var child in _children) {
@@ -157,6 +162,7 @@ class DogEngine {
     }
   }
 
+  /// Closes this [DogEngine] instance and unregisters it from its parent.
   void close() {
     clear();
     _children.clear();
@@ -180,14 +186,17 @@ class DogEngine {
         ..._converters,
       ]);
 
+  /// Returns the annotation override for the given [id] or null if not present.
   String? findAnnotationTranslation(String id) {
     return _annotationTranslations[id] ??
         _parent?.findAnnotationTranslation(id);
   }
 
   /// Returns the [DogStructure] associated with [type].
-  DogStructure? findStructureByType(Type type) =>
-      _structures[type] ?? _parent?.findStructureByType(type);
+  DogStructure? findStructureByType(Type type) {
+    var structure = _structures[type];
+    return structure ?? _parent?.findStructureByType(type);
+  }
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   /// or null if not present.
@@ -259,6 +268,8 @@ class DogEngine {
     if (emitChangeToStream) populateChange();
   }
 
+  /// Registers a [DogStructure] in this [DogEngine] instance and emits a event
+  /// to the change stream if [emitChangeToStream] is true.
   void registerStructure(DogStructure structure,
       {bool emitChangeToStream = true, Type? type}) {
     _structures[type ?? structure.typeArgument] = structure;
@@ -266,7 +277,7 @@ class DogEngine {
   }
 
   /// Registers a [OperationModeFactory] in this [DogEngine] instance and emits
-  /// a event to the change stream.
+  /// a event to the change stream if [emitChangeToStream] is true.
   void registerModeFactory(OperationModeFactory factory,
       {bool emitChangeToStream = true, Type? type}) {
     _modeFactories[type ?? factory.typeArgument] = factory;
@@ -282,15 +293,20 @@ class DogEngine {
     populateChange();
   }
 
+  /// Registers and associates a single [TreeBaseConverterFactory] with [Type].
   void registerTreeBaseFactory(Type type, TreeBaseConverterFactory factory) {
     _treeBaseFactories[type] = factory;
   }
 
+  /// Registers multiple tree base factories using [registerTreeBaseFactory].
   void registerAllTreeBaseFactories(
       Iterable<MapEntry<Type, TreeBaseConverterFactory>> entries) {
     _treeBaseFactories.addAll(Map.fromEntries(entries));
   }
 
+  /// Returns the [DogConverter] for the given [tree].
+  /// If [allowPolymorphic] is true, the returned converter may contain
+  /// polymorphic converters if any type tree terminals are not concrete.
   DogConverter getTreeConverter(TypeTree tree, [bool allowPolymorphic = true]) {
     var cachedConverter =
         _runtimeTreeConverterCache[tree.qualified.typeArgument];
@@ -384,6 +400,9 @@ class DogEngine {
     return operation.validate(value, this);
   }
 
+  /// Validates the supplied [value] using the [ValidationMode] mapped to the
+  /// [value]s runtime type or [type] if specified. The resulting [AnnotationResult]
+  /// contains all error messages that were generated during validation.
   AnnotationResult validateAnnotated(dynamic value, [Type? type]) {
     var queryType = type ?? value.runtimeType;
     var operation = _validation.forTypeNullable(queryType, this);
