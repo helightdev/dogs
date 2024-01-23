@@ -26,12 +26,10 @@ class StructureHarbinger<T> {
       fieldConverters;
 
   StructureHarbinger(this.structure, this.engine) {
-    fieldConverters = structure.fields
-        .map((e) {
-          var fieldConverter = getConverter(engine, e);
-          return (field: e, converter: fieldConverter);
-        })
-        .toList();
+    fieldConverters = structure.fields.map((e) {
+      var fieldConverter = getConverter(engine, e);
+      return (field: e, converter: fieldConverter);
+    }).toList();
   }
 
   @internal

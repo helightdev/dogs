@@ -32,24 +32,30 @@ void main() {
       }
     ]);
     var data = <String, dynamic>{"_rev": 0};
-    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(
+        data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(
+        null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["_rev"], 3);
     expect(data["a"], true);
     expect(data["b"], true);
     expect(data["c"], true);
 
     data = <String, dynamic>{"_rev": 1};
-    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(
+        data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(
+        null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["_rev"], 3);
     expect(data["a"], null);
     expect(data["b"], true);
     expect(data["c"], true);
 
     data = <String, dynamic>{"_rev": 3};
-    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(
+        data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(
+        null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["_rev"], 3);
     expect(data["a"], null);
     expect(data["b"], null);
@@ -58,19 +64,21 @@ void main() {
 
   test("Lightweight Migration", () {
     var versioned = LightweightMigration([
-          (_, __, ___) {
+      (_, __, ___) {
         _["a"] = true;
       },
-          (_, __, ___) {
+      (_, __, ___) {
         _["b"] = true;
       },
-          (_, __, ___) {
+      (_, __, ___) {
         _["c"] = true;
       }
     ]);
     var data = <String, dynamic>{};
-    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(
+        data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(
+        null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["a"], true);
     expect(data["b"], true);
     expect(data["c"], true);

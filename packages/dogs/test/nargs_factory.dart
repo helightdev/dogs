@@ -22,30 +22,35 @@ void main() {
   test("NArgs Factory", () {
     DogEngine engine = DogEngine();
     engine.setSingleton();
-    var treeBaseConverterFactory = TreeBaseConverterFactory.createNargsFactory<MyNargContainer>(
+    var treeBaseConverterFactory =
+        TreeBaseConverterFactory.createNargsFactory<MyNargContainer>(
       nargs: 3,
-      consume: <A,B,C>() => MyNargContainerConverter<A,B,C>(),
+      consume: <A, B, C>() => MyNargContainerConverter<A, B, C>(),
     );
     engine.registerTreeBaseFactory(MyNargContainer, treeBaseConverterFactory);
     var converter = treeBaseConverterFactory.getConverter(
-    QualifiedTypeTreeN<MyNargContainer<String,int,bool>, MyNargContainer>([
-      QualifiedTerminal<String>(),
-      QualifiedTerminal<int>(),
-      QualifiedTerminal<bool>(),
-    ]), engine, false);
-    var nativeSerialization = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
+        QualifiedTypeTreeN<MyNargContainer<String, int, bool>,
+            MyNargContainer>([
+          QualifiedTerminal<String>(),
+          QualifiedTerminal<int>(),
+          QualifiedTerminal<bool>(),
+        ]),
+        engine,
+        false);
+    var nativeSerialization =
+        engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
     var mapValue = {
       "a": "Hello",
       "b": 42,
       "c": true,
     };
     var value = nativeSerialization.deserialize(mapValue, engine);
-    expect(value, MyNargContainer<String,int,bool>("Hello", 42, true));
+    expect(value, MyNargContainer<String, int, bool>("Hello", 42, true));
     expect(nativeSerialization.serialize(value, engine), mapValue);
   });
 }
 
-class MyNargContainer<A,B,C> {
+class MyNargContainer<A, B, C> {
   final A a;
   final B b;
   final C c;
@@ -67,11 +72,11 @@ class MyNargContainer<A,B,C> {
   int get hashCode => a.hashCode ^ b.hashCode ^ c.hashCode;
 }
 
-class MyNargContainerConverter<A,B,C> extends NTreeArgConverter<MyNargContainer> {
-
+class MyNargContainerConverter<A, B, C>
+    extends NTreeArgConverter<MyNargContainer> {
   @override
   MyNargContainer deserialize(value, DogEngine engine) {
-    return MyNargContainer<A,B,C>(
+    return MyNargContainer<A, B, C>(
       deserializeArg(value["a"], 0, engine),
       deserializeArg(value["b"], 1, engine),
       deserializeArg(value["c"], 2, engine),

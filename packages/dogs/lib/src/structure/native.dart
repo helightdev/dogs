@@ -133,7 +133,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
     if (value is! Map) throw Exception("Expected a map");
     var args = <dynamic>[];
     if (hasHooks) {
-      var clonedMap = Map<String,dynamic>.from(value);
+      var clonedMap = Map<String, dynamic>.from(value);
       for (var hook in _hooks) {
         hook.beforeDeserialization(clonedMap, structure, engine);
       }

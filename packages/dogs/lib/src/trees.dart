@@ -22,7 +22,6 @@ part 'trees/defaults.dart';
 
 /// A factory for [DogConverter]s that are derived from a [TypeTree].
 abstract class TreeBaseConverterFactory {
-
   /// Resolves the converter for a [tree].
   /// [allowPolymorphic] defines if the returned converter may be a
   /// [PolymorphicConverter]. This property must be respected by the
@@ -65,7 +64,8 @@ abstract class TreeBaseConverterFactory {
   static TreeBaseConverterFactory createIterableFactory<BASE>({
     required BASE Function<T>(Iterable<T> entries) wrap,
     required Iterable Function<T>(BASE value) unwrap,
-  }) => _IterableTreeBaseConverterFactory<BASE>(wrap, unwrap);
+  }) =>
+      _IterableTreeBaseConverterFactory<BASE>(wrap, unwrap);
 
   /// Creates a factory for a [BASE] type that has [nargs] type arguments.
   /// The [consume] function is called with the type arguments in order and must
@@ -80,5 +80,6 @@ abstract class TreeBaseConverterFactory {
   static TreeBaseConverterFactory createNargsFactory<BASE>({
     required int nargs,
     required Function consume,
-  }) => _NargsTreeBaseConverterFactory<BASE>(nargs, consume);
+  }) =>
+      _NargsTreeBaseConverterFactory<BASE>(nargs, consume);
 }

@@ -17,46 +17,44 @@
 part of '../trees.dart';
 
 class DefaultTreeBaseFactories {
-
   static final list = TreeBaseConverterFactory.createIterableFactory<List>(
-      wrap: <T>(Iterable<T> entries) => entries.toList(),
-      unwrap: <T>(List value) => value,
+    wrap: <T>(Iterable<T> entries) => entries.toList(),
+    unwrap: <T>(List value) => value,
   );
 
   static final set = TreeBaseConverterFactory.createIterableFactory<Set>(
-      wrap: <T>(Iterable<T> entries) => entries.toSet(),
-      unwrap: <T>(Set value) => value,
+    wrap: <T>(Iterable<T> entries) => entries.toSet(),
+    unwrap: <T>(Set value) => value,
   );
 
-  static final iterable = TreeBaseConverterFactory.createIterableFactory<Iterable>(
-      wrap: <T>(Iterable<T> entries) => entries,
-      unwrap: <T>(Iterable value) => value,
+  static final iterable =
+      TreeBaseConverterFactory.createIterableFactory<Iterable>(
+    wrap: <T>(Iterable<T> entries) => entries,
+    unwrap: <T>(Iterable value) => value,
   );
 
   static final map = TreeBaseConverterFactory.createNargsFactory<Map>(
-      nargs: 2, consume: <K, V>() => MapNTreeArgConverter<K, V>()
-  );
+      nargs: 2, consume: <K, V>() => MapNTreeArgConverter<K, V>());
 
   static final optional = TreeBaseConverterFactory.createNargsFactory<Optional>(
-      nargs: 1, consume: <T>() => OptionalNTreeArgConverter<T>()
-  );
+      nargs: 1, consume: <T>() => OptionalNTreeArgConverter<T>());
 }
 
-class MapNTreeArgConverter<K,V> extends NTreeArgConverter<Map> {
+class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   @override
   Map deserialize(value, DogEngine engine) {
-    return (value as Map).map<K,V>((key, value) => MapEntry<K,V>(
-        deserializeArg(key, 0, engine),
-        deserializeArg(value, 1, engine),
-    ));
+    return (value as Map).map<K, V>((key, value) => MapEntry<K, V>(
+          deserializeArg(key, 0, engine),
+          deserializeArg(value, 1, engine),
+        ));
   }
 
   @override
   serialize(Map value, DogEngine engine) {
     return value.map((key, value) => MapEntry(
-        serializeArg(key, 0, engine),
-        serializeArg(value, 1, engine),
-    ));
+          serializeArg(key, 0, engine),
+          serializeArg(value, 1, engine),
+        ));
   }
 }
 

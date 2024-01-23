@@ -16,26 +16,27 @@
 
 part of '../trees.dart';
 
-
 class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
-
   final BASE Function<T>(Iterable<T> entries) wrap;
   final Iterable Function<T>(BASE value) unwrap;
 
   _IterableTreeBaseConverterFactory(this.wrap, this.unwrap);
 
   @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
+  DogConverter getConverter(
+      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
+    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
+        tree, engine, allowPolymorphic);
     if (argumentConverters.length > 1) {
       throw ArgumentError("Lists can only have one generic type argument");
     }
-    return _IterableTreeBaseConverter<BASE>(this, argumentConverters.first, tree.arguments.first);
+    return _IterableTreeBaseConverter<BASE>(
+        this, argumentConverters.first, tree.arguments.first);
   }
 }
 
-class _IterableTreeBaseConverter<BASE> extends DogConverter with IterableTreeBaseConverterMixin {
-
+class _IterableTreeBaseConverter<BASE> extends DogConverter
+    with IterableTreeBaseConverterMixin {
   _IterableTreeBaseConverterFactory<BASE> factory;
 
   @override
@@ -44,7 +45,8 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter with IterableTreeBas
   @override
   TypeTree itemSubtree;
 
-  _IterableTreeBaseConverter(this.factory, this.converter, this.itemSubtree) : super(keepIterables: true);
+  _IterableTreeBaseConverter(this.factory, this.converter, this.itemSubtree)
+      : super(keepIterables: true);
 
   @override
   iterableCreator<T>(Iterable entries) {
@@ -56,7 +58,6 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter with IterableTreeBas
     return factory.unwrap<T>(value as BASE);
   }
 }
-
 
 class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
     with TypeCaptureMixin<dynamic> {
@@ -74,14 +75,14 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
   @override
   deserialize(value, DogEngine engine) {
     var entries =
-    (value as Iterable).map((e) => operation.deserialize(e, engine));
+        (value as Iterable).map((e) => operation.deserialize(e, engine));
     return mixin.create(entries);
   }
 
   @override
   serialize(value, DogEngine engine) {
     var entries =
-    mixin.destruct(value).map((e) => operation.serialize(e, engine));
+        mixin.destruct(value).map((e) => operation.serialize(e, engine));
     return entries.toList();
   }
 }

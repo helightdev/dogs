@@ -14,36 +14,38 @@
  *    limitations under the License.
  */
 
-import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 /// `SerializationHook` is an abstract class that implements `StructureMetadata`.
 /// It provides two methods for handling serialization and deserialization events.
-/// 
+///
 /// Serialization hooks are by default only used by [NativeSerializerMode] and descendants.
 abstract class SerializationHook implements StructureMetadata {
   /// Default constructor for `SerializationHook`.
   const SerializationHook();
 
   /// This method is called after an object is serialized by [NativeSerializerMode].
-  /// 
+  ///
   /// It takes four parameters:
   /// - `obj`: The object that has been serialized.
   /// - `map`: The map representation of the serialized object.
   /// - `structure`: The `DogStructure` instance associated with the serialized object.
   /// - `engine`: The `DogEngine` instance that performed the serialization.
-  void postSerialization(dynamic obj, Map<String, dynamic> map, DogStructure structure, DogEngine engine) {}
+  void postSerialization(dynamic obj, Map<String, dynamic> map,
+      DogStructure structure, DogEngine engine) {}
 
   /// This method is called before a map is deserialized by [NativeSerializerMode].
-  /// 
+  ///
   /// It takes three parameters:
   /// - `map`: The map representation of the object to be deserialized.
   /// - `structure`: The `DogStructure` instance associated with the object to be deserialized.
   /// - `engine`: The `DogEngine` instance that will perform the deserialization.
-  void beforeDeserialization(Map<String, dynamic> map, DogStructure structure, DogEngine engine) {}
+  void beforeDeserialization(
+      Map<String, dynamic> map, DogStructure structure, DogEngine engine) {}
 }
 
-typedef MigrationFunction = Function(Map<String, dynamic> map, DogStructure structure, DogEngine engine);
+typedef MigrationFunction = Function(
+    Map<String, dynamic> map, DogStructure structure, DogEngine engine);
 
 /// `LightweightMigration` is a class that extends `SerializationHook`.
 /// It provides a lightweight way to handle migrations by executing a list of migration functions before deserialization.
@@ -51,7 +53,6 @@ typedef MigrationFunction = Function(Map<String, dynamic> map, DogStructure stru
 /// The class has one property:
 /// - `functions`: A list of migration functions to be executed before deserialization.
 class LightweightMigration extends SerializationHook {
-  
   /// The list of migration functions to be executed before deserialization.
   final List<MigrationFunction> migrations;
 
@@ -59,10 +60,11 @@ class LightweightMigration extends SerializationHook {
   ///
   /// Takes a list of migration functions as a parameter.
   const LightweightMigration(this.migrations);
-  
+
   /// Executes each migration function in the `migrations` list before deserialization.
   @override
-  void beforeDeserialization(Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
+  void beforeDeserialization(
+      Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
     for (var value in migrations) {
       value(map, structure, engine);
     }
@@ -82,7 +84,7 @@ class LightweightMigration extends SerializationHook {
 class RevisionMigration extends SerializationHook {
   /// The key for the revision number in the serialized object.
   final String revisionKey;
-  
+
   /// The list of migration functions to be executed before deserialization and after serialization.
   final List<MigrationFunction> migrations;
 
@@ -90,11 +92,12 @@ class RevisionMigration extends SerializationHook {
   ///
   /// Takes a list of migration functions and an optional revision key as parameters.
   const RevisionMigration(this.migrations, {this.revisionKey = "_rev"});
-  
-  /// Executes each migration function in the `migrations` list that corresponds to 
+
+  /// Executes each migration function in the `migrations` list that corresponds to
   /// a version number greater than or equal to the current version.
   @override
-  void beforeDeserialization(Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
+  void beforeDeserialization(
+      Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
     final version = map[revisionKey] as int? ?? 0;
     for (var i = version; i < migrations.length; i++) {
       if (i >= version) {
@@ -102,10 +105,11 @@ class RevisionMigration extends SerializationHook {
       }
     }
   }
-  
+
   /// Updates the revision number in the serialized object to the number of migration functions.
   @override
-  void postSerialization(dynamic obj, Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
+  void postSerialization(dynamic obj, Map<String, dynamic> map,
+      DogStructure structure, DogEngine engine) {
     map[revisionKey] = migrations.length;
   }
 }

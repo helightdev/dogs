@@ -37,7 +37,6 @@ class Serializable {
   const Serializable();
 }
 
-
 /// Marks a library import as dogs serializable.
 ///
 /// All types defined inside or exported by the library will be considered
@@ -119,18 +118,16 @@ class PropertySerializer {
 /// Simple converter base that only requires a [serialize] and [deserialize]
 /// method. Automatically adds [NativeSerializerMode] and [GraphSerializerMode]s,
 /// as well as a synthetic [DogStructure] with the given [serialName].
-abstract class SimpleDogConverter<T> extends DogConverter<T> with OperationMapMixin<T> {
-
-  SimpleDogConverter({required String serialName}) : super(struct: DogStructure<T>.synthetic(serialName));
+abstract class SimpleDogConverter<T> extends DogConverter<T>
+    with OperationMapMixin<T> {
+  SimpleDogConverter({required String serialName})
+      : super(struct: DogStructure<T>.synthetic(serialName));
 
   @override
-  Map<Type, OperationMode<T> Function()> get modes =>
-      {
-        NativeSerializerMode: () =>
-            NativeSerializerMode.create(
-                serializer: (value, engine) => serialize(value, engine),
-                deserializer: (value, engine) => deserialize(value, engine)
-            ),
+  Map<Type, OperationMode<T> Function()> get modes => {
+        NativeSerializerMode: () => NativeSerializerMode.create(
+            serializer: (value, engine) => serialize(value, engine),
+            deserializer: (value, engine) => deserialize(value, engine)),
         GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
