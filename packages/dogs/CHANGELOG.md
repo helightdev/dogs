@@ -1,3 +1,19 @@
+## 8.0.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: reformat code.
+ - **REFACTOR**: append runtime time to error message for easier debugging.
+ - **REFACTOR**: export hooks.
+ - **FIX**: use qualified type for native check, not the serial type.
+ - **FEAT**: add SimpleDogConverter to reduce a bit of boilerplate code.
+ - **FEAT**: add serializable library.
+ - **FEAT**: add simple createIterableFactory api method.
+ - **FEAT**: add native serializer hooks.
+ - **DOCS**: add docs for SimpleDogConverter.
+ - **DOCS**: add missing documentation for new methods.
+ - **BREAKING** **FEAT**: add simplified type tree system and remove old internal implementations.
+
 ## 7.2.2
 
  - **REFACTOR**: reformat code and remove some unused variables.

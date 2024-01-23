@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-01-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_built` - `v2.0.0`](#dogs_built---v200)
+ - [`dogs_core` - `v8.0.0`](#dogs_core---v800)
+
+Packages with other changes:
+
+ - [`dogs_forms` - `v0.1.0+3`](#dogs_forms---v0103)
+ - [`dogs_generator` - `v5.1.0`](#dogs_generator---v510)
+ - [`dogs_firestore` - `v0.0.2+3`](#dogs_firestore---v0023)
+ - [`dogs_cbor` - `v2.0.28`](#dogs_cbor---v2028)
+ - [`dogs_toml` - `v2.0.28`](#dogs_toml---v2028)
+ - [`dogs_yaml` - `v2.0.28`](#dogs_yaml---v2028)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.0.2+3`
+ - `dogs_cbor` - `v2.0.28`
+ - `dogs_toml` - `v2.0.28`
+ - `dogs_yaml` - `v2.0.28`
+
+---
+
+#### `dogs_built` - `v2.0.0`
+
+ - **FEAT**: add structure support for built_types.
+ - **BREAKING** **FEAT**: implement the improved built_value support library.
+
+#### `dogs_core` - `v8.0.0`
+
+ - **REFACTOR**: reformat code.
+ - **REFACTOR**: append runtime time to error message for easier debugging.
+ - **REFACTOR**: export hooks.
+ - **FIX**: use qualified type for native check, not the serial type.
+ - **FEAT**: add SimpleDogConverter to reduce a bit of boilerplate code.
+ - **FEAT**: add serializable library.
+ - **FEAT**: add simple createIterableFactory api method.
+ - **FEAT**: add native serializer hooks.
+ - **DOCS**: add docs for SimpleDogConverter.
+ - **DOCS**: add missing documentation for new methods.
+ - **BREAKING** **FEAT**: add simplified type tree system and remove old internal implementations.
+
+#### `dogs_forms` - `v0.1.0+3`
+
+ - **REFACTOR**: change to new field name.
+
+#### `dogs_generator` - `v5.1.0`
+
+ - **FIX**: log an severe error when a user tries to use class level generics.
+ - **FIX**: classes implementing core iterables shouldn't be treated as core iterables.
+ - **FIX**: use aliased identifier.
+ - **FEAT**: add structure support for built_types.
+
+
 ## 2024-01-14
 
 ### Changes

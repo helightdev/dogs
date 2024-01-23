@@ -1,3 +1,10 @@
+## 2.0.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: add structure support for built_types.
+ - **BREAKING** **FEAT**: implement the improved built_value support library.
+
 ## 1.0.9
 
  - Update a dependency to the latest release.

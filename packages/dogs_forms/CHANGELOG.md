@@ -1,3 +1,7 @@
+## 0.1.0+3
+
+ - **REFACTOR**: change to new field name.
+
 ## 0.1.0+2
 
  - **FIX**: remove debug print and use instantValue instead of value.

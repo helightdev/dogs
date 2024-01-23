@@ -1,3 +1,10 @@
+## 5.1.0
+
+ - **FIX**: log an severe error when a user tries to use class level generics.
+ - **FIX**: classes implementing core iterables shouldn't be treated as core iterables.
+ - **FIX**: use aliased identifier.
+ - **FEAT**: add structure support for built_types.
+
 ## 5.0.13
 
  - Update a dependency to the latest release.
