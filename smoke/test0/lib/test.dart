@@ -152,6 +152,7 @@ void testModels() {
   testSingleModel<ModelG>(ModelG.variant0, ModelG.variant1);
   testSingleModel<Note>(Note.variant0, Note.variant1);
   testSingleModel<DeepPolymorphic>(DeepPolymorphic.variant0, DeepPolymorphic.variant1);
+  testSingleModel<CustomBaseImpl>(CustomBaseImpl.variant0, CustomBaseImpl.variant1);
 }
 
 void testConformities() {

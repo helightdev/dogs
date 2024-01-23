@@ -15,6 +15,7 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/validation/length.dart';
 import 'package:smoke_test_0/special.dart';
 
 abstract class ABInterface {}
@@ -232,4 +233,47 @@ class DeepPolymorphic with Dataclass<DeepPolymorphic> {
       }
     });
   }
+}
+
+abstract class CustomBase {
+
+  // This should also be copied!
+  @PropertyName("_id")
+  final String id;
+
+  const CustomBase({
+    required this.id,
+  });
+}
+
+abstract class SecondLevelBase extends CustomBase {
+
+  @LengthRange(max: 100)
+  final String name;
+
+  const SecondLevelBase({
+    required super.id,
+    required this.name,
+  });
+}
+
+@serializable
+class CustomBaseImpl extends SecondLevelBase with Dataclass<CustomBaseImpl> {
+
+  final String tag;
+
+  CustomBaseImpl({
+    required super.id,
+    required super.name,
+    required this.tag,
+  });
+
+  factory CustomBaseImpl.variant0() {
+    return CustomBaseImpl(id: "id0", name: "Bert", tag: "tag");
+  }
+
+  factory CustomBaseImpl.variant1() {
+    return CustomBaseImpl(id: "id1", name: "Helga", tag: "tag");
+  }
+
 }
