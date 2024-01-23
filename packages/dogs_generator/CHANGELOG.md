@@ -1,3 +1,8 @@
+## 5.1.1
+
+ - **REFACTOR**: remove long deprecated builder() method.
+ - **FIX**: support super formal fields.
+
 ## 5.1.0
 
  - **FIX**: log an severe error when a user tries to use class level generics.

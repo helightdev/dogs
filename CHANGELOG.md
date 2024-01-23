@@ -11,6 +11,28 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_generator` - `v5.1.1`](#dogs_generator---v511)
+
+---
+
+#### `dogs_generator` - `v5.1.1`
+
+ - **REFACTOR**: remove long deprecated builder() method.
+ - **FIX**: support super formal fields.
+
+
+## 2024-01-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`dogs_built` - `v2.0.0`](#dogs_built---v200)
  - [`dogs_core` - `v8.0.0`](#dogs_core---v800)
 
