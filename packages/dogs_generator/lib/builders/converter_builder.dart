@@ -312,19 +312,6 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
       var structureType =
           Reference(codeContext.cachedCounter.get(element.thisType));
       builder.on = structureType;
-      builder.methods.add(Method((builder) => builder
-        ..name = "builder"
-        ..returns = structureType
-        ..annotations
-            .add(CodeExpression(Code("Deprecated(\"Use rebuild() instead\")")))
-        ..requiredParameters.add(Parameter((builder) => builder
-          ..name = "func"
-          ..type = Reference("Function($builderName builder)")))
-        ..body = Code("""
-          var builder = $builderName(this);
-          func(builder);
-          return builder.build();
-          """)));
 
       builder.methods.add(Method((builder) => builder
         ..name = "rebuild"
