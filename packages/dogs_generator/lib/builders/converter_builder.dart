@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
+import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
@@ -103,8 +105,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     }
   }
 
-  static void writeBeanFactory(ClassElement element, StructurizeResult structurized,
-      SubjectCodeContext codeContext) {
+  static void writeBeanFactory(ClassElement element,
+      StructurizeResult structurized, SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var factoryName = "${element.name}Factory";
     var clazz = Class((builder) {
@@ -140,12 +142,21 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var clazz = Class((builder) {
       builder.name = converterName;
 
+      bool hasGenericTypeVariables = element.thisType.typeArguments.isNotEmpty;
+      if (hasGenericTypeVariables) {
+        log.severe("""
+Generic type variables for models are not supported.
+If you wish to use class-level generics, please implement a TreeBaseConverterFactory for your base type.
+        """.trim());
+      }
+
+      var referencedClassName = codeContext.className(element);
       builder.extend = Reference(
           "$genAlias.DefaultStructureConverter<${codeContext.className(element)}>");
 
       builder.constructors.add(Constructor((constr) => constr
-        ..initializers.add(Code("super(struct: const ${structurized.structure.code(structurized.fieldNames.map((e) => "_\$$e").toList())})"))
-      ));
+        ..initializers.add(Code(
+            "super(struct: const ${structurized.structure.code(structurized.fieldNames.map((e) => "_\$$e").toList())})"))));
 
       _defaultProxyMethods(structurized, builder, codeContext, element);
 
@@ -298,7 +309,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var builderName = "${element.name}Builder";
     var clazz = Extension((builder) {
       builder.name = extensionName;
-      var structureType = Reference(codeContext.cachedCounter.get(element.thisType));
+      var structureType =
+          Reference(codeContext.cachedCounter.get(element.thisType));
       builder.on = structureType;
       builder.methods.add(Method((builder) => builder
         ..name = "builder"
