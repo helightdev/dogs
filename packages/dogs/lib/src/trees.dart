@@ -16,7 +16,18 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:meta/meta.dart';
 
+part 'trees/iterables.dart';
+part 'trees/nargs.dart';
+part 'trees/defaults.dart';
+
+/// A factory for [DogConverter]s that are derived from a [TypeTree].
 abstract class TreeBaseConverterFactory {
+
+  /// Resolves the converter for a [tree].
+  /// [allowPolymorphic] defines if the returned converter may be a
+  /// [PolymorphicConverter]. This property must be respected by the
+  /// implementation of this method and should be passed on to child
+  /// converters.
   DogConverter getConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic);
 
@@ -24,6 +35,7 @@ abstract class TreeBaseConverterFactory {
   static final PolymorphicConverter polymorphicConverter =
       PolymorphicConverter();
 
+  /// Returns the converter for a [tree].
   static DogConverter treeConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     if (tree.isTerminal && tree.qualified.typeArgument == dynamic) {
@@ -32,293 +44,41 @@ abstract class TreeBaseConverterFactory {
     return engine.getTreeConverter(tree, allowPolymorphic);
   }
 
+  /// Returns a list of converters for the type arguments of a [tree].
+  /// If [allowPolymorphic] is true, the returned converters may be
+  /// [PolymorphicConverter]s.
+  ///
+  /// This is a helper method for custom implementations of
+  /// [TreeBaseConverterFactory].
   static List<DogConverter> argumentConverters(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     return tree.arguments.map((e) {
       return treeConverter(e, engine, allowPolymorphic);
     }).toList();
   }
-  
+
+  /// Creates a factory for a [BASE] type that is representable by an iterable.
+  /// The [wrap] function is called with an iterable of the type argument and
+  /// must return an instance of [BASE]. The [unwrap] function is the inverse
+  /// of [wrap] and must transform a [BASE] instance into an iterable of the
+  /// type argument.
   static TreeBaseConverterFactory createIterableFactory<BASE>({
     required BASE Function<T>(Iterable<T> entries) wrap,
     required Iterable Function<T>(BASE value) unwrap,
   }) => _IterableTreeBaseConverterFactory<BASE>(wrap, unwrap);
-}
 
-class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
-
-  final BASE Function<T>(Iterable<T> entries) wrap;
-  final Iterable Function<T>(BASE value) unwrap;
-
-  _IterableTreeBaseConverterFactory(this.wrap, this.unwrap);
-
-  @override
-  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
-    if (argumentConverters.length > 1) {
-      throw ArgumentError("Lists can only have one generic type argument");
-    }
-    return _IterableTreeBaseConverter<BASE>(this, argumentConverters.first, tree);
-  }
-}
-
-class _IterableTreeBaseConverter<BASE> extends DogConverter with IterableTreeBaseConverterMixin {
-
-  _IterableTreeBaseConverterFactory<BASE> factory;
-
-  @override
-  DogConverter converter;
-
-  @override
-  TypeTree tree;
-
-  _IterableTreeBaseConverter(this.factory, this.converter, this.tree) : super(keepIterables: true);
-
-  @override
-  iterableCreator<T>(Iterable entries) {
-    return factory.wrap<T>(entries.cast<T>());
-  }
-
-  @override
-  Iterable iterableDestructor<T>(value) {
-    return factory.unwrap<T>(value as BASE);
-  }
-}
-
-
-class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
-    with TypeCaptureMixin<dynamic> {
-  IterableTreeBaseConverterMixin mixin;
-  IterableTreeNativeOperation(this.mixin);
-
-  late NativeSerializerMode operation;
-
-  @override
-  void initialise(DogEngine engine) {
-    operation = engine.modeRegistry.nativeSerialization
-        .forConverter(mixin.converter, engine);
-  }
-
-  @override
-  deserialize(value, DogEngine engine) {
-    var entries =
-        (value as Iterable).map((e) => operation.deserialize(e, engine));
-    return mixin.create(entries);
-  }
-
-  @override
-  serialize(value, DogEngine engine) {
-    var entries =
-        mixin.destruct(value).map((e) => operation.serialize(e, engine));
-    return entries.toList();
-  }
-}
-
-mixin IterableTreeBaseConverterMixin on DogConverter {
-  TypeTree get tree;
-  DogConverter get converter;
-
-  dynamic iterableCreator<T>(Iterable entries);
-  Iterable iterableDestructor<T>(dynamic value);
-
-  dynamic create(Iterable entries) =>
-      tree.qualified.consumeTypeArg(iterableCreator, entries);
-  Iterable destruct(dynamic value) =>
-      tree.qualified.consumeTypeArg(iterableDestructor, value);
-
-  @override
-  OperationMode<dynamic>? resolveOperationMode(Type opmodeType) {
-    if (opmodeType == NativeSerializerMode) {
-      return IterableTreeNativeOperation(this);
-    }
-    if (opmodeType == GraphSerializerMode) {
-      return GraphSerializerMode.auto(this);
-    }
-    return null;
-  }
-}
-
-class ListTreeBaseConverterFactory extends TreeBaseConverterFactory {
-  @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
-    if (argumentConverters.length > 1) {
-      throw ArgumentError("Lists can only have one generic type argument");
-    }
-    return ListTreeBaseConverter(
-        argumentConverters.first, tree.arguments.first);
-  }
-}
-
-class SetTreeBaseConverterFactory extends TreeBaseConverterFactory {
-  @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
-    if (argumentConverters.length > 1) {
-      throw ArgumentError("Lists can only have one generic type argument");
-    }
-    return SetTreeBaseConverter(argumentConverters.first, tree.arguments.first);
-  }
-}
-
-class IterableTreeBaseConverterFactory extends TreeBaseConverterFactory {
-  @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
-    if (argumentConverters.length > 1) {
-      throw ArgumentError("Lists can only have one generic type argument");
-    }
-    return ListTreeBaseConverter(
-        argumentConverters.first, tree.arguments.first);
-  }
-}
-
-class MapTreeBaseConverterFactory extends TreeBaseConverterFactory {
-  @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
-    if (argumentConverters.length > 2 || argumentConverters.length < 2) {
-      throw ArgumentError("Lists can only have two generic type arguments");
-    }
-    return MapTreeBaseConverter(
-        argumentConverters[0], argumentConverters[1], tree);
-  }
-}
-
-class ListTreeBaseConverter extends DogConverter
-    with IterableTreeBaseConverterMixin {
-  @override
-  DogConverter converter;
-
-  @override
-  TypeTree tree;
-
-  ListTreeBaseConverter(this.converter, this.tree) : super(keepIterables: true);
-
-  @override
-  iterableCreator<T>(Iterable<dynamic> entries) {
-    return entries.toList().cast<T>();
-  }
-
-  @override
-  Iterable iterableDestructor<T>(value) => value;
-
-  @override
-  String toString() {
-    return 'ListTypeTreeConverter{converter: $converter, tree: $tree}';
-  }
-}
-
-class SetTreeBaseConverter extends DogConverter
-    with IterableTreeBaseConverterMixin {
-  @override
-  DogConverter converter;
-
-  @override
-  TypeTree tree;
-
-  SetTreeBaseConverter(this.converter, this.tree) : super(keepIterables: true);
-
-  @override
-  iterableCreator<T>(Iterable<dynamic> entries) {
-    return entries.toSet().cast<T>();
-  }
-
-  @override
-  Iterable iterableDestructor<T>(value) => value;
-
-  @override
-  String toString() {
-    return 'SetTypeTreeConverter{converter: $converter, tree: $tree}';
-  }
-}
-
-class MapTreeBaseNativeOperation extends NativeSerializerMode<Map>
-    with TypeCaptureMixin<Map> {
-  MapTreeBaseConverter base;
-  MapTreeBaseNativeOperation(this.base);
-
-  late NativeSerializerMode opKey;
-  late NativeSerializerMode opVal;
-  late TypeContainer2 container;
-
-  Map _mapBuffer = {};
-
-  void castMapBuffer<K, V>() {
-    _mapBuffer = _mapBuffer.cast<K, V>();
-  }
-
-  Map finalizeMap(Map map, TypeContainer2 container) {
-    _mapBuffer = map;
-    container.consume(castMapBuffer);
-    return _mapBuffer;
-  }
-
-  @override
-  void initialise(DogEngine engine) {
-    opKey = engine.modeRegistry.nativeSerialization
-        .forConverter(base.keyConverter, engine);
-    opVal = engine.modeRegistry.nativeSerialization
-        .forConverter(base.valueConverter, engine);
-    container = TypeContainers.arg2(
-        base.tree.arguments[0].qualified, base.tree.arguments[1].qualified);
-  }
-
-  @override
-  Map deserialize(value, DogEngine engine) {
-    var convertedItems = (value as Map).map((key, value) => MapEntry(
-        opKey.deserialize(key, engine), opVal.deserialize(value, engine)));
-    return finalizeMap(convertedItems, container);
-  }
-
-  @override
-  serialize(Map value, DogEngine engine) {
-    var convertedItems = value.map((key, value) =>
-        MapEntry(opKey.serialize(key, engine), opVal.serialize(value, engine)));
-    return convertedItems;
-  }
-}
-
-class MapTreeBaseConverter extends DogConverter {
-  DogConverter keyConverter;
-  DogConverter valueConverter;
-  TypeTree tree;
-
-  MapTreeBaseConverter(this.keyConverter, this.valueConverter, this.tree);
-
-  @override
-  OperationMode<dynamic>? resolveOperationMode(Type opmodeType) {
-    if (opmodeType == NativeSerializerMode) {
-      return MapTreeBaseNativeOperation(this);
-    }
-    if (opmodeType == GraphSerializerMode) {
-      return GraphSerializerMode.auto(this);
-    }
-    return null;
-  }
-
-  Map _mapBuffer = {};
-
-  void castMapBuffer<K, V>() {
-    _mapBuffer = _mapBuffer.cast<K, V>();
-  }
-
-  Map finalizeMap(Map map, TypeContainer2 container) {
-    _mapBuffer = map;
-    container.consume(castMapBuffer);
-    return map;
-  }
-
-  @override
-  String toString() {
-    return 'MapTreeBaseNativeOperation{key: $keyConverter, value: $valueConverter, tree: $tree}';
-  }
+  /// Creates a factory for a [BASE] type that has [nargs] type arguments.
+  /// The [consume] function is called with the type arguments in order and must
+  /// return an instance of `NTreeArgConverter<BASE>`.
+  /// Example:
+  /// ```dart
+  /// TreeBaseConverterFactory.createNargsFactory<MyCollection>(
+  ///   nargs: 3,
+  ///   consume: <A,B,C>() => MyConverter<A,B,C>()
+  /// )
+  /// ```
+  static TreeBaseConverterFactory createNargsFactory<BASE>({
+    required int nargs,
+    required Function consume,
+  }) => _NargsTreeBaseConverterFactory<BASE>(nargs, consume);
 }
