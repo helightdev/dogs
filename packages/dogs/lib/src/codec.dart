@@ -46,7 +46,7 @@ class NoCodecPrimitiveCoercion implements CodecPrimitiveCoercion {
   @override
   dynamic coerce(TypeCapture expected, value, String? fieldName) {
     throw ArgumentError.value(value, fieldName,
-        "Can't coerce $value to expected ${expected.typeArgument}");
+        "Can't coerce $value(${value.runtimeType}) to expected ${expected.typeArgument}");
   }
 }
 
