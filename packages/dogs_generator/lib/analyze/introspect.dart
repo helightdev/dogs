@@ -44,13 +44,14 @@ Future<DartType> getSerialType(
 
 Future<IterableKind> getIterableType(
     DartType target, SubjectGenContext<Element> context) async {
-  if (_listChecker.isAssignableFromType(target)) {
+  var typeTree = getTypeTree(target);
+  if (_listChecker.isAssignableFromType(target) && typeTree.base.isDartCoreList) {
     return IterableKind.list;
   }
-  if (_setChecker.isAssignableFromType(target)) {
+  if (_setChecker.isAssignableFromType(target) && typeTree.base.isDartCoreSet) {
     return IterableKind.set;
   }
-  if (_iterableChecker.isAssignableFromType(target)) {
+  if (_iterableChecker.isAssignableFromType(target) && typeTree.base.isDartCoreIterable) {
     return IterableKind.list;
   }
   return IterableKind.none;
