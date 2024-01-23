@@ -127,7 +127,7 @@ conformities:
 
 ## Restrictions
 To make your serializable classes work with the serialization system, you must follow a few
-restrictions:
+restrictions (to read more about the restrictions, expand the region below).
 
 ??? failure "No Class-Level Generics"
     You cannot use generics on the class level. This is due to the fact that the generator
@@ -140,11 +140,15 @@ restrictions:
     represented by the structure format and make the overall system more unnecessarily complex and
     possible generated model schemas obscure.
 
-??? success "Types inside Field-Level Generics must be non-nullable -> Use `Optional<T>` instead"
+??? failure "Types inside Field-Generics can't be nullable"
     You cannot use generic field types with nullable type arguments, as the type tree does not
     store the nullability of the type arguments. If you require nullable items, consider using
-    the `Optional<T>` type instead, which is a wrapper for nullable types.  
-    **The root type of the field can be nullable!**
+    the `Optional<T>` type instead, which is a wrapper for nullable types.
+
+    In practice, this means that you can't use `List<String?>` but you can use `List<Optional<String>>`.
+  
+    **The root type of the field can be nullable!**  
+    `List<String>?` is perfectly fine without any changes.
 
 ??? success "All leaf types must be serializable"
     All fields of your serializable class must be **serializable recursively** themselves.

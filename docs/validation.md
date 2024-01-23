@@ -6,7 +6,7 @@ be applied as annotations to their corresponding class or field.
 
 ``` { .dart .annotate }
 @serializable
-class User {  
+class User with Dataclass<User>{  
   
   String name;
 
@@ -31,6 +31,7 @@ class User {
 5. The `@polymorphic` annotation is not a validator, but it is required for polymorphic
    serialization.
 
+## Built-in Validators
 === "Any"
 
     * `@validated`  
@@ -79,3 +80,22 @@ class User {
 
     * `@SizeRange()`  
     Specify upper and lower bounds for the iterables length using the min and max properties.
+
+## Runtime Validation
+Dataclasses can be easily validated at runtime using the `validate` method. This method
+will throw a `ValidationException` if the object is invalid. Otherwise, it will do nothing.
+
+If you want to validate an object without throwing an exception, you can use the `isValid`
+getter instead. It returns whether the object is valid or not.
+
+```dart title="Example (negative age)"
+var user = User("Alex", -999, [1, 2, 3], null);
+user.validate(); // Throws ValidationException
+user.isValid; // false
+```
+
+!!! info "Validation Messages"
+    To perform validation with error messages, you can use the `validateAnnotated` method of the
+    engine. This method will return a `AnnotationResult` instance that contains all messages.
+
+[Continue Reading! :material-arrow-right:](/polymorphism/){ .md-button .md-button--primary }

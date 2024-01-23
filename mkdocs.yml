@@ -25,10 +25,16 @@ nav:
       - projection.md
       - validation.md
       - polymorphism.md
+      - converters.md
   - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md
+      - advanced/operation_modes.md
+      - advanced/tree_converters.md
   - "Official Packages":
+      - "Built [dogs_built]":
+          - built/index.md
+          - built/start.md
       - "Forms [dogs_forms]":
           - forms/index.md
           - forms/start.md
