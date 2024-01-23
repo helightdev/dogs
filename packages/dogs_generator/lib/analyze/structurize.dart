@@ -119,11 +119,26 @@ Future<StructurizeResult> structurizeConstructor(
   }
 
   for (var e in constructorElement.parameters) {
-    var fieldName = e.name.replaceFirst("this.", "");
-    var field = element.getField(fieldName);
-    if (field == null) {
+    String? fieldName;
+    FieldElement? field;
+
+    if (e is FieldFormalParameterElement) {
+      field = e.field;
+      fieldName = e.name;
+    } else if (e is SuperFormalParameterElement) {
+      FieldFormalParameterElement resolveUntilFieldFormal(ParameterElement e) {
+        if (e is FieldFormalParameterElement) return e;
+        if (e is SuperFormalParameterElement) {
+          return resolveUntilFieldFormal(e.superConstructorParameter!);
+        }
+        throw Exception("Serializable constructors must only reference instance fields");
+      }
+      field = resolveUntilFieldFormal(e.superConstructorParameter!).field;
+      fieldName = e.name;
+    }
+    if (field == null || fieldName == null) {
       throw Exception(
-          "Serializable constructors must only reference instance fields");
+        "Serializable constructors must only reference instance fields");
     }
     var fieldType = field.type;
     var serialType = await getSerialType(fieldType, context);
