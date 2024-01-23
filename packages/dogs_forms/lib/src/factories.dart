@@ -73,7 +73,7 @@ class ListFieldOperationModeFactory<T>
   @override
   AutoFormFieldFactory? forConverter(DogConverter converter, DogEngine engine) {
     if (converter is IterableTreeBaseConverterMixin &&
-        converter.tree.qualified.typeArgument == T) {
+        converter.itemSubtree.qualified.typeArgument == T) {
       return mode;
     }
     return null;
