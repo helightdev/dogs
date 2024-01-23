@@ -6,6 +6,7 @@ import 'package:dogs_toml/dogs_toml.dart';
 import 'package:dogs_yaml/dogs_yaml.dart';
 import 'package:logging/logging.dart';
 import 'package:smoke_test_0/dogs.g.dart';
+import 'package:smoke_test_0/generics.dart';
 import 'package:smoke_test_0/validation.dart';
 import 'dart:io';
 
@@ -168,6 +169,7 @@ void testCbor() {
   testEncoding(dogs.cborSerializer, ModelD.variant0, ModelD.variant1);
   testEncoding(dogs.cborSerializer, ModelE.variant0, ModelE.variant1);
   testEncoding(dogs.cborSerializer, ModelF.variant0, ModelF.variant1);
+  testEncoding(dogs.cborSerializer, ModelG.variant0, ModelG.variant1);
   testEncoding(dogs.cborSerializer, Note.variant0, Note.variant1);
 }
 
@@ -182,6 +184,7 @@ void testYaml() {
   testNewEncoding<ModelD>(encode, decode, ModelD.variant0, ModelD.variant1);
   testNewEncoding<ModelE>(encode, decode, ModelE.variant0, ModelE.variant1);
   testNewEncoding<ModelF>(encode, decode, ModelF.variant0, ModelF.variant1);
+  // testNewEncoding<ModelG>(encode, decode, ModelG.variant0, ModelG.variant1);
   testNewEncoding<Note>(encode, decode, Note.variant0, Note.variant1);
 }
 
@@ -193,6 +196,7 @@ void testToml() {
   testEncoding(dogs.tomlSerializer, ModelD.variant0, ModelD.variant1);
   testEncoding(dogs.tomlSerializer, ModelE.variant0, ModelE.variant1);
   testEncoding(dogs.tomlSerializer, ModelF.variant0, ModelF.variant1);
+  // testEncoding(dogs.tomlSerializer, ModelG.variant0, ModelG.variant1);
   testEncoding(dogs.tomlSerializer, Note.variant0, Note.variant1);
 }
 

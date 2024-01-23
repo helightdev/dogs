@@ -1,12 +1,11 @@
 import 'dart:convert';
 
-import 'package:built_value/standard_json_plugin.dart';
 import 'package:dogs_built/dogs_built.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:logging/logging.dart';
 import 'dart:io';
 
 import 'package:smoke_test_1/dogs.g.dart';
+import 'package:smoke_test_1/dogs_values.dart';
 import 'package:smoke_test_1/serializers.dart';
 
 @SerializableLibrary()
@@ -49,6 +48,10 @@ Future main() async {
     testGeneratedStructure<Account>(account);
     testEncoderDecoder<Account>(account);
 
+    testEncoderDecoder<MyDogsModel>(MyDogsModel.variant0());
+    testEncoderDecoder<MultimapModel>(MultimapModel.variant0());
+    testEncoderDecoder<PolymorphicBuiltModel>(PolymorphicBuiltModel.variant0());
+
   } catch(ex,st) {
     print("$ex: $st");
     exit(1);
@@ -59,6 +62,10 @@ void testEncoderDecoder<T>(T value) {
   var native = dogs.convertObjectToNative(value, T);
   var decoded = dogs.convertObjectFromNative(native, T);
   if (decoded != value) throw Exception("Does not match!");
+
+  var json = dogs.jsonEncode<T>(value);
+  var decodedJson = dogs.jsonDecode<T>(json);
+  if (decodedJson != value) throw Exception("Json does not match!");
 }
 
 void testGeneratedStructure<T>(T value) {
