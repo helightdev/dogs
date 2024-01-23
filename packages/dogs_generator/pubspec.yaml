@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   build: '>=2.0.0 <3.0.0'
-  analyzer: ">=2.0.0 <6.0.0"
+  analyzer: ">=2.0.0 <7.0.0"
   source_gen: '>=1.0.0 <=2.0.0'
   collection: '>=1.15.0 <2.0.0'
   crypto: '>=3.0.0 <4.0.0'
@@ -19,7 +19,7 @@ dependencies:
 
   dogs_core: ^8.0.0
   lyell: ^1.1.0
-  lyell_gen: ^1.1.0
+  lyell_gen: ^1.2.4
   pubspec: ^2.3.0
   recase: ^4.1.0
 
