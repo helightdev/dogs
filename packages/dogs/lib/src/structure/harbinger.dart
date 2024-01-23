@@ -27,7 +27,10 @@ class StructureHarbinger<T> {
 
   StructureHarbinger(this.structure, this.engine) {
     fieldConverters = structure.fields
-        .map((e) => (field: e, converter: getConverter(engine, e)))
+        .map((e) {
+          var fieldConverter = getConverter(engine, e);
+          return (field: e, converter: fieldConverter);
+        })
         .toList();
   }
 
@@ -45,7 +48,7 @@ class StructureHarbinger<T> {
     }
 
     // This value is native, we don't need a converter
-    if (engine.codec.isNative(field.serial.typeArgument)) {
+    if (engine.codec.isNative(field.type.qualified.typeArgument)) {
       return null;
     }
 
@@ -60,7 +63,6 @@ class StructureHarbinger<T> {
           engine.findAssociatedConverter(field.serial.typeArgument);
       if (serialConverter != null) return serialConverter;
     }
-
     // Resolve using tree converter
     return engine.getTreeConverter(field.type, isPolymorphicField(field));
   }
