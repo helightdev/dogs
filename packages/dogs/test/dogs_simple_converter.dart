@@ -70,18 +70,61 @@ class FakeDogConverter extends SimpleDogConverter<Person> {
   }
 }
 
+class LatLng {
+  final double lat;
+  final double lng;
+
+  LatLng(this.lat, this.lng);
+
+  @override
+  String toString() => "LatLng($lat, $lng)";
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LatLng &&
+          runtimeType == other.runtimeType &&
+          lat == other.lat &&
+          lng == other.lng;
+
+  @override
+  int get hashCode => lat.hashCode ^ lng.hashCode;
+}
+
+class LatLngConverter extends SimpleDogConverter<LatLng> {
+  LatLngConverter() : super(serialName: "LatLng");
+
+  @override
+  LatLng deserialize(value, DogEngine engine) {
+    var list = value as List;
+    return LatLng(list[0], list[1]);
+  }
+
+  @override
+  serialize(LatLng value, DogEngine engine) {
+    return [value.lat, value.lng];
+  }
+}
+
 void main() {
   group('SimpleDogConverter', () {
     final fakeEngine = DogEngine();
     fakeEngine.registerAutomatic(FakeDogConverter());
+    fakeEngine.registerAutomatic(LatLngConverter());
 
     test('Serialization', () {
-      final encoded = fakeEngine.jsonEncode<Person>(
-          Person(name: "John", age: 42)
-      );
+      final encoded =
+          fakeEngine.jsonEncode<Person>(Person(name: "John", age: 42));
       expect(encoded, r'"{\"name\":\"John\",\"age\":42}"');
       var decoded = fakeEngine.jsonDecode<Person>(encoded);
       expect(decoded, Person(name: "John", age: 42));
+    });
+
+    test("LatLng", () {
+      final encoded = fakeEngine.jsonEncode<LatLng>(LatLng(1.0, 2.0));
+      expect(encoded, r'[1.0,2.0]');
+      var decoded = fakeEngine.jsonDecode<LatLng>(encoded);
+      expect(decoded, LatLng(1.0, 2.0));
     });
 
     test("Exists structure", () {
