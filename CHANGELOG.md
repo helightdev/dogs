@@ -15,6 +15,25 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_generator` - `v5.1.2`](#dogs_generator---v512)
+
+---
+
+#### `dogs_generator` - `v5.1.2`
+
+
+## 2024-01-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_generator` - `v5.1.1`](#dogs_generator---v511)
 
 ---

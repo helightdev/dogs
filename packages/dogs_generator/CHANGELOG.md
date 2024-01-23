@@ -1,3 +1,5 @@
+## 5.1.2
+
 ## 5.1.1
 
  - **REFACTOR**: remove long deprecated builder() method.
