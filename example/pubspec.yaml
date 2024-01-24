@@ -8,10 +8,10 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  dogs_core: ^8.0.0
-  dogs_yaml: ^2.0.28
-  dogs_cbor: ^2.0.28
-  dogs_toml: ^2.0.28
+  dogs_core: ^8.0.1
+  dogs_yaml: ^2.0.29
+  dogs_cbor: ^2.0.29
+  dogs_toml: ^2.0.29
   aqueduct_isolates: 1.0.1
   equatable: ^2.0.5
 
@@ -20,4 +20,4 @@ dev_dependencies:
   lints: ^2.0.0
   test: ^1.16.0
 
-  dogs_generator: ^5.1.2
+  dogs_generator: ^5.2.0

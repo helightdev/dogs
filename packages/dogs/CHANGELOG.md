@@ -1,3 +1,7 @@
+## 8.0.1
+
+ - **REFACTOR**: rename internal firstWhereOrNull to firstWhereOrNullDogs to not clash with collections.
+
 ## 8.0.0
 
 > Note: This release has breaking changes.

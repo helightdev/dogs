@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-01-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v8.0.1`](#dogs_core---v801)
+ - [`dogs_generator` - `v5.2.0`](#dogs_generator---v520)
+ - [`dogs_firestore` - `v0.0.2+4`](#dogs_firestore---v0024)
+ - [`dogs_cbor` - `v2.0.29`](#dogs_cbor---v2029)
+ - [`dogs_forms` - `v0.1.0+4`](#dogs_forms---v0104)
+ - [`dogs_toml` - `v2.0.29`](#dogs_toml---v2029)
+ - [`dogs_built` - `v2.0.1`](#dogs_built---v201)
+ - [`dogs_yaml` - `v2.0.29`](#dogs_yaml---v2029)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.0.2+4`
+ - `dogs_cbor` - `v2.0.29`
+ - `dogs_forms` - `v0.1.0+4`
+ - `dogs_toml` - `v2.0.29`
+ - `dogs_built` - `v2.0.1`
+ - `dogs_yaml` - `v2.0.29`
+
+---
+
+#### `dogs_core` - `v8.0.1`
+
+ - **REFACTOR**: rename internal firstWhereOrNull to firstWhereOrNullDogs to not clash with collections.
+
+#### `dogs_generator` - `v5.2.0`
+
+ - **FEAT**: support non-formal constructor fields with backing fields or getters.
+
+
 ## 2024-01-23
 
 ### Changes

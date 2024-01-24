@@ -1,3 +1,7 @@
+## 5.2.0
+
+ - **FEAT**: support non-formal constructor fields with backing fields or getters.
+
 ## 5.1.2
 
 ## 5.1.1
