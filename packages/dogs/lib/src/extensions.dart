@@ -75,7 +75,7 @@ extension DogsIterableExtension<T> on Iterable<T> {
   Type get deriveSetType => Set<T>;
   Type get deriveIterableType => Iterable<T>;
 
-  T? firstWhereOrNull(bool Function(T element) func) {
+  T? firstWhereOrNullDogs(bool Function(T element) func) {
     for (var element in this) {
       if (func(element)) return element;
     }

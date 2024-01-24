@@ -202,14 +202,14 @@ class DogEngine {
   /// or null if not present.
   DogStructure? findStructureBySerialName(String name) =>
       _structures.entries
-          .firstWhereOrNull((element) => element.value.serialName == name)
+          .firstWhereOrNullDogs((element) => element.value.serialName == name)
           ?.value ??
       _parent?.findStructureBySerialName(name);
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   DogConverter? findConverterBySerialName(String name) {
     var associatedStructureType = _structures.entries
-        .firstWhereOrNull((element) => element.value.serialName == name)
+        .firstWhereOrNullDogs((element) => element.value.serialName == name)
         ?.key;
     if (associatedStructureType == null) {
       return _parent?.findConverterBySerialName(name);
@@ -219,7 +219,7 @@ class DogEngine {
 
   /// Returns the first registered [DogConverter] of the given [type].
   DogConverter? findConverter(Type type) =>
-      _converters.firstWhereOrNull((element) => element.runtimeType == type) ??
+      _converters.firstWhereOrNullDogs((element) => element.runtimeType == type) ??
       _parent?.findConverter(type);
 
   /// Returns the [DogConverter] that is associated with [type] or
