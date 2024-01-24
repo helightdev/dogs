@@ -31,8 +31,9 @@ enum MyEnum {
 3. DOGs natively supports `List<T>` and `Set<T>` for any serializable type. While the field
 itself is allowed to be null, the elements of the iterable must not be null.
 If you require nested nullability, consider using the `Optional<T>` type.
-4. You constructor must only reference serializable fields and must not be private.
+4. You constructor must only reference serializable field and must not be private.
 You can also use a secondary constructor for serialization by naming it `dogs`.
+Non-formal fields can also be used if they have a backing getter of field with the same name.
 5. You can also annotate enums to make them serializable.
 Enum values will be serialized and deserialized as strings using their name.
 
@@ -156,6 +157,10 @@ restrictions (to read more about the restrictions, expand the region below).
     This also means, that they need to be marked as `@serializable` if they don't have a custom
     converter registered.  
     See [Polymorphism](/polymorphism) for more information.
+
+??? success "Parameters must either be formal or have a backing member with the same name"
+    All parameters of your constructor must either be formal parameters (this./super.) or have a
+    backing member with the same name. This class member can either be a field or a getter.
 
 ??? abstract "Terminology: Leaf Type"
     Objects which are possible terminal values of a type boundary are referred to as **leaf types**.
