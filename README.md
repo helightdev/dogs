@@ -1,7 +1,7 @@
 <h1 align="left">
     <img src="https://github.com/helightdev/dogs/blob/main/docs/assets/logo.png?raw=true" align="left" width="48" alt="Frosty">
     Dart Object Graphs
-    <a href="">
+    <a href="https://pub.dev/packages/dogs_core">
         <img src="https://img.shields.io/pub/v/dogs_core" alt="pub">
     </a>
     <a href="https://github.com/helightdev/dogs/actions">
