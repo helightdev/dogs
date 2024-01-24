@@ -1,3 +1,7 @@
+## 8.0.2
+
+ - **REFACTOR**: improve error handling and add custom exceptions.
+
 ## 8.0.1
 
  - **REFACTOR**: rename internal firstWhereOrNull to firstWhereOrNullDogs to not clash with collections.

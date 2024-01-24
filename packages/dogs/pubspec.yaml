@@ -1,6 +1,6 @@
 name: dogs_core
 description: universal object mapping and serialization library with a focus on dx.
-version: 8.0.1
+version: 8.0.2
 repository: https://github.com/helightdev/dogs
 documentation: https://dogs.helight.dev
 issue_tracker: https://github.com/helightdev/dogs/issues
