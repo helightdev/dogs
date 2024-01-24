@@ -51,36 +51,60 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
       if (e.converter == null) {
         return (
           serialize: (dynamic v, Map<String, dynamic> map, DogEngine engine) {
-            final fieldValue = proxy.getField(v, i);
-            if (fieldValue is Iterable) {
-              if (fieldValue is List) {
-                map[fieldName] = fieldValue;
+            try {
+              final fieldValue = proxy.getField(v, i);
+              if (fieldValue is Iterable) {
+                if (fieldValue is List) {
+                  map[fieldName] = fieldValue;
+                } else {
+                  map[fieldName] = fieldValue.toList();
+                }
               } else {
-                map[fieldName] = fieldValue.toList();
+                map[fieldName] = fieldValue;
               }
-            } else {
-              map[fieldName] = fieldValue;
+            } on DogFieldSerializerException {
+              rethrow;
+            } catch (e, stacktrace) {
+              throw DogFieldSerializerException(
+                  "Error while serializing native field in native serialization",
+                  null,
+                  structure,
+                  field,
+                  e,
+                  stacktrace);
             }
           },
           deserialize: (dynamic v, List args, DogEngine engine) {
-            final mapValue = v[fieldName];
-            if (mapValue == null) {
-              if (isOptional) {
-                args.add(null);
-              } else if (iterableKind != IterableKind.none) {
-                args.add(adjustWithCoercion([], iterableKind, serialType,
-                    engine.codec.primitiveCoercion, fieldName));
+            try {
+              final mapValue = v[fieldName];
+              if (mapValue == null) {
+                if (isOptional) {
+                  args.add(null);
+                } else if (iterableKind != IterableKind.none) {
+                  args.add(adjustWithCoercion([], iterableKind, serialType,
+                      engine.codec.primitiveCoercion, fieldName));
+                } else {
+                  args.add(engine.codec.primitiveCoercion
+                      .coerce(serialType, null, fieldName));
+                }
               } else {
-                args.add(engine.codec.primitiveCoercion
-                    .coerce(serialType, null, fieldName));
+                if (fieldType.isAssignable(mapValue)) {
+                  args.add(mapValue);
+                } else {
+                  args.add(adjustWithCoercion(mapValue, iterableKind, serialType,
+                      engine.codec.primitiveCoercion, fieldName));
+                }
               }
-            } else {
-              if (fieldType.isAssignable(mapValue)) {
-                args.add(mapValue);
-              } else {
-                args.add(adjustWithCoercion(mapValue, iterableKind, serialType,
-                    engine.codec.primitiveCoercion, fieldName));
-              }
+            } on DogFieldSerializerException {
+              rethrow;
+            } catch (e, stacktrace) {
+              throw DogFieldSerializerException(
+                  "Error while deserializing native field in native serialization",
+                  null,
+                  structure,
+                  field,
+                  e,
+                  stacktrace);
             }
           },
         );
@@ -91,34 +115,57 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
         final isKeepIterables = converter.keepIterables;
         return (
           serialize: (dynamic v, Map<String, dynamic> map, DogEngine engine) {
-            final fieldValue = proxy.getField(v, i);
-            if (fieldValue == null) {
-              map[fieldName] = null;
-            } else if (isKeepIterables) {
-              map[fieldName] = operation.serialize(fieldValue, engine);
-            } else {
-              map[fieldName] =
-                  operation.serializeIterable(fieldValue, engine, iterableKind);
+            try {
+              final fieldValue = proxy.getField(v, i);
+              if (fieldValue == null) {
+                map[fieldName] = null;
+              } else if (isKeepIterables) {
+                map[fieldName] = operation.serialize(fieldValue, engine);
+              } else {
+                map[fieldName] = operation.serializeIterable(
+                    fieldValue, engine, iterableKind);
+              }
+            } on DogFieldSerializerException {
+              rethrow;
+            } catch (e, stacktrace) {
+              throw DogFieldSerializerException(
+                  "Error while serialization field in native serialization",
+                  converter,
+                  structure,
+                  field,
+                  e,
+                  stacktrace);
             }
           },
           deserialize: (dynamic v, List args, DogEngine engine) {
-            final mapValue = v[fieldName];
-            if (mapValue == null) {
-              if (isOptional) {
-                args.add(null);
-              } else if (iterableKind != IterableKind.none) {
-                args.add(adjustIterable([], iterableKind));
+            try {
+              final mapValue = v[fieldName];
+              if (mapValue == null) {
+                if (isOptional) {
+                  args.add(null);
+                } else if (iterableKind != IterableKind.none) {
+                  args.add(adjustIterable([], iterableKind));
+                } else {
+                  throw DogException("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                }
               } else {
-                throw Exception(
-                    "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                if (isKeepIterables) {
+                  args.add(operation.deserialize(mapValue, engine));
+                } else {
+                  args.add(operation.deserializeIterable(
+                      mapValue, engine, iterableKind));
+                }
               }
-            } else {
-              if (isKeepIterables) {
-                args.add(operation.deserialize(mapValue, engine));
-              } else {
-                args.add(operation.deserializeIterable(
-                    mapValue, engine, iterableKind));
-              }
+            } on DogFieldSerializerException {
+              rethrow;
+            } catch (e, stacktrace) {
+              throw DogFieldSerializerException(
+                  "Error while deserializing field in native serialization",
+                  converter,
+                  structure,
+                  field,
+                  e,
+                  stacktrace);
             }
           }
         );
@@ -130,7 +177,12 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
 
   @override
   T deserialize(value, DogEngine engine) {
-    if (value is! Map) throw Exception("Expected a map");
+    if (value is! Map) {
+      throw DogSerializerException(
+        message: "Expected a map but got ${value.runtimeType}",
+        structure: structure,
+      );
+    }
     var args = <dynamic>[];
     if (hasHooks) {
       var clonedMap = Map<String, dynamic>.from(value);
@@ -142,7 +194,16 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
     for (var deserializer in _deserializers) {
       deserializer(value, args, engine);
     }
-    return _proxy.instantiate(args);
+    try {
+      return _proxy.instantiate(args);
+    } catch (e, stacktrace) {
+      throw DogSerializerException(
+        message: "Failed to instantiate ${structure.typeArgument}",
+        structure: structure,
+        cause: e,
+        innerStackTrace: stacktrace,
+      );
+    }
   }
 
   @override

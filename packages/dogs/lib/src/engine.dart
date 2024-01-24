@@ -329,7 +329,7 @@ class DogEngine {
       if (allowPolymorphic) {
         return TreeBaseConverterFactory.polymorphicConverter;
       }
-      throw ArgumentError(
+      throw DogException(
           "No type tree converter for tree ${tree.qualified} found. (Polymorphism disabled)");
     } else {
       // Use associated converter if present
@@ -339,7 +339,7 @@ class DogEngine {
       // Use factory
       var factory = _treeBaseFactories[tree.base.typeArgument];
       if (factory == null) {
-        throw ArgumentError("No type tree converter for ${tree.base} found");
+        throw DogException("No type tree converter for ${tree.base} found");
       }
       return factory.getConverter(tree, this, allowPolymorphic);
     }

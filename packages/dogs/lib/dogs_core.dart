@@ -48,6 +48,7 @@ export 'src/converter.dart';
 export 'src/codec.dart';
 export 'src/dataclass.dart';
 export 'src/engine.dart';
+export 'src/exceptions.dart';
 export 'src/extensions.dart';
 export 'src/global.dart';
 export 'src/graph_value.dart';
