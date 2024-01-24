@@ -31,7 +31,7 @@ class JsonDeserializeExercise extends Exercise<JsonDeserializeExercise,JsonDeser
       competitors: [
         _NativeCompetitor(),
         _JsonSerializableCompetitor(),
-        _DartJsonMapperCompetitor(),
+        //_DartJsonMapperCompetitor(),
         _FreezedCompetitor(),
         _DogsCompetitor(),
         _BuiltCompetitor(),

@@ -34,7 +34,7 @@ class BuildersExercise extends Exercise<BuildersExercise,BuildersCompetitor> {
         _DogsCompetitor(),
         _BuiltCompetitor(),
         _FreezedCompetitor(),
-        _DartJsonMapperCompetitor(),
+        //_DartJsonMapperCompetitor(),
         _MappableCompetitor(),
       ]
   );
