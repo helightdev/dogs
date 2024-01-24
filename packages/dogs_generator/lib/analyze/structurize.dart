@@ -71,7 +71,7 @@ class IRStructureField {
       this.$isMap);
 
   String get code {
-    return "$genAlias.DogStructureField($typeTree, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '$name', $optional, $structure, $metadataSource)";
+    return "$genAlias.DogStructureField($typeTree, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '${sqsLiteralEscape(name)}', $optional, $structure, $metadataSource)";
   }
 }
 
@@ -120,43 +120,67 @@ Future<StructurizeResult> structurizeConstructor(
 
   for (var e in constructorElement.parameters) {
     String? fieldName;
-    FieldElement? field;
+    DartType? fieldType;
+    Element? fieldElement;
 
     if (e is FieldFormalParameterElement) {
-      field = e.field;
       fieldName = e.name;
+      fieldType = e.type;
+      fieldElement = e.field;
     } else if (e is SuperFormalParameterElement) {
       FieldFormalParameterElement resolveUntilFieldFormal(ParameterElement e) {
         if (e is FieldFormalParameterElement) return e;
         if (e is SuperFormalParameterElement) {
           return resolveUntilFieldFormal(e.superConstructorParameter!);
         }
-        throw Exception("Serializable constructors must only reference instance fields");
+        throw Exception("Can't resolve super formal field");
       }
-      field = resolveUntilFieldFormal(e.superConstructorParameter!).field;
-      fieldName = e.name;
+      var field = resolveUntilFieldFormal(e.superConstructorParameter!).field;
+      fieldName = field!.name;
+      fieldType = field.type;
+      fieldElement = field;
+    } else {
+      var parameterType = e.type;
+      var namedField = element.getField(e.name);
+      var namedGetter = element.lookUpGetter(e.name, element.library);
+      if (namedField != null && namedGetter == null) {
+        fieldName = e.name;
+        fieldType = namedField.type;
+        fieldElement = namedField;
+        if (parameterType.nullabilitySuffix == NullabilitySuffix.question) {
+          fieldType = parameterType;
+        }
+      } else {
+        if (namedGetter != null) {
+          fieldName = e.name;
+          fieldType = namedGetter.returnType;
+          fieldElement = namedGetter;
+          if (parameterType.nullabilitySuffix == NullabilitySuffix.question) {
+            fieldType = parameterType;
+          }
+        }
+      }
     }
-    if (field == null || fieldName == null) {
+    if (fieldElement == null || fieldName == null || fieldType == null) {
       throw Exception(
-        "Serializable constructors must only reference instance fields");
+        "Constructor fields must have a backing field or getter with the same name and type. Nullability may vary.");
     }
-    var fieldType = field.type;
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);
 
-    var optional = field.type.nullabilitySuffix == NullabilitySuffix.question;
+    var optional = fieldType.nullabilitySuffix == NullabilitySuffix.question;
     if (fieldType is DynamicType) optional = true;
 
     var propertyName = fieldName;
-    if (propertyNameChecker.hasAnnotationOf(field)) {
-      var annotation = propertyNameChecker.annotationsOf(field).first;
+    if (propertyNameChecker.hasAnnotationOf(fieldElement)) {
+      var annotation = propertyNameChecker.annotationsOf(fieldElement).first;
       propertyName = annotation.getField("name")!.toStringValue()!;
     }
 
     var propertySerializer = "null";
-    if (propertySerializerChecker.hasAnnotationOf(field)) {
+    if (propertySerializerChecker.hasAnnotationOf(fieldElement)) {
       var serializerAnnotation =
-          propertySerializerChecker.annotationsOf(field).first;
+          propertySerializerChecker.annotationsOf(fieldElement).first;
       propertySerializer =
           counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
     }
@@ -171,8 +195,8 @@ Future<StructurizeResult> structurizeConstructor(
         propertyName,
         optional,
         !isDogPrimitiveType(serialType),
-        getRetainedAnnotationSourceArray(field, counter),
-        mapChecker.isAssignableFrom(field.type.element!)));
+        getRetainedAnnotationSourceArray(fieldElement, counter),
+        mapChecker.isAssignableFrom(fieldType.element!)));
   }
 
   // Create proxy arguments

@@ -15,6 +15,7 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/dogs_validation.dart';
 
 class ConvertableA {
 
@@ -66,4 +67,106 @@ class ConvertableAConverter extends DogConverter<ConvertableA> with OperationMap
 @serializable
 enum EnumA {
   a,b,c;
+}
+
+abstract class CustomBase {
+
+  // This should also be copied!
+  @PropertyName("_id")
+  final String id;
+
+  const CustomBase({
+    required this.id,
+  });
+}
+
+abstract class SecondLevelBase extends CustomBase {
+
+  @LengthRange(max: 100)
+  final String name;
+
+  const SecondLevelBase({
+    required super.id,
+    required this.name,
+  });
+}
+
+@serializable
+class CustomBaseImpl extends SecondLevelBase with Dataclass<CustomBaseImpl> {
+
+  final String tag;
+
+  CustomBaseImpl({
+    required super.id,
+    required super.name,
+    required this.tag,
+  });
+
+  factory CustomBaseImpl.variant0() {
+    return CustomBaseImpl(id: "id0", name: "Bert", tag: "tag");
+  }
+
+  factory CustomBaseImpl.variant1() {
+    return CustomBaseImpl(id: "id1", name: "Helga", tag: "tag");
+  }
+
+}
+
+@serializable
+class InitializersModel with Dataclass<InitializersModel> {
+
+  final String id;
+
+  InitializersModel(String? id) : id = id ?? "default";
+
+  factory InitializersModel.variant0() {
+    return InitializersModel(null);
+  }
+
+  factory InitializersModel.variant1() {
+    return InitializersModel("id1");
+  }
+}
+
+@serializable
+class ConstructorBodyModel with Dataclass<ConstructorBodyModel>{
+
+  late String id;
+  late String data;
+
+  ConstructorBodyModel(String? id, String data) {
+    this.id = id ?? "default";
+    this.data = data;
+  }
+
+  factory ConstructorBodyModel.variant0() {
+    return ConstructorBodyModel(null, "data0");
+  }
+
+  factory ConstructorBodyModel.variant1() {
+    return ConstructorBodyModel("id1", "data1");
+  }
+}
+
+@serializable
+class GetterModel with Dataclass<GetterModel> {
+
+  late String id;
+  String? _buffer;
+
+  GetterModel(String? id, String data)  {
+    this.id = id ?? "default";
+    _buffer = data;
+  }
+
+  @PropertyName(r"$data")
+  String get data => "$_buffer";
+
+  factory GetterModel.variant0() {
+    return GetterModel(null, "data0");
+  }
+
+  factory GetterModel.variant1() {
+    return GetterModel("id1", "data1");
+  }
 }

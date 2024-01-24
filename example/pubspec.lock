@@ -213,7 +213,7 @@ packages:
       path: "../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.1.1"
+    version: "5.1.2"
   dogs_toml:
     dependency: "direct main"
     description:
@@ -232,10 +232,10 @@ packages:
     dependency: transitive
     description:
       name: duffer
-      sha256: "482fa7e454d66ab1cc6616fdb0c076bb971f7eb54b0ce4ab6ad870ada928feb0"
+      sha256: "9b3a850249200bdd941abe3fed0a5d53922cd296b31c34e4f95e37fa7351e49d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.5"
+    version: "2.3.2"
   equatable:
     dependency: "direct main"
     description:
@@ -376,10 +376,10 @@ packages:
     dependency: transitive
     description:
       name: lyell_gen
-      sha256: "09498cfeec197f184855512b502ed2f6fb465c0ca911b4487ce746f8f3d53bd2"
+      sha256: ff086b83f80a1182bd75a7239d8a30506fcddbe2cfca269b64e1cdf7a7f47d02
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.4+1"
   matcher:
     dependency: transitive
     description:
@@ -408,10 +408,10 @@ packages:
     dependency: transitive
     description:
       name: mutex
-      sha256: "03116a4e46282a671b46c12de649d72c0ed18188ffe12a8d0fc63e83f4ad88f4"
+      sha256: "8827da25de792088eb33e572115a5eb0d61d61a3c01acbc8bcbe76ed78f1a1f2"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.0"
   node_preamble:
     dependency: transitive
     description:

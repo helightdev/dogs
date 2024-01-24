@@ -60,7 +60,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code(
-            "(e) => ${codeContext.typeName(element.thisType)}.values.firstWhereOrNull((element) => element.name == e)")));
+            "(e) => ${codeContext.typeName(element.thisType)}.values.firstWhereOrNullDogs((element) => element.name == e)")));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }

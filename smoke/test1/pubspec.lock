@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: ae92f5d747aee634b87f89d9946000c2de774be1d6ac3e58268224348cd0101a
+      sha256: "0f7b1783ddb1e4600580b8c00d0ddae5b06ae7f0382bd4fcce5db4df97b618e1"
       url: "https://pub.dev"
     source: hosted
-    version: "61.0.0"
+    version: "66.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: ea3d8652bda62982addfd92fdc2d0214e5f82e43325104990d4f4c4a2a313562
+      sha256: "5e8bdcda061d91da6b034d64d8e4026f355bcb8c3e7a0ac2da1523205a91a737"
       url: "https://pub.dev"
     source: hosted
-    version: "5.13.0"
+    version: "6.4.0"
   args:
     dependency: transitive
     description:
@@ -181,39 +181,39 @@ packages:
     dependency: transitive
     description:
       name: dart_style
-      sha256: "1efa911ca7086affd35f463ca2fc1799584fb6aa89883cf0af8e3664d6a02d55"
+      sha256: "40ae61a5d43feea6d24bd22c0537a6629db858963b99b4bc1c3db80676f32368"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.4"
   dogs_built:
     dependency: "direct main"
     description:
       path: "../../packages/dogs_built"
       relative: true
     source: path
-    version: "1.0.9"
+    version: "2.0.0"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../../packages/dogs"
       relative: true
     source: path
-    version: "7.2.2"
+    version: "8.0.0"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.0.13"
+    version: "5.1.2"
   duffer:
     dependency: transitive
     description:
       name: duffer
-      sha256: "482fa7e454d66ab1cc6616fdb0c076bb971f7eb54b0ce4ab6ad870ada928feb0"
+      sha256: "9b3a850249200bdd941abe3fed0a5d53922cd296b31c34e4f95e37fa7351e49d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.5"
+    version: "2.3.2"
   file:
     dependency: transitive
     description:
@@ -322,10 +322,10 @@ packages:
     dependency: transitive
     description:
       name: lyell_gen
-      sha256: a5593bb1b1cc8ea389c2aed71e006f3ce321f6f2e47fe7202bc320cdd98bd255
+      sha256: ff086b83f80a1182bd75a7239d8a30506fcddbe2cfca269b64e1cdf7a7f47d02
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.4"
+    version: "1.2.4+1"
   matcher:
     dependency: transitive
     description:
