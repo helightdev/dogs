@@ -1075,20 +1075,17 @@ require the type as a type parameter but as a positional argument.</p>
 </span></code></pre></div></p>
 <p><strong>Json Decode</strong>
 <div class="language-dart annotate highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;&quot;{&quot;name&quot;:&quot;Alex&quot;,&quot;age&quot;:22,&quot;tags&quot;:[&quot;developer&quot;,&quot;dart&quot;]}&quot;&quot;&quot;</span><span class="p">;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">var</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dogs</span><span class="p">.</span><span class="n">jsonDecode</span><span class="o">&lt;</span><span class="n">Person</span><span class="cm">/*(1)!*/</span><span class="o">&gt;</span><span class="p">(</span><span class="n">person</span><span class="p">);</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">var</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dogs</span><span class="p">.</span><span class="n">jsonDecode</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span><span class="p">(</span><span class="n">person</span><span class="p">);</span>
 </span></code></pre></div></p>
-<ol>
-<li>
-<p>The type parameter is technically optional and can be inferred by the compiler.
-    When you have a variable or field of type <code>Person</code> you can safely 
-    use <code>dogs.jsonDecode(person)</code>. Still:</p>
 <div class="admonition tip">
-<p class="admonition-title">Always specify the type parameter</p>
-<p>Even though the type parameter here is optional, it is recommended to always specify it
-as it makes the code more readable and helps in preventing easily avoidable errors.</p>
+<p class="admonition-title">Always specify the type parameter!</p>
+<p>Even when the type is inferred, you should always specify the type to avoid unexpected behavior.</p>
 </div>
-</li>
-</ol>
+<div class="admonition warning">
+<p class="admonition-title">The type <code>T</code> must be directly serializable</p>
+<p>This means that the type <code>T</code> must be a structure or at least convertible.<br />
+<strong>Collections</strong> of <code>T</code> <strong>are not</strong> directly <strong>serializable</strong> and must be wrapped in a structure.</p>
+</div>
 <h2 id="native-serialization">Native Serialization</h2>
 <p>You can also encode and decode objects from and to native dart objects.
 Values are considered native if they are serializable by the dart json encoder.</p>
