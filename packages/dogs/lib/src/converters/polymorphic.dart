@@ -22,10 +22,8 @@ import 'package:dogs_core/dogs_core.dart';
 class PolymorphicConverter extends DogConverter with OperationMapMixin {
   PolymorphicConverter() : super(isAssociated: false);
 
-  static const typePropertyKey = DogString("_type");
-  static const valuePropertyKey = DogString("_value");
-  static const typePropertyKeyStr = "_type";
-  static const valuePropertyKeyStr = "_value";
+  //static const typePropertyKeyStr = "_type";
+  //static const valuePropertyKeyStr = "_value";
   bool serializeNativeValues = true;
 
   @override
@@ -37,14 +35,15 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
 
   deserialize(value, DogEngine engine) {
     if (value == null) return null;
+    var codec = engine.codec;
     if (value is! Map &&
-        engine.codec.isNative(value.runtimeType) &&
+        codec.isNative(value.runtimeType) &&
         serializeNativeValues) return value;
     if (value is Iterable) {
       return value.map((e) => deserialize(e, engine)).toList();
     }
     if (value is! Map) throw Exception("Expected an map");
-    String? typeValue = value[typePropertyKeyStr];
+    String? typeValue = value[codec.typeDiscriminator];
     if (typeValue == null) {
       return value.map(
           (key, value) => MapEntry(key as String, deserialize(value, engine)));
@@ -52,20 +51,21 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     var structure = engine.findStructureBySerialName(typeValue)!;
     var operation = engine.modeRegistry.nativeSerialization
         .forType(structure.typeArgument, engine);
-    if (value.length == 2 && value.containsKey(valuePropertyKeyStr)) {
-      var simpleValue = value[valuePropertyKeyStr]!;
+    if (value.length == 2 && value.containsKey(codec.valueDiscriminator)) {
+      var simpleValue = value[codec.valueDiscriminator]!;
       return operation.deserialize(simpleValue, engine);
     } else {
       var clone = Map.of(value);
-      clone.remove(typePropertyKeyStr);
+      clone.remove(codec.typeDiscriminator);
       return operation.deserialize(clone, engine);
     }
   }
 
   serialize(value, DogEngine engine) {
     if (value == null) return null;
+    var codec = engine.codec;
     if (value is! Map &&
-        engine.codec.isNative(value.runtimeType) &&
+        codec.isNative(value.runtimeType) &&
         serializeNativeValues) return value;
     var type = value.runtimeType;
     var operation =
@@ -77,17 +77,17 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
         return value
             .map((key, value) => MapEntry(key, serialize(value, engine)));
       }
-      throw Exception("No operation found for type $type");
+      throw DogException("No operation mode found for type $type");
     }
     var structure = engine.findStructureByType(type)!;
     var nativeValue = operation.serialize(value, engine);
     if (nativeValue is Map) {
-      nativeValue[typePropertyKeyStr] = structure.serialName;
+      nativeValue[codec.typeDiscriminator] = structure.serialName;
       return nativeValue;
     } else {
       return {
-        typePropertyKeyStr: structure.serialName,
-        valuePropertyKeyStr: nativeValue
+        codec.typeDiscriminator: structure.serialName,
+        codec.valueDiscriminator: nativeValue
       };
     }
   }

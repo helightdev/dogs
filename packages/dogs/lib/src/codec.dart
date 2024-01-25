@@ -22,6 +22,9 @@ abstract class DogNativeCodec {
   const DogNativeCodec();
 
   CodecPrimitiveCoercion get primitiveCoercion => NoCodecPrimitiveCoercion();
+  String get metaPrefix => "_";
+  String get typeDiscriminator => "${metaPrefix}type";
+  String get valueDiscriminator => "${metaPrefix}value";
 
   /// Interop converters for native types.
   /// These converters are most commonly used by [TreeBaseConverterFactory]s to
