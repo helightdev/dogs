@@ -2,6 +2,7 @@ name: dogs_project
 repository: https://github.com/DarwinFramework/dogs
 packages:
   - packages/*
+  - formats/*
   - example/
   - benchmarks/
 scripts:
