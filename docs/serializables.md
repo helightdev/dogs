@@ -126,6 +126,78 @@ conformities:
     To instantiate a bean, you should use the generated `{name}Factory` class with its 
     static `create` method.
 
+## Field Variants
+To not limit your creativity, DOGs supports multiple ways to define serializable fields.
+This includes (super) formal parameters, which refer to fields and non-formal parameters which
+have a backing field or getter with the same name. This list showcases all possible variants:
+
+=== "Formal Parameter"
+
+    ```dart
+    @serializable
+    class Entity with Dataclass<Person> {
+    
+      final String id;
+      final String name;
+
+      Entity(this.id, this.name);
+    }
+    ```
+
+=== "Super Formal Parameter"
+
+    ```dart
+    @serializable
+    class Entity extends Base with Dataclass<Person> {
+    
+      final String name;
+
+      Entity({
+        required super.id,
+        required this.name
+      });
+    }
+    ```
+
+    !!! note "The super field can have annotations"
+    ??? warning "The super parameter must have a formal base definition"
+        The super parameter must end up as a formal parameter in the superclasses constructor.
+        Recursive backing fields or getters are not allowed in this case.
+
+=== "Backing Field"
+
+    ```dart
+    @serializable
+    class Entity with Dataclass<Person> {
+    
+      final String id;
+
+      Entity(String? id) : this.id = id ?? Uuid().v4();
+    }
+    ```
+
+    !!! note "Annotations go on the field"
+        Annotations for fields must be placed on the field itself, not on the constructor parameter.
+
+=== "Backing Getter"
+
+    ```dart
+    @serializable
+    class Entity with Dataclass<Person> {
+    
+      String? _id;
+
+      Entity(String? id) {
+        _id = id;
+      }
+
+      String get id => _id ??= Uuid().v4();
+    }
+    ```
+
+    !!! note "Annotations go on the getter"
+        Annotations for fields must be placed on the getter itself, not on the constructor parameter.
+
 ## Restrictions
 To make your serializable classes work with the serialization system, you must follow a few
 restrictions (to read more about the restrictions, expand the region below).

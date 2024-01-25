@@ -20,16 +20,15 @@ var json = dogs.jsonEncode<Person>(person);
 **Json Decode**
 ``` { .dart .annotate }
 var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
-var person = dogs.jsonDecode<Person/*(1)!*/>(person);
+var person = dogs.jsonDecode<Person>(person);
 ```
 
-1. The type parameter is technically optional and can be inferred by the compiler.
-    When you have a variable or field of type `Person` you can safely 
-    use `dogs.jsonDecode(person)`. Still:
+!!! tip "Always specify the type parameter!"
+    Even when the type is inferred, you should always specify the type to avoid unexpected behavior.
 
-    !!! tip "Always specify the type parameter" 
-        Even though the type parameter here is optional, it is recommended to always specify it
-        as it makes the code more readable and helps in preventing easily avoidable errors.
+!!! warning "The type `T` must be directly serializable"
+    This means that the type `T` must be a structure or at least convertible.  
+    **Collections** of `T` **are not** directly **serializable** and must be wrapped in a structure.
 
 ## Native Serialization
 You can also encode and decode objects from and to native dart objects.
