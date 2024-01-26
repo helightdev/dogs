@@ -18,14 +18,15 @@ import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
 import 'package:dogs_mongo_driver/src/odm.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 
-class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implements QueryableDatabase<T, ObjectId> {
-
+class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId>
+    implements QueryableDatabase<T, ObjectId>, PageableDatabase<T, ObjectId> {
   final DbCollection collection;
   MongoOdmSystem system;
 
   MongoDatabase(this.system, this.collection);
 
-  late EntityAnalysis<T, MongoDatabase, ObjectId> analysis = system.getAnalysis<T>();
+  late EntityAnalysis<T, MongoDatabase, ObjectId> analysis =
+      system.getAnalysis<T>();
 
   @override
   Future<void> clear() async {
@@ -65,20 +66,17 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implemen
   Future<bool> existsById(ObjectId id) async {
     return await collection.count(where.id(id)) > 0;
   }
-  
+
   @override
   Future<List<T>> findAll() async {
-    var documents = collection.find()
-        .map(_toIntermediate)
-        .map(analysis.decode)
-        .toList();
+    var documents =
+        collection.find().map(_toIntermediate).map(analysis.decode).toList();
     return documents;
   }
 
   @override
   Future<T?> findById(ObjectId id) async {
-    var result = await collection
-        .findOne(where.id(id));
+    var result = await collection.findOne(where.id(id));
     if (result == null) return null;
     return analysis.decode(_toIntermediate(result));
   }
@@ -87,10 +85,8 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implemen
   Future<T> save(T value) async {
     var intermediate = analysis.encode(value);
     var native = _toNative(intermediate);
-    var result = await collection.replaceOne(
-        where.id(intermediate.id!), native,
-        upsert: true
-    );
+    var result = await collection.replaceOne(where.id(intermediate.id!), native,
+        upsert: true);
     if (result.isSuccess) {
       return analysis.decode(intermediate);
     }
@@ -101,15 +97,15 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implemen
   Future<List<T>> saveAll(Iterable<T> values) async {
     return await Future.wait(values.map((e) => save(e)));
   }
-  
-  static Map<String,dynamic> _toNative(EntityIntermediate<ObjectId> e) {
-    var map = Map<String,dynamic>.of(e.native);
+
+  static Map<String, dynamic> _toNative(EntityIntermediate<ObjectId> e) {
+    var map = Map<String, dynamic>.of(e.native);
     map["_id"] = e.id;
     return map;
   }
-  
-  static EntityIntermediate<ObjectId> _toIntermediate(Map<String,dynamic> e) {
-    var map = Map<String,dynamic>.of(e);
+
+  static EntityIntermediate<ObjectId> _toIntermediate(Map<String, dynamic> e) {
+    var map = Map<String, dynamic>.of(e);
     ObjectId id = map.remove("_id");
     return EntityIntermediate(id, map);
   }
@@ -127,7 +123,7 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implemen
     }
     return selector;
   }
-  
+
   static SelectorBuilder _sorted(SelectorBuilder builder, Sorted? sort) {
     if (sort?.sort != null) {
       var expr = sort!.sort!;
@@ -172,7 +168,8 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implemen
   @override
   Future<List<T>> findAllByQuery(Query query, Sorted sort) async {
     var builder = _sorted(_toSelector(query), sort);
-    var documents = await collection.find(builder)
+    var documents = await collection
+        .find(builder)
         .map(_toIntermediate)
         .map(analysis.decode)
         .toList();
@@ -185,5 +182,40 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId> implemen
     var result = await findAllByQuery(query, sort);
     if (result.isEmpty) return null;
     return result.first;
+  }
+
+  @override
+  Future<Page<T>> findPaginatedByQuery(Query query, Sorted sort,
+      {required int skip, required int limit}) async {
+    var builder = _sorted(_toSelector(query), sort);
+    var hasSort = builder.map.containsKey("orderby");
+    var aggregationQuery = [
+      <String,Object>{
+        r"$match": builder.map[r"$query"] ?? {},
+      },
+      <String,Object>{
+        r"$facet": {
+          "content": [
+            if (hasSort) {r"$sort": builder.map["orderby"]},
+            {r"$skip": skip},
+            {r"$limit": limit}
+          ],
+          "meta": [
+            {r"$count": "count"}
+          ]
+        }
+      }
+    ];
+    var data = await collection.modernAggregate(aggregationQuery).first;
+    if (data.isEmpty) {
+      return Page<T>.empty();
+    }
+    var totalElements = data["meta"][0]["count"];
+    var content = (data["content"] as List)
+        .cast<Map<String, dynamic>>()
+        .map(_toIntermediate)
+        .map(analysis.decode)
+        .toList(growable: false);
+    return Page<T>.fromData(content, skip, limit, totalElements);
   }
 }

@@ -18,9 +18,16 @@ import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 import 'odm.dart';
 
-class MongoRepository<T extends Object, ID extends Object>
-    extends Repository<T, ID>
-    with
+abstract class MongoRepository<T extends Object, ID extends Object> extends Repository<T, ID> with
         RepositoryMixin<T, ID, MongoOdmSystem, MongoDatabase, ObjectId>,
-        QueryableRepositoryMixin<T, ID, MongoOdmSystem, MongoDatabase,
-            ObjectId> {}
+        QueryableRepositoryMixin<T, ID, MongoOdmSystem, MongoDatabase, ObjectId>,
+        PageableRepositoryMixin<T, ID, MongoOdmSystem, MongoDatabase, ObjectId> {
+
+  MongoRepository();
+
+  factory MongoRepository.plain() {
+    return _MongoRepositoryImpl<T, ID>();
+  }
+}
+
+class _MongoRepositoryImpl<T extends Object, ID extends Object> extends MongoRepository<T,ID> {}
