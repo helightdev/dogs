@@ -35,5 +35,5 @@ Future main() async {
   var persons = await personRepository.findAll();
   print(persons);
 
-  exit(-1);
+  exit(0);
 }
