@@ -1,0 +1,20 @@
+name: dogs_mongo_driver
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.0.0
+
+# Add regular dependencies here.
+dependencies:
+  # path: ^1.8.0
+  dogs_core: any
+  dogs_odm: any
+  mongo_dart: ^0.10.0
+  fixnum: ^1.1.0
+  decimal: ^2.3.3
+
+dev_dependencies:
+  lints: ^2.1.0
+  test: ^1.24.0

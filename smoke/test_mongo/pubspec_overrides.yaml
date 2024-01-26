@@ -1,0 +1,9 @@
+dependency_overrides:
+  dogs_core:
+    path: ../../packages/dogs
+  dogs_generator:
+    path: ../../packages/dogs_generator
+  dogs_odm:
+    path: ../../packages/dogs_odm
+  dogs_mongo_driver:
+    path: ../../formats/dogs_mongo_driver

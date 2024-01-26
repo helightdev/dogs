@@ -1,0 +1,31 @@
+name: mongo
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      matrix:
+        mongodb-version: [ '6.0' ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: "Install Tools"
+        run: ./.github/workflows/scripts/install-tools.sh
+      - name: "Start MongoDB"
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-username: root
+          mongodb-password: example
+      - name: "Run Unit Tests"
+        run: cd formats/dogs_mongo_driver && dart test test/* && cd ../../
+      - name: "Run Smoke Tests"
+        run: cd smoke/test_mongo && bash smoke.sh && cd ../../

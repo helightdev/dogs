@@ -26,11 +26,16 @@ scripts:
     name: smoke
     description: 'Runs smoke tests'
     run: cd smoke/ && bash smoke.sh && cd ../
+    packageFilters:
+      ignore:
+        - "*mongo*"
   test:
     description: Run tests in a specific package.
     run: dart test test/*
     exec:
       concurrency: 1
     packageFilters:
+      ignore:
+        - "*mongo*"
       dirExists:
         - test
