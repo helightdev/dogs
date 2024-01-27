@@ -20,3 +20,4 @@ export 'memory/database.dart';
 export 'memory/odm.dart';
 export 'memory/query.dart';
 export 'memory/repository.dart';
+export 'memory/sort.dart';

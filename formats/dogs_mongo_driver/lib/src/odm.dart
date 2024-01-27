@@ -28,14 +28,15 @@ class MongoOdmSystem extends OdmSystem<MongoDatabase, ObjectId> {
 
   MongoOdmSystem._(this.db);
 
-  MongoDatabase<T> _createDatabase<T extends Object>() {
-    var collectionName = engine.findStructureByType(T)!.serialName;
+  MongoDatabase<T> getMongoDatabase<T extends Object>(String? collectionName) {
+    collectionName ??= engine.findStructureByType(T)!.serialName;
     return MongoDatabase<T>(this,db.collection(collectionName));
   }
 
   @override
-  MongoDatabase<T> getDatabase<T extends Object>() {
-    return _databases.putIfAbsent(T, () => _createDatabase<T>()) as MongoDatabase<T>;
+  MongoDatabase<T> getDatabase<T extends Object>([Repository? repository]) {
+    var collectionName = repository is MongoRepository ? repository.collectionName : null;
+    return _databases.putIfAbsent(T, () => getMongoDatabase<T>(collectionName)) as MongoDatabase<T>;
   }
 
   @override

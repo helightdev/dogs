@@ -90,7 +90,3 @@ extension InstallPerson on DogEngine {
     return this;
   }
 }
-
-class PersonRepository extends MongoRepository<Person, String> {}
-
-final personRepository = PersonRepository();

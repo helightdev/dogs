@@ -64,5 +64,5 @@ abstract class OdmSystem<SYS_DB extends CrudDatabase, SYS_ID extends Object> {
   SYS_ID? transformId<FOREIGN>(FOREIGN? id);
   FOREIGN inverseTransformId<FOREIGN>(SYS_ID id);
   
-  CrudDatabase<T,SYS_ID> getDatabase<T extends Object>();
+  CrudDatabase<T,SYS_ID> getDatabase<T extends Object>([Repository? repository]);
 }

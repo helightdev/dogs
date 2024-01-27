@@ -128,7 +128,7 @@ mixin RepositoryMixin<
 
   @override
   SYS_DB get database {
-    _cachedDatabase ??= system.getDatabase<ENTITY>() as SYS_DB;
+    _cachedDatabase ??= system.getDatabase<ENTITY>(this) as SYS_DB;
     return _cachedDatabase!;
   }
 

@@ -101,3 +101,23 @@ class House with Dataclass<House> {
     required this.rooms,
   });
 }
+
+
+@serializable
+@LightweightMigration([
+  MigratedEntity.replaceEmptyTitle
+])
+class MigratedEntity with Dataclass<MigratedEntity> {
+  @Id()
+  String? id;
+  String title;
+  String content;
+
+  MigratedEntity(this.id, this.title, this.content);
+  
+  static replaceEmptyTitle(Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
+    if (map["title"] as String == "") {
+      map["title"] = "Untitled";
+    }
+  }
+}

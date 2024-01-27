@@ -31,7 +31,7 @@ class MapSorting {
       case null:
         return _NoSort();
       case SortScalar():
-        return _SortScalar(expr.field, expr.ascending);
+        return _SortScalar(expr.field, expr.descending);
       case SortCombine():
         return _SortCombine(expr.sorts.map((e) => parse(e)).toList());
     }
@@ -62,13 +62,13 @@ class _NoSort implements MapComparator {
 
 class _SortScalar implements MapComparator {
   final String field;
-  final bool ascending;
+  final bool descending;
 
-  _SortScalar(this.field, this.ascending);
+  _SortScalar(this.field, this.descending);
 
   @override
   int compare(Map<String, dynamic> a, Map<String, dynamic> b) {
-    if (ascending) return compareInternal(a, b);
+    if (!descending) return compareInternal(a, b);
     return compareInternal(b, a);
   }
 

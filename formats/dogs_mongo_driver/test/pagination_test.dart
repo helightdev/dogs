@@ -20,12 +20,15 @@ void main() {
   group("Pagination", () {
     late Db db;
     late MongoOdmSystem system;
+    late MongoRepository<Person,String> repository;
     setUpAll(() async {
       db = await Db.create("mongodb://root:example@localhost:27017/");
       await db.open();
       system = MongoOdmSystem.fromDb(db);
-      await personRepository.database.clear();
-      await personRepository.saveAll(items);
+      repository = MongoRepository<Person,String>
+          .plain(collectionName: "pagination_test");
+      await repository.database.clear();
+      await repository.saveAll(items);
     });
 
     test("Page Meta", () {
@@ -39,7 +42,7 @@ void main() {
     });
 
     test("DB Unsorted", () async {
-      var database = personRepository.database as MongoDatabase<Person>;
+      var database = repository.database;
       var a = await database.findPaginatedByQuery(Query.empty(), Sorted.empty(), skip: 0, limit: 4);
       expect(a[0].age, 15);
       expect(a[1].age, 16);
@@ -62,7 +65,7 @@ void main() {
     });
 
     test("DB Sorted", () async {
-      var database = personRepository.database as MongoDatabase<Person>;
+      var database = repository.database;
       var a = await database.findPaginatedByQuery(Query.empty(), Sorted.byField("age"), skip: 0, limit: 4);
       expect(a[0].age, 15);
       expect(a[1].age, 15);
@@ -85,16 +88,16 @@ void main() {
     });
 
     test("Repository", () async {
-      var a = await personRepository.findPaginated(PageRequest(page: 0, size: 4));
+      var a = await repository.findPaginated(PageRequest(page: 0, size: 4));
       expect(a[0].age, 15);
       expect(a.meta.number, 0);
-      var b = await personRepository.findPaginated(PageRequest(page: 1, size: 4));
+      var b = await repository.findPaginated(PageRequest(page: 1, size: 4));
       expect(b[0].age, 19);
       expect(b.meta.number, 1);
     });
 
     test("Repository Filtered", () async {
-      var a = await personRepository.findPaginatedByQuery(
+      var a = await repository.findPaginatedByQuery(
           eq("age", 19), PageRequest(page: 0, size: 4)
       );
       expect(a[0].age, 19);
@@ -102,9 +105,9 @@ void main() {
       expect(a.meta.totalPages, 1);
       expect(a.meta.totalElements, 4);
 
-      var b = await personRepository.findPaginatedByQuery(
+      var b = await repository.findPaginatedByQuery(
           Query.empty(), PageRequest(page: 1, size: 4),
-        Sorted.byField("age", ascending: false)
+        Sorted.byField("age", descending: true)
       );
       expect(b[0].age, 63);
       expect(b.meta.number, 1);
@@ -112,7 +115,7 @@ void main() {
     });
 
     tearDownAll(() async {
-      //await personRepository.clear();
+      await repository.clear();
       await db.close();
     });
   });

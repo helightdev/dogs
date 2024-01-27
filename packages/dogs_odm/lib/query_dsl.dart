@@ -19,12 +19,16 @@ library query_dsl;
 import 'dogs_odm.dart';
 
 /// Matches if the [field] is equal to the given [value].
+/// If [STRUCT] is specified, the [value] is expected to be a [STRUCT] instance
+/// and is automatically converted to a [Map].
 FilterExpr eq<STRUCT>(String field, dynamic value) {
   if (STRUCT == dynamic) return FilterEq(field, value);
   return FilterEqStruct<STRUCT>(field, value);
 }
 
 /// Matches if the [field] is not equal to the given [value].
+/// If [STRUCT] is specified, the [value] is expected to be a [STRUCT] instance
+/// and is automatically converted to a [Map].
 FilterExpr ne<STRUCT>(String field, dynamic value) {
   if (STRUCT == dynamic) return FilterNe(field, value);
   return FilterNeStruct<STRUCT>(field, value);

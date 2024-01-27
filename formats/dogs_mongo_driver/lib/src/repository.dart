@@ -22,11 +22,15 @@ abstract class MongoRepository<T extends Object, ID extends Object> extends Repo
         QueryableRepositoryMixin<T, ID, MongoOdmSystem, MongoDatabase, MongoDatabase<T>, ObjectId>,
         PageableRepositoryMixin<T, ID, MongoOdmSystem, MongoDatabase, MongoDatabase<T>, ObjectId> {
 
-  MongoRepository();
+  final String? collectionName;
 
-  factory MongoRepository.plain() {
-    return _MongoRepositoryImpl<T, ID>();
+  MongoRepository({this.collectionName});
+
+  factory MongoRepository.plain({String? collectionName}) {
+    return _MongoRepositoryImpl<T, ID>(collectionName: collectionName);
   }
 }
 
-class _MongoRepositoryImpl<T extends Object, ID extends Object> extends MongoRepository<T,ID> {}
+class _MongoRepositoryImpl<T extends Object, ID extends Object> extends MongoRepository<T,ID> {
+  _MongoRepositoryImpl({super.collectionName}) : super();
+}

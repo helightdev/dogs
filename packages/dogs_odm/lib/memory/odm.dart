@@ -31,7 +31,7 @@ class MemoryOdmSystem extends OdmSystem<MemoryDatabase, String> {
   }
 
   @override
-  MemoryDatabase<T> getDatabase<T extends Object>() {
+  MemoryDatabase<T> getDatabase<T extends Object>([Repository? repository]) {
     return _databases.putIfAbsent(T, () => _createDatabase<T>()) as MemoryDatabase<T>;
   }
 

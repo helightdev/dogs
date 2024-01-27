@@ -49,25 +49,26 @@ void main() {
   var system = MemoryOdmSystem();
   group("Sort Tests", () {
     test("Sort Name", () {
-      var sorted = MapSorting.sort(items, SortScalar("name", true));
+      var sorted = MapSorting.sort(items, SortScalar("name", false));
       expect(sorted, deepEquals([item1, item2, item0]));
     });
     test("Sort Age", () {
-      var sorted = MapSorting.sort(items, SortScalar("age", true));
+      var sorted = MapSorting.sort(items, SortScalar("age", false));
       expect(sorted, deepEquals([item0, item1, item2]));
     });
     test("Sort Name Desc", () {
-      var sorted = MapSorting.sort(items, SortScalar("name", false));
+      var sorted = MapSorting.sort(items, SortScalar("name", true));
       expect(sorted, deepEquals([item0, item2, item1]));
     });
     test("Sort Age Desc", () {
-      var sorted = MapSorting.sort(items, SortScalar("age", false));
+      var sorted = MapSorting.sort(items, SortScalar("age", true));
       expect(sorted, deepEquals([item2, item0, item1]));
     });
     test("Sort Age & Name", () {
+      Sorted.byField("age") & Sorted.byField("name");
       var sorted = MapSorting.sort(items, SortCombine([
-        SortScalar("age", true),
-        SortScalar("name", true),
+        SortScalar("age", false),
+        SortScalar("name", false),
       ]));
       expect(sorted, deepEquals([item1, item0, item2]));
     });

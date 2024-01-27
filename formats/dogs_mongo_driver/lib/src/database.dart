@@ -162,10 +162,11 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId>
       }
     ];
     var data = await collection.modernAggregate(aggregationQuery).first;
-    if (data.isEmpty) {
-      return Page<T>.empty();
-    }
-    var totalElements = data["meta"][0]["count"];
+    if (data.isEmpty) return Page<T>.empty();
+    var metaArr = data["meta"] as List?;
+    if (metaArr == null || metaArr.isEmpty) return Page<T>.empty();
+    var totalElements = metaArr[0]!["count"];
+    if (totalElements == null) return Page<T>.empty();
     var content = (data["content"] as List)
         .cast<Map<String, dynamic>>()
         .map(_toIntermediate)
@@ -206,13 +207,13 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId>
       if (expr is SortCombine) {
         for (var sort in expr.sorts) {
           if (sort is SortScalar) {
-            builder = builder.sortBy(sort.field, descending: !sort.ascending);
+            builder = builder.sortBy(sort.field, descending: sort.descending);
           } else {
             throw Exception("Mongodb doesn't support grouped sorting.");
           }
         }
       } else if (expr is SortScalar) {
-        builder = builder.sortBy(expr.field, descending: !expr.ascending);
+        builder = builder.sortBy(expr.field, descending: expr.descending);
       }
     }
     return builder;
