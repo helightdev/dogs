@@ -85,7 +85,15 @@ mixin Dataclass<T> {
 
   @override
   String toString() {
-    return "$T ${DogEngine.instance.convertObjectToGraph(this, T).coerceString()}";
+    try {
+      return "$T ${DogEngine.instance.convertObjectToGraph(this, T).coerceString()}";
+    } catch (e,st) {
+      assert((){
+        print("Error in Dataclass toString(): $e:\n$st");
+        return true;
+      }());
+      return "$T ${DogEngine.instance.findStructureByType(T)!.getFieldMap(this)}";
+    }
   }
 
   int? _cachedHashCode;
