@@ -15,6 +15,50 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_core` - `v8.1.1`](#dogs_core---v811)
+ - [`dogs_generator` - `v5.2.3`](#dogs_generator---v523)
+ - [`dogs_firestore` - `v0.0.2+7`](#dogs_firestore---v0027)
+ - [`dogs_odm` - `v1.0.0-alpha.1`](#dogs_odm---v100-alpha1)
+ - [`dogs_forms` - `v0.1.0+7`](#dogs_forms---v0107)
+ - [`dogs_built` - `v2.0.4`](#dogs_built---v204)
+ - [`dogs_cbor` - `v2.0.32`](#dogs_cbor---v2032)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.1`](#dogs_mongo_driver---v100-alpha1)
+ - [`dogs_toml` - `v2.0.32`](#dogs_toml---v2032)
+ - [`dogs_yaml` - `v2.0.32`](#dogs_yaml---v2032)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.2.3`
+ - `dogs_firestore` - `v0.0.2+7`
+ - `dogs_odm` - `v1.0.0-alpha.1`
+ - `dogs_forms` - `v0.1.0+7`
+ - `dogs_built` - `v2.0.4`
+ - `dogs_cbor` - `v2.0.32`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.1`
+ - `dogs_toml` - `v2.0.32`
+ - `dogs_yaml` - `v2.0.32`
+
+---
+
+#### `dogs_core` - `v8.1.1`
+
+ - **REFACTOR**: make projections use native serialization by default.
+
+
+## 2024-01-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_mongo_driver` - `v1.0.0-alpha.0`](#dogs_mongo_driver---v100-alpha0)
  - [`dogs_odm` - `v1.0.0-alpha.0`](#dogs_odm---v100-alpha0)
 

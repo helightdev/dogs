@@ -1,3 +1,7 @@
+## 8.1.1
+
+ - **REFACTOR**: make projections use native serialization by default.
+
 ## 8.1.0
 
  - **REFACTOR**: use fieldmap as fallback if toString() using graph serialization fails.
