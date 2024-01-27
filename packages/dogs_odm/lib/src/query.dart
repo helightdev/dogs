@@ -15,124 +15,8 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_odm/dogs_odm.dart';
 
 import '../query_dsl.dart';
-
-abstract class QueryableRepository<T extends Object, ID extends Object> {
-  Future<List<T>> findAllByQuery(QueryLike query,
-      [Sorted sort = const Sorted.empty()]);
-
-  Future<T?> findOneByQuery(QueryLike query,
-      [Sorted sort = const Sorted.empty()]);
-
-  Future<int> countByQuery(QueryLike query);
-
-  Future<bool> existsByQuery(QueryLike query);
-
-  Future<void> deleteOneByQuery(QueryLike query);
-
-  Future<void> deleteAllByQuery(QueryLike query);
-}
-
-mixin QueryableRepositoryMixin<
-        T extends Object,
-        ID extends Object,
-        SYS extends OdmSystem,
-        SYS_DB_BASE extends QueryableDatabase,
-        SYS_DB extends QueryableDatabase<T, SYS_ID>,
-        SYS_ID extends Object> on DatabaseReferences<T, ID, SYS, SYS_DB_BASE, SYS_DB, SYS_ID>
-    implements QueryableRepository<T, ID> {
-  @override
-  Future<List<T>> findAllByQuery(QueryLike query,
-      [Sorted sort = const Sorted.empty()]) {
-    return database.findAllByQuery(query.asQuery, sort);
-  }
-
-  @override
-  Future<T?> findOneByQuery(QueryLike query,
-      [Sorted sort = const Sorted.empty()]) {
-    return database.findOneByQuery(query.asQuery, sort);
-  }
-
-  @override
-  Future<int> countByQuery(QueryLike query) {
-    return database.countByQuery(query.asQuery);
-  }
-
-  @override
-  Future<bool> existsByQuery(QueryLike query) {
-    return database.existsByQuery(query.asQuery);
-  }
-
-  @override
-  Future<void> deleteOneByQuery(QueryLike query) {
-    return database.deleteOneByQuery(query.asQuery);
-  }
-
-  @override
-  Future<void> deleteAllByQuery(QueryLike query) {
-    return database.deleteAllByQuery(query.asQuery);
-  }
-}
-
-abstract class QueryableDatabase<T extends Object, ID extends Object>
-    implements CrudDatabase<T, ID> {
-  Future<List<T>> findAllByQuery(Query query, Sorted sort);
-
-  Future<T?> findOneByQuery(Query query, Sorted sort);
-
-  Future<int> countByQuery(Query query);
-
-  Future<bool> existsByQuery(Query query);
-
-  Future<void> deleteOneByQuery(Query query);
-
-  Future<void> deleteAllByQuery(Query query);
-}
-
-//<editor-fold desc="Sorting">
-class Sorted {
-  final SortExpr? sort;
-
-  const Sorted({this.sort});
-
-  const Sorted.empty() : this(sort: null);
-
-  factory Sorted.byField(String field, {bool ascending = true}) {
-    return Sorted(sort: SortScalar(field, ascending));
-  }
-
-  factory Sorted.byFields(List<String> fields,
-      {List<bool>? ascending, defaultAscending = true}) {
-    ascending ??= List.filled(fields.length, defaultAscending);
-    if (fields.length != ascending.length)
-      throw Exception("Fields and ascending must have the same length.");
-    var sorts = <SortExpr>[];
-    for (var i = 0; i < fields.length; i++) {
-      sorts.add(SortScalar(fields[i], ascending[i]));
-    }
-    return Sorted(sort: SortCombine(sorts));
-  }
-}
-
-sealed class SortExpr {
-  const SortExpr();
-}
-
-class SortScalar extends SortExpr {
-  final String field;
-  final bool ascending;
-
-  const SortScalar(this.field, this.ascending);
-}
-
-class SortCombine extends SortExpr {
-  final List<SortExpr> sorts;
-
-  const SortCombine(this.sorts);
-}
-//</editor-fold>
 
 class Query extends QueryLike {
   final int? limit;
@@ -339,11 +223,7 @@ class FilterNative extends FilterExpr {
   const FilterNative(this.obj);
 }
 
-sealed class ArrayFilterExpr extends FilterExpr {
-  const ArrayFilterExpr();
-}
-
-class FilterArrayContains extends ArrayFilterExpr {
+class FilterArrayContains extends FilterExpr {
   final String field;
   final Object? value;
 
@@ -352,17 +232,5 @@ class FilterArrayContains extends ArrayFilterExpr {
   @override
   String toString() {
     return "$field contains $value";
-  }
-}
-
-class FilterMatcherArrayAny extends FilterExpr {
-  final String field;
-  final FilterExpr filter;
-
-  const FilterMatcherArrayAny(this.field, this.filter);
-
-  @override
-  String toString() {
-    return "$field any $filter";
   }
 }

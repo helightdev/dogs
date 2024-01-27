@@ -32,13 +32,6 @@ class MongoFilterParser {
     switch (expr) {
       case FilterNative():
         return expr.obj as SelectorBuilder;
-      case FilterMatcherArrayAny():
-        var matcher = MongoFilterParser.parse(expr.filter, system, extractQuery: true);
-        return where.raw({
-          r"$query": {
-            expr.field: {r'$elemMatch': matcher.map}
-          }
-        });
       case FilterAnd():
         var matchers =
             expr.filters.map((e) => MongoFilterParser.parse(e, system)).toList();

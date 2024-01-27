@@ -14,6 +14,7 @@ export 'src/odm.dart';
 export 'src/pagination.dart';
 export 'src/query.dart';
 export 'src/repository.dart';
+export 'src/sort.dart';
 
 
 void installOdmConverters([DogEngine? engine]) {

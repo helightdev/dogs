@@ -80,10 +80,6 @@ FilterExpr arrayContains(String field, dynamic value) {
   return FilterArrayContains(field, value);
 }
 
-FilterExpr matcherArrayAny(String field, FilterExpr filter) {
-  return FilterMatcherArrayAny(field, filter);
-}
-
 FilterExpr nativeFilter(Object obj) {
   return FilterNative(obj);
 }

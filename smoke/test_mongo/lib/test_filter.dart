@@ -119,18 +119,6 @@ Future testFilter() async {
     expect(1, await collection.count(MongoFilterParser.parse(query.exists("name"), system)));
     expect(0, await collection.count(MongoFilterParser.parse(query.exists("notExisting"), system)));
   });
-  await test("ANY", () async {
-    expect(1, await collection.count(MongoFilterParser.parse(query.matcherArrayAny("rooms", query.eq("name", "Kitchen")), system)));
-    expect(0, await collection.count(MongoFilterParser.parse(query.matcherArrayAny("rooms", query.eq("name", "Bathroom")), system)));
-    expect(1, await collection.count(MongoFilterParser.parse(query.matcherArrayAny("rooms", query.or([
-      query.eq("name", "Kitchen"),
-      query.eq("name", "Something Else")
-    ])), system)));
-    expect(0, await collection.count(MongoFilterParser.parse(query.matcherArrayAny("rooms", query.or([
-      query.eq("name", "Nothing"),
-      query.eq("name", "Something Else")
-    ])), system)));
-  });
   await test("SUB MAP", () async {
     expect(1, await collection.count(MongoFilterParser.parse(query.eq("address.street", "Main Street"), system)));
     expect(0, await collection.count(MongoFilterParser.parse(query.eq("address.street", "Other Street"), system)));

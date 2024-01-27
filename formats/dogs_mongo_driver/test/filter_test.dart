@@ -129,21 +129,6 @@ void main() {
           completion(0));
     });
 
-    test("ANY", () {
-      expect(count(matcherArrayAny("rooms", eq("name", "Kitchen"))),
-          completion(1));
-      expect(count(matcherArrayAny("rooms", eq("name", "Bathroom"))),
-          completion(0));
-      expect(
-          count(matcherArrayAny(
-              "rooms", or([eq("name", "Kitchen"), eq("name", "Bathroom")]))),
-          completion(1));
-      expect(
-          count(matcherArrayAny(
-              "rooms", or([eq("name", "Bathroom"), eq("name", "Bathroom")]))),
-          completion(0));
-    });
-
     test("NESTED", () {
       expect(count(eq("address.street", "Main Street")), completion(1));
       expect(count(eq("address.street", "Second Street")), completion(0));

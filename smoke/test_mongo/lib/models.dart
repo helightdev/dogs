@@ -15,6 +15,8 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 
 @serializable
@@ -29,5 +31,73 @@ class Person with Dataclass<Person> {
     this.id,
     required this.name,
     required this.age,
+  });
+}
+
+@serializable
+class TypeTestModel with Dataclass<TypeTestModel> {
+
+  ObjectId? id;
+  Timestamp timestamp;
+  RegExp regex;
+  DbRef? ref;
+  JsCode? code;
+
+  TypeTestModel(this.id, this.timestamp, this.regex, this.ref, this.code);
+}
+
+@serializable
+class Resident with Dataclass<Resident>{
+  String name;
+  int age;
+
+  Resident({
+    required this.name,
+    required this.age,
+  });
+}
+
+@serializable
+class Address with Dataclass<Address> {
+  String street;
+  int number;
+  String city;
+  String country;
+
+  Address({
+    required this.street,
+    required this.number,
+    required this.city,
+    required this.country,
+  });
+}
+
+@serializable
+class Room with Dataclass<Room> {
+  String name;
+  int size;
+
+  Room({
+    required this.name,
+    required this.size,
+  });
+}
+
+@serializable
+class House with Dataclass<House> {
+  ObjectId? id;
+  String name;
+  int size;
+  Address address;
+  Resident owner;
+  List<Room> rooms;
+
+  House({
+    this.id,
+    required this.name,
+    required this.size,
+    required this.address,
+    required this.owner,
+    required this.rooms,
   });
 }

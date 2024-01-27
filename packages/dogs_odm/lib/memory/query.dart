@@ -38,32 +38,11 @@ abstract class MapMatcher {
     }
     return (exists: true, value: value);
   }
-  
-  static bool compareDocuments(dynamic target, dynamic query) {
-    if (query is Map) {
-      if (target is! Map) return false;
-      for (var entry in query.entries) {
-        var key = entry.key;
-        var value = entry.value;
-        if (!target.containsKey(key)) return false;
-        var targetValue = target[key]!;
-        if (!compareDocuments(targetValue, value)) return false;
-      }
-    } else if (query is List) {
-      return deepEquality.equals(target, query);
-    } else {
-      return deepEquality.equals(target, query);
-    }
-    return true;
-  }
 
   static MapMatcher parse(FilterExpr expr, OdmSystem system) {
     switch(expr) {
       case FilterNative():
         return expr.obj as MapMatcher;
-      case FilterMatcherArrayAny():
-        var matcher = MapMatcher.parse(expr.filter, system);
-        return MapFilterArrayMatcherAnyMatcher(expr.field, matcher);
       case FilterAnd():
         var matchers = expr.filters.map((e) => MapMatcher.parse(e, system)).toList();
         return MapFilterAndMatcher(matchers);

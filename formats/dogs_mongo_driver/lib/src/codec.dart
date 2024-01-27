@@ -16,10 +16,16 @@
 
 import 'package:decimal/decimal.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
-void main() {
+void installMongoConverters([DogEngine? engine]) {
+  engine ??= DogEngine.instance;
+  engine.registerAutomatic(ObjectIdConverter());
+  engine.registerAutomatic(TimestampConverter());
+  engine.registerAutomatic(JsCodeConverter());
+  engine.registerAutomatic(DbRefConverter());
 }
 
 class MongoDbCodec extends DogNativeCodec {
@@ -83,5 +89,67 @@ class MongoDbCodec extends DogNativeCodec {
     Int64: NativeRetentionConverter<Int64>(),
     Decimal: NativeRetentionConverter<Decimal>(),
   };
+}
 
+class ObjectIdConverter extends SimpleDogConverter<mongo.ObjectId> {
+  ObjectIdConverter() : super(serialName: "ObjectId");
+
+  @override
+  mongo.ObjectId deserialize(value, DogEngine engine) {
+    return ObjectId.parse(value);
+  }
+
+  @override
+  serialize(mongo.ObjectId value, DogEngine engine) {
+    return value.oid;
+  }
+}
+
+class TimestampConverter extends SimpleDogConverter<mongo.Timestamp> {
+  TimestampConverter() : super(serialName: "Timestamp");
+
+  @override
+  mongo.Timestamp deserialize(value, DogEngine engine) {
+    return mongo.Timestamp(value["t"], value["i"]);
+  }
+
+  @override
+  serialize(mongo.Timestamp value, DogEngine engine) {
+    return <String,Object?>{
+      "t": value.seconds,
+      "i": value.increment,
+    };
+  }
+}
+
+class JsCodeConverter extends SimpleDogConverter<mongo.JsCode> {
+  JsCodeConverter() : super(serialName: "JsCode");
+
+  @override
+  mongo.JsCode deserialize(value, DogEngine engine) {
+    return mongo.JsCode(value);
+  }
+
+  @override
+  serialize(mongo.JsCode value, DogEngine engine) {
+    return value.code;
+  }
+}
+
+class DbRefConverter extends SimpleDogConverter<mongo.DbRef> {
+  DbRefConverter() : super(serialName: "DbRef");
+
+  @override
+  mongo.DbRef deserialize(value, DogEngine engine) {
+    return mongo.DbRef(value["collection"], ObjectId.parse(value["id"]), db: value["db"]);
+  }
+
+  @override
+  serialize(mongo.DbRef value, DogEngine engine) {
+    return <String,Object?>{
+      "collection": value.collection,
+      "id": (value.id as ObjectId).oid,
+      "db": value.db,
+    };
+  }
 }
