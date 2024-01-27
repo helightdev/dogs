@@ -174,3 +174,24 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
     };
   }
 }
+
+class PageRequestConverter extends SimpleDogConverter<PageRequest> {
+  PageRequestConverter() : super(serialName: "PageRequest");
+
+  @override
+  PageRequest deserialize(value, DogEngine engine) {
+    if (value is! Map) throw DogException("Expected Map");
+    return PageRequest(
+      page: value["page"],
+      size: value["size"],
+    );
+  }
+
+  @override
+  serialize(PageRequest value, DogEngine engine) {
+    return <String,dynamic>{
+      "page": value.page,
+      "size": value.size,
+    };
+  }
+}

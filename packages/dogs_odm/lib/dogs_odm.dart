@@ -16,8 +16,8 @@ export 'src/query.dart';
 export 'src/repository.dart';
 export 'src/sort.dart';
 
-
 void installOdmConverters([DogEngine? engine]) {
   engine ??= DogEngine.instance;
   engine.registerTreeBaseFactory(Page, pageBaseFactory);
+  engine.registerAutomatic(PageRequestConverter());
 }
