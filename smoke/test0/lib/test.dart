@@ -50,6 +50,14 @@ void testProjection() {
   if (result.title != Note.variant0().title) throw Exception("Object to FieldMap doesn't work");
   if (result.tags.first != "new") throw Exception("Properties don't work");
   if (result.content != "AABBCC") throw Exception("Iterables don't work");
+  testProjectionOperation(ModelA.variant0);
+  testProjectionOperation(ModelB.variant0);
+  testProjectionOperation(ModelC.variant0);
+  testProjectionOperation(ModelD.variant0);
+  testProjectionOperation(ModelE.variant0);
+  testProjectionOperation(ModelF.variant0);
+  testProjectionOperation(ModelG.variant0);
+  testProjectionOperation(Note.variant0);
 }
 
 void testOperations() {
@@ -233,6 +241,12 @@ void testOperation(Type type, dynamic initialValue, bool Function(dynamic a, dyn
   var reNative = nativeOperation.deserialize(resultNative, dogs);
   if (!comparator(reGraph, initialValue)) throw Exception("Graph result not equal: $reGraph != $initialValue");
   if (!comparator(reNative, initialValue)) throw Exception("Native result not equal: $reNative != $initialValue");
+}
+
+void testProjectionOperation<T extends Object>(T Function() a) {
+  var value = a();
+  var projected = dogs.project<T>(value);
+  if (!deepEquality.equals(value, projected)) throw Exception("Projection failed");
 }
 
 void testEncoding<T>(DogSerializer serializer, T Function() a, T Function() b) {
