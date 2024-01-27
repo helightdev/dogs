@@ -1,3 +1,11 @@
+## 8.1.0
+
+ - **REFACTOR**: use fieldmap as fallback if toString() using graph serialization fails.
+ - **REFACTOR**: make the type discriminator codec configurable.
+ - **FIX**: downgrade meta package.
+ - **FEAT**: add RegExpConverter.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
 ## 8.0.2
 
  - **REFACTOR**: improve error handling and add custom exceptions.

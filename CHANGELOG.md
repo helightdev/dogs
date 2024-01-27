@@ -3,6 +3,69 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-01-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.0`](#dogs_mongo_driver---v100-alpha0)
+ - [`dogs_odm` - `v1.0.0-alpha.0`](#dogs_odm---v100-alpha0)
+ - [`dogs_core` - `v8.1.0`](#dogs_core---v810)
+ - [`dogs_firestore` - `v0.0.2+6`](#dogs_firestore---v0026)
+ - [`dogs_generator` - `v5.2.2`](#dogs_generator---v522)
+ - [`dogs_forms` - `v0.1.0+6`](#dogs_forms---v0106)
+ - [`dogs_built` - `v2.0.3`](#dogs_built---v203)
+ - [`dogs_cbor` - `v2.0.31`](#dogs_cbor---v2031)
+ - [`dogs_toml` - `v2.0.31`](#dogs_toml---v2031)
+ - [`dogs_yaml` - `v2.0.31`](#dogs_yaml---v2031)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.0.2+6`
+ - `dogs_generator` - `v5.2.2`
+ - `dogs_forms` - `v0.1.0+6`
+ - `dogs_built` - `v2.0.3`
+ - `dogs_cbor` - `v2.0.31`
+ - `dogs_toml` - `v2.0.31`
+ - `dogs_yaml` - `v2.0.31`
+
+---
+
+#### `dogs_mongo_driver` - `v1.0.0-alpha.0`
+
+ - **FEAT**: work on dogs_orm.
+ - **FEAT**: cleanup and improve pagination api.
+ - **FEAT**(negative): remove too specific query methods.
+ - **FEAT**: add pagination and some tests.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
+#### `dogs_odm` - `v1.0.0-alpha.0`
+
+ - **FEAT**: work on dogs_orm.
+ - **FEAT**: add PageRequestConverter.
+ - **FEAT**: cleanup and improve pagination api.
+ - **FEAT**(negative): remove too specific query methods.
+ - **FEAT**: add pagination and some tests.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
+#### `dogs_core` - `v8.1.0`
+
+ - **REFACTOR**: use fieldmap as fallback if toString() using graph serialization fails.
+ - **REFACTOR**: make the type discriminator codec configurable.
+ - **FIX**: downgrade meta package.
+ - **FEAT**: add RegExpConverter.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
+
 ## 2024-01-25
 
 ### Changes

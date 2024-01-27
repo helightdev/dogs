@@ -9,8 +9,8 @@ environment:
 # Add regular dependencies here.
 dependencies:
   # path: ^1.8.0
-  dogs_core: any
-  dogs_odm: any
+  dogs_core: ^8.1.0
+  dogs_odm: ^1.0.0-alpha.0
   mongo_dart: ^0.10.0
   fixnum: ^1.1.0
   decimal: ^2.3.3
