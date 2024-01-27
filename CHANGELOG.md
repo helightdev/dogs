@@ -17,6 +17,32 @@ Packages with other changes:
 
  - [`dogs_mongo_driver` - `v1.0.0-alpha.0`](#dogs_mongo_driver---v100-alpha0)
  - [`dogs_odm` - `v1.0.0-alpha.0`](#dogs_odm---v100-alpha0)
+
+---
+
+#### `dogs_mongo_driver` - `v1.0.0-alpha.0`
+
+ - Readme & License
+
+#### `dogs_odm` - `v1.0.0-alpha.0`
+
+ - Readme & License
+
+
+## 2024-01-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.0`](#dogs_mongo_driver---v100-alpha0)
+ - [`dogs_odm` - `v1.0.0-alpha.0`](#dogs_odm---v100-alpha0)
  - [`dogs_core` - `v8.1.0`](#dogs_core---v810)
  - [`dogs_firestore` - `v0.0.2+6`](#dogs_firestore---v0026)
  - [`dogs_generator` - `v5.2.2`](#dogs_generator---v522)

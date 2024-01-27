@@ -1,5 +1,9 @@
 ## 1.0.0-alpha.0
 
+ - Readme & License
+
+## 1.0.0-alpha.0
+
  - **FEAT**: work on dogs_orm.
  - **FEAT**: cleanup and improve pagination api.
  - **FEAT**(negative): remove too specific query methods.
