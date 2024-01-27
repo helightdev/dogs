@@ -19,7 +19,10 @@ import 'package:dogs_odm/memory/database.dart';
 
 import 'odm.dart';
 
-class MemoryRepository<T extends Object, ID extends Object> extends Repository<T, ID>
-    with RepositoryMixin<T, ID, MemoryOdmSystem, MemoryDatabase, String> {
+class MemoryRepository<T extends Object, ID extends Object>
+    extends Repository<T, ID> with
+        RepositoryMixin<T, ID, MemoryOdmSystem, MemoryDatabase, MemoryDatabase<T>, String>,
+        QueryableRepositoryMixin<T, ID, MemoryOdmSystem, MemoryDatabase, MemoryDatabase<T>, String>,
+        PageableRepositoryMixin<T, ID, MemoryOdmSystem, MemoryDatabase, MemoryDatabase<T>, String> {
 
 }

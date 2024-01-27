@@ -14,18 +14,23 @@
  *    limitations under the License.
  */
 
+import 'dart:collection';
+
+import 'package:collection/collection.dart';
 import 'package:dogs_odm/dogs_odm.dart';
-import 'package:dogs_odm/memory/odm.dart';
+import 'package:dogs_odm/memory/sort.dart';
+import 'package:dogs_odm/memory_db.dart';
 
-class MemoryDatabase<T extends Object> extends CrudDatabase<T, String> {
-
-  final Map<String, Map<String, dynamic>> _data = <String,
-      Map<String, dynamic>>{};
+class MemoryDatabase<T extends Object> extends CrudDatabase<T, String>
+    implements QueryableDatabase<T, String>, PageableDatabase<T, String> {
+  final LinkedHashMap<String, Map<String, dynamic>> _data =
+      LinkedHashMap<String, Map<String, dynamic>>();
   MemoryOdmSystem system;
 
   MemoryDatabase(this.system);
 
-  late EntityAnalysis<T, MemoryDatabase, String> analysis = system.getAnalysis<T>();
+  late EntityAnalysis<T, MemoryDatabase, String> analysis =
+      system.getAnalysis<T>();
 
   @override
   Future<void> clear() {
@@ -94,5 +99,93 @@ class MemoryDatabase<T extends Object> extends CrudDatabase<T, String> {
   @override
   Future<List<T>> saveAll(Iterable<T> values) async {
     return await Future.wait(values.map((e) => save(e)));
+  }
+
+  @override
+  Future<int> countByQuery(Query query) async {
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e));
+    return Future.value(values.length);
+  }
+
+  @override
+  Future<void> deleteAllByQuery(Query query) async {
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e));
+    await Future.wait(values.map((e) => delete(e)));
+  }
+
+  @override
+  Future<void> deleteOneByQuery(Query query) {
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e));
+    return delete(values.first);
+  }
+
+  @override
+  Future<bool> existsByQuery(Query query) {
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e));
+    return Future.value(values.isNotEmpty);
+  }
+
+  @override
+  Future<List<T>> findAllByQuery(Query query, Sorted sort) {
+    var comparator = MapSorting.parse(sort.sort);
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .sorted((a, b) => comparator.compare(a.value, b.value))
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e));
+    return Future.value(values.toList());
+  }
+
+  @override
+  Future<T?> findOneByQuery(Query query, Sorted sort) {
+    var comparator = MapSorting.parse(sort.sort);
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .sorted((a, b) => comparator.compare(a.value, b.value))
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e));
+    return Future.value(values.firstOrNull);
+  }
+
+  @override
+  Future<Page<T>> findPaginatedByQuery(Query query, Sorted sort,
+      {required int skip, required int limit}) {
+    var comparator = MapSorting.parse(sort.sort);
+    var totalElements = 0;
+    var values = _data.entries
+        .where((element) =>
+            MapMatcher.evaluate(query.filter, element.value, system))
+        .sorted((a, b) => comparator.compare(a.value, b.value))
+        .map((e) {
+          totalElements++;
+          return e;
+        })
+        .toList() // Get all so the totalElements can be calculated
+        .skip(skip)
+        .take(limit)
+        .map((e) => EntityIntermediate(e.key, e.value))
+        .map((e) => analysis.decode(e))
+        .toList();
+
+    var page = Page<T>.fromData(values, skip, limit, totalElements);
+    return Future.value(page);
   }
 }

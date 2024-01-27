@@ -16,7 +16,6 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
-import 'package:dogs_mongo_driver/src/database.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 import 'dart:core';
 import 'dart:core' as core;

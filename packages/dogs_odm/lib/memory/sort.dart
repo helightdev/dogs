@@ -14,8 +14,9 @@
  *    limitations under the License.
  */
 
+import 'dart:core';
+
 import 'package:collection/collection.dart';
-import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 
 class MapSorting {
@@ -25,8 +26,10 @@ class MapSorting {
     return items.sorted(comparator.compare);
   }
 
-  static MapComparator parse(SortExpr expr) {
+  static MapComparator parse(SortExpr? expr) {
     switch (expr) {
+      case null:
+        return _NoSort();
       case SortScalar():
         return _SortScalar(expr.field, expr.ascending);
       case SortCombine():
@@ -48,6 +51,13 @@ class MapSorting {
 
 abstract class MapComparator {
   int compare(Map<String, dynamic> a, Map<String, dynamic> b);
+}
+
+class _NoSort implements MapComparator {
+  @override
+  int compare(Map<String, dynamic> a, Map<String, dynamic> b) {
+    return 0;
+  }
 }
 
 class _SortScalar implements MapComparator {

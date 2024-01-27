@@ -22,7 +22,8 @@ abstract class MapMatcher {
 
   bool matches(Map<dynamic, dynamic> map);
 
-  static bool evaluate(FilterExpr expr, Map document, OdmSystem system) {
+  static bool evaluate(FilterExpr? expr, Map document, OdmSystem system) {
+    if (expr == null) return true;
     var matcher = MapMatcher.parse(expr, system);
     return matcher.matches(document);
   }
@@ -37,14 +38,32 @@ abstract class MapMatcher {
     }
     return (exists: true, value: value);
   }
+  
+  static bool compareDocuments(dynamic target, dynamic query) {
+    if (query is Map) {
+      if (target is! Map) return false;
+      for (var entry in query.entries) {
+        var key = entry.key;
+        var value = entry.value;
+        if (!target.containsKey(key)) return false;
+        var targetValue = target[key]!;
+        if (!compareDocuments(targetValue, value)) return false;
+      }
+    } else if (query is List) {
+      return deepEquality.equals(target, query);
+    } else {
+      return deepEquality.equals(target, query);
+    }
+    return true;
+  }
 
   static MapMatcher parse(FilterExpr expr, OdmSystem system) {
     switch(expr) {
       case FilterNative():
         return expr.obj as MapMatcher;
-      case FilterAny():
+      case FilterMatcherArrayAny():
         var matcher = MapMatcher.parse(expr.filter, system);
-        return MapFilterAnyMatcher(expr.field, matcher);
+        return MapFilterArrayMatcherAnyMatcher(expr.field, matcher);
       case FilterAnd():
         var matchers = expr.filters.map((e) => MapMatcher.parse(e, system)).toList();
         return MapFilterAndMatcher(matchers);
@@ -53,8 +72,6 @@ abstract class MapMatcher {
         return MatchFilterOrMatcher(matchers);
       case FilterExists():
         return MapFilterExistsMatcher(expr.field, expr.value);
-      case FilterAll():
-        return MapFilterAllMatcher(expr.field, expr.values);
       case FilterEqStruct():
         var document = system.serializeObject(expr.value, expr.typeArgument);
         return MapMatcherEq(expr.field, document);
@@ -73,6 +90,12 @@ abstract class MapMatcher {
         return MapFilterLteMatcher(expr.field, expr.value);
       case FilterGte():
         return MapFilterGteMatcher(expr.field, expr.value);
+      case FilterArrayContains():
+        return MapFilterContainsMatcher(expr.field, expr.value);
+      case FilterIn():
+        return MapFilterInMatcher(expr.field, expr.values);
+      case FilterNotIn():
+        return MapFilterNotInMatcher(expr.field, expr.values);
     }
   }
 }
@@ -158,11 +181,11 @@ class MapFilterExistsMatcher extends MapMatcher {
   }
 }
 
-class MapFilterAllMatcher extends MapMatcher {
+class MapFilterContainsMatcher extends MapMatcher {
   final String field;
-  final List<Object?> values;
+  final Object? value;
 
-  MapFilterAllMatcher(this.field, this.values);
+  MapFilterContainsMatcher(this.field, this.value);
 
   @override
   bool matches(Map<dynamic, dynamic> map) {
@@ -171,27 +194,51 @@ class MapFilterAllMatcher extends MapMatcher {
     var value = q.value;
     if (value == null) return false;
     if (value is! List) return false;
-    var stack = value.toList();
-    for (var element in values) {
-      var hasFound = false;
-      for (var match in stack) {
-        if (deepEquality.equals(element, match)) {
-          hasFound = true;
-          stack.remove(match);
-          break;
-        }
-      }
-      if (!hasFound) return false;
-    }
-    return true;
+    return value.any((element) {
+      var matches = deepEquality.equals(element, this.value);
+      print("Comparing: $element with ${this.value}: $matches");
+      return matches;
+    });
   }
 }
 
-class MapFilterAnyMatcher extends MapMatcher {
+class MapFilterInMatcher extends MapMatcher {
+  final String field;
+  final List<Object?> values;
+
+  MapFilterInMatcher(this.field, this.values);
+
+  @override
+  bool matches(Map<dynamic, dynamic> map) {
+    var q = MapMatcher.traverse(map, field);
+    if (!q.exists) return false;
+    var value = q.value;
+    if (value == null) return false;
+    return values.any((element) => deepEquality.equals(element, value));
+  }
+}
+
+class MapFilterNotInMatcher extends MapMatcher {
+  final String field;
+  final List<Object?> values;
+
+  MapFilterNotInMatcher(this.field, this.values);
+
+  @override
+  bool matches(Map<dynamic, dynamic> map) {
+    var q = MapMatcher.traverse(map, field);
+    if (!q.exists) return true;
+    var value = q.value;
+    if (value == null) return true;
+    return values.every((element) => !deepEquality.equals(element, value));
+  }
+}
+
+class MapFilterArrayMatcherAnyMatcher extends MapMatcher {
   final String field;
   final MapMatcher matcher;
 
-  MapFilterAnyMatcher(this.field, this.matcher);
+  MapFilterArrayMatcherAnyMatcher(this.field, this.matcher);
 
   @override
   bool matches(Map<dynamic, dynamic> map) {

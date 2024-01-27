@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/src/engine.dart';
+import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 import 'package:uuid/uuid.dart';
 

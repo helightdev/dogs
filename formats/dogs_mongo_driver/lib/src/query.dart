@@ -14,12 +14,14 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import 'dart:math';
+
 import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
 import 'package:dogs_odm/dogs_odm.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 
-class MongoFilter {
+class MongoFilterParser {
+  MongoFilterParser._();
+
   static SelectorBuilder parse(FilterExpr expr, MongoOdmSystem system, {bool extractQuery = false}) {
     var builder = _parse(expr, system);
     if (extractQuery) builder.map = builder.map[r"$query"];
@@ -30,8 +32,8 @@ class MongoFilter {
     switch (expr) {
       case FilterNative():
         return expr.obj as SelectorBuilder;
-      case FilterAny():
-        var matcher = MongoFilter.parse(expr.filter, system, extractQuery: true);
+      case FilterMatcherArrayAny():
+        var matcher = MongoFilterParser.parse(expr.filter, system, extractQuery: true);
         return where.raw({
           r"$query": {
             expr.field: {r'$elemMatch': matcher.map}
@@ -39,7 +41,7 @@ class MongoFilter {
         });
       case FilterAnd():
         var matchers =
-            expr.filters.map((e) => MongoFilter.parse(e, system)).toList();
+            expr.filters.map((e) => MongoFilterParser.parse(e, system)).toList();
         if (matchers.isEmpty) return where.raw({});
         if (matchers.length == 1) return matchers.first;
         return matchers.skip(1).fold(matchers.first, (previousValue, element) {
@@ -47,7 +49,7 @@ class MongoFilter {
         });
       case FilterOr():
         var matchers =
-            expr.filters.map((e) => MongoFilter.parse(e, system)).toList();
+            expr.filters.map((e) => MongoFilterParser.parse(e, system)).toList();
         if (matchers.isEmpty) return where.raw({});
         if (matchers.length == 1) return matchers.first;
         return matchers.skip(1).fold(matchers.first, (previousValue, element) {
@@ -56,8 +58,12 @@ class MongoFilter {
       case FilterExists():
         if (expr.value == true) return where.exists(expr.field);
         return where.notExists(expr.field);
-      case FilterAll():
-        return where.all(expr.field, expr.values);
+      case FilterArrayContains():
+        return where.all(expr.field, [expr.value]);
+      case FilterIn():
+        return where.oneFrom(expr.field, expr.values);
+      case FilterNotIn():
+        return where.nin(expr.field, expr.values);
       case FilterEqStruct():
         var document = system.serializeObject(expr.value, expr.typeArgument);
         return where.eq(expr.field, document);

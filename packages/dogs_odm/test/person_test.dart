@@ -37,6 +37,11 @@ class Person {
       age: age ?? this.age,
     );
   }
+
+  @override
+  String toString() {
+    return 'Person{id: $id, name: $name, age: $age}';
+  }
 }
 
 final DogStructure<Person> personStructure = DogStructure<Person>(

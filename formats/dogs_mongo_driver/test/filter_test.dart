@@ -29,9 +29,7 @@ final house = {
 };
 
 void main() {
-  DogEngine()
-      .withPersonStructure()
-      .setSingleton();
+  DogEngine().withPersonStructure().setSingleton();
   group("Mongo", () {
     late Db db;
     late MongoOdmSystem system;
@@ -46,7 +44,7 @@ void main() {
     });
 
     Future<int> count(FilterExpr expr) async {
-      return await collection.count(MongoFilter.parse(expr, system));
+      return await collection.count(MongoFilterParser.parse(expr, system));
     }
 
     test("EQ", () async {
@@ -55,12 +53,12 @@ void main() {
     });
 
     test("EQ Person", () async {
-      expect(count(eq<Person>("owner", Person(
-        id: "0", name: "Homer", age: 40
-      ))), completion(1));
-      expect(count(eq<Person>("owner", Person(
-        id: "1", name: "Homer", age: 40
-      ))), completion(0));
+      expect(
+          count(eq<Person>("owner", Person(id: "0", name: "Homer", age: 40))),
+          completion(1));
+      expect(
+          count(eq<Person>("owner", Person(id: "1", name: "Homer", age: 40))),
+          completion(0));
     });
 
     test("NE", () async {
@@ -69,12 +67,12 @@ void main() {
     });
 
     test("NE Person", () async {
-      expect(count(ne<Person>("owner", Person(
-        id: "1", name: "Homer", age: 40
-      ))), completion(1));
-      expect(count(ne<Person>("owner", Person(
-        id: "0", name: "Homer", age: 40
-      ))), completion(0));
+      expect(
+          count(ne<Person>("owner", Person(id: "1", name: "Homer", age: 40))),
+          completion(1));
+      expect(
+          count(ne<Person>("owner", Person(id: "0", name: "Homer", age: 40))),
+          completion(0));
     });
 
     test("LT", () async {
@@ -98,25 +96,13 @@ void main() {
     });
 
     test("AND", () async {
-      expect(count(and([
-        eq("name", "House"),
-        eq("size", 100)
-      ])), completion(1));
-      expect(count(and([
-        eq("name", "House"),
-        eq("size", 99)
-      ])), completion(0));
+      expect(count(and([eq("name", "House"), eq("size", 100)])), completion(1));
+      expect(count(and([eq("name", "House"), eq("size", 99)])), completion(0));
     });
 
     test("OR", () async {
-      expect(count(or([
-        eq("name", "House"),
-        eq("size", 99)
-      ])), completion(1));
-      expect(count(or([
-        eq("name", "Homer"),
-        eq("size", 99)
-      ])), completion(0));
+      expect(count(or([eq("name", "House"), eq("size", 99)])), completion(1));
+      expect(count(or([eq("name", "Homer"), eq("size", 99)])), completion(0));
     });
 
     test("EXISTS", () {
@@ -126,31 +112,36 @@ void main() {
       expect(count(exists("owner2")), completion(0));
     });
 
-    test("ALL", () {
-      expect(count(all("rooms", [
-        {"name": "Kitchen", "size": 20},
-        {"name": "Living Room", "size": 30},
-        {"name": "Bedroom", "size": 15}
-      ])), completion(1));
-      expect(count(all("rooms", [
-        {"name": "Kitchen", "size": 20},
-        {"name": "Living Room", "size": 30},
-        {"name": "Bedroom", "size": 15},
-        {"name": "Bathroom", "size": 10}
-      ])), completion(0));
+    test("IN", () {
+      expect(count(inArray("name", ["House", "House2"])), completion(1));
+      expect(count(inArray("name", ["House2", "House3"])), completion(0));
+    });
+
+    test("NOT IN", () {
+      expect(count(notInArray("name", ["House2", "House3"])), completion(1));
+      expect(count(notInArray("name", ["House", "House2"])), completion(0));
+    });
+
+    test("ARRAY CONTAINS", () {
+      expect(count(arrayContains("rooms", {"name": "Kitchen", "size": 20})),
+          completion(1));
+      expect(count(arrayContains("rooms", {"name": "Kitchen2", "size": 20})),
+          completion(0));
     });
 
     test("ANY", () {
-      expect(count(any("rooms", eq("name", "Kitchen"))), completion(1));
-      expect(count(any("rooms", eq("name", "Bathroom"))), completion(0));
-      expect(count(any("rooms", or([
-        eq("name", "Kitchen"),
-        eq("name", "Bathroom")
-      ]))), completion(1));
-      expect(count(any("rooms", or([
-        eq("name", "Bathroom"),
-        eq("name", "Bathroom")
-      ]))), completion(0));
+      expect(count(matcherArrayAny("rooms", eq("name", "Kitchen"))),
+          completion(1));
+      expect(count(matcherArrayAny("rooms", eq("name", "Bathroom"))),
+          completion(0));
+      expect(
+          count(matcherArrayAny(
+              "rooms", or([eq("name", "Kitchen"), eq("name", "Bathroom")]))),
+          completion(1));
+      expect(
+          count(matcherArrayAny(
+              "rooms", or([eq("name", "Bathroom"), eq("name", "Bathroom")]))),
+          completion(0));
     });
 
     test("NESTED", () {

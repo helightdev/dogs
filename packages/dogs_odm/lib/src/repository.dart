@@ -22,15 +22,15 @@ abstract class Repository<T extends Object, ID extends Object> {
   Future<T?> findById(ID id);
 
   Future<List<T>> findAll();
-  
+
   Future<bool> existsById(ID id);
-  
+
   Future<int> count();
-  
+
   Future<T> save(T value);
-  
+
   Future<List<T>> saveAll(Iterable<T> values);
-  
+
   Future<void> deleteById(ID id);
 
   Future<void> delete(T value);
@@ -40,36 +40,51 @@ abstract class Repository<T extends Object, ID extends Object> {
   Future<void> deleteAll(Iterable<T> values);
 
   Future<void> clear();
-
-  CrudDatabase get database;
-  OdmSystem get system;
 }
 
-mixin RepositoryMixin<T extends Object, ID extends Object, SYS extends OdmSystem, SYS_DB extends CrudDatabase, SYS_ID extends Object> on Repository<T, ID> {
-  
-  CrudDatabase<T,SYS_ID>? _cachedDatabase;
-  OdmSystem<SYS_DB, SYS_ID>? _cachedSystem;
+abstract class DatabaseReferences<
+    ENTITY extends Object,
+    ID extends Object,
+    SYS extends OdmSystem,
+    SYS_DB_BASE extends CrudDatabase,
+    SYS_DB extends CrudDatabase<ENTITY, SYS_ID>,
+    SYS_ID extends Object> {
+  OdmSystem<SYS_DB_BASE, SYS_ID> get system;
+
+  SYS_DB get database;
+}
+
+mixin RepositoryMixin<
+        ENTITY extends Object,
+        ID extends Object,
+        SYS extends OdmSystem,
+        SYS_DB_BASE extends CrudDatabase,
+        SYS_DB extends CrudDatabase<ENTITY, SYS_ID>,
+        SYS_ID extends Object> on Repository<ENTITY, ID>
+    implements DatabaseReferences<ENTITY, ID, SYS, SYS_DB_BASE, SYS_DB, SYS_ID> {
+  SYS_DB? _cachedDatabase;
+  OdmSystem<SYS_DB_BASE, SYS_ID>? _cachedSystem;
 
   @override
-  OdmSystem<SYS_DB, SYS_ID> get system {
-    _cachedSystem ??= OdmSystem.get<SYS>() as OdmSystem<SYS_DB, SYS_ID>;
+  OdmSystem<SYS_DB_BASE, SYS_ID> get system {
+    _cachedSystem ??= OdmSystem.get<SYS>() as OdmSystem<SYS_DB_BASE, SYS_ID>;
     return _cachedSystem!;
   }
 
   @override
-  CrudDatabase<T,SYS_ID> get database {
-    _cachedDatabase ??= system.getDatabase<T>();
+  SYS_DB get database {
+    _cachedDatabase ??= system.getDatabase<ENTITY>() as SYS_DB;
     return _cachedDatabase!;
   }
 
   @override
-  Future<T?> findById(ID id) {
+  Future<ENTITY?> findById(ID id) {
     var actualId = system.transformId(id)!;
     return database.findById(actualId);
   }
 
   @override
-  Future<List<T>> findAll() {
+  Future<List<ENTITY>> findAll() {
     return database.findAll();
   }
 
@@ -85,12 +100,12 @@ mixin RepositoryMixin<T extends Object, ID extends Object, SYS extends OdmSystem
   }
 
   @override
-  Future<T> save(T value) {
+  Future<ENTITY> save(ENTITY value) {
     return database.save(value);
   }
 
   @override
-  Future<List<T>> saveAll(Iterable<T> values) {
+  Future<List<ENTITY>> saveAll(Iterable<ENTITY> values) {
     return database.saveAll(values);
   }
 
@@ -101,7 +116,7 @@ mixin RepositoryMixin<T extends Object, ID extends Object, SYS extends OdmSystem
   }
 
   @override
-  Future<void> delete(T value) {
+  Future<void> delete(ENTITY value) {
     return database.delete(value);
   }
 
@@ -111,7 +126,7 @@ mixin RepositoryMixin<T extends Object, ID extends Object, SYS extends OdmSystem
   }
 
   @override
-  Future<void> deleteAll(Iterable<T> values) {
+  Future<void> deleteAll(Iterable<ENTITY> values) {
     return database.deleteAll(values);
   }
 

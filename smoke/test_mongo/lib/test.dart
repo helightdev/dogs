@@ -17,23 +17,30 @@ late Db db;
 late MongoOdmSystem system;
 
 Future main() async {
-  print("Start");
-  await initialiseDogs();
-  db = await Db.create("mongodb://root:example@localhost:27017/");
-  await db.open();
-  system = MongoOdmSystem.fromDb(db);
-  print("Connected!");
+  try {
+    print("Start");
+    await initialiseDogs();
+    db = await Db.create("mongodb://root:example@localhost:27017/");
+    await db.open();
+    system = MongoOdmSystem.fromDb(db);
+    print("Connected!");
 
-  await testFilter();
+    await testFilter();
 
-  await personRepository.clear();
-  print("Cleared!");
-  await personRepository.save(Person(
-    name: 'John',
-    age: 42,
-  ));
-  var persons = await personRepository.findAll();
-  print(persons);
+    await personRepository.clear();
+    print("Cleared!");
+    await personRepository.save(Person(
+      name: 'John',
+      age: 42,
+    ));
+    var persons = await personRepository.findAll();
+    print(persons);
+  } catch (e, s) {
+    await db.close();
+    print(e);
+    print(s);
+    exit(1);
+  }
 
   exit(0);
 }

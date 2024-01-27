@@ -25,6 +25,11 @@ class Page<T> with ListMixin<T> {
   final List<T> content;
 
   const Page(this.meta, this.content);
+  
+  int get pageNumber => meta.number;
+  int get pageSize => meta.size;
+  int get totalElements => meta.totalElements;
+  int get totalPages => meta.totalPages;
 
   Page.empty()
       : meta = PageMeta(
@@ -34,9 +39,9 @@ class Page<T> with ListMixin<T> {
           totalPages: 0,
         ),
         content = const [];
-  
+
   Page.fromData(this.content, int skip, int limit, int totalElements)
-        : meta = PageMeta.fromData(skip, limit, totalElements);
+      : meta = PageMeta.fromData(skip, limit, totalElements);
 
   @override
   T operator [](int index) {
@@ -93,8 +98,7 @@ class PageRequest {
 }
 
 final pageBaseFactory = TreeBaseConverterFactory.createNargsFactory(
-    nargs: 1, consume: <T>() => PageConverter<T>()
-);
+    nargs: 1, consume: <T>() => PageConverter<T>());
 
 class PageConverter<T> extends NTreeArgConverter<Page> {
   @override
@@ -124,29 +128,40 @@ class PageConverter<T> extends NTreeArgConverter<Page> {
   }
 }
 
-abstract class PageableDatabase<ENTITY extends Object, ID extends Object> {
-  Future<Page<ENTITY>> findPaginatedByQuery(Query query, Sorted sort, {required int skip, required int limit});
+abstract class PageableDatabase<ENTITY extends Object, ID extends Object>
+    implements CrudDatabase<ENTITY, ID> {
+  Future<Page<ENTITY>> findPaginatedByQuery(Query query, Sorted sort,
+      {required int skip, required int limit});
 }
 
 abstract class PageableRepository<ENTITY extends Object, ID extends Object> {
   Future<Page<ENTITY>> findPaginated(PageRequest request);
-  Future<Page<ENTITY>> findPaginatedByQuery(QueryLike query, PageRequest request, [Sorted sort]);
+
+  Future<Page<ENTITY>> findPaginatedByQuery(
+      QueryLike query, PageRequest request,
+      [Sorted sort]);
 }
 
-mixin PageableRepositoryMixin<ENTITY extends Object, ID extends Object, SYS extends OdmSystem, SYS_DB extends CrudDatabase, SYS_ID extends Object>
-  on Repository<ENTITY, ID> implements PageableRepository<ENTITY, ID> {
-
+mixin PageableRepositoryMixin<
+        ENTITY extends Object,
+        ID extends Object,
+        SYS extends OdmSystem,
+        SYS_DB_BASE extends PageableDatabase,
+        SYS_DB extends PageableDatabase<ENTITY, SYS_ID>,
+        SYS_ID extends Object>
+    on DatabaseReferences<ENTITY, ID, SYS, SYS_DB_BASE, SYS_DB, SYS_ID>
+    implements PageableRepository<ENTITY, ID> {
   @override
   Future<Page<ENTITY>> findPaginated(PageRequest request) {
-    return (database as PageableDatabase<ENTITY, SYS_ID>)
-        .findPaginatedByQuery(Query.empty(), Sorted.empty(),
-        skip: request.skip, limit: request.size
-    );
+    return database.findPaginatedByQuery(Query.empty(), Sorted.empty(),
+        skip: request.skip, limit: request.size);
   }
 
   @override
-  Future<Page<ENTITY>> findPaginatedByQuery(QueryLike query, PageRequest request, [Sorted sort = const Sorted.empty()]) {
-    return (database as PageableDatabase<ENTITY, SYS_ID>)
-        .findPaginatedByQuery(query.asQuery, sort, skip: request.skip, limit: request.size);
+  Future<Page<ENTITY>> findPaginatedByQuery(
+      QueryLike query, PageRequest request,
+      [Sorted sort = const Sorted.empty()]) {
+    return database.findPaginatedByQuery(query.asQuery, sort,
+        skip: request.skip, limit: request.size);
   }
 }

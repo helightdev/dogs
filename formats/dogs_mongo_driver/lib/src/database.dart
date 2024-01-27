@@ -15,7 +15,6 @@
  */
 
 import 'package:dogs_mongo_driver/dogs_mongo_driver.dart';
-import 'package:dogs_mongo_driver/src/odm.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 
 class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId>
@@ -98,50 +97,6 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId>
     return await Future.wait(values.map((e) => save(e)));
   }
 
-  static Map<String, dynamic> _toNative(EntityIntermediate<ObjectId> e) {
-    var map = Map<String, dynamic>.of(e.native);
-    map["_id"] = e.id;
-    return map;
-  }
-
-  static EntityIntermediate<ObjectId> _toIntermediate(Map<String, dynamic> e) {
-    var map = Map<String, dynamic>.of(e);
-    ObjectId id = map.remove("_id");
-    return EntityIntermediate(id, map);
-  }
-
-  SelectorBuilder _toSelector(Query query) {
-    var selector = where;
-    if (query.filter != null) {
-      selector = MongoFilter.parse(query.filter!, system);
-    }
-    if (query.limit != null) {
-      selector = selector.limit(query.limit!);
-    }
-    if (query.skip != null) {
-      selector = selector.skip(query.skip!);
-    }
-    return selector;
-  }
-
-  static SelectorBuilder _sorted(SelectorBuilder builder, Sorted? sort) {
-    if (sort?.sort != null) {
-      var expr = sort!.sort!;
-      if (expr is SortCombine) {
-        for (var sort in expr.sorts) {
-          if (sort is SortScalar) {
-            builder = builder.sortBy(sort.field, descending: !sort.ascending);
-          } else {
-            throw Exception("Mongodb doesn't support grouped sorting.");
-          }
-        }
-      } else if (expr is SortScalar) {
-        builder = builder.sortBy(expr.field, descending: !expr.ascending);
-      }
-    }
-    return builder;
-  }
-
   @override
   Future<int> countByQuery(Query query) async {
     var selector = _toSelector(query);
@@ -217,5 +172,49 @@ class MongoDatabase<T extends Object> extends CrudDatabase<T, ObjectId>
         .map(analysis.decode)
         .toList(growable: false);
     return Page<T>.fromData(content, skip, limit, totalElements);
+  }
+
+  static Map<String, dynamic> _toNative(EntityIntermediate<ObjectId> e) {
+    var map = Map<String, dynamic>.of(e.native);
+    map["_id"] = e.id;
+    return map;
+  }
+
+  static EntityIntermediate<ObjectId> _toIntermediate(Map<String, dynamic> e) {
+    var map = Map<String, dynamic>.of(e);
+    ObjectId id = map.remove("_id");
+    return EntityIntermediate(id, map);
+  }
+
+  SelectorBuilder _toSelector(Query query) {
+    var selector = where;
+    if (query.filter != null) {
+      selector = MongoFilterParser.parse(query.filter!, system);
+    }
+    if (query.limit != null) {
+      selector = selector.limit(query.limit!);
+    }
+    if (query.skip != null) {
+      selector = selector.skip(query.skip!);
+    }
+    return selector;
+  }
+
+  static SelectorBuilder _sorted(SelectorBuilder builder, Sorted? sort) {
+    if (sort?.sort != null) {
+      var expr = sort!.sort!;
+      if (expr is SortCombine) {
+        for (var sort in expr.sorts) {
+          if (sort is SortScalar) {
+            builder = builder.sortBy(sort.field, descending: !sort.ascending);
+          } else {
+            throw Exception("Mongodb doesn't support grouped sorting.");
+          }
+        }
+      } else if (expr is SortScalar) {
+        builder = builder.sortBy(expr.field, descending: !expr.ascending);
+      }
+    }
+    return builder;
   }
 }

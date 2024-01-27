@@ -18,50 +18,70 @@ library query_dsl;
 
 import 'dogs_odm.dart';
 
+/// Matches if the [field] is equal to the given [value].
 FilterExpr eq<STRUCT>(String field, dynamic value) {
   if (STRUCT == dynamic) return FilterEq(field, value);
   return FilterEqStruct<STRUCT>(field, value);
 }
 
+/// Matches if the [field] is not equal to the given [value].
 FilterExpr ne<STRUCT>(String field, dynamic value) {
   if (STRUCT == dynamic) return FilterNe(field, value);
   return FilterNeStruct<STRUCT>(field, value);
 }
 
+/// Matches if the [field] is less than the given [value].
 FilterExpr lt(String field, dynamic value) {
   return FilterLt(field, value);
 }
 
+/// Matches if the [field] is greater than the given [value].
 FilterExpr gt(String field, dynamic value) {
   return FilterGt(field, value);
 }
 
+/// Matches if the [field] is less than or equal to the given [value].
 FilterExpr lte(String field, dynamic value) {
   return FilterLte(field, value);
 }
 
+/// Matches if the [field] is greater than or equal to the given [value].
 FilterExpr gte(String field, dynamic value) {
   return FilterGte(field, value);
 }
 
+/// Matches if the [field]'s existence matches the given [value].
 FilterExpr exists(String field, {bool value = true}) {
   return FilterExists(field, value);
 }
 
-FilterExpr all(String field, List<dynamic> values) {
-  return FilterAll(field, values);
-}
-
+/// Matches if all of the given [filters] match.
 FilterExpr and(List<FilterExpr> filters) {
   return FilterAnd(filters);
 }
 
+/// Matches if any of the given [filters] match.
 FilterExpr or(List<FilterExpr> filters) {
   return FilterOr(filters);
 }
 
-FilterExpr any(String field, FilterExpr filter) {
-  return FilterAny(field, filter);
+/// Matches if the [field] contains any of the given values.
+FilterExpr inArray(String field, List<dynamic> values) {
+  return FilterIn(field, values);
+}
+
+/// Matches if the [field] does not contain any of the given values.
+FilterExpr notInArray(String field, List<dynamic> values) {
+  return FilterNotIn(field, values);
+}
+
+/// Matches if the [field] contains exactly the given value.
+FilterExpr arrayContains(String field, dynamic value) {
+  return FilterArrayContains(field, value);
+}
+
+FilterExpr matcherArrayAny(String field, FilterExpr filter) {
+  return FilterMatcherArrayAny(field, filter);
 }
 
 FilterExpr nativeFilter(Object obj) {

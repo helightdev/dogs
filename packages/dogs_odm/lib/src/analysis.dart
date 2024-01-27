@@ -14,12 +14,9 @@
  *    limitations under the License.
  */
 
-import 'dart:collection';
-
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_odm/dogs_odm.dart';
-import 'package:dogs_odm/src/annotations.dart';
 
 class EntityAnalysis<T extends Object,SYS_DB extends CrudDatabase, SYS_ID extends Object> {
 

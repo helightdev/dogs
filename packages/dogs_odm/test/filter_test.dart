@@ -96,40 +96,14 @@ void main() {
       expect(true, MapMatcher.evaluate(query.exists("owner"), house, system));
       expect(false, MapMatcher.evaluate(query.exists("owner2"), house, system));
     });
-    test("ALL", () {
-      expect(true, MapMatcher.evaluate(query.all("rooms", [
-        {"name": "Kitchen", "size": 20},
-        {"name": "Living Room", "size": 30},
-        {"name": "Bedroom", "size": 15}
-      ]), house, system));
-      expect(false, MapMatcher.evaluate(query.all("rooms", [
-        {"name": "Kitchen", "size": 20},
-        {"name": "Living Room", "size": 30},
-        {"name": "Bedroom", "size": 15},
-        {"name": "Bathroom", "size": 10}
-      ]), house, system));
-    });
     test("AND", () {
       expect(true, MapMatcher.evaluate(query.and([
         query.eq("name", "House"),
         query.eq("size", 100),
-        query.exists("owner"),
-        query.all("rooms", [
-          {"name": "Kitchen", "size": 20},
-          {"name": "Living Room", "size": 30},
-          {"name": "Bedroom", "size": 15}
-        ])
       ]), house, system));
       expect(false, MapMatcher.evaluate(query.and([
         query.eq("name", "House"),
-        query.eq("size", 100),
-        query.exists("owner"),
-        query.all("rooms", [
-          {"name": "Kitchen", "size": 20},
-          {"name": "Living Room", "size": 30},
-          {"name": "Bedroom", "size": 15},
-          {"name": "Bathroom", "size": 10}
-        ])
+        query.eq("size", 101),
       ]), house, system));
     });
     test("OR", () {
@@ -142,13 +116,24 @@ void main() {
         query.eq("name", "House3"),
       ]), house, system));
     });
-    test("ANY", () {
-      expect(true, MapMatcher.evaluate(query.any("rooms", query.eq("name", "Kitchen")), house, system));
-      expect(false, MapMatcher.evaluate(query.any("rooms", query.eq("name", "Kitchen2")), house, system));
-    });
     test("SUB MAP", () {
       expect(true, MapMatcher.evaluate(query.eq("address.city", "Springfield"), house, system));
       expect(false, MapMatcher.evaluate(query.eq("address.city", "Springfield2"), house, system));
+    });
+
+    test("IN", () {
+      expect(true, MapMatcher.evaluate(query.inArray("name", ["House", "House2"]), house, system));
+      expect(false, MapMatcher.evaluate(query.inArray("name", ["House2", "House3"]), house, system));
+    });
+
+    test("NOT IN", () {
+      expect(false, MapMatcher.evaluate(query.notInArray("name", ["House", "House2"]), house, system));
+      expect(true, MapMatcher.evaluate(query.notInArray("name", ["House2", "House3"]), house, system));
+    });
+
+    test("ARRAY CONTAINS", () {
+      expect(true, MapMatcher.evaluate(query.arrayContains("rooms", {"name": "Kitchen", "size": 20}), house, system));
+      expect(false, MapMatcher.evaluate(query.arrayContains("rooms", {"name": "Kitchen", "size": 21}), house, system));
     });
   });
 }

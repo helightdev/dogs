@@ -15,8 +15,7 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_odm/src/analysis.dart';
-import 'package:dogs_odm/src/database.dart';
+import 'package:dogs_odm/dogs_odm.dart';
 
 abstract class OdmSystem<SYS_DB extends CrudDatabase, SYS_ID extends Object> {
 
