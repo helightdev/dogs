@@ -92,6 +92,7 @@ class DogEngine {
       registerAutomatic(DurationConverter(), false);
       registerAutomatic(UriConverter(), false);
       registerAutomatic(Uint8ListConverter(), false);
+      registerAutomatic(RegExpConverter(), false);
 
       // Register primitives
       // registerConverter(StringConverter(), false);

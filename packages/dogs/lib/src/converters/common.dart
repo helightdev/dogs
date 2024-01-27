@@ -164,3 +164,22 @@ class Uint8ListConverter extends DogConverter<Uint8List>
   @override
   APISchemaObject get output => APISchemaObject.string(format: "byte");
 }
+
+/// [DogConverter] for [RegExp] instances which encodes the regular expression
+/// as a string.
+class RegExpConverter extends SimpleDogConverter<RegExp> {
+  RegExpConverter() : super(serialName: "RegExp");
+
+  @override
+  RegExp deserialize(value, DogEngine engine) {
+    return RegExp(value);
+  }
+
+  @override
+  serialize(RegExp value, DogEngine engine) {
+    return value.pattern;
+  }
+
+  @override
+  APISchemaObject get output => APISchemaObject.string(format: "regex");
+}
