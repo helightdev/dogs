@@ -165,7 +165,7 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
 
   @override
   serialize(Page value, DogEngine engine) {
-    var map = <String, dynamic>{
+    return <String, dynamic>{
       "number": value.meta.number,
       "size": value.meta.size,
       "totalElements": value.meta.totalElements,
