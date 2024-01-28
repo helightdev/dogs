@@ -1,3 +1,7 @@
+## 1.0.0-alpha.3
+
+ - **FIX**: change min sdk version to 3.0.0.
+
 ## 1.0.0-alpha.2
 
  - **FIX**: actually return the serialized page.

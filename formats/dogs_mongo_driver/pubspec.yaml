@@ -1,6 +1,6 @@
 name: dogs_mongo_driver
 description: MongoDB driver for dogs_orm
-version: 1.0.0-alpha.2
+version: 1.0.0-alpha.3
 
 environment:
   sdk: ^3.0.0
@@ -8,7 +8,7 @@ environment:
 dependencies:
   # path: ^1.8.0
   dogs_core: ^8.1.1
-  dogs_odm: ^1.0.0-alpha.2
+  dogs_odm: ^1.0.0-alpha.3
   mongo_dart: ^0.10.0
   fixnum: ^1.1.0
   decimal: ^2.3.3
