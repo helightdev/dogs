@@ -1,3 +1,7 @@
+## 1.0.0-alpha.2
+
+ - **FIX**: actually return the serialized page.
+
 ## 1.0.0-alpha.1
 
  - Update a dependency to the latest release.
