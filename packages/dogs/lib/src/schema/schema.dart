@@ -14,11 +14,11 @@
  *    limitations under the License.
  */
 
-import 'dart:convert';
-import 'dart:developer';
+import "dart:convert";
+import "dart:developer";
 
-import 'package:conduit_open_api/v3.dart';
-import 'package:dogs_core/dogs_core.dart';
+import "package:conduit_open_api/v3.dart";
+import "package:dogs_core/dogs_core.dart";
 
 class DogSchema {
   final Map<String, APISchemaObject> _cachedStructObjects = {};

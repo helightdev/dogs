@@ -16,10 +16,10 @@
 
 library dogs_validation;
 
-export 'validation/blank.dart';
-export 'validation/description.dart';
-export 'validation/length.dart';
-export 'validation/range.dart';
-export 'validation/regex.dart';
-export 'validation/size.dart';
-export 'validation/validated.dart';
+export "validation/blank.dart";
+export "validation/description.dart";
+export "validation/length.dart";
+export "validation/range.dart";
+export "validation/regex.dart";
+export "validation/size.dart";
+export "validation/validated.dart";

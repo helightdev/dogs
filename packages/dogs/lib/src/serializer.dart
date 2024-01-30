@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 @Deprecated("Will be removed in future version")
 abstract class DogSerializer {

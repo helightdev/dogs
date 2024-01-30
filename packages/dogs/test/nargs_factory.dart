@@ -14,9 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/scaffolding.dart';
-import 'package:test/test.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/test.dart";
 
 void main() {
   test("NArgs Factory", () {
@@ -57,6 +56,7 @@ class MyNargContainer<A, B, C> {
 
   MyNargContainer(this.a, this.b, this.c);
 
+  @override
   String toString() => "MyNargContainer<$A, $B, $C>($a, $b, $c)";
 
   @override

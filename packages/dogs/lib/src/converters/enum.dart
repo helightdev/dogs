@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/v3.dart';
-import 'package:dogs_core/dogs_core.dart';
+import "package:conduit_open_api/v3.dart";
+import "package:dogs_core/dogs_core.dart";
 
 typedef EnumFromString<T> = T? Function(String);
 typedef EnumToString<T> = String Function(T?);

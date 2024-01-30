@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 /// Defines the native object types for a [DogEngine] and
 /// provides converters for them.

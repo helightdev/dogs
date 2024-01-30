@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/v3.dart';
-import 'package:dogs_core/dogs_core.dart';
+import "package:conduit_open_api/v3.dart";
+import "package:dogs_core/dogs_core.dart";
 
 /// Polymorphic converter for simple polymorphic datastructures.
 /// Currently only supports a maximum depth of 1.

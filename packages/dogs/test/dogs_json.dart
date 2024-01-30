@@ -1,5 +1,5 @@
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/test.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/test.dart";
 
 void main() {
   test("structure converter", () {

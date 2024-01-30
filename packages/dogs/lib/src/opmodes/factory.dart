@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 /// Factory for [OperationMode]s.
 abstract class OperationModeFactory<T extends OperationMode>

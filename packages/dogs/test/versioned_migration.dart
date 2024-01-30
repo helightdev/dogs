@@ -14,9 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/src/hooks.dart';
-import 'package:test/test.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/test.dart";
 
 void main() {
   test("Revision Migration", () {

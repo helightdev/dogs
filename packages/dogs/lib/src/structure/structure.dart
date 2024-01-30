@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 abstract class StructureMetadata extends RetainedAnnotation {
   const StructureMetadata();
@@ -55,7 +55,7 @@ class DogStructure<T> extends RetainedAnnotationHolder
 
   @override
   String toString() {
-    return 'DogStructure $typeArgument';
+    return "DogStructure $typeArgument";
   }
 
   factory DogStructure.synthetic(String name) => DogStructure<T>(

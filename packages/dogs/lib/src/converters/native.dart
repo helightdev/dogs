@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 class NativeRetentionConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
@@ -32,6 +32,6 @@ class NativeRetentionConverter<T> extends DogConverter<T>
 
   @override
   String toString() {
-    return 'Native<$T>';
+    return "Native<$T>";
   }
 }

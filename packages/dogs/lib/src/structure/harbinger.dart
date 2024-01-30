@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
 /// Utility class for resolving converters for a [DogStructure].
 class StructureHarbinger<T> {

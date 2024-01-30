@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-import 'dart:collection';
+import "dart:collection";
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 /*
 Note: This dataclass implementation is pretty optimised for being runtime-only

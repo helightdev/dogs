@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-part of '../trees.dart';
+part of "../trees.dart";
 
 class DefaultTreeBaseFactories {
   static final list = TreeBaseConverterFactory.createIterableFactory<List>(

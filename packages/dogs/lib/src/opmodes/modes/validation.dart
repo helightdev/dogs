@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 abstract class ValidationMode<T> implements OperationMode<T> {
   bool validate(T value, DogEngine engine);

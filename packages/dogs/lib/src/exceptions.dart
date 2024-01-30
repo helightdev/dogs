@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 abstract class DogException implements Exception {
   String get message;
@@ -74,6 +74,7 @@ class _DogSerializerExceptionImpl implements DogSerializerException {
   final DogStructure? structure;
   @override
   final Object? cause;
+  @override
   final StackTrace? innerStackTrace;
 
   _DogSerializerExceptionImpl(

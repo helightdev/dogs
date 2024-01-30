@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 /// `SerializationHook` is an abstract class that implements `StructureMetadata`.
 /// It provides two methods for handling serialization and deserialization events.

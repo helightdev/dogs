@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/src/structure/structure.dart';
+import "package:dogs_core/src/structure/structure.dart";
 
 /// Method proxy provider for [DogStructure]s.
 /// A structure proxy must provided instantiation/"activation" for the object

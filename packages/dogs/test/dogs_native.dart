@@ -1,9 +1,9 @@
-import 'package:collection/collection.dart';
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/test.dart';
+import "package:collection/collection.dart";
+import "package:dogs_core/dogs_core.dart";
+import "package:test/test.dart";
 
 void main() {
-  test('from native coercion', () {
+  test("from native coercion", () {
     var codec = DefaultNativeCodec();
     expect(DogString("string"), codec.fromNative("string"));
     expect(DogInt(1337), codec.fromNative(1337));

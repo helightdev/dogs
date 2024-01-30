@@ -14,11 +14,11 @@
  *    limitations under the License.
  */
 
-import 'dart:convert';
-import 'dart:typed_data';
+import "dart:convert";
+import "dart:typed_data";
 
-import 'package:conduit_open_api/v3.dart';
-import 'package:dogs_core/dogs_core.dart';
+import "package:conduit_open_api/v3.dart";
+import "package:dogs_core/dogs_core.dart";
 
 /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
 /// Iso8601 string.
@@ -61,7 +61,7 @@ class DurationConverter extends DogConverter<Duration>
   Duration _parseDuration(String value) {
     final match = _parseFormat.firstMatch(value);
     if (match == null) {
-      throw FormatException('Invalid duration format', value);
+      throw FormatException("Invalid duration format", value);
     }
     // Iterate through the capture groups to build the unit mappings.
     final unitMappings = <String, int>{};
@@ -88,7 +88,7 @@ class DurationConverter extends DogConverter<Duration>
 
   String _writeIso8601Duration(Duration duration) {
     if (duration == Duration.zero) {
-      return 'PT0S';
+      return "PT0S";
     }
     final days = duration.inDays;
     final hours = (duration - Duration(days: days)).inHours;
@@ -100,33 +100,33 @@ class DurationConverter extends DogConverter<Duration>
         Duration(days: days, hours: hours, minutes: minutes, seconds: seconds);
 
     if (remainder != Duration.zero) {
-      throw ArgumentError.value(duration, 'duration',
-          'Contains sub-second data which cannot be serialized.');
+      throw ArgumentError.value(duration, "duration",
+          "Contains sub-second data which cannot be serialized.");
     }
     final buffer = StringBuffer(_durationToken)
-      ..write(days == 0 ? '' : '$days$_dayToken');
+      ..write(days == 0 ? "" : '$days$_dayToken');
     if (!(hours == 0 && minutes == 0 && seconds == 0)) {
       buffer
         ..write(_timeToken)
-        ..write(hours == 0 ? '' : '$hours$_hourToken')
-        ..write(minutes == 0 ? '' : '$minutes$_minuteToken')
-        ..write(seconds == 0 ? '' : '$seconds$_secondToken');
+        ..write(hours == 0 ? "" : '$hours$_hourToken')
+        ..write(minutes == 0 ? "" : '$minutes$_minuteToken')
+        ..write(seconds == 0 ? "" : '$seconds$_secondToken');
     }
     return buffer.toString();
   }
 
   // The unit tokens.
-  static const _durationToken = 'P';
-  static const _dayToken = 'D';
-  static const _timeToken = 'T';
-  static const _hourToken = 'H';
-  static const _minuteToken = 'M';
-  static const _secondToken = 'S';
+  static const _durationToken = "P";
+  static const _dayToken = "D";
+  static const _timeToken = "T";
+  static const _hourToken = "H";
+  static const _minuteToken = "M";
+  static const _secondToken = "S";
 
   // The parse format for ISO8601 durations.
   static final _parseFormat = RegExp(
-    '^P(?!\$)(0D|[1-9][0-9]*D)?'
-    '(?:T(?!\$)(0H|[1-9][0-9]*H)?(0M|[1-9][0-9]*M)?(0S|[1-9][0-9]*S)?)?\$',
+    "^P(?!\$)(0D|[1-9][0-9]*D)?"
+    "(?:T(?!\$)(0H|[1-9][0-9]*H)?(0M|[1-9][0-9]*M)?(0S|[1-9][0-9]*S)?)?\$",
   );
 }
 

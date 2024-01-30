@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/v3.dart';
-import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
+import "package:conduit_open_api/v3.dart";
+import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
 abstract class DogConverter<T> extends TypeCapture<T> {
   final bool isAssociated;

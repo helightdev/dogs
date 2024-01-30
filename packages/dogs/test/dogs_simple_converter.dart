@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-import 'dart:convert';
+import "dart:convert";
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/test.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/test.dart";
 
 class Person {
   final String name;
@@ -27,20 +27,20 @@ class Person {
 
   @override
   String toString() {
-    return 'Person{name: $name, age: $age}';
+    return "Person{name: $name, age: $age}";
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'age': age,
+      "name": name,
+      "age": age,
     };
   }
 
   factory Person.fromMap(Map<String, dynamic> map) {
     return Person(
-      name: map['name'] as String,
-      age: map['age'] as int,
+      name: map["name"] as String,
+      age: map["age"] as int,
     );
   }
 
@@ -107,12 +107,12 @@ class LatLngConverter extends SimpleDogConverter<LatLng> {
 }
 
 void main() {
-  group('SimpleDogConverter', () {
+  group("SimpleDogConverter", () {
     final fakeEngine = DogEngine();
     fakeEngine.registerAutomatic(FakeDogConverter());
     fakeEngine.registerAutomatic(LatLngConverter());
 
-    test('Serialization', () {
+    test("Serialization", () {
       final encoded =
           fakeEngine.jsonEncode<Person>(Person(name: "John", age: 42));
       expect(encoded, r'"{\"name\":\"John\",\"age\":42}"');
@@ -122,7 +122,7 @@ void main() {
 
     test("LatLng", () {
       final encoded = fakeEngine.jsonEncode<LatLng>(LatLng(1.0, 2.0));
-      expect(encoded, r'[1.0,2.0]');
+      expect(encoded, r"[1.0,2.0]");
       var decoded = fakeEngine.jsonDecode<LatLng>(encoded);
       expect(decoded, LatLng(1.0, 2.0));
     });

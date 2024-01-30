@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-import 'package:collection/collection.dart';
-import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
+import "package:collection/collection.dart";
+import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
 /// Static instance of [DogEngine] that will be initialised by invoking
 /// the generated initialiseDogs() method.

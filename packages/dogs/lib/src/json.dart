@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-import 'dart:convert';
-import 'dart:convert' as conv;
+import "dart:convert";
+import "dart:convert" as conv;
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 // ignore: deprecated_member_use_from_same_package
 class DogJsonSerializer extends DogSerializer {

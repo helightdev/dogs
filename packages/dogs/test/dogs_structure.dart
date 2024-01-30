@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/expect.dart';
-import 'package:test/scaffolding.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/expect.dart";
+import "package:test/scaffolding.dart";
 
 void main() {
   test("Person", () {

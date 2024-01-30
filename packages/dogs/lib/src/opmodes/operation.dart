@@ -14,13 +14,13 @@
  *    limitations under the License.
  */
 
-import 'dart:collection';
+import "dart:collection";
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
-export 'modes/native.dart';
-export 'modes/graph.dart';
-export 'modes/validation.dart';
+export "modes/native.dart";
+export "modes/graph.dart";
+export "modes/validation.dart";
 
 abstract interface class OperationMode<T> implements TypeCapture<T> {
   void initialise(DogEngine engine) {}

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 class StringKeyedMapVisitor extends DogVisitor<dynamic> {
   Map<String, dynamic> visitFinal(DogMap map) {

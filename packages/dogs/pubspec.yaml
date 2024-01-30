@@ -16,8 +16,8 @@ environment:
 
 dependencies:
   conduit_open_api: ^4.4.0
-  lyell: ^1.1.0
   collection: ^1.18.0
+  lyell: ^1.1.0
   meta: ^1.10.0
 
 dev_dependencies:

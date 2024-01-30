@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/v3.dart';
-import 'package:dogs_core/dogs_core.dart';
+import "package:conduit_open_api/v3.dart";
+import "package:dogs_core/dogs_core.dart";
 
 /// Reduced version of a RFC 5322 email regex from https://www.regular-expressions.info/email.html
 /// This regex omits IP addresses, double quotes and square brackets.

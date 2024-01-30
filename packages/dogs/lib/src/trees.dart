@@ -13,12 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
-part 'trees/iterables.dart';
-part 'trees/nargs.dart';
-part 'trees/defaults.dart';
+part "trees/iterables.dart";
+part "trees/nargs.dart";
+part "trees/defaults.dart";
 
 /// A factory for [DogConverter]s that are derived from a [TypeTree].
 abstract class TreeBaseConverterFactory {

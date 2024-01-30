@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-part of '../trees.dart';
+part of "../trees.dart";
 
 class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   final BASE Function<T>(Iterable<T> entries) wrap;

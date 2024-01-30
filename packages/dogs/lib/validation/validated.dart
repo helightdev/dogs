@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+import "package:dogs_core/dogs_core.dart";
 
 /// Requires a field to be deeply validated.
 /// Example: You have a class Group with a field `List<Person> members` as well as

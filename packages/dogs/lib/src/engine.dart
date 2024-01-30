@@ -14,11 +14,11 @@
  *    limitations under the License.
  */
 
-import 'dart:async';
-import 'dart:collection';
+import "dart:async";
+import "dart:collection";
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:meta/meta.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
 /// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
 class DogEngine {

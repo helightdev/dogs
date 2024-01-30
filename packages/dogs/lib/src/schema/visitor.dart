@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:conduit_open_api/v3.dart';
+import "package:conduit_open_api/v3.dart";
 
 abstract class APISchemaObjectMetaVisitor {
   const APISchemaObjectMetaVisitor();

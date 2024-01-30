@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-import 'package:collection/collection.dart';
-import 'package:dogs_core/dogs_core.dart';
+import "package:collection/collection.dart";
+import "package:dogs_core/dogs_core.dart";
 
 class NullExclusionVisitor extends DogVisitor<DogGraphValue> {
   @override

@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/expect.dart';
-import 'package:test/scaffolding.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/expect.dart";
+import "package:test/scaffolding.dart";
 
 class CustomNative {}
 
@@ -82,7 +82,7 @@ class CustomCodec extends DogNativeCodec {
 }
 
 void main() {
-  test('Test Custom Codec', () {
+  test("Test Custom Codec", () {
     var structure = DogStructure(
         "Test",
         StructureConformity.basic,
@@ -104,7 +104,7 @@ void main() {
     expect(decoded[1], isA<CustomNative>());
   });
 
-  test('Test Custom Codec Overrides', () {
+  test("Test Custom Codec Overrides", () {
     var structure = DogStructure(
         "Test",
         StructureConformity.basic,

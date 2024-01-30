@@ -1,9 +1,8 @@
-import 'package:collection/collection.dart';
-import 'package:dogs_core/dogs_core.dart';
-import 'package:test/test.dart';
+import "package:dogs_core/dogs_core.dart";
+import "package:test/test.dart";
 
 void main() {
-  test('basic rebuild', () async {
+  test("basic rebuild", () async {
     var original = DogEngine(registerBaseConverters: false);
     var forked = original.fork();
     expect(original.findAssociatedConverter(DateTime), null);
