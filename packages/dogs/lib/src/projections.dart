@@ -14,12 +14,14 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+
+import "package:dogs_core/dogs_core.dart";
 
 typedef ProjectionTransformer = Map<String, dynamic> Function(
-    Map<String, dynamic> data);
+    Map<String, dynamic> data,);
 
 extension ProjectionExtension on DogEngine {
+
   Map<String, dynamic> createProjectionDocument({
     Iterable<Map>? properties,
     Iterable<Object>? objects,
@@ -28,9 +30,9 @@ extension ProjectionExtension on DogEngine {
   }) {
     var buffer = <String, dynamic>{};
     objects?.forEach((element) {
-      var structure = findStructureByType(element.runtimeType)!;
+      final structure = findStructureByType(element.runtimeType)!;
       Map<String, dynamic> result;
-      if (structure.isSynthetic || shallow) {
+      if (structure.isSynthetic || !shallow) {
         result = convertObjectToNative(element, element.runtimeType);
       } else {
         result = structure.getFieldMap(element);
@@ -45,7 +47,7 @@ extension ProjectionExtension on DogEngine {
       }
     });
     if (transformers != null) {
-      for (var func in transformers) {
+      for (final func in transformers) {
         buffer = func(buffer);
       }
     }
@@ -53,37 +55,62 @@ extension ProjectionExtension on DogEngine {
   }
 
   dynamic createProjection(
-    Type target, {
-    Iterable<Map>? properties,
-    Iterable<Object>? objects,
-    Iterable<ProjectionTransformer>? transformers, 
-    bool shallow = false,
-  }) {
-    var struct = findStructureByType(target)!;
-    var document = createProjectionDocument(
-        objects: objects, properties: properties, transformers: transformers, shallow: true);
-    if (shallow) {
+      Type target, {
+        Iterable<Map>? properties,
+        Iterable<Object>? objects,
+        Iterable<ProjectionTransformer>? transformers,
+        bool shallow = false,
+      }) {
+    final struct = findStructureByType(target)!;
+    final document = createProjectionDocument(
+      objects: objects, properties: properties, transformers: transformers, shallow: shallow,);
+    if (!shallow) {
       return dogs.convertObjectFromNative(document, target);
     }
-    var fieldValues = struct.fields.map((e) => document[e.name]).toList();
+    final fieldValues = struct.fields.map((e) => document[e.name]).toList();
     return struct.proxy.instantiate(fieldValues);
   }
 
   Map<String, dynamic> projectDocument(Object value,
-      [Object? a, Object? b, Object? c]) {
+      [Object? a, Object? b, Object? c,]) {
     // Combine additional args into an iterable value
-    if ((a != null || b != null || c != null)) {
+    if (a != null || b != null || c != null) {
       value = [
         ...value.asIterable(),
         if (a != null) ...a.asIterable(),
         if (b != null) ...b.asIterable(),
-        if (c != null) ...c.asIterable()
+        if (c != null) ...c.asIterable(),
       ];
     }
 
-    var properties = <Map>[];
-    var objects = <Object>[];
-    for (var element in value.asIterable()) {
+    final properties = <Map>[];
+    final objects = <Object>[];
+    for (final element in value.asIterable()) {
+      if (element is Map) {
+        properties.add(element);
+      } else {
+        objects.add(element);
+      }
+    }
+
+    return createProjectionDocument(properties: properties, objects: objects);
+  }
+
+  Map<String, dynamic> projectDocumentShallow(Object value,
+      [Object? a, Object? b, Object? c,]) {
+    // Combine additional args into an iterable value
+    if (a != null || b != null || c != null) {
+      value = [
+        ...value.asIterable(),
+        if (a != null) ...a.asIterable(),
+        if (b != null) ...b.asIterable(),
+        if (c != null) ...c.asIterable(),
+      ];
+    }
+
+    final properties = <Map>[];
+    final objects = <Object>[];
+    for (final element in value.asIterable()) {
       if (element is Map) {
         properties.add(element);
       } else {
@@ -94,21 +121,21 @@ extension ProjectionExtension on DogEngine {
     return createProjectionDocument(properties: properties, objects: objects, shallow: true);
   }
 
-  Map<String, dynamic> projectDocumentShallow(Object value,
-      [Object? a, Object? b, Object? c]) {
+
+  TARGET project<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
-    if ((a != null || b != null || c != null)) {
+    if (a != null || b != null || c != null) {
       value = [
         ...value.asIterable(),
         if (a != null) ...a.asIterable(),
         if (b != null) ...b.asIterable(),
-        if (c != null) ...c.asIterable()
+        if (c != null) ...c.asIterable(),
       ];
     }
 
-    var properties = <Map>[];
-    var objects = <Object>[];
-    for (var element in value.asIterable()) {
+    final properties = <Map>[];
+    final objects = <Object>[];
+    for (final element in value.asIterable()) {
       if (element is Map) {
         properties.add(element);
       } else {
@@ -116,24 +143,23 @@ extension ProjectionExtension on DogEngine {
       }
     }
 
-    return createProjectionDocument(properties: properties, objects: objects, shallow: false);
+    return createProjection(TARGET, properties: properties, objects: objects);
   }
-  
 
-  TARGET project<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
+  TARGET projectShallow<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
-    if ((a != null || b != null || c != null)) {
+    if (a != null || b != null || c != null) {
       value = [
         ...value.asIterable(),
         if (a != null) ...a.asIterable(),
         if (b != null) ...b.asIterable(),
-        if (c != null) ...c.asIterable()
+        if (c != null) ...c.asIterable(),
       ];
     }
 
-    var properties = <Map>[];
-    var objects = <Object>[];
-    for (var element in value.asIterable()) {
+    final properties = <Map>[];
+    final objects = <Object>[];
+    for (final element in value.asIterable()) {
       if (element is Map) {
         properties.add(element);
       } else {
@@ -142,30 +168,6 @@ extension ProjectionExtension on DogEngine {
     }
 
     return createProjection(TARGET, properties: properties, objects: objects, shallow: true);
-  }
-
-  TARGET projectShallow<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
-    // Combine additional args into an iterable value
-    if ((a != null || b != null || c != null)) {
-      value = [
-        ...value.asIterable(),
-        if (a != null) ...a.asIterable(),
-        if (b != null) ...b.asIterable(),
-        if (c != null) ...c.asIterable()
-      ];
-    }
-
-    var properties = <Map>[];
-    var objects = <Object>[];
-    for (var element in value.asIterable()) {
-      if (element is Map) {
-        properties.add(element);
-      } else {
-        objects.add(element);
-      }
-    }
-
-    return createProjection(TARGET, properties: properties, objects: objects, shallow: false);
   }
 }
 
