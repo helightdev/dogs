@@ -1,7 +1,7 @@
 name: dogs_forms
 description: "Support for creating form_builder forms for DOGs structures."
 version: 0.1.0+8
-homepage: https://dogs.helight.dev/
+homepage: https://dogs.helight.dev/forms/
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
