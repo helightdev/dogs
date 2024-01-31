@@ -22,22 +22,26 @@ typedef _FieldSerializer = void Function(
 typedef _FieldDeserializer = void Function(
     dynamic v, List<dynamic> args, DogEngine engine);
 
+/// A [NativeSerializerMode] that supplies native serialization for [DogStructure]s.
 class StructureNativeSerialization<T> extends NativeSerializerMode<T>
     with TypeCaptureMixin<T> {
+  
+  /// The structure this serializer is for.
   final DogStructure<T> structure;
 
+  /// Creates a new [StructureNativeSerialization] for the supplied [structure].
   StructureNativeSerialization(this.structure);
 
   late final DogStructureProxy _proxy = structure.proxy;
   late List<_FieldSerializer> _serializers;
   late List<_FieldDeserializer> _deserializers;
   late List<SerializationHook> _hooks;
-  bool hasHooks = false;
+  bool _hasHooks = false;
 
   @override
   void initialise(DogEngine engine) {
     _hooks = structure.annotationsOf<SerializationHook>().toList();
-    hasHooks = _hooks.isNotEmpty;
+    _hasHooks = _hooks.isNotEmpty;
     final harbinger = StructureHarbinger.create(structure, engine);
     final List<({_FieldSerializer serialize, _FieldDeserializer deserialize})>
         functions = harbinger.fieldConverters.mapIndexed((i, e) {
@@ -184,7 +188,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
       );
     }
     final args = <dynamic>[];
-    if (hasHooks) {
+    if (_hasHooks) {
       final clonedMap = Map<String, dynamic>.from(value);
       for (var hook in _hooks) {
         hook.beforeDeserialization(clonedMap, structure, engine);
@@ -212,7 +216,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
     for (var serializer in _serializers) {
       serializer(value, data, engine);
     }
-    if (hasHooks) {
+    if (_hasHooks) {
       for (var hook in _hooks) {
         hook.postSerialization(value, data, structure, engine);
       }

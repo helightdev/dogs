@@ -23,7 +23,9 @@ import "package:dogs_core/dogs_core.dart";
 /// your container.
 const validated = Validated();
 
+/// A [FieldValidator] that requires a field to be deeply validated.
 class Validated extends StructureMetadata implements FieldValidator {
+  
   /// Requires a field to be deeply validated.
   /// Example: You have a class Group with a field `List<Person> members` as well as
   /// a type Person which is validatable. You can then annotate your field
@@ -31,6 +33,7 @@ class Validated extends StructureMetadata implements FieldValidator {
   /// your container.
   const Validated();
 
+  /// The message id used for the annotation result.
   static const String messageId = "validated";
 
   @override
@@ -53,13 +56,13 @@ class Validated extends StructureMetadata implements FieldValidator {
     if (entry.iterable) {
       if (value == null) return true;
       return (value as Iterable)
-          .every((e) => validateSingle(e, validatorMode, engine));
+          .every((e) => _validateSingle(e, validatorMode, engine));
     } else {
-      return validateSingle(value, validatorMode, engine);
+      return _validateSingle(value, validatorMode, engine);
     }
   }
 
-  bool validateSingle(value, ValidationMode mode, DogEngine engine) {
+  bool _validateSingle(value, ValidationMode mode, DogEngine engine) {
     if (value == null) return true;
     return mode.validate(value, engine);
   }

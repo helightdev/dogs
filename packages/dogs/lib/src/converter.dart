@@ -85,6 +85,7 @@ class _BeanIgnore {
   const _BeanIgnore();
 }
 
+/// Marks a property as ignored when using the bean conformity.
 const beanIgnore = _BeanIgnore();
 
 /// Marks a property as polymorphic, meaning its values type can vary.
@@ -96,6 +97,7 @@ class _Polymorphic extends StructureMetadata {
 const polymorphic = _Polymorphic();
 
 @internal
+/// Checks if a field is marked as polymorphic.
 bool isPolymorphicField(DogStructureField field) {
   return field.annotationsOf<_Polymorphic>().isNotEmpty;
 }
@@ -103,7 +105,11 @@ bool isPolymorphicField(DogStructureField field) {
 /// Overrides the name that will be used by the [GeneratedDogConverter] for this
 /// specific property. By default, the field name will be used.
 class PropertyName {
+
+  /// The name of the property used as a map key in serialization.
   final String name;
+
+  /// Instantiates a new [PropertyName] with the given [name].
   const PropertyName(this.name);
 }
 
@@ -111,15 +117,22 @@ class PropertyName {
 /// for this specific property. By default, the field will be serialized using
 /// the convert associated with its type.
 class PropertySerializer {
+
+  /// The type of the serializer.
   final Type type;
+
+  /// Instantiates a new [PropertySerializer] with the given [type].
   const PropertySerializer(this.type);
 }
 
 /// Simple converter base that only requires a [serialize] and [deserialize]
 /// method. Automatically adds [NativeSerializerMode] and [GraphSerializerMode]s,
-/// as well as a synthetic [DogStructure] with the given [serialName].
+/// as well as a synthetic [DogStructure] with the given [SimpleDogConverter.serialName].
 abstract class SimpleDogConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
+
+  /// Instantiates a new [SimpleDogConverter] with the given [serialName].
+  /// Specify the [serialName] using `: super(serialName: "")`.
   SimpleDogConverter({required String serialName})
       : super(struct: DogStructure<T>.synthetic(serialName));
 
@@ -131,6 +144,9 @@ abstract class SimpleDogConverter<T> extends DogConverter<T>
         GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
+  /// Serializes the given [value] to a [DogNativeCodec] native value.
   dynamic serialize(T value, DogEngine engine);
+
+  /// Deserializes the given [value] from a [DogNativeCodec] native value.
   T deserialize(dynamic value, DogEngine engine);
 }

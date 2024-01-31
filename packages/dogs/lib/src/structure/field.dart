@@ -16,6 +16,11 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// The definition of a field in a [DogStructure].
+/// Holds all necessary information to validate and serialize and introspect
+/// the field.
+///
+/// See also: https://dogs.helight.dev/advanced/structures
 class DogStructureField extends RetainedAnnotationHolder
     implements StructureNode {
   /// Declared type of the structure.
@@ -44,6 +49,9 @@ class DogStructureField extends RetainedAnnotationHolder
   @override
   final List<RetainedAnnotation> annotations;
 
+  /// Creates a new [DogStructureField].
+  ///
+  /// See also: https://dogs.helight.dev/advanced/structures
   const DogStructureField(
       this.type,
       this.serial,
@@ -59,6 +67,7 @@ class DogStructureField extends RetainedAnnotationHolder
     return 'DogStructureField $type${optional ? '?' : ''} $name';
   }
 
+  /// Creates a synthetic [String] field.
   factory DogStructureField.string(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
@@ -74,6 +83,7 @@ class DogStructureField extends RetainedAnnotationHolder
         name, optional, false, annotations);
   }
 
+  /// Creates a synthetic [int] field.
   factory DogStructureField.int(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
@@ -89,6 +99,7 @@ class DogStructureField extends RetainedAnnotationHolder
         name, optional, false, annotations);
   }
 
+  /// Creates a synthetic [double] field.
   factory DogStructureField.double(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
@@ -104,6 +115,7 @@ class DogStructureField extends RetainedAnnotationHolder
         name, optional, false, annotations);
   }
 
+  /// Creates a synthetic [bool] field.
   factory DogStructureField.bool(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,
@@ -119,6 +131,7 @@ class DogStructureField extends RetainedAnnotationHolder
         name, optional, false, annotations);
   }
 
+  /// Creates a synthetic field for a terminal serial type.
   static DogStructureField create<TYPE>(String name,
       {bool optional = false,
       IterableKind iterable = IterableKind.none,

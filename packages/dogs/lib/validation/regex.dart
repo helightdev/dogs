@@ -24,14 +24,23 @@ const email = Regex(
     messageId: "invalid-email",
     message: "Invalid email address.");
 
+/// A [FieldValidator] that validates a [String] using a [RegExp].
 class Regex extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
+
+  /// The regex pattern.
   final String pattern;
+
+  /// The message id used for the annotation result.
   final String? messageId;
+
+  /// The message used for the annotation result.
   final String? message;
 
+  /// Validates a [String] using a [RegExp].
   const Regex(this.pattern, {this.messageId, this.message});
 
+  /// The default message id used for the annotation result.
   static const String defaultMessageId = "regex";
 
   @override
@@ -50,13 +59,13 @@ class Regex extends StructureMetadata
     final entry = cached as _RegexCacheEntry;
     if (entry.isIterable) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(entry.matcher, e));
+      return (value as Iterable).every((e) => _validateSingle(entry.matcher, e));
     } else {
-      return validateSingle(entry.matcher, value);
+      return _validateSingle(entry.matcher, value);
     }
   }
 
-  bool validateSingle(RegExp matcher, dynamic value) {
+  bool _validateSingle(RegExp matcher, dynamic value) {
     if (value == null) return true;
     final str = value as String;
     final firstMatch = matcher.firstMatch(str);

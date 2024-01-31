@@ -17,14 +17,20 @@
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// A [FieldValidator] that restricts the size of an [Iterable].
 class SizeRange extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
+
+  /// The minimum number of items. (inclusive)
   final int? min;
+
+  /// The maximum number of items. (inclusive)
   final int? max;
 
   /// Restricts this [Iterable]s item count to [min] (inclusive) and/or [max] (inclusive).
   const SizeRange({this.min, this.max});
 
+  /// The message id used for the annotation result.
   static const String messageId = "size-range";
 
   @override

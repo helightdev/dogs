@@ -19,10 +19,12 @@ import "package:dogs_core/dogs_core.dart";
 /// Requires non-null strings to not be blank.
 const notBlank = NotBlank();
 
+/// A [FieldValidator] that requires non-null strings to not be blank.
 class NotBlank extends StructureMetadata implements FieldValidator {
   /// Requires non-null strings to not be blank.
   const NotBlank();
 
+  /// The message id used for the annotation result.
   static const String messageId = "not-blank";
 
   @override
@@ -39,13 +41,13 @@ class NotBlank extends StructureMetadata implements FieldValidator {
   bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e));
+      return (value as Iterable).every((e) => _validateSingle(e));
     } else {
-      return validateSingle(value);
+      return _validateSingle(value);
     }
   }
 
-  bool validateSingle(dynamic value) {
+  bool _validateSingle(dynamic value) {
     if (value == null) return true;
     final str = value as String;
     return str.trim().isNotEmpty;

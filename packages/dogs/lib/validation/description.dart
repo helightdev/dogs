@@ -17,8 +17,11 @@
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// A [APISchemaObjectMetaVisitor] that adds a description to an [APISchemaObject].
 class Description extends StructureMetadata
     implements APISchemaObjectMetaVisitor {
+
+  /// The description which will be added to the [APISchemaObject].
   final String description;
 
   /// Creates a field description containing the supplied [description].

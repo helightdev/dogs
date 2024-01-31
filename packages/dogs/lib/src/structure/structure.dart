@@ -16,13 +16,19 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// Marks a annotation as a structure annotation and retainable.
 abstract class StructureMetadata extends RetainedAnnotation {
+  /// Marks a annotation as a structure annotation and retainable.
   const StructureMetadata();
 }
 
+/// Annotation to override the converter used for a field.
 abstract class ConverterSupplyingVisitor extends StructureMetadata {
+
+  /// Annotation to override the converter used for a field.
   const ConverterSupplyingVisitor();
 
+  /// Returns the converter type to use for the field.
   DogConverter resolve(
       DogStructure structure, DogStructureField field, DogEngine engine);
 }
@@ -30,6 +36,8 @@ abstract class ConverterSupplyingVisitor extends StructureMetadata {
 /// Defines the structure of class [T] and provides methods for instance creation
 /// and data lookups. Also contains runtime instances of [RetainedAnnotation]s
 /// used in [T].
+///
+/// See also: https://dogs.helight.dev/advanced/structures
 class DogStructure<T> extends RetainedAnnotationHolder
     with TypeCaptureMixin<T>
     implements StructureNode {
@@ -48,8 +56,12 @@ class DogStructure<T> extends RetainedAnnotationHolder
   @override
   final List<RetainedAnnotation> annotations;
 
+  /// Returns true if this structure is synthetic.
   bool get isSynthetic => fields.isEmpty;
 
+  /// Creates a new [DogStructure].
+  ///
+  /// See also: https://dogs.helight.dev/advanced/structures
   const DogStructure(this.serialName, this.conformity, this.fields,
       this.annotations, this.proxy);
 
@@ -58,14 +70,22 @@ class DogStructure<T> extends RetainedAnnotationHolder
     return "DogStructure $typeArgument";
   }
 
+  /// Creates a synthetic [DogStructure]. This means that the structure is not
+  /// automatically generated from a class and (most likely) does not have a
+  /// backing class and proxy.
   factory DogStructure.synthetic(String name) => DogStructure<T>(
       name, StructureConformity.basic, [], [], const MemoryDogStructureProxy());
 }
 
+/// Superclass for all structure related subtypes.
 abstract class StructureNode {
+  /// Superclass for all structure related subtypes.
   const StructureNode();
 }
 
+/// The conformity of a structure.
+///
+/// See also: https://dogs.helight.dev/serializables#conformities
 enum StructureConformity {
   /// Class which posses following attributes are parsed and understood as bean
   /// classes:

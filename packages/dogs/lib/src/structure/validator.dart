@@ -19,28 +19,46 @@ import "package:dogs_core/dogs_core.dart";
 
 /// Property level validator for annotations of [DogStructureField]s.
 abstract class FieldValidator {
+
+  /// Property level validator for annotations of [DogStructureField]s.
   const FieldValidator();
 
+  /// Returns true if this validator is applicable for [field].
   bool isApplicable(DogStructure structure, DogStructureField field) => true;
 
+  /// Returns a cached value for this validator. Will be passed to [validate]
+  /// on every validation.
   dynamic getCachedValue(DogStructure structure, DogStructureField field);
 
+  /// Validates [value] against this validator.
   bool validate(dynamic cached, dynamic value, DogEngine engine);
 
+  /// Annotates [value] with this validator returning an [AnnotationResult].
+  /// This mechanic is used to provide more information about the validation
+  /// error.
   AnnotationResult annotate(dynamic cached, dynamic value, DogEngine engine) =>
       AnnotationResult.empty();
 }
 
 /// Class level validator for annotations of [ClassValidator]s.
 abstract class ClassValidator {
+
+  /// Class level validator for annotations of [ClassValidator]s.
   const ClassValidator();
 
+  /// Returns true if this validator is applicable for [structure].
   bool isApplicable(DogStructure structure) => true;
 
+  /// Returns a cached value for this validator. Will be passed to [validate]
   dynamic getCachedValue(DogStructure structure);
 
+  /// Validates [value] against this validator.
   bool validate(dynamic cached, dynamic value, DogEngine engine);
 
+
+  /// Annotates [value] with this validator returning an [AnnotationResult].
+  /// This mechanic is used to provide more information about the validation
+  /// error.
   AnnotationResult annotate(dynamic cached, dynamic value, DogEngine engine) =>
       AnnotationResult.empty();
 }
@@ -50,25 +68,30 @@ class AnnotationResult {
   /// List of messages produced by the validation.
   final List<AnnotationMessage> messages;
 
+  /// Creates a new [AnnotationResult].
   AnnotationResult({
     required this.messages,
   });
 
+  /// Translates all messages in this result using [engine].
   AnnotationResult translate(DogEngine engine) {
     return AnnotationResult(
         messages: messages.map((e) => e.translate(engine)).toList());
   }
 
+  /// Replaces all variables in this result with [variables].
   AnnotationResult withVariables(Map<String, String> variables) {
     return AnnotationResult(
         messages: messages.map((e) => e.withVariables(variables)).toList());
   }
 
+  /// Replaces the target of all messages in this result with [target].
   AnnotationResult withTarget(String target) {
     return AnnotationResult(
         messages: messages.map((e) => e.withTarget(target)).toList());
   }
 
+  /// Resolves all message into a list of strings.
   List<String> buildMessages() {
     return messages.map((e) => e.buildMessage()).toList();
   }
@@ -86,12 +109,17 @@ class AnnotationMessage {
   /// Unique identifier of the message.
   final String id;
 
+  /// The place where this annotation was produced.
+  /// May be the name of a field or the name of a class.
   final String? target;
 
   /// The message itself.
   final String message;
+
+  /// Variables used in the message.
   final Map<String, String> variables;
 
+  /// Creates a new [AnnotationMessage].
   AnnotationMessage({
     required this.id,
     required this.message,
@@ -99,6 +127,7 @@ class AnnotationMessage {
     this.variables = const {},
   });
 
+  /// Translates this message using [engine].
   AnnotationMessage translate(DogEngine engine) {
     var translation = engine.findAnnotationTranslation(id);
     translation ??= message;
@@ -106,19 +135,23 @@ class AnnotationMessage {
         id: id, message: translation, variables: variables);
   }
 
+  /// Replaces all variables in this message with [variables].
   AnnotationMessage withVariables(Map<String, String> variables) {
     return AnnotationMessage(id: id, message: message, variables: variables);
   }
 
+  /// Replaces the string message with [message].
   AnnotationMessage withMessage(String message) {
     return AnnotationMessage(id: id, message: message, variables: variables);
   }
 
+  /// Replaces the target of this message with [target].
   AnnotationMessage withTarget(String target) {
     return AnnotationMessage(
         id: id, message: message, variables: variables, target: target);
   }
 
+  /// Builds the message.
   String buildMessage() {
     var result = message;
     variables.forEach((key, value) {
@@ -128,12 +161,20 @@ class AnnotationMessage {
   }
 }
 
-class ValidationException implements Exception {}
+/// An exception thrown when validation fails.
+class ValidationException implements DogException {
+  @override
+  String get message => "Validation failed!";
+}
 
+/// A [ValidationMode] that provides validation for [DogStructure]s.
 class StructureValidation<T> extends ValidationMode<T>
     with TypeCaptureMixin<T> {
+
+  /// The structure this validator is for.
   DogStructure<T> structure;
 
+  /// Creates a new [StructureValidation] for the supplied [structure].
   StructureValidation(this.structure);
 
   bool _hasValidation = false;
@@ -206,7 +247,6 @@ class StructureValidation<T> extends ValidationMode<T>
   }
 
   /// Annotates [value] at class level.
-
   AnnotationResult annotateClass(dynamic value, DogEngine engine) {
     if (!_hasValidation) return AnnotationResult.empty();
     return AnnotationResult.combine(_cachedClassValidators.entries

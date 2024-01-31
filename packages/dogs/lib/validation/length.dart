@@ -17,14 +17,20 @@
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// A [FieldValidator] that restricts the length of a [String].
 class LengthRange extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
+  
+  /// The minimum length. (inclusive)
   final int? min;
+  
+  /// The maximum length. (inclusive)
   final int? max;
 
   /// Restricts the length of this [String] to [min] (inclusive) and/or [max] (inclusive).
   const LengthRange({this.min, this.max});
 
+  /// The message id used for the annotation result.
   static const String messageId = "length-range";
 
   @override
@@ -47,13 +53,13 @@ class LengthRange extends StructureMetadata
   bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e));
+      return (value as Iterable).every((e) => _validateSingle(e));
     } else {
-      return validateSingle(value);
+      return _validateSingle(value);
     }
   }
 
-  bool validateSingle(dynamic value) {
+  bool _validateSingle(dynamic value) {
     if (value == null) return true;
     final str = value as String;
     if (min != null) {

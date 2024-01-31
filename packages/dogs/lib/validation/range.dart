@@ -17,19 +17,36 @@
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// A [FieldValidator] that restricts a numeric type to be positive.
 const positive = Range(min: 0, minExclusive: true);
+
+/// A [FieldValidator] that restricts a numeric type to be positive or zero.
 const positiveOrZero = Range(min: 0, minExclusive: false);
+
+/// A [FieldValidator] that restricts a numeric type to be negative.
 const negative = Range(max: 0, maxExclusive: true);
+
+/// A [FieldValidator] that restricts a numeric type to be negative or zero.
 const negativeOrZero = Range(max: 0, maxExclusive: false);
 
+/// A [FieldValidator] that restricts a numeric type to a minimum and maximum value.
 class Range extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
+  
+  /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
+  
+  /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
+  
+  /// Whether [min] is exclusive.
   final bool minExclusive;
+  
+  /// Whether [max] is exclusive.
   final bool maxExclusive;
 
   /// Restricts the maximum size for a numeric type to [min] and/or [max].
+  /// By default, both [min] and [max] are inclusive.
   const Range({
     this.min,
     this.max,
@@ -37,6 +54,7 @@ class Range extends StructureMetadata
     this.maxExclusive = false,
   });
 
+  /// The message id used for the annotation result.
   static const String messageId = "number-range";
 
   @override
@@ -62,13 +80,13 @@ class Range extends StructureMetadata
   bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e));
+      return (value as Iterable).every((e) => _validateSingle(e));
     } else {
-      return validateSingle(value);
+      return _validateSingle(value);
     }
   }
 
-  bool validateSingle(dynamic value) {
+  bool _validateSingle(dynamic value) {
     if (value == null) return true;
     final n = value as num;
     if (min != null) {
@@ -107,9 +125,14 @@ class Range extends StructureMetadata
   }
 }
 
+/// A [FieldValidator] that restricts a numeric type to a minimum value.
 class Minimum extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
+  
+  /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
+  
+  /// Whether [min] is exclusive.
   final bool minExclusive;
 
   /// Restricts the maximum size for a numeric type to [min].
@@ -118,6 +141,7 @@ class Minimum extends StructureMetadata
     this.minExclusive = false,
   });
 
+  /// The message id used for the annotation result.
   static const String messageId = "number-minimum";
 
   @override
@@ -141,13 +165,13 @@ class Minimum extends StructureMetadata
   bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e));
+      return (value as Iterable).every((e) => _validateSingle(e));
     } else {
-      return validateSingle(value);
+      return _validateSingle(value);
     }
   }
 
-  bool validateSingle(dynamic value) {
+  bool _validateSingle(dynamic value) {
     if (value == null) return true;
     final n = value as num;
     if (min == null) return true;
@@ -172,12 +196,17 @@ class Minimum extends StructureMetadata
   }
 }
 
+/// A [FieldValidator] that restricts a numeric type to a maximum value.
 class Maximum extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
+  
+  /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
+  
+  /// Whether [max] is exclusive.
   final bool maxExclusive;
 
-  /// Restricts the maximum size for a numeric type to [max].
+  /// Restricts the value for a numeric type to [max].
   const Maximum(
     this.max, {
     this.maxExclusive = false,
@@ -206,13 +235,13 @@ class Maximum extends StructureMetadata
   bool validate(cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => validateSingle(e));
+      return (value as Iterable).every((e) => _validateSingle(e));
     } else {
-      return validateSingle(value);
+      return _validateSingle(value);
     }
   }
 
-  bool validateSingle(dynamic value) {
+  bool _validateSingle(dynamic value) {
     if (value == null) return true;
     final n = value as num;
     if (max == null) return true;

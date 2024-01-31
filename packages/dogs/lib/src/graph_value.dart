@@ -84,10 +84,16 @@ abstract class DogGraphValue {
   }
 }
 
+/// Wrapped native value.
 class DogNative extends DogGraphValue {
+
+  /// The actual native value.
   final Object value;
+
+  /// Label denoting the type of the native value.
   final String? label;
 
+  /// Wrapped native value.
   const DogNative(this.value, [this.label]);
 
   @override
@@ -125,9 +131,13 @@ class DogNative extends DogGraphValue {
   }
 }
 
+/// Graph node representing a string value.
 class DogString extends DogGraphValue {
+
+  /// The string value of this node.
   final String value;
 
+  /// Graph node representing a string value.
   const DogString(this.value);
 
   @override
@@ -150,9 +160,13 @@ class DogString extends DogGraphValue {
   DogGraphValue clone() => DogString(value);
 }
 
+/// Graph node representing an integer value.
 class DogInt extends DogGraphValue {
+
+  /// The integer value of this node.
   final int value;
 
+  /// Graph node representing an integer value.
   const DogInt(this.value);
 
   @override
@@ -175,9 +189,13 @@ class DogInt extends DogGraphValue {
   DogGraphValue clone() => DogInt(value);
 }
 
+/// Graph node representing a double value.
 class DogDouble extends DogGraphValue {
+
+  /// The double value of this node.
   final double value;
 
+  /// Graph node representing a double value.
   const DogDouble(this.value);
 
   @override
@@ -200,9 +218,13 @@ class DogDouble extends DogGraphValue {
   DogGraphValue clone() => DogDouble(value);
 }
 
+/// Graph node representing a boolean value.
 class DogBool extends DogGraphValue {
+
+  /// The boolean value of this node.
   final bool value;
 
+  /// Graph node representing a boolean value.
   const DogBool(this.value);
 
   @override
@@ -225,7 +247,10 @@ class DogBool extends DogGraphValue {
   DogGraphValue clone() => DogBool(value);
 }
 
+/// Graph node representing a null value.
 class DogNull extends DogGraphValue {
+
+  /// Graph node representing a null value.
   const DogNull();
 
   @override
@@ -246,9 +271,13 @@ class DogNull extends DogGraphValue {
   DogGraphValue clone() => DogNull();
 }
 
+/// Graph node representing a list value.
 class DogList extends DogGraphValue {
+
+  /// The list value of this node.
   final List<DogGraphValue> value;
 
+  /// Graph node representing a list value.
   const DogList(this.value);
 
   @override
@@ -282,9 +311,13 @@ class DogList extends DogGraphValue {
   }
 }
 
+/// Graph node representing a map value.
 class DogMap extends DogGraphValue {
+
+  /// The map value of this node.
   final Map<DogGraphValue, DogGraphValue> value;
 
+  /// Graph node representing a map value.
   const DogMap(this.value);
 
   @override
@@ -305,6 +338,7 @@ class DogMap extends DogGraphValue {
   @override
   int get hashCode => value.hashCode;
 
+  /// Merges this map with the given [map].
   DogMap merge(DogMap map) {
     return DogMap(mergeMaps(value, map.value)
         .map((key, value) => MapEntry(key.clone(), value.clone())));

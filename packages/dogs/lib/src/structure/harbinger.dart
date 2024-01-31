@@ -19,12 +19,18 @@ import "package:meta/meta.dart";
 
 /// Utility class for resolving converters for a [DogStructure].
 class StructureHarbinger<T> {
+
+  /// The structure this harbinger is for.
   final DogStructure<T> structure;
+
+  /// The engine this used to create this harbinger instance.
   final DogEngine engine;
 
+  /// Resolved list of all field converters for the structure.
   late List<({DogStructureField field, DogConverter? converter})>
       fieldConverters;
 
+  /// Creates a new [StructureHarbinger] for the supplied [structure] and [engine].
   StructureHarbinger(this.structure, this.engine) {
     fieldConverters = structure.fields.map((e) {
       final fieldConverter = getConverter(engine, e);
@@ -33,6 +39,7 @@ class StructureHarbinger<T> {
   }
 
   @internal
+  /// Performs the converter lookup for a single field.
   DogConverter? getConverter(DogEngine engine, DogStructureField field) {
     // Try resolving using supplying visitors
     final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
@@ -65,6 +72,7 @@ class StructureHarbinger<T> {
     return engine.getTreeConverter(field.type, isPolymorphicField(field));
   }
 
+  /// Creates a new [StructureHarbinger] for the supplied [structure] and [engine].
   static StructureHarbinger create(DogStructure structure, DogEngine engine) =>
       StructureHarbinger(structure, engine);
 }

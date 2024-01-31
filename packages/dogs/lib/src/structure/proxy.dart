@@ -21,6 +21,8 @@ import "package:dogs_core/src/structure/structure.dart";
 /// and property accessor methods for all fields defined by the structure.
 /// A get-all method for faster field value retrieval must also be provided.
 abstract class DogStructureProxy {
+
+  /// Creates a new [DogStructureProxy].
   const DogStructureProxy();
 
   /// Optional generated hash function created by the dogs_generator.
@@ -41,6 +43,8 @@ abstract class DogStructureProxy {
 
 /// Simple class-less implementation of [DogStructureProxy], primarily for tests.
 class MemoryDogStructureProxy extends DogStructureProxy {
+
+  /// Creates a new [MemoryDogStructureProxy].
   const MemoryDogStructureProxy();
 
   @override
