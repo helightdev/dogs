@@ -20,6 +20,7 @@ linter:
     - prefer_double_quotes
     - avoid_void_async
     - avoid_print
+    - prefer_final_locals
 
 # Uncomment the following section to specify additional rules.
 
