@@ -38,11 +38,6 @@ Future main() async {
       test("Yaml", testYaml);
       test("Toml", testToml);
     });
-
-    // Check if this still triggers githubs pipeline
-    test("Always fail", () {
-      expect(true, false);
-    });
   });
 }
 
