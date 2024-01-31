@@ -5,6 +5,7 @@ packages:
   - formats/*
   - example/
   - benchmarks/
+  - packages/dogs_forms/example/
 scripts:
   copy-readme:
     name: copy-readme
@@ -29,6 +30,13 @@ scripts:
     packageFilters:
       ignore:
         - "*mongo*"
+  deploy-pages:
+    exec:
+      concurrency: 1
+    run: bash page-deploy.sh
+    packageFilters:
+      fileExists:
+        - page-deploy.sh
   test:
     description: Run tests in a specific package.
     run: dart test test/*

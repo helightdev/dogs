@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-import 'package:example/form_print_wrapper.dart';
-import 'package:example/models/address.dart';
-import 'package:example/models/person.dart';
+import 'package:forms_example/form_print_wrapper.dart';
+import 'package:forms_example/models/address.dart';
+import 'package:forms_example/models/person.dart';
 import 'package:flutter/material.dart';
 
 class PersonPage extends StatelessWidget {

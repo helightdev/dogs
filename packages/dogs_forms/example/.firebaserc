@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "dart-object-graphs"
+  },
+  "targets": {
+    "dart-object-graphs": {
+      "hosting": {
+        "dogs-forms": [
+          "dogs-forms"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

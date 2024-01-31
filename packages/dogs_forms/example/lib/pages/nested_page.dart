@@ -14,10 +14,10 @@
  *    limitations under the License.
  */
 
-import 'package:example/form_print_wrapper.dart';
-import 'package:example/models/address.dart';
-import 'package:example/models/nested.dart';
-import 'package:example/models/post.dart';
+import 'package:forms_example/form_print_wrapper.dart';
+import 'package:forms_example/models/address.dart';
+import 'package:forms_example/models/nested.dart';
+import 'package:forms_example/models/post.dart';
 import 'package:flutter/material.dart';
 
 class NestedPage extends StatelessWidget {

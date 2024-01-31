@@ -17,7 +17,6 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/dogs_validation.dart';
 import 'package:dogs_forms/dogs_forms.dart';
-import 'package:example/models/address.dart';
 import 'package:flutter/material.dart';
 
 @serializable
