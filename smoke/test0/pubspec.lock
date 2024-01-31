@@ -5,18 +5,18 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "0f7b1783ddb1e4600580b8c00d0ddae5b06ae7f0382bd4fcce5db4df97b618e1"
+      sha256: "0b2f2bd91ba804e53a61d757b986f89f1f9eaed5b11e4b2f5a2468d86d6c9fc7"
       url: "https://pub.dev"
     source: hosted
-    version: "66.0.0"
+    version: "67.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "5e8bdcda061d91da6b034d64d8e4026f355bcb8c3e7a0ac2da1523205a91a737"
+      sha256: "37577842a27e4338429a1cbc32679d508836510b056f1eedf0c8d20e39c1383d"
       url: "https://pub.dev"
     source: hosted
-    version: "6.4.0"
+    version: "6.4.1"
   args:
     dependency: transitive
     description:
@@ -191,35 +191,35 @@ packages:
       path: "../../formats/dogs_cbor"
       relative: true
     source: path
-    version: "2.0.31"
+    version: "2.0.32"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../../packages/dogs"
       relative: true
     source: path
-    version: "8.1.0"
+    version: "8.1.1"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.2.2"
+    version: "5.2.3"
   dogs_toml:
     dependency: "direct main"
     description:
       path: "../../formats/dogs_toml"
       relative: true
     source: path
-    version: "2.0.31"
+    version: "2.0.32"
   dogs_yaml:
     dependency: "direct main"
     description:
       path: "../../formats/dogs_yaml"
       relative: true
     source: path
-    version: "2.0.31"
+    version: "2.0.32"
   duffer:
     dependency: transitive
     description:
@@ -581,7 +581,7 @@ packages:
     source: hosted
     version: "1.2.1"
   test:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: test
       sha256: "7ee446762c2c50b3bd4ea96fe13ffac69919352bd3b4b17bac3f3465edc58073"

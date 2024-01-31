@@ -18,4 +18,4 @@
 flutter pub get
 flutter pub upgrade
 flutter pub run build_runner build --delete-conflicting-outputs --verbose
-flutter pub run lib/test.dart
+flutter pub test lib/test.dart
