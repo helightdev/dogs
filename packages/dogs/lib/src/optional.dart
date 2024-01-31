@@ -14,33 +14,48 @@
  *    limitations under the License.
  */
 
-import "package:dogs_core/dogs_core.dart";
-
 /// Port of Java's Optional (https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 class Optional<T> {
+
+  /// Common instance for [Optional.empty].
   final T? value;
 
+  /// Constructs an [Optional] with the given [value].
   const Optional([this.value]);
+
+  /// Constructs an empty [Optional].
   const Optional.empty() : this(null);
+
+  /// Constructs an [Optional] with the given non-null [value].
   const Optional.of(T value) : this(value);
+
+  /// Constructs an [Optional] with the given [value] or empty if [value] is null.
   const Optional.nullable(T? value) : this(value);
 
+  /// Returns an empty [Optional] instance.
   bool get isPresent => value != null;
+
+  /// If a value is present in this [Optional], returns the value,
   T get() => value!;
 
+  /// If a value is present, performs the given action with the value,
   void ifPresent(Function(T) consumer) {
     var current = value;
     if (current != null) consumer(current);
   }
 
+  /// If a value is present, performs the given action with the value and
+  /// returns it in an [Optional] wrapper, otherwise returns an empty [Optional].
   Optional<R> map<R>(R? Function(T) mapper) {
     var current = value;
     if (current == null) return Optional<R>.empty();
     return Optional(mapper(current));
   }
 
+  /// If a value is present, returns the value, otherwise returns [other].
   T orElse(T other) => value ?? other;
 
+  /// Returns the value if present, otherwise returns [null].
   T? orElseGet(T Function() supplier) {
     var current = value;
     if (current == null) {
@@ -58,66 +73,4 @@ class Optional<T> {
 
   @override
   int get hashCode => value.hashCode;
-}
-
-class OptionalTreeBaseConverter extends DogConverter with OperationMapMixin {
-  DogConverter converter;
-  TypeCapture capture;
-  OptionalTreeBaseConverter(this.converter, this.capture);
-
-  @override
-  Map<Type, OperationMode Function()> get modes => {
-        NativeSerializerMode: () =>
-            OptionalTreeBaseNativeOperation(converter, capture),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
-      };
-}
-
-class OptionalTreeBaseNativeOperation extends NativeSerializerMode<Optional>
-    with TypeCaptureMixin<Optional> {
-  DogConverter converter;
-  TypeCapture capture;
-  OptionalTreeBaseNativeOperation(this.converter, this.capture);
-
-  late NativeSerializerMode mode;
-
-  @override
-  void initialise(DogEngine engine) {
-    mode =
-        engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
-  }
-
-  Optional createOptional<T>(dynamic value) => Optional<T>(value);
-
-  @override
-  Optional deserialize(value, DogEngine engine) {
-    if (value == null) {
-      return capture.consumeTypeArg(createOptional, null);
-    } else {
-      return capture.consumeTypeArg(
-          createOptional, mode.deserialize(value, engine));
-    }
-  }
-
-  @override
-  serialize(Optional value, DogEngine engine) {
-    var v = value.value;
-    if (v != null) {
-      return mode.serialize(v, engine);
-    } else {
-      return null;
-    }
-  }
-}
-
-class OptionalTreeBaseConverterFactory extends TreeBaseConverterFactory {
-  @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverter = TreeBaseConverterFactory.argumentConverters(
-            tree, engine, allowPolymorphic)
-        .first;
-    return OptionalTreeBaseConverter(
-        argumentConverter, tree.arguments.first.qualified);
-  }
 }

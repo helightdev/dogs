@@ -56,7 +56,10 @@ class DogEngine {
   /// See [DogNativeCodec] for more details.
   final DogNativeCodec codec;
 
+  /// The [OperationModeRegistry] used by this [DogEngine] instance.
+  /// See [OperationModeRegistry] for more details.
   late OperationModeRegistry modeRegistry = OperationModeRegistry();
+
   late var _nativeSerialization = modeRegistry.nativeSerialization;
   late var _graphSerialization = modeRegistry.graphSerialization;
   late var _validation = modeRegistry.validation;
@@ -132,6 +135,7 @@ class DogEngine {
   }
 
   @internal
+  /// Rebuilds this [DogEngine] instance from the supplied [engine].
   void rebuildFrom(DogEngine engine) {
     _parent = engine;
     reset();
@@ -170,18 +174,29 @@ class DogEngine {
     _parent?._children.remove(this);
   }
 
+  /// Returns all [DogStructure]s registered in this [DogEngine] instance and its
+  /// parents.
   Map<Type, DogStructure> get allStructures => {
         if (_parent != null) ..._parent!.allStructures,
         ..._structures,
       };
+
+  /// Returns all [DogConverter]s registered in this [DogEngine] instance and its
+  /// parents.
   Map<Type, DogConverter> get allAssociatedConverters => {
         if (_parent != null) ..._parent!.allAssociatedConverters,
         ..._associatedConverters,
       };
+
+  /// Returns all [OperationModeFactory]s registered in this [DogEngine] instance
+  /// and its parents.
   Map<Type, TreeBaseConverterFactory> get allTreeBaseFactories => {
         if (_parent != null) ..._parent!.allTreeBaseFactories,
         ..._treeBaseFactories,
       };
+
+  /// Returns all converters registered in this [DogEngine] instance and its
+  /// parents.
   List<DogConverter> get allConverters => List.of([
         if (_parent != null) ..._parent!.allConverters,
         ..._converters,

@@ -16,30 +16,40 @@
 
 part of "../trees.dart";
 
+/// Collection of default [TreeBaseConverterFactory]s.
 class DefaultTreeBaseFactories {
+
+  DefaultTreeBaseFactories._();
+
+  /// Factory for [List]s.
   static final list = TreeBaseConverterFactory.createIterableFactory<List>(
     wrap: <T>(Iterable<T> entries) => entries.toList(),
     unwrap: <T>(List value) => value,
   );
 
+  /// Factory for [Set]s.
   static final set = TreeBaseConverterFactory.createIterableFactory<Set>(
     wrap: <T>(Iterable<T> entries) => entries.toSet(),
     unwrap: <T>(Set value) => value,
   );
 
+  /// Factory for [Iterable]s.
   static final iterable =
       TreeBaseConverterFactory.createIterableFactory<Iterable>(
     wrap: <T>(Iterable<T> entries) => entries,
     unwrap: <T>(Iterable value) => value,
   );
 
+  /// Factory for [Map]s.
   static final map = TreeBaseConverterFactory.createNargsFactory<Map>(
       nargs: 2, consume: <K, V>() => MapNTreeArgConverter<K, V>());
 
+  /// Factory for [Optional]s.
   static final optional = TreeBaseConverterFactory.createNargsFactory<Optional>(
       nargs: 1, consume: <T>() => OptionalNTreeArgConverter<T>());
 }
 
+/// [NTreeArgConverter] for [Map]s.
 class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   @override
   Map deserialize(value, DogEngine engine) {
@@ -58,6 +68,7 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   }
 }
 
+/// [NTreeArgConverter] for [Optional]s.
 class OptionalNTreeArgConverter<T> extends NTreeArgConverter<Optional> {
   @override
   Optional deserialize(value, DogEngine engine) {

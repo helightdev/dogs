@@ -22,6 +22,11 @@ typedef ProjectionTransformer = Map<String, dynamic> Function(
 
 extension ProjectionExtension on DogEngine {
 
+  /// Creates a projection document from the given [properties] and [objects].
+  /// The [properties] are merged into the document first, followed by the
+  /// [objects]. If [shallow] is true, the objects are not converted to
+  /// their native representation, but instead their field map is used.
+  /// If [transformers] are given, they are applied to the document in order.
   Map<String, dynamic> createProjectionDocument({
     Iterable<Map>? properties,
     Iterable<Object>? objects,
@@ -54,6 +59,11 @@ extension ProjectionExtension on DogEngine {
     return buffer;
   }
 
+  /// Creates a projection from the given [properties] and [objects] using
+  /// [createProjectionDocument]. If [shallow] is true, the objects are not
+  /// converted to their native representation, but instead their field map
+  /// is used. The resulting document is then converted to the given [target]
+  /// type.
   dynamic createProjection(
       Type target, {
         Iterable<Map>? properties,
@@ -71,6 +81,7 @@ extension ProjectionExtension on DogEngine {
     return struct.proxy.instantiate(fieldValues);
   }
 
+  /// Creates a projection document from the given values, see [createProjectionDocument].
   Map<String, dynamic> projectDocument(Object value,
       [Object? a, Object? b, Object? c,]) {
     // Combine additional args into an iterable value
@@ -96,6 +107,7 @@ extension ProjectionExtension on DogEngine {
     return createProjectionDocument(properties: properties, objects: objects);
   }
 
+  /// Creates a shallow projection document from the given values, see [createProjectionDocument].
   Map<String, dynamic> projectDocumentShallow(Object value,
       [Object? a, Object? b, Object? c,]) {
     // Combine additional args into an iterable value
@@ -122,6 +134,12 @@ extension ProjectionExtension on DogEngine {
   }
 
 
+  /// Creates a projection from the given values, see [createProjection].
+  /// Parameters can be either a [Map] or an [Object]. If an [Object] is given,
+  /// it's runtime type is used to find the corresponding [DogStructure] before
+  /// serializing the object to its native map form. This will therefore not work
+  /// with generic types. Consider manually serializing the object [toNative] first
+  /// in that case before passing it in as a map.
   TARGET project<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
     if (a != null || b != null || c != null) {
@@ -146,6 +164,7 @@ extension ProjectionExtension on DogEngine {
     return createProjection(TARGET, properties: properties, objects: objects);
   }
 
+  /// Creates a shallow projection from the given values, see [createProjection].
   TARGET projectShallow<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
     if (a != null || b != null || c != null) {

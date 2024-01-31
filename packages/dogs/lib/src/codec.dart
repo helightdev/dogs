@@ -22,8 +22,14 @@ abstract class DogNativeCodec {
   const DogNativeCodec();
 
   CodecPrimitiveCoercion get primitiveCoercion => NoCodecPrimitiveCoercion();
+
+  /// The prefix used for metadata keys.
   String get metaPrefix => "_";
+
+  /// The full key used for type discrimination.
   String get typeDiscriminator => "${metaPrefix}type";
+
+  /// The full key used for value discrimination.
   String get valueDiscriminator => "${metaPrefix}value";
 
   /// Interop converters for native types.
@@ -41,10 +47,15 @@ abstract class DogNativeCodec {
   DogGraphValue fromNative(dynamic value);
 }
 
+/// Mechanism for coercing specific native types to other native types.
 abstract interface class CodecPrimitiveCoercion {
+  /// Coerces [value] to the [expected] type. The [fieldName] can be used for
+  /// error reporting.
   dynamic coerce(TypeCapture expected, dynamic value, String? fieldName);
 }
 
+/// Default implementation of [CodecPrimitiveCoercion] that throws an error
+/// when coercion is attempted.
 class NoCodecPrimitiveCoercion implements CodecPrimitiveCoercion {
   @override
   dynamic coerce(TypeCapture expected, value, String? fieldName) {
@@ -62,6 +73,8 @@ class NoCodecPrimitiveCoercion implements CodecPrimitiveCoercion {
 ///
 /// Can also convert [Iterable]s and [Map]s of native types.
 class DefaultNativeCodec extends DogNativeCodec {
+
+  /// Default implementation of [DogNativeCodec].
   const DefaultNativeCodec();
 
   @override

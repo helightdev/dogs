@@ -34,19 +34,30 @@ mixin OperationMapMixin<T> on DogConverter<T> {
       modes[opmodeType]?.call();
 }
 
+/// The registry for [OperationMode]s.
+/// Serves as the central point for resolving [OperationMode]s for [DogConverter]s
+/// and [Type]s. Also functions as a cache for the resolved [OperationMode]s.
 class OperationModeRegistry {
   final Map<Type, OperationModeCacheEntry> _cache = HashMap();
 
+  /// Fast access to the [entry] for [NativeSerializerMode].
   late OperationModeCacheEntry<NativeSerializerMode> nativeSerialization;
+
+  /// Fast access to the [entry] for [GraphSerializerMode].
   late OperationModeCacheEntry<GraphSerializerMode> graphSerialization;
+
+  /// Fast access to the [entry] for [ValidationMode].
   late OperationModeCacheEntry<ValidationMode> validation;
 
+  /// Creates a new [OperationModeRegistry] and initializes the fast access fields.
+  /// The cache is empty at this point and will be lazily populated.
   OperationModeRegistry() {
     nativeSerialization = entry<NativeSerializerMode>();
     graphSerialization = entry<GraphSerializerMode>();
     validation = entry<ValidationMode>();
   }
 
+  /// Returns the [OperationModeCacheEntry] for the given [T].
   OperationModeCacheEntry<T> entry<T extends OperationMode>() {
     OperationModeCacheEntry? cachedValue = _cache[T];
     if (cachedValue == null) {
@@ -58,29 +69,40 @@ class OperationModeRegistry {
     }
   }
 
+  /// Returns the [OperationMode] for the given [type] and [engine].
   T getType<T extends OperationMode>(Type type, DogEngine engine) =>
       entry<T>().forType(type, engine);
 
+  /// Returns the [OperationMode] for the given [converter] and [engine].
   T getConverter<T extends OperationMode>(
           DogConverter converter, DogEngine engine) =>
       entry<T>().forConverter(converter, engine);
 }
 
+/// A cache entry for [OperationMode]s.
+/// Holds all resolved [OperationMode]s for the specified [OperationModeCacheEntry.modeType].
 class OperationModeCacheEntry<T extends OperationMode> {
+
+  /// The [Type] of the [OperationMode]s that are cached in this entry.
   final Type modeType;
 
+  /// Creates a new [OperationModeCacheEntry] for the given [modeType].
   OperationModeCacheEntry(this.modeType);
 
+  /// The cached [OperationMode]s for [DogConverter]s.
   final Map<DogConverter, OperationMode> converterMapping = {};
+
+  /// The cached [OperationMode]s for [Type]s.
   final Map<Type, OperationMode> typeMapping = {};
 
+  /// Returns the [OperationMode] for the given [converter] and [engine].
   T forConverter(DogConverter converter, DogEngine engine) {
     var cached = converterMapping[converter];
     if (cached != null) return cached as T;
     var resolved = converter.resolveOperationMode(modeType);
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
     if (resolved == null) {
-      throw Exception(
+      throw DogException(
           "DogConverter $converter doesn't support opmode $modeType");
     }
     resolved.initialise(engine);
@@ -88,6 +110,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
     return resolved as T;
   }
 
+  /// Returns the [OperationMode] for the given [type] and [engine].
   T forType(Type type, DogEngine engine) {
     var cached = typeMapping[type];
     if (cached != null) return cached as T;
@@ -98,6 +121,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
     return mode;
   }
 
+  /// Returns the [OperationMode] for the given [type] and [engine] but allows null.
   T? forTypeNullable(Type type, DogEngine engine) {
     var cached = typeMapping[type];
     if (cached != null) return cached as T;

@@ -31,6 +31,7 @@ abstract class TreeBaseConverterFactory {
       TypeTree tree, DogEngine engine, bool allowPolymorphic);
 
   @internal
+  /// Cached polymorphic converter.
   static final PolymorphicConverter polymorphicConverter =
       PolymorphicConverter();
 

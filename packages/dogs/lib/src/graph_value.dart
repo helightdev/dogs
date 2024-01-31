@@ -21,6 +21,8 @@ import "package:dogs_core/dogs_core.dart";
 
 /// Graph node of the serialized DOG graph.
 abstract class DogGraphValue {
+
+  /// Graph node of the serialized DOG graph.
   const DogGraphValue();
 
   /// Returns a string representation of this dog value.
@@ -38,10 +40,12 @@ abstract class DogGraphValue {
   /// (Deep-)Clones this graph value.
   DogGraphValue clone();
 
+  /// Returns a string representation of this dog value with the given [indent].
   String describe(int indent) {
     return "$runtimeType(${coerceString()})";
   }
 
+  /// Returns a string representation of this dog value.
   String toDescriptionString() {
     return describe(0);
   }

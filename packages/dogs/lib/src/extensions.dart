@@ -71,8 +71,11 @@ extension DogValueExtension on DogGraphValue {
 
 extension DogsIterableExtension<T> on Iterable<T> {
   Type get typeArgument => T;
+
   Type get deriveListType => List<T>;
+
   Type get deriveSetType => Set<T>;
+
   Type get deriveIterableType => Iterable<T>;
 
   T? firstWhereOrNullDogs(bool Function(T element) func) {
@@ -85,7 +88,9 @@ extension DogsIterableExtension<T> on Iterable<T> {
 
 extension DogsMapExtension<K, V> on Map<K, V> {
   Type get keyTypeArgument => K;
+
   Type get valueTypeArgument => V;
+
   @Deprecated("Moved to DefaultNativeCodec")
   DogGraphValue get asGraph => DogGraphValue.fromNative(this);
 }
@@ -104,16 +109,62 @@ extension DogEngineShortcuts on DogEngine {
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the
-  /// converter associated with [T].
+  /// converter associated with [T] or [typeTree].
   DogGraphValue toGraph<T>(T value,
-          {IterableKind kind = IterableKind.none, Type? type}) =>
-      convertIterableToGraph(value, type ?? T, kind);
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
+    if (typeTree != null) {
+      var converter = getTreeConverter(typeTree);
+      return modeRegistry.graphSerialization
+          .forConverter(converter, this)
+          .serialize(value, this);
+    }
+    return convertIterableToGraph(value, type ?? T, kind);
+  }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
-  /// by using the converter associated with [t].
+  /// by using the converter associated with [T] or [typeTree].
   T fromGraph<T>(DogGraphValue value,
-          {IterableKind kind = IterableKind.none, Type? type}) =>
-      convertIterableFromGraph(value, type ?? T, kind);
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
+    if (typeTree != null) {
+      var converter = getTreeConverter(typeTree);
+      return modeRegistry.graphSerialization
+          .forConverter(converter, this)
+          .deserialize(value, this);
+    }
+    return convertIterableFromGraph(value, type ?? T, kind);
+  }
+
+  /// Converts a [value] to its native representation using the converter
+  /// associated with [T] or [type] and the supplied [IterableKind].
+  /// If [tree] is supplied, the converter associated with the tree is used.
+  dynamic toNative<T>(T value,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    if (tree != null) {
+      if (!tree.isQualified) throw DogException("TypeTree must be qualified");
+      var converter = getTreeConverter(tree);
+      return modeRegistry.nativeSerialization
+          .forConverter(converter, this)
+          .serialize(value, this);
+    }
+
+    return convertIterableToNative(value, type ?? T, kind);
+  }
+
+  /// Converts a [value] to its native representation using the converter
+  /// associated with [T] or [type] and the supplied [IterableKind].
+  /// If [tree] is supplied, the converter associated with the tree is used.
+  T fromNative<T>(dynamic value,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    if (tree != null) {
+      if (!tree.isQualified) throw DogException("TypeTree must be qualified");
+      var converter = getTreeConverter(tree);
+      return modeRegistry.nativeSerialization
+          .forConverter(converter, this)
+          .deserialize(value, this);
+    }
+
+    return convertIterableFromNative(value, type ?? T, kind);
+  }
 }
 
 extension StructureExtensions on DogStructure {

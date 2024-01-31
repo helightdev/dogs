@@ -34,17 +34,23 @@ bool kWarnPolymorphicTerminalNode = true;
 /// Static [DeepCollectionEquality] instance used by the dog library.
 const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 
+@Deprecated("Use dogs.toJson")
 /// Encodes this [value] to json, using the [DogConverter] associated with [T].
 String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
 
+@Deprecated("Use dogs.fromJson")
 /// Decodes this [json] to an [T] instance, using the [DogConverter] associated with [T].
 T fromJson<T>(String json) => DogEngine.instance.jsonDecode(json);
 
+
+@Deprecated("Use dogs.toNative")
 /// Converts an [T] instance to a native value, using the [DogConverter] associated with [T].
 /// Output follows the default [DogNativeCodec] implementation, [DefaultNativeCodec].
 dynamic toNative<T>(T value) =>
     DogEngine.instance.convertObjectToNative(value, T);
 
+
+@Deprecated("Use dogs.fromNative")
 /// Converts an a native value to an [T] instance, using the [DogConverter] associated with [T].
 /// Input must follow the default [DogNativeCodec] implementation, [DefaultNativeCodec].
 T fromNative<T>(dynamic native) =>
@@ -63,6 +69,10 @@ int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);
 @internal
 Map<Type, StructureOperationModeFactory> structureOperationFactories = {};
 
+/// Register a [StructureOperationModeFactory] fallback for [DogStructure]s.
+/// This method exists for legacy reasons and should not be used anymore, please
+/// instead use [DogEngine.registerModeFactory] with normal
+/// [OperationModeFactory]s.
 void registerStructureOperationFactory(StructureOperationModeFactory factory) {
   structureOperationFactories[factory.typeArgument] = factory;
 }

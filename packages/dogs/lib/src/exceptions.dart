@@ -16,9 +16,13 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// General exception for dogs related errors.
 abstract class DogException implements Exception {
+
+  /// The message of this exception.
   String get message;
 
+  /// Creates a new [DogException] with the given [message].
   factory DogException(String message) {
     return _DogExceptionImpl(message);
   }
@@ -36,14 +40,28 @@ class _DogExceptionImpl implements DogException {
   }
 }
 
+/// Exception thrown when a [DogConverter] fails to convert a value.
 abstract class DogSerializerException implements DogException {
   @override
   String get message;
+
+  /// The [DogConverter] that failed the conversion. May be null if no converter
+  /// was involved, for example when serializing native values.
   DogConverter? get converter;
+
+  /// The [DogStructure] that failed the conversion.
+  /// May be null if no structure was involved.
   DogStructure? get structure;
+
+  /// The original exception that has been caught by the [DogConverter].
+  /// May be null if no nested exception was involved.
   Object? get cause;
+
+  /// The stacktrace of the original exception.
+  /// May be null if no nested exception was involved.
   StackTrace? get innerStackTrace;
 
+  /// Creates a new [DogSerializerException] with the given attributes.
   factory DogSerializerException({
     required String message,
     DogConverter? converter,
@@ -81,6 +99,8 @@ class _DogSerializerExceptionImpl implements DogSerializerException {
       this.message, this.converter, this.structure, this.cause, this.innerStackTrace);
 }
 
+/// Specific [DogSerializerException] thrown when a [DogConverter] fails to convert a field.
+/// Contains the [DogStructureField] that failed the conversion.
 class DogFieldSerializerException implements DogSerializerException {
   @override
   final String message;
@@ -92,8 +112,11 @@ class DogFieldSerializerException implements DogSerializerException {
   final Object? cause;
   @override
   final StackTrace? innerStackTrace;
+
+  /// The [DogStructureField] that failed the conversion.
   final DogStructureField field;
-  
+
+  /// Creates a new [DogFieldSerializerException] with the given attributes.
   DogFieldSerializerException(this.message, this.converter, this.structure, this.field, this.cause, this.innerStackTrace);
 
   @override
@@ -108,6 +131,7 @@ class DogFieldSerializerException implements DogSerializerException {
   }
 }
 
+/// Formats an exception with attributes into a nicer looking message.
 String _formatException(String name, String message, Map<String,dynamic> fields) {
   return "$name: $message\n${fields.entries.map((e) => "  ${e.key}: ${e.value}").join("\n")}";
 }
