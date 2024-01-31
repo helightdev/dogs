@@ -17,7 +17,7 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
-  - start.md
+  - index.md
   - installation.md
   - "Getting Started":
       - serializables.md
