@@ -20,7 +20,7 @@ import "package:test/scaffolding.dart";
 
 void main() {
   test("Person", () {
-    var structure = DogStructure(
+    final structure = DogStructure(
         "Person",
         StructureConformity.basic,
         [
@@ -30,13 +30,13 @@ void main() {
         ],
         [],
         MemoryDogStructureProxy());
-    var obj = structure.proxy.instantiate(["Christoph", 19, null]);
+    final obj = structure.proxy.instantiate(["Christoph", 19, null]);
     expect("Christoph", structure.proxy.getField(obj, 0));
     expect(19, structure.proxy.getField(obj, 1));
     expect(null, structure.proxy.getField(obj, 2));
   });
   test("Note", () {
-    var structure = DogStructure(
+    final structure = DogStructure(
         "Note",
         StructureConformity.basic,
         [
@@ -47,7 +47,7 @@ void main() {
         ],
         [],
         MemoryDogStructureProxy());
-    var a = structure.proxy.instantiate([
+    final a = structure.proxy.instantiate([
       "Workout",
       "Lets get fit",
       true,
@@ -60,7 +60,7 @@ void main() {
         containsAllInOrder(["sport", "lifestyle"]));
     expect(structure.proxy.getField(a, 3), isA<Set>());
 
-    var b = structure.proxy.instantiate([
+    final b = structure.proxy.instantiate([
       null,
       "Some Data",
       false,

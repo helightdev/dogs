@@ -83,7 +83,7 @@ class CustomCodec extends DogNativeCodec {
 
 void main() {
   test("Test Custom Codec", () {
-    var structure = DogStructure(
+    final structure = DogStructure(
         "Test",
         StructureConformity.basic,
         [
@@ -93,19 +93,19 @@ void main() {
         [],
         MemoryDogStructureProxy());
 
-    var engine = DogEngine();
-    var converter = DogStructureConverterImpl(structure);
-    var forked = engine.fork(codec: CustomCodec());
-    var nativeOpmode =
+    final engine = DogEngine();
+    final converter = DogStructureConverterImpl(structure);
+    final forked = engine.fork(codec: CustomCodec());
+    final nativeOpmode =
         forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
-    var encoded = nativeOpmode.serialize(["Hello", CustomNative()], forked);
-    var decoded = nativeOpmode.deserialize(encoded, forked);
+    final encoded = nativeOpmode.serialize(["Hello", CustomNative()], forked);
+    final decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<String?>());
     expect(decoded[1], isA<CustomNative>());
   });
 
   test("Test Custom Codec Overrides", () {
-    var structure = DogStructure(
+    final structure = DogStructure(
         "Test",
         StructureConformity.basic,
         [
@@ -114,25 +114,25 @@ void main() {
         [],
         MemoryDogStructureProxy());
 
-    var engine = DogEngine();
-    var converter = DogStructureConverterImpl(structure);
-    var forked = engine.fork(codec: CustomCodec());
+    final engine = DogEngine();
+    final converter = DogStructureConverterImpl(structure);
+    final forked = engine.fork(codec: CustomCodec());
     forked.registerAssociatedConverter(DateTimeWrapperConverter());
 
     // Test forked
-    var nativeOpmode =
+    final nativeOpmode =
         forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
-    var encoded = nativeOpmode.serialize([DateTime.now()], forked);
+    final encoded = nativeOpmode.serialize([DateTime.now()], forked);
     expect(encoded["a"], isA<DateTimeWrapper>());
-    var decoded = nativeOpmode.deserialize(encoded, forked);
+    final decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<DateTime>());
 
     // Test original
-    var nativeOpmode2 =
+    final nativeOpmode2 =
         engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
-    var encoded2 = nativeOpmode2.serialize([DateTime.now()], engine);
+    final encoded2 = nativeOpmode2.serialize([DateTime.now()], engine);
     expect(encoded2["a"], isA<String>());
-    var decoded2 = nativeOpmode2.deserialize(encoded2, engine);
+    final decoded2 = nativeOpmode2.deserialize(encoded2, engine);
     expect(decoded2[0], isA<DateTime>());
   });
 }

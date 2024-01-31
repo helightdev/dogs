@@ -59,9 +59,9 @@ class OperationModeRegistry {
 
   /// Returns the [OperationModeCacheEntry] for the given [T].
   OperationModeCacheEntry<T> entry<T extends OperationMode>() {
-    OperationModeCacheEntry? cachedValue = _cache[T];
+    final OperationModeCacheEntry? cachedValue = _cache[T];
     if (cachedValue == null) {
-      var entry = OperationModeCacheEntry<T>(T);
+      final entry = OperationModeCacheEntry<T>(T);
       _cache[T] = entry;
       return entry;
     } else {
@@ -97,7 +97,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
 
   /// Returns the [OperationMode] for the given [converter] and [engine].
   T forConverter(DogConverter converter, DogEngine engine) {
-    var cached = converterMapping[converter];
+    final cached = converterMapping[converter];
     if (cached != null) return cached as T;
     var resolved = converter.resolveOperationMode(modeType);
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
@@ -112,22 +112,22 @@ class OperationModeCacheEntry<T extends OperationMode> {
 
   /// Returns the [OperationMode] for the given [type] and [engine].
   T forType(Type type, DogEngine engine) {
-    var cached = typeMapping[type];
+    final cached = typeMapping[type];
     if (cached != null) return cached as T;
-    var converter = engine.findAssociatedConverter(type);
+    final converter = engine.findAssociatedConverter(type);
     if (converter == null) throw Exception("No converter found for type $type");
-    var mode = forConverter(converter, engine);
+    final mode = forConverter(converter, engine);
     typeMapping[type] = mode;
     return mode;
   }
 
   /// Returns the [OperationMode] for the given [type] and [engine] but allows null.
   T? forTypeNullable(Type type, DogEngine engine) {
-    var cached = typeMapping[type];
+    final cached = typeMapping[type];
     if (cached != null) return cached as T;
-    var converter = engine.findAssociatedConverter(type);
+    final converter = engine.findAssociatedConverter(type);
     if (converter == null) return null;
-    var mode = forConverter(converter, engine);
+    final mode = forConverter(converter, engine);
     typeMapping[type] = mode;
     return mode;
   }

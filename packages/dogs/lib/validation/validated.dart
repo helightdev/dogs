@@ -46,8 +46,8 @@ class Validated extends StructureMetadata implements FieldValidator {
 
   @override
   bool validate(cached, value, DogEngine engine) {
-    var entry = cached as _ValidatedCacheEntry;
-    var validatorMode =
+    final entry = cached as _ValidatedCacheEntry;
+    final validatorMode =
         engine.modeRegistry.validation.forTypeNullable(entry.serial, engine);
     if (validatorMode == null) return true;
     if (entry.iterable) {
@@ -66,7 +66,7 @@ class Validated extends StructureMetadata implements FieldValidator {
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(id: messageId, message: "Invalid subtree.")

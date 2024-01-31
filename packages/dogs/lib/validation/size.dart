@@ -46,7 +46,7 @@ class SizeRange extends StructureMetadata
   @override
   bool validate(cached, value, DogEngine engine) {
     if (value == null) return true;
-    var it = value as Iterable;
+    final it = value as Iterable;
 
     if (min != null) {
       if (it.length < min!) return false;
@@ -61,7 +61,7 @@ class SizeRange extends StructureMetadata
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(

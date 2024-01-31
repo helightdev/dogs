@@ -55,7 +55,7 @@ class LengthRange extends StructureMetadata
 
   bool validateSingle(dynamic value) {
     if (value == null) return true;
-    var str = value as String;
+    final str = value as String;
     if (min != null) {
       if (str.length < min!) return false;
     }
@@ -69,7 +69,7 @@ class LengthRange extends StructureMetadata
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(

@@ -27,7 +27,7 @@ class StructureHarbinger<T> {
 
   StructureHarbinger(this.structure, this.engine) {
     fieldConverters = structure.fields.map((e) {
-      var fieldConverter = getConverter(engine, e);
+      final fieldConverter = getConverter(engine, e);
       return (field: e, converter: fieldConverter);
     }).toList();
   }
@@ -51,13 +51,13 @@ class StructureHarbinger<T> {
     }
 
     // Try resolving the type directly
-    var directConverter =
+    final directConverter =
         engine.findAssociatedConverter(field.type.typeArgument);
     if (directConverter != null) return directConverter;
 
     if (field.iterableKind != IterableKind.none) {
       // Try resolving using the serial type argument (i.E. the first type argument)
-      var serialConverter =
+      final serialConverter =
           engine.findAssociatedConverter(field.serial.typeArgument);
       if (serialConverter != null) return serialConverter;
     }

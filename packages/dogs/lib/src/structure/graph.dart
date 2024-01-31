@@ -122,8 +122,8 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
   @override
   T deserialize(value, DogEngine engine) {
     if (value is! DogMap) throw Exception("Expected a map");
-    var internalMap = value.asMap!.value;
-    var args = <dynamic>[];
+    final internalMap = value.asMap!.value;
+    final args = <dynamic>[];
     for (var deserializer in _deserializers) {
       deserializer(internalMap, args, engine);
     }
@@ -132,7 +132,7 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
 
   @override
   serialize(T value, DogEngine engine) {
-    var data = <DogGraphValue, DogGraphValue>{};
+    final data = <DogGraphValue, DogGraphValue>{};
     for (var serializer in _serializers) {
       serializer(value, data, engine);
     }

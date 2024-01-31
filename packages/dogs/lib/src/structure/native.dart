@@ -183,9 +183,9 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
         structure: structure,
       );
     }
-    var args = <dynamic>[];
+    final args = <dynamic>[];
     if (hasHooks) {
-      var clonedMap = Map<String, dynamic>.from(value);
+      final clonedMap = Map<String, dynamic>.from(value);
       for (var hook in _hooks) {
         hook.beforeDeserialization(clonedMap, structure, engine);
       }
@@ -208,7 +208,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
 
   @override
   serialize(T value, DogEngine engine) {
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     for (var serializer in _serializers) {
       serializer(value, data, engine);
     }

@@ -39,7 +39,7 @@ abstract class GraphSerializerMode<T> implements OperationMode<T> {
       return deserialize(value, engine);
     } else {
       if (value is! DogList) throw Exception("Expected a list");
-      var items = value.value.map((e) => deserialize(e, engine));
+      final items = value.value.map((e) => deserialize(e, engine));
       return adjustIterable(items, kind);
     }
   }

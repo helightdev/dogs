@@ -272,7 +272,7 @@ class DogList extends DogGraphValue {
 
   @override
   String describe(int indent) {
-    StringBuffer buffer = StringBuffer();
+    final StringBuffer buffer = StringBuffer();
     buffer.writeln(runtimeType);
     value.forEachIndexed((key, value) {
       buffer.write("${"  " * (indent + 1)}[$key]: ");
@@ -316,7 +316,7 @@ class DogMap extends DogGraphValue {
 
   @override
   String describe(int indent) {
-    StringBuffer buffer = StringBuffer();
+    final StringBuffer buffer = StringBuffer();
     buffer.writeln(runtimeType);
     value.forEach((key, value) {
       buffer.write("${"  " * (indent + 1)}[${key.coerceString()}]: ");

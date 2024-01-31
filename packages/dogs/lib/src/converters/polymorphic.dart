@@ -35,7 +35,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
 
   deserialize(value, DogEngine engine) {
     if (value == null) return null;
-    var codec = engine.codec;
+    final codec = engine.codec;
     if (value is! Map &&
         codec.isNative(value.runtimeType) &&
         serializeNativeValues) return value;
@@ -43,19 +43,19 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       return value.map((e) => deserialize(e, engine)).toList();
     }
     if (value is! Map) throw Exception("Expected an map");
-    String? typeValue = value[codec.typeDiscriminator];
+    final String? typeValue = value[codec.typeDiscriminator];
     if (typeValue == null) {
       return value.map(
           (key, value) => MapEntry(key as String, deserialize(value, engine)));
     }
-    var structure = engine.findStructureBySerialName(typeValue)!;
-    var operation = engine.modeRegistry.nativeSerialization
+    final structure = engine.findStructureBySerialName(typeValue)!;
+    final operation = engine.modeRegistry.nativeSerialization
         .forType(structure.typeArgument, engine);
     if (value.length == 2 && value.containsKey(codec.valueDiscriminator)) {
-      var simpleValue = value[codec.valueDiscriminator]!;
+      final simpleValue = value[codec.valueDiscriminator]!;
       return operation.deserialize(simpleValue, engine);
     } else {
-      var clone = Map.of(value);
+      final clone = Map.of(value);
       clone.remove(codec.typeDiscriminator);
       return operation.deserialize(clone, engine);
     }
@@ -63,12 +63,12 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
 
   serialize(value, DogEngine engine) {
     if (value == null) return null;
-    var codec = engine.codec;
+    final codec = engine.codec;
     if (value is! Map &&
         codec.isNative(value.runtimeType) &&
         serializeNativeValues) return value;
-    var type = value.runtimeType;
-    var operation =
+    final type = value.runtimeType;
+    final operation =
         engine.modeRegistry.nativeSerialization.forTypeNullable(type, engine);
     if (operation == null) {
       if (value is Iterable) {
@@ -79,8 +79,8 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       }
       throw DogException("No operation mode found for type $type");
     }
-    var structure = engine.findStructureByType(type)!;
-    var nativeValue = operation.serialize(value, engine);
+    final structure = engine.findStructureByType(type)!;
+    final nativeValue = operation.serialize(value, engine);
     if (nativeValue is Map) {
       nativeValue[codec.typeDiscriminator] = structure.serialName;
       return nativeValue;

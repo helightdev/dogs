@@ -70,7 +70,7 @@ class Range extends StructureMetadata
 
   bool validateSingle(dynamic value) {
     if (value == null) return true;
-    var n = value as num;
+    final n = value as num;
     if (min != null) {
       if (minExclusive) {
         if (n <= min!) return false;
@@ -92,7 +92,7 @@ class Range extends StructureMetadata
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(
@@ -149,7 +149,7 @@ class Minimum extends StructureMetadata
 
   bool validateSingle(dynamic value) {
     if (value == null) return true;
-    var n = value as num;
+    final n = value as num;
     if (min == null) return true;
     if (minExclusive) {
       return n > min!;
@@ -160,7 +160,7 @@ class Minimum extends StructureMetadata
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(
@@ -214,7 +214,7 @@ class Maximum extends StructureMetadata
 
   bool validateSingle(dynamic value) {
     if (value == null) return true;
-    var n = value as num;
+    final n = value as num;
     if (max == null) return true;
     if (maxExclusive) {
       return n < max!;
@@ -225,7 +225,7 @@ class Maximum extends StructureMetadata
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(

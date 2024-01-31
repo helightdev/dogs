@@ -40,14 +40,14 @@ class Optional<T> {
 
   /// If a value is present, performs the given action with the value,
   void ifPresent(Function(T) consumer) {
-    var current = value;
+    final current = value;
     if (current != null) consumer(current);
   }
 
   /// If a value is present, performs the given action with the value and
   /// returns it in an [Optional] wrapper, otherwise returns an empty [Optional].
   Optional<R> map<R>(R? Function(T) mapper) {
-    var current = value;
+    final current = value;
     if (current == null) return Optional<R>.empty();
     return Optional(mapper(current));
   }
@@ -57,7 +57,7 @@ class Optional<T> {
 
   /// Returns the value if present, otherwise returns [null].
   T? orElseGet(T Function() supplier) {
-    var current = value;
+    final current = value;
     if (current == null) {
       return supplier();
     }

@@ -146,7 +146,7 @@ class DogEngine {
   /// The [DogNativeCodec] will be inherited from this instance but can be
   /// overridden by supplying a [codec].
   DogEngine fork({DogNativeCodec? codec}) {
-    DogEngine forked =
+    final DogEngine forked =
         DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked.rebuildFrom(this);
     return forked;
@@ -210,7 +210,7 @@ class DogEngine {
 
   /// Returns the [DogStructure] associated with [type].
   DogStructure? findStructureByType(Type type) {
-    var structure = _structures[type];
+    final structure = _structures[type];
     return structure ?? _parent?.findStructureByType(type);
   }
 
@@ -224,7 +224,7 @@ class DogEngine {
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   DogConverter? findConverterBySerialName(String name) {
-    var associatedStructureType = _structures.entries
+    final associatedStructureType = _structures.entries
         .firstWhereOrNullDogs((element) => element.value.serialName == name)
         ?.key;
     if (associatedStructureType == null) {
@@ -324,10 +324,10 @@ class DogEngine {
   /// If [allowPolymorphic] is true, the returned converter may contain
   /// polymorphic converters if any type tree terminals are not concrete.
   DogConverter getTreeConverter(TypeTree tree, [bool allowPolymorphic = true]) {
-    var cachedConverter =
+    final cachedConverter =
         _runtimeTreeConverterCache[tree.qualified.typeArgument];
     if (cachedConverter != null) return cachedConverter;
-    var created = _getTreeConverterUncached(tree, allowPolymorphic);
+    final created = _getTreeConverterUncached(tree, allowPolymorphic);
     _runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
     return created;
   }
@@ -335,7 +335,7 @@ class DogEngine {
   DogConverter<dynamic> _getTreeConverterUncached(TypeTree<dynamic> tree,
       [bool allowPolymorphic = true]) {
     if (tree.isTerminal) {
-      var associated = findAssociatedConverter(tree.base.typeArgument);
+      final associated = findAssociatedConverter(tree.base.typeArgument);
 
       if (codec.isNative(tree.base.typeArgument)) {
         return codec.bridgeConverters[tree.base.typeArgument]!;
@@ -349,11 +349,11 @@ class DogEngine {
           "No type tree converter for tree ${tree.qualified} found. (Polymorphism disabled)");
     } else {
       // Use associated converter if present
-      var associated = findAssociatedConverter(tree.qualified.typeArgument);
+      final associated = findAssociatedConverter(tree.qualified.typeArgument);
       if (associated != null) return associated;
 
       // Use factory
-      var factory = _treeBaseFactories[tree.base.typeArgument];
+      final factory = _treeBaseFactories[tree.base.typeArgument];
       if (factory == null) {
         throw DogException("No type tree converter for ${tree.base} found");
       }
@@ -382,7 +382,7 @@ class DogEngine {
   /// or throws an exception if not present.
   @Deprecated("Perform a null check instead")
   DogStructure findSerialNameOrThrow(String name) {
-    var structure = findStructureBySerialName(name);
+    final structure = findStructureBySerialName(name);
     if (structure == null) {
       throw ArgumentError.value(
           name, "name", "No structure for given serial name found");
@@ -394,7 +394,7 @@ class DogEngine {
   /// throws an exception if not present.
   @Deprecated("Perform a null check instead")
   DogConverter findAssociatedConverterOrThrow(Type type) {
-    var converter = findAssociatedConverter(type);
+    final converter = findAssociatedConverter(type);
     if (converter == null) {
       if (type == dynamic) {
         throw Exception("Tried to resolve the converter for 'dynamic'. "
@@ -410,8 +410,8 @@ class DogEngine {
   /// Validates the supplied [value] using the [ValidationMode] mapped to the
   /// [value]s runtime type or [type] if specified.
   bool validateObject(dynamic value, [Type? type]) {
-    var queryType = type ?? value.runtimeType;
-    var operation = _validation.forTypeNullable(queryType, this);
+    final queryType = type ?? value.runtimeType;
+    final operation = _validation.forTypeNullable(queryType, this);
     if (operation == null) return true;
     return operation.validate(value, this);
   }
@@ -420,11 +420,11 @@ class DogEngine {
   /// [value]s runtime type or [type] if specified. The resulting [AnnotationResult]
   /// contains all error messages that were generated during validation.
   AnnotationResult validateAnnotated(dynamic value, [Type? type]) {
-    var queryType = type ?? value.runtimeType;
-    var operation = _validation.forTypeNullable(queryType, this);
+    final queryType = type ?? value.runtimeType;
+    final operation = _validation.forTypeNullable(queryType, this);
     if (operation == null) return AnnotationResult.empty();
     if (operation.validate(value, this)) return AnnotationResult.empty();
-    var result = operation.annotate(value, this).translate(this);
+    final result = operation.annotate(value, this).translate(this);
     if (result.messages.isEmpty) {
       return AnnotationResult(messages: [
         AnnotationMessage(id: "no-message", message: "Validation failed")
@@ -530,7 +530,7 @@ dynamic adjustWithCoercion(dynamic value, IterableKind kind, TypeCapture target,
     return coercion.coerce(target, value, fieldName);
   }
 
-  var iterable = (value as Iterable).map((e) {
+  final iterable = (value as Iterable).map((e) {
     if (target.isAssignable(e)) return e;
     return coercion.coerce(target, e, fieldName);
   });

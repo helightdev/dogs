@@ -42,7 +42,7 @@ int Function(dynamic) _createDataclassHashCodeProvider<T>() {
     provider = (obj) {
       var h = 0;
       for (var i = 0; i < fieldCount; i++) {
-        var fieldValue = proxy.getField(obj, i);
+        final fieldValue = proxy.getField(obj, i);
         if (fieldValue is Iterable || fieldValue is Map) {
           h ^= deepEquality.hash(fieldValue);
         } else {
@@ -64,8 +64,8 @@ bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
   late final bool Function(dynamic, dynamic) provider;
   if (proxy.equalsFunc == null) {
     provider = (a, b) {
-      var va = proxy.getFieldValues(a);
-      var vb = proxy.getFieldValues(b);
+      final va = proxy.getFieldValues(a);
+      final vb = proxy.getFieldValues(b);
       return deepEquality.equals(va, vb);
     };
   } else {
@@ -111,11 +111,11 @@ mixin Dataclass<T> {
   @override
   int get hashCode {
     if (kCacheDataclassHashCodes) {
-      var cv = _cachedHashCode;
+      final cv = _cachedHashCode;
       if (cv != null) return cv;
       var hashCodeProvider = _dataclassHashCode[T];
       hashCodeProvider ??= _createDataclassHashCodeProvider<T>();
-      var computed = hashCodeProvider(this);
+      final computed = hashCodeProvider(this);
       _cachedHashCode = computed;
       return computed;
     } else {

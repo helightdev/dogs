@@ -19,15 +19,15 @@ import "package:test/test.dart";
 
 void main() {
   test("NArgs Factory", () {
-    DogEngine engine = DogEngine();
+    final DogEngine engine = DogEngine();
     engine.setSingleton();
-    var treeBaseConverterFactory =
+    final treeBaseConverterFactory =
         TreeBaseConverterFactory.createNargsFactory<MyNargContainer>(
       nargs: 3,
       consume: <A, B, C>() => MyNargContainerConverter<A, B, C>(),
     );
     engine.registerTreeBaseFactory(MyNargContainer, treeBaseConverterFactory);
-    var converter = treeBaseConverterFactory.getConverter(
+    final converter = treeBaseConverterFactory.getConverter(
         QualifiedTypeTreeN<MyNargContainer<String, int, bool>,
             MyNargContainer>([
           QualifiedTerminal<String>(),
@@ -36,14 +36,14 @@ void main() {
         ]),
         engine,
         false);
-    var nativeSerialization =
+    final nativeSerialization =
         engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
-    var mapValue = {
+    final mapValue = {
       "a": "Hello",
       "b": 42,
       "c": true,
     };
-    var value = nativeSerialization.deserialize(mapValue, engine);
+    final value = nativeSerialization.deserialize(mapValue, engine);
     expect(value, MyNargContainer<String, int, bool>("Hello", 42, true));
     expect(nativeSerialization.serialize(value, engine), mapValue);
   });

@@ -3,8 +3,8 @@ import "package:test/test.dart";
 
 void main() {
   test("structure converter", () {
-    var engine = DogEngine();
-    var structure = DogStructure(
+    final engine = DogEngine();
+    final structure = DogStructure(
         "TestStruct",
         StructureConformity.basic,
         [
@@ -14,11 +14,11 @@ void main() {
         ],
         [],
         MemoryDogStructureProxy());
-    var converter = DogStructureConverterImpl(structure);
-    var operation = engine.modeRegistry
+    final converter = DogStructureConverterImpl(structure);
+    final operation = engine.modeRegistry
         .entry<GraphSerializerMode>()
         .forConverter(converter, engine);
-    var graph = operation.serialize(["Christoph", 19, "Hello!"], engine);
+    final graph = operation.serialize(["Christoph", 19, "Hello!"], engine);
     expect("""{"name":"Christoph","age":19,"note":"Hello!"}""",
         engine.jsonSerializer.serialize(graph));
   });

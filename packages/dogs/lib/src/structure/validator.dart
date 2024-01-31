@@ -145,7 +145,7 @@ class StructureValidation<T> extends ValidationMode<T>
     // Create and cache validators eagerly
     _cachedClassValidators =
         Map.fromEntries(structure.annotationsOf<ClassValidator>().where((e) {
-      var applicable = e.isApplicable(structure);
+      final applicable = e.isApplicable(structure);
       if (applicable) {
         _hasValidation = true;
       } else {
@@ -156,10 +156,10 @@ class StructureValidation<T> extends ValidationMode<T>
 
     _cachedFieldValidators =
         Map.fromEntries(structure.fields.mapIndexed((index, field) {
-      var validators = field
+      final validators = field
           .annotationsOf<FieldValidator>()
           .where((e) {
-            var applicable = e.isApplicable(structure, field);
+            final applicable = e.isApplicable(structure, field);
             if (applicable) {
               _hasValidation = true;
             } else {
@@ -177,7 +177,7 @@ class StructureValidation<T> extends ValidationMode<T>
   bool validate(T value, DogEngine engine) {
     if (!_hasValidation) return true;
     return !_cachedFieldValidators.entries.any((pair) {
-          var fieldValue = structure.proxy.getField(value, pair.key);
+          final fieldValue = structure.proxy.getField(value, pair.key);
           return pair.value
               .any((e) => !e.key.validate(e.value, fieldValue, engine));
         }) &&
@@ -188,16 +188,16 @@ class StructureValidation<T> extends ValidationMode<T>
   @override
   AnnotationResult annotate(T value, DogEngine engine) {
     if (!_hasValidation) return AnnotationResult.empty();
-    var fieldAnnotations =
+    final fieldAnnotations =
         AnnotationResult.combine(_cachedFieldValidators.entries.map((pair) {
-      var fieldValue = structure.proxy.getField(value, pair.key);
-      var fieldName = structure.fields[pair.key].name;
+      final fieldValue = structure.proxy.getField(value, pair.key);
+      final fieldName = structure.fields[pair.key].name;
       return AnnotationResult.combine(pair.value
               .map((e) => e.key.annotate(e.value, fieldValue, engine))
               .toList())
           .withTarget(fieldName);
     }).toList());
-    var classAnnotations = AnnotationResult.combine(_cachedClassValidators
+    final classAnnotations = AnnotationResult.combine(_cachedClassValidators
         .entries
         .map((e) => e.key.annotate(e.value, value, engine))
         .toList());
@@ -218,8 +218,8 @@ class StructureValidation<T> extends ValidationMode<T>
   /// Annotates the field at [index] in [value].
   AnnotationResult annotateField(int index, dynamic value, DogEngine engine) {
     if (!_hasValidation) return AnnotationResult.empty();
-    var fieldValue = structure.proxy.getField(value, index);
-    var fieldName = structure.fields[index].name;
+    final fieldValue = structure.proxy.getField(value, index);
+    final fieldName = structure.fields[index].name;
     return AnnotationResult.combine(_cachedFieldValidators[index]!
             .map((e) => e.key.annotate(e.value, fieldValue, engine))
             .toList())
@@ -231,7 +231,7 @@ class StructureValidation<T> extends ValidationMode<T>
   AnnotationResult annotateFieldValue(
       int index, dynamic fieldValue, DogEngine engine) {
     if (!_hasValidation) return AnnotationResult.empty();
-    var fieldName = structure.fields[index].name;
+    final fieldName = structure.fields[index].name;
     return AnnotationResult.combine(_cachedFieldValidators[index]!
             .map((e) => e.key.annotate(e.value, fieldValue, engine))
             .toList())

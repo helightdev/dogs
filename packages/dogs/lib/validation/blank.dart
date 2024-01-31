@@ -47,13 +47,13 @@ class NotBlank extends StructureMetadata implements FieldValidator {
 
   bool validateSingle(dynamic value) {
     if (value == null) return true;
-    var str = value as String;
+    final str = value as String;
     return str.trim().isNotEmpty;
   }
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(id: messageId, message: "Must not be blank.")

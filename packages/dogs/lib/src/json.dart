@@ -25,13 +25,13 @@ class DogJsonSerializer extends DogSerializer {
 
   @override
   DogGraphValue deserialize(value) {
-    var decoded = jsonDecode(value);
+    final decoded = jsonDecode(value);
     return codec.fromNative(decoded);
   }
 
   @override
   dynamic serialize(DogGraphValue value) {
-    var native = value.coerceNative();
+    final native = value.coerceNative();
     return jsonEncode(native);
   }
 }
@@ -47,21 +47,21 @@ extension DogJsonExtension on DogEngine {
   /// converter associated with [T] or [tree].
   String toJson<T>(T value,
         {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    var native = this.toNative(value, kind: kind, type: type, tree: tree);
+    final native = this.toNative(value, kind: kind, type: type, tree: tree);
     return conv.jsonEncode(native);
   }
 
   /// Converts JSON supplied via [encoded] to its normal representation
   /// by using the converter associated with [T] or [tree].
   T fromJson<T>(String encoded, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    var native = conv.jsonDecode(encoded);
+    final native = conv.jsonDecode(encoded);
     return this.fromNative(native, kind: kind, type: type, tree: tree);
   }
 
   @Deprecated("Use toJson")
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
   String jsonEncode<T>(T value) {
-    var native = convertObjectToNative(value, T);
+    final native = convertObjectToNative(value, T);
     return conv.jsonEncode(native);
   }
 
@@ -69,31 +69,31 @@ extension DogJsonExtension on DogEngine {
   /// Decodes this [encoded] json to an [T] instance,
   /// using the [DogConverter] associated with [T].
   T jsonDecode<T>(String encoded) {
-    var native = conv.jsonDecode(encoded);
+    final native = conv.jsonDecode(encoded);
     return convertObjectFromNative(native, T);
   }
 
   @Deprecated("use fromJson")
   List<T> jsonDecodeList<T>(String encoded) {
-    var graph = _jsonSerializer.deserialize(encoded);
+    final graph = _jsonSerializer.deserialize(encoded);
     return convertIterableFromGraph(graph, T, IterableKind.list);
   }
 
   @Deprecated("use fromJson")
   Set<T> jsonDecodeSet<T>(String encoded) {
-    var graph = _jsonSerializer.deserialize(encoded);
+    final graph = _jsonSerializer.deserialize(encoded);
     return convertIterableFromGraph(graph, T, IterableKind.set);
   }
 
   @Deprecated("use toJson")
   String jsonEncodeList<T>(List<T> value) {
-    var graph = convertIterableToGraph(value, T, IterableKind.list);
+    final graph = convertIterableToGraph(value, T, IterableKind.list);
     return _jsonSerializer.serialize(graph);
   }
 
   @Deprecated("use toJson")
   String jsonEncodeSet<T>(Set<T> value) {
-    var graph = convertIterableToGraph(value, T, IterableKind.set);
+    final graph = convertIterableToGraph(value, T, IterableKind.set);
     return _jsonSerializer.serialize(graph);
   }
 }

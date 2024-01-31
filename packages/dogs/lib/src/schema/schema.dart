@@ -26,17 +26,17 @@ class DogSchema {
   DogSchema._();
 
   factory DogSchema.create() {
-    var schema = DogSchema._();
+    final schema = DogSchema._();
     schema.retrieveComponents(); // Cache all current structure objects
     return schema;
   }
 
   MapEntry<String, APISchemaObject> getStructureSchema(DogStructure structure) {
-    var serialName = structure.serialName;
+    final serialName = structure.serialName;
     if (_cachedStructObjects.containsKey(serialName)) {
       return MapEntry(serialName, _cachedStructObjects[serialName]!);
     }
-    var properties = Map.fromEntries(structure.fields.map((e) {
+    final properties = Map.fromEntries(structure.fields.map((e) {
       if (!e.structure) {
         APIType serialType;
         switch (e.serial.typeArgument) {
@@ -55,10 +55,10 @@ class DogSchema {
           default:
             throw Exception("Unhandled non structural serial serialType.");
         }
-        var serialSchema = APISchemaObject.empty()..type = serialType;
+        final serialSchema = APISchemaObject.empty()..type = serialType;
 
         if (e.iterableKind == IterableKind.none) {
-          var object = serialSchema;
+          final object = serialSchema;
           if (e.optional) object.isNullable = true;
           e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
             try {
@@ -70,7 +70,7 @@ class DogSchema {
           });
           return MapEntry(e.name, serialSchema);
         } else {
-          var object = APISchemaObject.array(ofSchema: serialSchema);
+          final object = APISchemaObject.array(ofSchema: serialSchema);
           if (e.optional) object.isNullable = true;
           e.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
             try {
@@ -84,7 +84,7 @@ class DogSchema {
         }
       }
 
-      APISchemaObject? object = e.findConverter(structure)?.output;
+      final APISchemaObject? object = e.findConverter(structure)?.output;
       if (object == null) {
         log("Can't find converter for ${e.name} in ${structure.serialName}");
         return MapEntry(e.name, APISchemaObject.empty());
@@ -101,7 +101,7 @@ class DogSchema {
       });
       return MapEntry(e.name, object);
     }));
-    var value = APISchemaObject.object(properties);
+    final value = APISchemaObject.object(properties);
     structure.metadataOf<APISchemaObjectMetaVisitor>().forEach((element) {
       try {
         element.visit(value);
@@ -115,7 +115,7 @@ class DogSchema {
   }
 
   APIComponents retrieveComponents() {
-    var schemas = Map<String, APISchemaObject>.fromEntries(DogEngine
+    final schemas = Map<String, APISchemaObject>.fromEntries(DogEngine
         .instance.allStructures.values
         .where((element) => !element.isSynthetic)
         .map((e) => getStructureSchema(e)));
@@ -123,7 +123,7 @@ class DogSchema {
   }
 
   APIDocument getApiDocument() {
-    var document = APIDocument();
+    final document = APIDocument();
     document.version = "3.0.0";
     document.paths = {};
     document.info = APIInfo("DOG Mockup", "1.0",

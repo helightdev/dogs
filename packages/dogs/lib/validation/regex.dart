@@ -47,7 +47,7 @@ class Regex extends StructureMetadata
 
   @override
   bool validate(cached, value, DogEngine engine) {
-    var entry = cached as _RegexCacheEntry;
+    final entry = cached as _RegexCacheEntry;
     if (entry.isIterable) {
       if (value == null) return true;
       return (value as Iterable).every((e) => validateSingle(entry.matcher, e));
@@ -58,8 +58,8 @@ class Regex extends StructureMetadata
 
   bool validateSingle(RegExp matcher, dynamic value) {
     if (value == null) return true;
-    var str = value as String;
-    var firstMatch = matcher.firstMatch(str);
+    final str = value as String;
+    final firstMatch = matcher.firstMatch(str);
     // Check for any match
     if (firstMatch == null) return false;
     // Return if first match is right and don't check for other matches
@@ -77,7 +77,7 @@ class Regex extends StructureMetadata
 
   @override
   AnnotationResult annotate(cached, value, DogEngine engine) {
-    var isValid = validate(cached, value, engine);
+    final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(

@@ -23,7 +23,7 @@ extension DogValueExtension on DogGraphValue {
   /// Checks if this [DogGraphValue] is an [DogString]
   /// and returns its value or null otherwise.
   String? get asString {
-    var ref = this;
+    final ref = this;
     if (ref is! DogString) return null;
     return ref.value;
   }
@@ -31,7 +31,7 @@ extension DogValueExtension on DogGraphValue {
   /// Checks if this [DogGraphValue] is an [DogInt]
   /// and returns its value or null otherwise.
   int? get asInt {
-    var ref = this;
+    final ref = this;
     if (ref is! DogInt) return null;
     return ref.value;
   }
@@ -39,7 +39,7 @@ extension DogValueExtension on DogGraphValue {
   /// Checks if this [DogGraphValue] is an [DogDouble]
   /// and returns its value or null otherwise.
   double? get asDouble {
-    var ref = this;
+    final ref = this;
     if (ref is! DogDouble) return null;
     return ref.value;
   }
@@ -47,7 +47,7 @@ extension DogValueExtension on DogGraphValue {
   /// Checks if this [DogGraphValue] is an [DogBool]
   /// and returns its value or null otherwise.
   bool? get asBool {
-    var ref = this;
+    final ref = this;
     if (ref is! DogBool) return null;
     return ref.value;
   }
@@ -55,7 +55,7 @@ extension DogValueExtension on DogGraphValue {
   /// Checks if this [DogGraphValue] is an [DogList]
   /// and returns it or null otherwise.
   DogList? get asList {
-    var ref = this;
+    final ref = this;
     if (ref is! DogList) return null;
     return ref;
   }
@@ -63,7 +63,7 @@ extension DogValueExtension on DogGraphValue {
   /// Checks if this [DogGraphValue] is an [DogMap]
   /// and returns it or null otherwise.
   DogMap? get asMap {
-    var ref = this;
+    final ref = this;
     if (ref is! DogMap) return null;
     return ref;
   }
@@ -104,7 +104,7 @@ extension DogEngineShortcuts on DogEngine {
   /// Validates the supplied [value] using the [ValidationMode] mapped to [T].
   /// Throws a [ValidationException] if [validateObject] returns false.
   void validate<T>(T value) {
-    var isValid = validateObject(value, T);
+    final isValid = validateObject(value, T);
     if (!isValid) throw ValidationException();
   }
 
@@ -113,7 +113,7 @@ extension DogEngineShortcuts on DogEngine {
   DogGraphValue toGraph<T>(T value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
     if (typeTree != null) {
-      var converter = getTreeConverter(typeTree);
+      final converter = getTreeConverter(typeTree);
       return modeRegistry.graphSerialization
           .forConverter(converter, this)
           .serialize(value, this);
@@ -126,7 +126,7 @@ extension DogEngineShortcuts on DogEngine {
   T fromGraph<T>(DogGraphValue value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
     if (typeTree != null) {
-      var converter = getTreeConverter(typeTree);
+      final converter = getTreeConverter(typeTree);
       return modeRegistry.graphSerialization
           .forConverter(converter, this)
           .deserialize(value, this);
@@ -141,7 +141,7 @@ extension DogEngineShortcuts on DogEngine {
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     if (tree != null) {
       if (!tree.isQualified) throw DogException("TypeTree must be qualified");
-      var converter = getTreeConverter(tree);
+      final converter = getTreeConverter(tree);
       return modeRegistry.nativeSerialization
           .forConverter(converter, this)
           .serialize(value, this);
@@ -157,7 +157,7 @@ extension DogEngineShortcuts on DogEngine {
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     if (tree != null) {
       if (!tree.isQualified) throw DogException("TypeTree must be qualified");
-      var converter = getTreeConverter(tree);
+      final converter = getTreeConverter(tree);
       return modeRegistry.nativeSerialization
           .forConverter(converter, this)
           .deserialize(value, this);
@@ -181,10 +181,10 @@ extension StructureExtensions on DogStructure {
   /// For more details on the map format, see [getFieldMap].
   /// Throws an exception if a required field is missing.
   dynamic instantiateFromFieldMap(Map<String, dynamic> map) {
-    var values = [];
+    final values = [];
     for (var i = 0; i < fields.length; i++) {
-      var field = fields[i];
-      var value = map[field.name];
+      final field = fields[i];
+      final value = map[field.name];
       if (value == null && field.optional) {
         values.add(null);
       } else if (value != null) {
@@ -219,7 +219,7 @@ extension FieldExtension on DogStructureField {
 
   DogConverter? findConverter(DogStructure structure, [DogEngine? engine]) {
     engine ??= DogEngine.instance;
-    var harbinger = StructureHarbinger.create(structure, engine);
+    final harbinger = StructureHarbinger.create(structure, engine);
     return harbinger.getConverter(engine, this);
   }
 }

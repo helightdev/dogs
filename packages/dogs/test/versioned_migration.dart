@@ -19,7 +19,7 @@ import "package:test/test.dart";
 
 void main() {
   test("Revision Migration", () {
-    var versioned = RevisionMigration([
+    final versioned = RevisionMigration([
       (_, __, ___) {
         _["a"] = true;
       },
@@ -62,7 +62,7 @@ void main() {
   });
 
   test("Lightweight Migration", () {
-    var versioned = LightweightMigration([
+    final versioned = LightweightMigration([
       (_, __, ___) {
         _["a"] = true;
       },
@@ -73,7 +73,7 @@ void main() {
         _["c"] = true;
       }
     ]);
-    var data = <String, dynamic>{};
+    final data = <String, dynamic>{};
     versioned.beforeDeserialization(
         data, DogStructure.synthetic(""), DogEngine());
     versioned.postSerialization(

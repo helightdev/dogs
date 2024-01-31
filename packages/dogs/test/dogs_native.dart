@@ -4,7 +4,7 @@ import "package:test/test.dart";
 
 void main() {
   test("from native coercion", () {
-    var codec = DefaultNativeCodec();
+    final codec = DefaultNativeCodec();
     expect(DogString("string"), codec.fromNative("string"));
     expect(DogInt(1337), codec.fromNative(1337));
     expect(DogDouble(1337.0), codec.fromNative(1337.0));

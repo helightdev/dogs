@@ -96,7 +96,7 @@ class LatLngConverter extends SimpleDogConverter<LatLng> {
 
   @override
   LatLng deserialize(value, DogEngine engine) {
-    var list = value as List;
+    final list = value as List;
     return LatLng(list[0], list[1]);
   }
 
@@ -116,14 +116,14 @@ void main() {
       final encoded =
           fakeEngine.jsonEncode<Person>(Person(name: "John", age: 42));
       expect(encoded, r'"{\"name\":\"John\",\"age\":42}"');
-      var decoded = fakeEngine.jsonDecode<Person>(encoded);
+      final decoded = fakeEngine.jsonDecode<Person>(encoded);
       expect(decoded, Person(name: "John", age: 42));
     });
 
     test("LatLng", () {
       final encoded = fakeEngine.jsonEncode<LatLng>(LatLng(1.0, 2.0));
       expect(encoded, r"[1.0,2.0]");
-      var decoded = fakeEngine.jsonDecode<LatLng>(encoded);
+      final decoded = fakeEngine.jsonDecode<LatLng>(encoded);
       expect(decoded, LatLng(1.0, 2.0));
     });
 

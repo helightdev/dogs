@@ -82,7 +82,7 @@ class ComposableOperationModeFactory<T extends OperationMode>
   @override
   T? forConverter(DogConverter converter, DogEngine engine) {
     for (var factory in _factories) {
-      var result = factory.forConverter(converter, engine);
+      final result = factory.forConverter(converter, engine);
       if (result != null) return result as T;
     }
     return null;

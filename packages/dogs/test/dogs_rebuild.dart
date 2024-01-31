@@ -3,8 +3,8 @@ import "package:test/test.dart";
 
 void main() {
   test("basic rebuild", () async {
-    var original = DogEngine(registerBaseConverters: false);
-    var forked = original.fork();
+    final original = DogEngine(registerBaseConverters: false);
+    final forked = original.fork();
     expect(original.findAssociatedConverter(DateTime), null);
     expect(forked.findAssociatedConverter(DateTime), null);
     expect(original.findConverter(DateTimeConverter), null);
