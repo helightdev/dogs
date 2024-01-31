@@ -1,3 +1,11 @@
+## 8.2.0
+
+ - **REFACTOR**: some small refactoring changes and more api docs.
+ - **REFACTOR**: apply prefer final locals.
+ - **REFACTOR**: use double quote for dogs_core and add more lints.
+ - **FIX**: make projection not shallow by default.
+ - **FEAT**: add short and more uniform to<Format> methods for native and json.
+
 ## 8.1.1
 
  - **REFACTOR**: make projections use native serialization by default.

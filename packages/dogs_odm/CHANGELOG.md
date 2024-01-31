@@ -1,3 +1,7 @@
+## 1.0.0-alpha.4
+
+ - Update a dependency to the latest release.
+
 ## 1.0.0-alpha.3
 
  - **FIX**: change min sdk version to 3.0.0.

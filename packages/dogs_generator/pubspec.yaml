@@ -1,6 +1,6 @@
 name: dogs_generator
 description: Code generator for the dogs serialization library.
-version: 5.2.3
+version: 5.2.4
 repository: https://github.com/DarwinFramework/dogs
 
 environment:
@@ -17,7 +17,7 @@ dependencies:
   code_builder: '>=4.3.0 <5.0.0'
   dart_style: '>=2.2.4 <3.0.0'
 
-  dogs_core: ^8.1.1
+  dogs_core: ^8.2.0
   lyell: ^1.1.0
   lyell_gen: ^1.2.4
   pubspec: ^2.3.0
