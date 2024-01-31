@@ -26,7 +26,7 @@ part "parts/encodings.dart";
 Future main() async {
   await initialiseDogs();
   group("Smoke Test", () {
-    test("Models", testModels);
+    group("Models", testModels);
     test("Operations", testOperations);
     test("Conformity", testConformities);
     test("Validators", testValidators);
