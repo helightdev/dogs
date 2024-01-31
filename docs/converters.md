@@ -43,7 +43,7 @@ way to create a converter. It implements the `DogConverter` interface and provid
 `NativeSerializerMode` and the `GraphSerializerMode`. It also creates a synthetic structure for the
 converter type that uses the `serialName`.
 
-!!! info "Manual Registration"
+??? info "Manual Registration"
     To manually register a converter in the `DogEngine`, you can use the `registerAutomatic` method to
     register converter and also link both the structure and it's associated type.  
 

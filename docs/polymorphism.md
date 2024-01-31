@@ -4,12 +4,15 @@ you want, as long as all leaf types are serializable. If you want to use polymor
 add the `@polymorphic` annotation - This is required so you don't accidentally use polymorphism
 without knowing it.
 
-!!! warning "Abstract classes and interfaces can't be annotated with @serializable"
-    You only need to annotate leaf classes with `@serializable`. Abstract classes and interfaces
+??? warning "Abstract classes and interfaces mustn't be annotated with @serializable"
+    You only need to annotate concrete leaf classes with `@serializable`. Abstract classes and interfaces
     can't be instantiated and therefore can't use automatic structure generation, for which
-    `@serializable` is the marker.
+    `@serializable` is the marker. (This excludes interop for built_value)
 
-    Therefore: Only annotate leaf types with `@serializable`.
+    Therefore: Only annotate concrete types with `@serializable`.
+
+    You may specify custom converters for abstract classes and interfaces though,
+    if you want to use them as explicit types. In this case, they will not be handled as polymorphic.
 
 !!! warning "Limitations"
     All leaf types must be serializable. This means that you can use `dynamic` or `Object` as long as
