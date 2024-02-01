@@ -1,0 +1,33 @@
+name: test_firestore
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  cloud_firestore: ^4.13.6
+  firebase_core: ^2.24.2
+
+  dogs_core: any
+  dogs_firestore: any
+
+dependency_overrides:
+  dogs_core: any
+  dogs_generator: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: any
+  dogs_generator: any
+  fake_cloud_firestore: ^2.4.8
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
