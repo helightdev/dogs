@@ -27,6 +27,7 @@ the `FirestoreEntity<T>` dataclass replacement.
 
     void main() async {
       await initialiseDogs();
+      installFirebaseInterop();
       final person = Person('John', 42, Timestamp.now(), GeoPoint(0, 0));
       await person.save();
     }
@@ -47,6 +48,7 @@ the `FirestoreEntity<T>` dataclass replacement.
 
     void main() async {
       await initialiseDogs();
+      installFirebaseInterop();
 
       final collection = FirebaseFirestore.instance
         .collection("my_collection")
