@@ -1,6 +1,12 @@
 name: mongo
 on:
   pull_request:
+    paths:
+      - 'formats/dogs_mongo_driver/**'
+      - 'smoke/test_mongo/**'
+      - 'packages/dogs_odm/**'
+      - 'packages/dogs/**'
+      - 'packages/dogs_generator/**'
   push:
     branches:
       - main

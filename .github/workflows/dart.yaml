@@ -1,4 +1,4 @@
-name: all_packages
+acname: all_packages
 on:
   pull_request:
   push:
@@ -17,7 +17,7 @@ jobs:
       - name: "Install Tools"
         run: ./.github/workflows/scripts/install-tools.sh
       - name: "Run Smoke Tests"
-        run: melos run smoke
+        run: melos run smoke --no-select
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -29,4 +29,4 @@ jobs:
       - name: "Install Tools"
         run: ./.github/workflows/scripts/install-tools.sh
       - name: "Run Unit Tests"
-        run: melos run test
+        run: melos run test --no-select
