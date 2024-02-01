@@ -20,4 +20,4 @@ class Id extends StructureMetadata {
   const Id();
 }
 
-const Id id = Id();
+const Id idField = Id();
