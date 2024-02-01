@@ -1,4 +1,4 @@
-// Openapi Generator last run: : 2024-01-22T02:20:33.845832
+// Openapi Generator last run: : 2024-02-01T14:48:50.967742
 import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';

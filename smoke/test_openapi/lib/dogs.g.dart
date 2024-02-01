@@ -1,7 +1,7 @@
-import 'package:smoke_test_2/test.slib.g.dart';
+import 'package:smoke_test_openapi/test.slib.g.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:smoke_test_2/test.slib.g.dart' as gen0;
-export 'package:smoke_test_2/test.slib.g.dart';
+import 'package:smoke_test_openapi/test.slib.g.dart' as gen0;
+export 'package:smoke_test_openapi/test.slib.g.dart';
 
 Future initialiseDogs() async {
   var engine = DogEngine.hasValidInstance ? DogEngine.instance : DogEngine();

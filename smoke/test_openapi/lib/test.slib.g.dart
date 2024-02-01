@@ -12,7 +12,7 @@ import 'package:petstore_api/src/model/pet.dart' as gen6;
 import 'package:petstore_api/src/model/user.dart' as gen7;
 import 'package:lyell/lyell.dart' as gen;
 import 'package:petstore_api/src/model/date.dart' as gen8;
-import 'package:smoke_test_2/test.dart';
+import 'package:smoke_test_openapi/test.dart';
 
 class ApiResponseConverter extends gen.GeneratedBuiltInteropConverter<gen1.ApiResponse> {
   ApiResponseConverter()
@@ -124,11 +124,11 @@ class PetConverter extends gen.GeneratedBuiltInteropConverter<gen6.Pet> {
                 [
                   gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), gen.TypeToken<gen0.String>(), null, gen.IterableKind.none, 'name', false, false, []),
                   gen.DogStructureField(gen.QualifiedTypeTreeN<gen4.BuiltList<gen0.String>, gen4.BuiltList<dynamic>>([gen.QualifiedTerminal<gen0.String>()]), gen.TypeToken<gen0.String>(), null,
-                      gen.IterableKind.list, 'photoUrls', false, false, []),
+                      gen.IterableKind.none, 'photoUrls', false, false, []),
                   gen.DogStructureField(gen.QualifiedTerminal<gen0.int>(), gen.TypeToken<gen0.int>(), null, gen.IterableKind.none, 'id', true, false, []),
                   gen.DogStructureField(gen.QualifiedTerminal<gen2.Category>(), gen.TypeToken<gen2.Category>(), null, gen.IterableKind.none, 'category', true, true, []),
                   gen.DogStructureField(gen.QualifiedTypeTreeN<gen4.BuiltList<gen5.Tag>, gen4.BuiltList<dynamic>>([gen.QualifiedTerminal<gen5.Tag>()]), gen.TypeToken<gen5.Tag>(), null,
-                      gen.IterableKind.list, 'tags', true, true, []),
+                      gen.IterableKind.none, 'tags', true, true, []),
                   gen.DogStructureField(gen.QualifiedTerminal<gen6.PetStatusEnum>(), gen.TypeToken<gen6.PetStatusEnum>(), null, gen.IterableKind.none, 'status', true, true, [])
                 ],
                 [],
@@ -298,13 +298,6 @@ class DateBuilder {
 }
 
 extension DateDogsExtension on gen8.Date {
-  @Deprecated("Use rebuild() instead")
-  gen8.Date builder(Function(DateBuilder builder) func) {
-    var builder = DateBuilder(this);
-    func(builder);
-    return builder.build();
-  }
-
   gen8.Date rebuild(Function(DateBuilder b) f) {
     var builder = DateBuilder(this);
     f(builder);
