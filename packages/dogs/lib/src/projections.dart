@@ -14,14 +14,13 @@
  *    limitations under the License.
  */
 
-
 import "package:dogs_core/dogs_core.dart";
 
 typedef ProjectionTransformer = Map<String, dynamic> Function(
-    Map<String, dynamic> data,);
+  Map<String, dynamic> data,
+);
 
 extension ProjectionExtension on DogEngine {
-
   /// Creates a projection document from the given [properties] and [objects].
   /// The [properties] are merged into the document first, followed by the
   /// [objects]. If [shallow] is true, the objects are not converted to
@@ -35,14 +34,23 @@ extension ProjectionExtension on DogEngine {
   }) {
     var buffer = <String, dynamic>{};
     objects?.forEach((element) {
-      final structure = findStructureByType(element.runtimeType)!;
-      Map<String, dynamic> result;
-      if (structure.isSynthetic || !shallow) {
-        result = convertObjectToNative(element, element.runtimeType);
-      } else {
-        result = structure.getFieldMap(element);
+      try {
+        final structure = findStructureByType(element.runtimeType)!;
+        Map<String, dynamic> result;
+        if (structure.isSynthetic || !shallow) {
+          result = convertObjectToNative(element, element.runtimeType);
+        } else {
+          result = structure.getFieldMap(element);
+        }
+        buffer.addAll(result);
+      } catch (e, st) {
+        throw DogProjectionException(
+          message: "Exception occurred while projecting an object",
+          object: element,
+          cause: e,
+          innerStackTrace: st,
+        );
       }
-      buffer.addAll(result);
     });
     properties?.forEach((element) {
       if (element is Map<String, dynamic>) {
@@ -53,7 +61,17 @@ extension ProjectionExtension on DogEngine {
     });
     if (transformers != null) {
       for (final func in transformers) {
-        buffer = func(buffer);
+        try {
+          buffer = func(buffer);
+        } catch (e, st) {
+          throw DogProjectionException(
+            message: "Exception occurred while applying a transformer",
+            transformer: func,
+            document: buffer,
+            cause: e,
+            innerStackTrace: st,
+          );
+        }
       }
     }
     return buffer;
@@ -65,15 +83,19 @@ extension ProjectionExtension on DogEngine {
   /// is used. The resulting document is then converted to the given [target]
   /// type.
   dynamic createProjection(
-      Type target, {
-        Iterable<Map>? properties,
-        Iterable<Object>? objects,
-        Iterable<ProjectionTransformer>? transformers,
-        bool shallow = false,
-      }) {
+    Type target, {
+    Iterable<Map>? properties,
+    Iterable<Object>? objects,
+    Iterable<ProjectionTransformer>? transformers,
+    bool shallow = false,
+  }) {
     final struct = findStructureByType(target)!;
     final document = createProjectionDocument(
-      objects: objects, properties: properties, transformers: transformers, shallow: shallow,);
+      objects: objects,
+      properties: properties,
+      transformers: transformers,
+      shallow: shallow,
+    );
     if (!shallow) {
       return dogs.convertObjectFromNative(document, target);
     }
@@ -82,8 +104,12 @@ extension ProjectionExtension on DogEngine {
   }
 
   /// Creates a projection document from the given values, see [createProjectionDocument].
-  Map<String, dynamic> projectDocument(Object value,
-      [Object? a, Object? b, Object? c,]) {
+  Map<String, dynamic> projectDocument(
+    Object value, [
+    Object? a,
+    Object? b,
+    Object? c,
+  ]) {
     // Combine additional args into an iterable value
     if (a != null || b != null || c != null) {
       value = [
@@ -108,8 +134,12 @@ extension ProjectionExtension on DogEngine {
   }
 
   /// Creates a shallow projection document from the given values, see [createProjectionDocument].
-  Map<String, dynamic> projectDocumentShallow(Object value,
-      [Object? a, Object? b, Object? c,]) {
+  Map<String, dynamic> projectDocumentShallow(
+    Object value, [
+    Object? a,
+    Object? b,
+    Object? c,
+  ]) {
     // Combine additional args into an iterable value
     if (a != null || b != null || c != null) {
       value = [
@@ -130,9 +160,9 @@ extension ProjectionExtension on DogEngine {
       }
     }
 
-    return createProjectionDocument(properties: properties, objects: objects, shallow: true);
+    return createProjectionDocument(
+        properties: properties, objects: objects, shallow: true);
   }
-
 
   /// Creates a projection from the given values, see [createProjection].
   /// Parameters can be either a [Map] or an [Object]. If an [Object] is given,
@@ -165,7 +195,8 @@ extension ProjectionExtension on DogEngine {
   }
 
   /// Creates a shallow projection from the given values, see [createProjection].
-  TARGET projectShallow<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
+  TARGET projectShallow<TARGET>(Object value,
+      [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
     if (a != null || b != null || c != null) {
       value = [
@@ -186,7 +217,8 @@ extension ProjectionExtension on DogEngine {
       }
     }
 
-    return createProjection(TARGET, properties: properties, objects: objects, shallow: true);
+    return createProjection(TARGET,
+        properties: properties, objects: objects, shallow: true);
   }
 }
 
@@ -197,7 +229,6 @@ typedef TraverseResult = ({bool exists, dynamic value});
 
 /// A collection of projection transformers.
 class Projections {
-
   Projections._();
 
   /// Returns the value at [path] in the given [map].
@@ -214,35 +245,36 @@ class Projections {
 
   /// Sets the value at [path] in the given [map] to [value]. Returns a new map
   /// with the updated values and leaves the original map untouched.
-  static Map<String,dynamic> $set(Map<String,dynamic> map, String path, dynamic value) {
+  static Map<String, dynamic> $set(
+      Map<String, dynamic> map, String path, dynamic value) {
     final subPaths = path.split(".");
-    final result = <String,dynamic>{};
+    final result = <String, dynamic>{};
     var current = result;
     for (var i = 0; i < subPaths.length - 1; i++) {
       final path = subPaths[i];
       if (current.containsKey(path)) {
         current = current[path];
       } else {
-        current[path] = <String,dynamic>{};
+        current[path] = <String, dynamic>{};
         current = current[path];
       }
     }
     current[subPaths.last] = value;
-    return  $clone(map)..addAll(result);
+    return $clone(map)..addAll(result);
   }
 
   /// Deletes the value at [path] in the given [map]. Returns a new map
   /// with the updated values and leaves the original map untouched.
-  static Map<String,dynamic> $delete(Map<String,dynamic> map, String path) {
+  static Map<String, dynamic> $delete(Map<String, dynamic> map, String path) {
     final subPaths = path.split(".");
-    final result = <String,dynamic>{};
+    final result = <String, dynamic>{};
     var current = result;
     for (var i = 0; i < subPaths.length - 1; i++) {
       final path = subPaths[i];
       if (current.containsKey(path)) {
         current = current[path];
       } else {
-        current[path] = <String,dynamic>{};
+        current[path] = <String, dynamic>{};
         current = current[path];
       }
     }
@@ -251,13 +283,14 @@ class Projections {
   }
 
   /// Deep clones the given [map] and returns a new map with the same values.
-  static Map<String,dynamic> $clone(Map<String,dynamic> map) {
+  static Map<String, dynamic> $clone(Map<String, dynamic> map) {
     return _deepClone(map);
   }
 
   static dynamic _deepClone(dynamic value) {
     if (value is Map) {
-      return value.map<String,dynamic>((key, value) => MapEntry(key, _deepClone(value)));
+      return value.map<String, dynamic>(
+          (key, value) => MapEntry(key, _deepClone(value)));
     } else if (value is List) {
       return value.map((e) => _deepClone(e)).toList();
     } else {
@@ -266,21 +299,27 @@ class Projections {
   }
 
   /// Applies a field transformer to the given [path].
-  static ProjectionTransformer field(String path, dynamic Function(TraverseResult e) function) {
+  static ProjectionTransformer field(
+      String path, dynamic Function(TraverseResult e) function) {
     return (data) {
       final result = $get(data, path);
-      final functionResult = function((value: result.value, exists: result.exists));
+      final functionResult =
+          function((value: result.value, exists: result.exists));
       return $set(data, path, functionResult);
     };
   }
 
   /// Applies a field transformer to the given [path] that executes on iterable values.
-  static ProjectionTransformer iterable(String path, dynamic Function(TraverseResult e) function) {
+  static ProjectionTransformer iterable(
+      String path, dynamic Function(TraverseResult e) function) {
     return (data) {
       final result = $get(data, path);
       if (!result.exists) return function((value: null, exists: false));
-      if (result.value is! Iterable) throw ArgumentError("Value at path '$path' is not iterable");
-      final transformedData = (result.value as Iterable).map((e) => function((value: e, exists: true))).toList();
+      if (result.value is! Iterable)
+        throw ArgumentError("Value at path '$path' is not iterable");
+      final transformedData = (result.value as Iterable)
+          .map((e) => function((value: e, exists: true)))
+          .toList();
       return $set(data, path, transformedData);
     };
   }

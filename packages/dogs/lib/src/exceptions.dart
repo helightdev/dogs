@@ -131,6 +131,50 @@ class DogFieldSerializerException implements DogSerializerException {
   }
 }
 
+/// Exception thrown when the [DogEngine] fails to project a document.
+class DogProjectionException implements DogException {
+  @override
+  final String message;
+
+  /// The document that failed the projection.
+  final Map<String,dynamic>? document;
+
+  /// The object that failed the projection.
+  final Object? object;
+
+  /// The [ProjectionTransformer] that failed the projection (if any).
+  final ProjectionTransformer? transformer;
+
+  /// The original exception that has been caught by the [DogEngine].
+  /// May be null if no nested exception was involved.
+  final Object? cause;
+
+  /// The stacktrace of the original exception.
+  /// May be null if no nested exception was involved.
+  final StackTrace? innerStackTrace;
+
+  /// Creates a new [DogProjectionException] with the given attributes.
+  const DogProjectionException({
+    required this.message,
+    this.document,
+    this.object,
+    this.transformer,
+    this.cause,
+    this.innerStackTrace,
+  });
+
+  @override
+  String toString() {
+    return _formatException("DogProjectionException", message, {
+      if (document != null) "document": document,
+      if (object != null) "object": object,
+      if (transformer != null) "transformer": transformer,
+      if (cause != null) "cause": cause,
+      if (innerStackTrace != null) "innerStackTrace": innerStackTrace,
+    });
+  }
+}
+
 /// Formats an exception with attributes into a nicer looking message.
 String _formatException(String name, String message, Map<String,dynamic> fields) {
   return "$name: $message\n${fields.entries.map((e) => "  ${e.key}: ${e.value}").join("\n")}";
