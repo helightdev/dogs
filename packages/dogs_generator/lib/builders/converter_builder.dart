@@ -9,6 +9,7 @@ import 'package:dogs_core/dogs_core.dart';
 
 import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
+import 'package:source_gen/source_gen.dart';
 
 class ConverterBuilder extends DogsAdapter<Serializable> {
   ConverterBuilder() : super(archetype: "conv");
@@ -265,12 +266,16 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         ..name = "\$values"
         ..type = Reference("late List<dynamic>")));
 
+      builder.fields.add(Field((builder) => builder
+        ..name = "\$src"
+        ..type = Reference("${codeContext.className(element)}?")));
+
       builder.constructors.add(Constructor((builder) => builder
         ..optionalParameters.add(Parameter((builder) => builder
           ..type = Reference("${codeContext.className(element)}?")
           ..name = "\$src"))
         ..body = Code(
-            "if (\$src == null) {\$values = List.filled(${structurized.fieldNames.length},null);} else {\$values = ${element.name}Converter._values(\$src);}")));
+            "if (\$src == null) {\$values = List.filled(${structurized.fieldNames.length},null);} else {\$values = ${element.name}Converter._values(\$src);this.\$src=\$src;}")));
 
       for (var element in structurized.structure.fields) {
         var index = structurized.structure.fields.indexOf(element);
@@ -290,11 +295,17 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
           ..body = Code("\$values[$index]")));
       }
 
+      var hasRebuildHook = TypeChecker.fromRuntime(PostRebuildHook).isAssignableFromType(element.thisType);
+
       builder.methods.add(Method((builder) => builder
         ..name = "build"
         ..returns = Reference(codeContext.className(element))
-        ..lambda = true
-        ..body = Code("${element.name}Converter._activator(\$values)")));
+        ..body = Code("""
+var instance = ${element.name}Converter._activator(\$values);
+${!hasRebuildHook ? "" : """if (\$src != null) {
+  instance.postRebuild(\$src!, instance);
+}"""}
+return instance;""")));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }

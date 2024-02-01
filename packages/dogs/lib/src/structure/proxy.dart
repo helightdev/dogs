@@ -110,3 +110,13 @@ class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
     return values(obj);
   }
 }
+
+/// Hook that runs after a structure [T] has been rebuilt.
+abstract class PostRebuildHook<T> {
+
+  /// Hook that runs after a structure [T] has been rebuilt.
+  const PostRebuildHook();
+
+  /// Runs after [from] has been rebuilt into [to];
+  void postRebuild(T from, T to);
+}
