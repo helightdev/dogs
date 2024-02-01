@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_initializing_formals
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -33,17 +35,23 @@ class DogFirestoreEngine {
   static DogFirestoreEngine? _instance;
 
   static DogFirestoreEngine get instance {
-    return _instance ??= DogFirestoreEngine._();
+    return _instance ??= DogFirestoreEngine._(null,null);
   }
 
   late final DogEngine engine;
   late final FirebaseFirestore firestore;
   late final OperationModeCacheEntry<FirestoreDocumentOpmode> mode;
 
-  DogFirestoreEngine._() {
-    engine = createFirebaseDogsEngine(DogEngine.instance);
-    firestore = FirebaseFirestore.instance;
+  DogFirestoreEngine._(DogEngine? engine, FirebaseFirestore? firestore) {
+    firestore ??= FirebaseFirestore.instance;
+    engine ??= DogEngine.instance;
+    this.engine = createFirebaseDogsEngine(engine);
+    this.firestore = firestore;
     mode = engine.modeRegistry.entry<FirestoreDocumentOpmode>();
+  }
+
+  static void install(DogEngine engine, FirebaseFirestore firestore) {
+    _instance = DogFirestoreEngine._(engine, firestore);
   }
 
   String collectionName<T>() {

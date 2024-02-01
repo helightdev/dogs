@@ -1,0 +1,26 @@
+name: firestore
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths:
+      - 'smoke/test_firestore/**'
+      - 'packages/dogs_odm/**'
+      - 'packages/dogs/**'
+      - 'packages/dogs_generator/**'
+      - 'packages/dogs_firestore/**'
+
+jobs:
+  firestore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: "Install Tools"
+        run: ./.github/workflows/scripts/install-tools.sh
+      - name: "Run Smoke Tests"
+        run: cd smoke/test_firestore && bash smoke.sh && cd ../../

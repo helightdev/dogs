@@ -19,6 +19,7 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_firestore/dogs_firestore.dart';
 import 'package:dogs_firestore/src/engine.dart';
 import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
 
 /// If this is set to true, the latest snapshot of a document will be cached and reused.
 /// This is useful if you want to reduce the amount of reads to Firestore, but it will increase
@@ -27,7 +28,7 @@ bool kConserveSnapshot = true;
 
 /// This drop-in replacement for [Dataclass] adds support for common Firestore operations and allows
 /// access to the Firestore document ID.
-abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
+abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> implements PostRebuildHook<T> {
   /// This is the Firestore ID of the document. Will be automatically set when storing a new
   /// document, but can also be set manually.
   String? id;
@@ -93,6 +94,14 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> {
     assert(DogFirestoreEngine.instance.checkSubcollection<R, T>());
     _injectedPath = "${parent.selfDocument.path}/${DogFirestoreEngine.instance.collectionName<T>()}";
     return this as T;
+  }
+
+  // Copy internal non serialized fields over so you don't have to use withParent() again
+  @override @internal
+  void postRebuild(T from, T to) {
+    to.id = from.id;
+    to._injectedPath = from._injectedPath;
+    to._latestSnapshot = from._latestSnapshot;
   }
 
   /// Saves the document to Firestore. If the document does not exist, it will be created.

@@ -231,21 +231,21 @@ packages:
       path: "../../dogs"
       relative: true
     source: path
-    version: "8.1.1"
+    version: "8.2.0"
   dogs_firestore:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.0.2+7"
+    version: "0.0.2+8"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../dogs_generator"
       relative: true
     source: path
-    version: "5.2.3"
+    version: "5.2.4"
   duffer:
     dependency: transitive
     description:
@@ -707,5 +707,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.2.0-210.4.beta <4.0.0"
+  dart: ">=3.2.0-0 <4.0.0"
   flutter: ">=3.3.0"
