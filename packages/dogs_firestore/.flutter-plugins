@@ -1,5 +1,5 @@
 # This is a generated file; do not edit or check into version control.
-cloud_firestore=/home/helight/.pub-cache/hosted/pub.dev/cloud_firestore-4.13.6/
-cloud_firestore_web=/home/helight/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.8.10/
-firebase_core=/home/helight/.pub-cache/hosted/pub.dev/firebase_core-2.24.2/
-firebase_core_web=/home/helight/.pub-cache/hosted/pub.dev/firebase_core_web-2.10.0/
+cloud_firestore=/home/helight/.pub-cache/hosted/pub.dev/cloud_firestore-4.15.2/
+cloud_firestore_web=/home/helight/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.10.2/
+firebase_core=/home/helight/.pub-cache/hosted/pub.dev/firebase_core-2.25.2/
+firebase_core_web=/home/helight/.pub-cache/hosted/pub.dev/firebase_core_web-2.11.2/
