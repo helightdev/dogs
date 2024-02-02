@@ -3,7 +3,6 @@ repository: https://github.com/DarwinFramework/dogs
 packages:
   - packages/*
   - formats/*
-  - example/
   - benchmarks/
   - packages/dogs_forms/example/
 scripts:
