@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v8.3.0`](#dogs_core---v830)
+ - [`dogs_firestore` - `v0.0.3`](#dogs_firestore---v003)
+ - [`dogs_generator` - `v5.3.0`](#dogs_generator---v530)
+ - [`dogs_odm` - `v1.0.0-alpha.5`](#dogs_odm---v100-alpha5)
+ - [`dogs_forms` - `v0.1.0+9`](#dogs_forms---v0109)
+ - [`dogs_built` - `v2.0.6`](#dogs_built---v206)
+ - [`dogs_cbor` - `v2.0.34`](#dogs_cbor---v2034)
+ - [`dogs_toml` - `v2.0.34`](#dogs_toml---v2034)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.5`](#dogs_mongo_driver---v100-alpha5)
+ - [`dogs_yaml` - `v2.0.34`](#dogs_yaml---v2034)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_forms` - `v0.1.0+9`
+ - `dogs_built` - `v2.0.6`
+ - `dogs_cbor` - `v2.0.34`
+ - `dogs_toml` - `v2.0.34`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.5`
+ - `dogs_yaml` - `v2.0.34`
+
+---
+
+#### `dogs_core` - `v8.3.0`
+
+ - **FEAT**: add better error handling for projections.
+ - **FEAT**: add projection transformers and tests for them.
+ - **FEAT**: post rebuild hooks.
+
+#### `dogs_firestore` - `v0.0.3`
+
+ - **FEAT**: fakeable firestore and fixed rebuild copy to include transient fields.
+
+#### `dogs_generator` - `v5.3.0`
+
+ - **FEAT**: post rebuild hooks.
+
+#### `dogs_odm` - `v1.0.0-alpha.5`
+
+ - **REFACTOR**: rename @id to @idField.
+
+
 ## 2024-01-31
 
 ### Changes

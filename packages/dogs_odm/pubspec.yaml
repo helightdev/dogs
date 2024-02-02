@@ -1,13 +1,13 @@
 name: dogs_odm
 description: Odm support for dogs.
-version: 1.0.0-alpha.4
+version: 1.0.0-alpha.5
 # repository: https://github.com/my_org/my_repo
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  dogs_core: ^8.2.0
+  dogs_core: ^8.3.0
   collection: ^1.18.0
   meta: ^1.11.0
   uuid: ^4.3.3

@@ -1,3 +1,7 @@
+## 5.3.0
+
+ - **FEAT**: post rebuild hooks.
+
 ## 5.2.4
 
  - Update a dependency to the latest release.

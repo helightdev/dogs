@@ -1,3 +1,7 @@
+## 0.0.3
+
+ - **FEAT**: fakeable firestore and fixed rebuild copy to include transient fields.
+
 ## 0.0.2+8
 
  - Update a dependency to the latest release.

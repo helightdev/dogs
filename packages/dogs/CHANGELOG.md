@@ -1,3 +1,9 @@
+## 8.3.0
+
+ - **FEAT**: add better error handling for projections.
+ - **FEAT**: add projection transformers and tests for them.
+ - **FEAT**: post rebuild hooks.
+
 ## 8.2.0
 
  - **REFACTOR**: some small refactoring changes and more api docs.

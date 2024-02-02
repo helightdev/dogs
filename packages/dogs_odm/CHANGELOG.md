@@ -1,3 +1,7 @@
+## 1.0.0-alpha.5
+
+ - **REFACTOR**: rename @id to @idField.
+
 ## 1.0.0-alpha.4
 
  - Update a dependency to the latest release.
