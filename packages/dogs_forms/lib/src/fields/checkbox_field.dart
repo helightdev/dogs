@@ -37,4 +37,10 @@ class CheckboxFormFieldFactory extends AutoFormFieldFactory {
       subtitle: field.subtitle == null ? null : Text(field.subtitle!),
     );
   }
+
+  @override
+  dynamic decode(dynamic value) => switch(value) {
+    null => false,
+    _ => value
+  };
 }
