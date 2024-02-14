@@ -123,6 +123,8 @@ class StructureFormFieldFactory<A> extends AutoFormFieldFactory
       return _buildOptional<T>(arg, reference);
     }
 
+    var form = DogsFormProvider.formOf(arg.context)!;
+
     bool isSelfUpdate = false;
     return InputDecorator(
       decoration: arg.field
@@ -140,6 +142,9 @@ class StructureFormFieldFactory<A> extends AutoFormFieldFactory
           return DogsForm<T>(
             reference: reference,
             initialValue: formField.value,
+            attributes: form.attributes,
+            engine: form.engine,
+            translationResolver: form.translationResolver,
             onChanged: () {
               isSelfUpdate = true;
               formField.didChange(reference.read(false));
@@ -225,6 +230,7 @@ class StructureFormFieldFactory<A> extends AutoFormFieldFactory
         T? initialValue,
         StructureCallback<T> callback,
       ) {
+    var form = DogsFormProvider.formOf(context)!;
         var formRef = DogsFormRef<T>();
         var translationResolver =
             DogsFormProvider.formOf(context)!.translationResolver;
@@ -236,35 +242,38 @@ class StructureFormFieldFactory<A> extends AutoFormFieldFactory
               title: Text(translationResolver.translate(
                       context, "structure-edit", locale) ??
                   "Edit"),
-              content: SingleChildScrollView(
-                child: DogsForm<T>(
-                  reference: formRef,
+          content: SingleChildScrollView(
+            child: DogsForm<T>(
+              reference: formRef,
                   initialValue: initialValue,
+                  attributes: form.attributes,
+                  engine: form.engine,
+                  translationResolver: form.translationResolver,
                 ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(translationResolver.translate(
-                          context, "cancel", locale) ??
-                      "Cancel"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    var value = formRef.read(false);
-                    if (value == null) return;
-                    callback(value);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                      translationResolver.translate(context, "done", locale) ??
-                          "Done"),
-                ),
-              ],
-            );
-          },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(translationResolver.translate(
+                  context, "cancel", locale) ??
+                  "Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                var value = formRef.read(false);
+                if (value == null) return;
+                callback(value);
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                  translationResolver.translate(context, "done", locale) ??
+                      "Done"),
+            ),
+          ],
         );
+      },
+    );
       };
 }
