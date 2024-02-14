@@ -113,6 +113,9 @@ class AutoFormField implements StructureMetadata {
   /// Defines the constraints to use for the field.
   final BoxConstraints? constraints;
 
+  /// If this field is a list, this flag can be used to specify if the list is reorderable.
+  final bool listReorderable;
+
   const AutoFormField({
     this.padding = const EdgeInsets.all(8),
     this.decoration,
@@ -126,6 +129,7 @@ class AutoFormField implements StructureMetadata {
     this.initializer = defaultInitializer,
     this.itemInitializer = defaultInitializer,
     this.wrapper = defaultWrapper,
+    this.listReorderable = false,
     this.title,
     this.titleTranslationKey,
     this.subtitle,

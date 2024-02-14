@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-import 'dart:collection';
-
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/material.dart';
@@ -33,16 +31,25 @@ class DogsFormList<T> extends StatefulWidget {
   final List<T>? initialValue;
   /// The callback that is called when the value of the list changes.
   final Function(List<T>?) onChanged;
+
   /// The [ListElementBuilder] that is used to create the fields of list elements.
   final ListElementBuilder elementFactory;
+
   /// The [Initializer] that is selected by the implementation.
   final Initializer itemInit;
+
   /// The [Initializer] that is used as the default initializer for the items of the list.
   final Initializer defaultInit;
+
   /// The encoder that is used to encode the values of the list.
   final dynamic Function(dynamic) encoder;
+
   /// The decoder that is used to decode the values of the list.
   final dynamic Function(dynamic) decoder;
+
+  /// Whether the list is reorderable.
+  final bool reorderable;
+  final Function(BuildContext context, Function(dynamic) callback)? addItem;
 
   static dynamic keepValue(value) => value;
 
@@ -58,7 +65,9 @@ class DogsFormList<T> extends StatefulWidget {
       this.itemInit = defaultInitializer,
       this.defaultInit = nullInitializer,
       this.encoder = keepValue,
-      this.decoder = keepValue});
+      this.decoder = keepValue,
+      this.reorderable = false,
+      this.addItem});
 
   /// Creates a [DogsFormList] from a [DogsFormField].
   const DogsFormList.raw(
@@ -69,7 +78,9 @@ class DogsFormList<T> extends StatefulWidget {
       this.itemInit = defaultInitializer,
       this.defaultInit = nullInitializer,
       this.encoder = keepValue,
-      this.decoder = keepValue});
+      this.decoder = keepValue,
+      this.reorderable = false,
+      this.addItem});
 
   /// Creates a [DogsFormList] from a [DogsFormField].
   /// This automatically handles decoration, validation and error messages.
@@ -79,7 +90,9 @@ class DogsFormList<T> extends StatefulWidget {
       {required ListElementBuilder elementFactory,
       Initializer defaultInit = nullInitializer,
       dynamic Function(dynamic) encoder = keepValue,
-      dynamic Function(dynamic) decoder = keepValue}) {
+      dynamic Function(dynamic) decoder = keepValue,
+      Function(BuildContext context, Function(dynamic) callback)? addItem}) {
+    var isReorderable = field.formAnnotation?.listReorderable ?? false;
     return Builder(builder: (context) {
       var locale = Localizations.maybeLocaleOf(context);
       var translationResolver =
@@ -100,15 +113,18 @@ class DogsFormList<T> extends StatefulWidget {
                         "This list contains invalid items."
                   }),
               child: DogsFormList<T>._(
-                  initialValue: fieldState.value,
-                  itemInit: field.itemInitializer,
-                  onChanged: (v) {
-                    fieldState.didChange(v);
-                  },
-                  encoder: (v) => v ?? "",
-                  decoder: (v) => v ?? "",
-                  defaultInit: defaultInit,
-                  elementFactory: elementFactory)));
+                initialValue: fieldState.value,
+                itemInit: field.itemInitializer,
+                onChanged: (v) {
+                  fieldState.didChange(v);
+                },
+                encoder: (v) => v ?? "",
+                decoder: (v) => v ?? "",
+                defaultInit: defaultInit,
+                elementFactory: elementFactory,
+                reorderable: isReorderable,
+                addItem: addItem,
+              )));
     });
   }
 
@@ -159,55 +175,93 @@ class _DogsFormListState<T> extends State<DogsFormList<T>> {
     return FormBuilder(
         key: formKey,
         initialValue: initialData,
-        child: Column(
-          children: [
-            for (var i = 0; i < children.length; i++)
-              Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Row(
-                  key: ValueKey(children[i]),
-                  children: [
-                    Expanded(
-                        child: widget.elementFactory(
-                            context, "item-${children[i]}", (newValue) {
-                      silentChange = true;
-                      // This fixes a bug where the value is not updated for the first
-                      // time the field is changed. This shouldn't have any side effects.
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        silentChange = true;
-                        widget.onChanged(buildList());
-                      });
-                    })),
-                    IconButton(
-                        onPressed: () => setState(() {
-                              var id = children[i];
-                              children.removeAt(i);
-                              formKey.currentState!.fields["item-$id"]!
-                                  .setValue(null);
-                              WidgetsBinding.instance
-                                  .addPostFrameCallback((timeStamp) {
-                                widget.onChanged(buildList());
-                              });
-                            }),
-                        icon: const Icon(Icons.delete)),
-                  ],
+        child: switch (widget.reorderable) {
+          false => Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemBuilder: _buildItem,
+                  itemCount: children.length,
                 ),
-              ),
-            IconButton(
-                onPressed: () {
-                  var id = const Uuid().v4();
-                  children.add(id);
-                  setState(() {
+                _buildAddButton(context),
+              ],
+            ),
+          true => ReorderableListView.builder(
+              shrinkWrap: true,
+              buildDefaultDragHandles: false,
+              onReorder: (oldIndex, newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) {
+                    newIndex -= 1;
+                  }
+                  var id = children.removeAt(oldIndex);
+                  children.insert(newIndex, id);
+                  widget.onChanged(buildList());
+                });
+              },
+              itemBuilder: _buildItem,
+              itemCount: children.length,
+              footer: _buildAddButton(context),
+            ),
+        });
+  }
+
+  IconButton _buildAddButton(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          callback(dynamic value) {
+            var id = const Uuid().v4();
+            children.add(id);
+            setState(() {
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                formKey.currentState!.fields["item-$id"]!.didChange(value);
+                widget.onChanged(buildList());
+              });
+            });
+          }
+
+          if (widget.addItem != null) {
+            widget.addItem!(context, callback);
+          } else {
+            callback(itemInitializer());
+          }
+        },
+        icon: const Icon(Icons.add));
+  }
+
+  Widget _buildItem(BuildContext context, int i) {
+    return Padding(
+      key: ValueKey(children[i]),
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Expanded(
+              child: widget.elementFactory(context, "item-${children[i]}",
+                  (newValue) {
+            silentChange = true;
+            // This fixes a bug where the value is not updated for the first
+            // time the field is changed. This shouldn't have any side effects.
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              silentChange = true;
+              widget.onChanged(buildList());
+            });
+          })),
+          IconButton(
+              onPressed: () => setState(() {
+                    var id = children[i];
+                    children.removeAt(i);
+                    formKey.currentState!.fields["item-$id"]!.setValue(null);
                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      formKey.currentState!.fields["item-$id"]!
-                          .didChange(itemInitializer());
                       widget.onChanged(buildList());
                     });
-                  });
-                },
-                icon: const Icon(Icons.add)),
-          ],
-        ));
+                  }),
+              icon: const Icon(Icons.delete)),
+          if (widget.reorderable)
+            ReorderableDragStartListener(
+                index: i, child: const Icon(Icons.drag_handle))
+        ],
+      ),
+    );
   }
 
   @override

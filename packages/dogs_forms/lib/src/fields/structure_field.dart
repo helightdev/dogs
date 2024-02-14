@@ -19,17 +19,55 @@ import 'package:dogs_forms/dogs_forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+typedef StructureCallback<T> = void Function(T value);
+typedef StructureDialogCreator<T> = void Function(
+    BuildContext context, T? initialValue, StructureCallback<T> callback);
+typedef StructureListTileBuilder<T> = Widget Function(BuildContext context,
+    FormFieldState state, StructureDialogCreator<T> showStructureDialog);
+
+/// A customizable [StructureFormFieldFactory] that fetches the [DogStructure] from the [Dogs] instance,
+/// at runtime so it can still be used in a const context. Allows customization of the list dialog and list tile.
+class CustomizedStructureFormFieldFactory<T>
+    extends DecoratingAutoFormFieldFactory {
+  /// The [StructureDialogCreator] that is used to create the dialog for a structure list.
+  final StructureDialogCreator<T>? listDialogCreator;
+
+  /// The [StructureListTileBuilder] that is used to build [Widget] representations of list elements.
+  final StructureListTileBuilder<T>? listTileBuilder;
+
+  const CustomizedStructureFormFieldFactory({
+    this.listDialogCreator,
+    this.listTileBuilder,
+  });
+
+  @override
+  AutoFormFieldFactory get delegate => StructureFormFieldFactory<T>(
+        dogs.findStructureByType(T)!,
+        listDialogBuilder: listDialogCreator,
+        listTileBuilder: listTileBuilder,
+      );
+}
+
+/*
+  INFO: Replacing the A with dynamic usage somehow produces cast exceptions,
+  therefore I'm using a generic type here.
+  */
+
 /// A [AutoFormFieldFactory] that embeds another [DogsForm] into the form.
-class StructureFormFieldFactory extends AutoFormFieldFactory
+class StructureFormFieldFactory<A> extends AutoFormFieldFactory
     with CachedFactoryData<DogsFormRef> {
   /// The [DogStructure] to embed.
   final DogStructure structure;
+  final StructureDialogCreator<A>? listDialogBuilder;
+  final StructureListTileBuilder<A>? listTileBuilder;
 
   /// A [AutoFormFieldFactory] that embeds another [DogsForm] into the form.
-  const StructureFormFieldFactory(this.structure);
+  const StructureFormFieldFactory(this.structure,
+      {this.listDialogBuilder, this.listTileBuilder});
 
   @override
-  void prepareFormField(BuildContext context, DogsFormField field, bool firstPass) {
+  void prepareFormField(
+      BuildContext context, DogsFormField field, bool firstPass) {
     if (!firstPass) return;
     var formKey = GlobalKey<FormBuilderState>();
     var ref = structure.consumeTypeArg(createRef, formKey);
@@ -47,7 +85,39 @@ class StructureFormFieldFactory extends AutoFormFieldFactory
     return DogsFormRef<T>(formKey);
   }
 
+  Widget buildList<T>(DogsFormField field, BuildContext context) {
+    return DogsFormList.field(
+      field,
+      addItem: (context, callback) {
+        showStructureDialog<T>(context, null, (v) => callback(v));
+      },
+      elementFactory: (context, name, callback) => FormBuilderField(
+        name: name,
+        onChanged: callback,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        builder: (FormFieldState formField) {
+          StructureListTileBuilder<T> builder =
+              (listTileBuilder as StructureListTileBuilder<T>?) ??
+                  _defaultListTileBuilder<T>();
+          return builder(context, formField, showStructureDialog);
+        },
+      ),
+    );
+  }
+
+  void showStructureDialog<T>(
+      BuildContext context, T? initialValue, StructureCallback<T> callback) {
+    StructureDialogCreator<T> builder =
+        (listDialogBuilder as StructureDialogCreator<T>?) ??
+            _defaultListDialogBuilder();
+    builder(context, initialValue, callback);
+  }
+
   Widget createForm<T>(({DogsFormField field, BuildContext context}) arg) {
+    if (arg.field.delegate.iterableKind != IterableKind.none) {
+      return buildList<T>(arg.field, arg.context);
+    }
+
     var reference = getCachedValue(arg.field) as DogsFormRef<T>;
     if (arg.field.delegate.optional) {
       return _buildOptional<T>(arg, reference);
@@ -82,7 +152,9 @@ class StructureFormFieldFactory extends AutoFormFieldFactory
     );
   }
 
-  FormBuilderField<dynamic> _buildOptional<T>(({BuildContext context, DogsFormField field}) arg, DogsFormRef<dynamic> reference) {
+  FormBuilderField<dynamic> _buildOptional<T>(
+      ({BuildContext context, DogsFormField field}) arg,
+      DogsFormRef<dynamic> reference) {
     return FormBuilderField<T>(
       builder: (FormFieldState<T> formField) {
         return DogsFormOptional<T>(
@@ -132,4 +204,67 @@ class StructureFormFieldFactory extends AutoFormFieldFactory
       name: arg.field.delegate.name,
     );
   }
+
+  static StructureListTileBuilder<T> _defaultListTileBuilder<T>() => (
+        BuildContext context,
+        FormFieldState state,
+        StructureDialogCreator<T> showStructureDialog,
+      ) {
+        return ListTile(
+          onTap: () {
+            showStructureDialog(
+                context, state.value, (v) => state.didChange(v));
+          },
+          title: Text("${state.value}"),
+          trailing: const Icon(Icons.edit),
+        );
+      };
+
+  static StructureDialogCreator<T> _defaultListDialogBuilder<T>() => (
+        BuildContext context,
+        T? initialValue,
+        StructureCallback<T> callback,
+      ) {
+        var formRef = DogsFormRef<T>();
+        var translationResolver =
+            DogsFormProvider.formOf(context)!.translationResolver;
+        var locale = Localizations.localeOf(context);
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(translationResolver.translate(
+                      context, "structure-edit", locale) ??
+                  "Edit"),
+              content: SingleChildScrollView(
+                child: DogsForm<T>(
+                  reference: formRef,
+                  initialValue: initialValue,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(translationResolver.translate(
+                          context, "cancel", locale) ??
+                      "Cancel"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    var value = formRef.read(false);
+                    if (value == null) return;
+                    callback(value);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                      translationResolver.translate(context, "done", locale) ??
+                          "Done"),
+                ),
+              ],
+            );
+          },
+        );
+      };
 }

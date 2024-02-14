@@ -28,12 +28,11 @@ export 'fields/double_text_field.dart';
 export 'fields/enum_dropdown.dart';
 export 'fields/int_text_field.dart';
 export 'fields/list_field.dart';
+export 'fields/optional_field.dart';
 export 'fields/slider_field.dart';
 export 'fields/structure_field.dart';
 export 'fields/switch_field.dart';
 export 'fields/text_field.dart';
-
-export 'fields/optional_field.dart';
 
 /// A composition of default [OperationModeFactory]s that are implemented by
 /// the dogs_forms package. To add your own [OperationModeFactory]s, you can
@@ -94,6 +93,13 @@ class StructureOpmodeFactory
     extends OperationModeFactory<AutoFormFieldFactory> {
   @override
   AutoFormFieldFactory? forConverter(DogConverter converter, DogEngine engine) {
+    if (converter is IterableTreeBaseConverterMixin &&
+        converter.converter.struct != null) {
+      var structure = converter.converter.struct!;
+      if (structure.isSynthetic) return null;
+      return StructureFormFieldFactory(structure);
+    }
+
     if (converter.struct != null) {
       var structure = converter.struct!;
       if (structure.isSynthetic) return null;
@@ -125,9 +131,9 @@ abstract class AutoFormFieldFactory<T>
 }
 
 abstract class DecoratingAutoFormFieldFactory extends AutoFormFieldFactory {
-  final AutoFormFieldFactory delegate;
+  AutoFormFieldFactory get delegate;
 
-  const DecoratingAutoFormFieldFactory(this.delegate);
+  const DecoratingAutoFormFieldFactory();
 
   @override
   dynamic encode(dynamic value) => delegate.encode(value);

@@ -215,21 +215,21 @@ packages:
       path: "../../dogs"
       relative: true
     source: path
-    version: "8.2.0"
+    version: "8.3.0"
   dogs_forms:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0+8"
+    version: "0.1.0+9"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../dogs_generator"
       relative: true
     source: path
-    version: "5.2.4"
+    version: "5.3.0"
   duffer:
     dependency: transitive
     description:

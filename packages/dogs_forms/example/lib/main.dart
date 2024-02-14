@@ -1,7 +1,8 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_forms/dogs_forms.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:forms_example/dogs.g.dart';
-import 'package:forms_example/models/address.dart';
 import 'package:forms_example/models/person.dart';
 import 'package:forms_example/pages/address_page.dart';
 import 'package:forms_example/pages/lists_page.dart';
@@ -9,14 +10,10 @@ import 'package:forms_example/pages/nested_page.dart';
 import 'package:forms_example/pages/nullables_page.dart';
 import 'package:forms_example/pages/person_page.dart';
 import 'package:forms_example/pages/post_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/date_symbol_data_custom.dart';
+import 'package:forms_example/pages/structlist_page.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/intl_browser.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 import 'form_print_wrapper.dart';
 
@@ -85,9 +82,13 @@ class _ExampleContentState extends State<ExampleContent> {
     NavigationRailDestination(
         icon: const Icon(Icons.account_tree), label: Text("Nested")),
     NavigationRailDestination(
-        icon: const Icon(Icons.format_list_bulleted_sharp), label: Text("Lists")),
+        icon: const Icon(Icons.format_list_bulleted_sharp),
+        label: Text("Lists")),
     NavigationRailDestination(
         icon: const Icon(Icons.question_mark), label: Text("Nullables")),
+    NavigationRailDestination(
+        icon: const Icon(Icons.format_list_bulleted),
+        label: Text("StructList")),
   ];
   List<Widget Function(BuildContext)> pages = [
     (ctx) => PersonPage(),
@@ -96,6 +97,7 @@ class _ExampleContentState extends State<ExampleContent> {
     (ctx) => NestedPage(),
     (ctx) => ListsPage(),
     (ctx) => NullablesPage(),
+        (ctx) => StructListPage()
   ];
 
   @override
