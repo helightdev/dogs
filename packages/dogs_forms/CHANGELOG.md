@@ -1,3 +1,9 @@
+## 0.1.1
+
+ - **FIX**: correctly pass translations and attributes to child forms.
+ - **FIX**: switches and checkboxes with null values should return false.
+ - **FEAT**: reorderable lists, automatic structure lists.
+
 ## 0.1.0+9
 
  - Update a dependency to the latest release.

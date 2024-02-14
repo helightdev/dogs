@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_forms` - `v0.1.1`](#dogs_forms---v011)
+
+---
+
+#### `dogs_forms` - `v0.1.1`
+
+ - **FIX**: correctly pass translations and attributes to child forms.
+ - **FIX**: switches and checkboxes with null values should return false.
+ - **FEAT**: reorderable lists, automatic structure lists.
+
+
 ## 2024-02-02
 
 ### Changes
