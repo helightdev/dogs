@@ -1,3 +1,7 @@
+## 8.4.1
+
+ - **FIX**: ups add trees back.
+
 ## 8.4.0
 
  - **FEAT**: add openapi scheme generation for nargs and iterable converters.

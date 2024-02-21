@@ -15,6 +15,50 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_core` - `v8.4.1`](#dogs_core---v841)
+ - [`dogs_generator` - `v5.3.2`](#dogs_generator---v532)
+ - [`dogs_firestore` - `v0.0.3+2`](#dogs_firestore---v0032)
+ - [`dogs_forms` - `v0.1.1+2`](#dogs_forms---v0112)
+ - [`dogs_built` - `v2.0.8`](#dogs_built---v208)
+ - [`dogs_odm` - `v1.0.0-alpha.7`](#dogs_odm---v100-alpha7)
+ - [`dogs_cbor` - `v2.0.36`](#dogs_cbor---v2036)
+ - [`dogs_toml` - `v2.0.36`](#dogs_toml---v2036)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.7`](#dogs_mongo_driver---v100-alpha7)
+ - [`dogs_yaml` - `v2.0.36`](#dogs_yaml---v2036)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.3.2`
+ - `dogs_firestore` - `v0.0.3+2`
+ - `dogs_forms` - `v0.1.1+2`
+ - `dogs_built` - `v2.0.8`
+ - `dogs_odm` - `v1.0.0-alpha.7`
+ - `dogs_cbor` - `v2.0.36`
+ - `dogs_toml` - `v2.0.36`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.7`
+ - `dogs_yaml` - `v2.0.36`
+
+---
+
+#### `dogs_core` - `v8.4.1`
+
+ - **FIX**: ups add trees back.
+
+
+## 2024-02-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_core` - `v8.4.0`](#dogs_core---v840)
  - [`dogs_generator` - `v5.3.1`](#dogs_generator---v531)
  - [`dogs_firestore` - `v0.0.3+1`](#dogs_firestore---v0031)
