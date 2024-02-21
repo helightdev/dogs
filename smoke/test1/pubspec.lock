@@ -101,18 +101,18 @@ packages:
     dependency: "direct main"
     description:
       name: built_value
-      sha256: a3ec2e0f967bc47f69f95009bb93db936288d61d5343b9436e378b28a2f830c6
+      sha256: fedde275e0a6b798c3296963c5cd224e3e1b55d0e478d5b7e65e6b540f363a0e
       url: "https://pub.dev"
     source: hosted
-    version: "8.9.0"
+    version: "8.9.1"
   built_value_generator:
     dependency: "direct dev"
     description:
       name: built_value_generator
-      sha256: dc1ad016357f56e596ddf026b72f90040be8c0076365cec79fc1c825869bed57
+      sha256: "7f09dcb77aaa471b295ab9d0973903c1f0f695cffb881bded9224f6957f5a3f8"
       url: "https://pub.dev"
     source: hosted
-    version: "8.9.0"
+    version: "8.9.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -191,21 +191,21 @@ packages:
       path: "../../packages/dogs_built"
       relative: true
     source: path
-    version: "2.0.5"
+    version: "2.0.8"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../../packages/dogs"
       relative: true
     source: path
-    version: "8.2.0"
+    version: "8.4.1"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.2.4"
+    version: "5.3.2"
   duffer:
     dependency: transitive
     description:
@@ -282,10 +282,10 @@ packages:
     dependency: transitive
     description:
       name: js
-      sha256: "4186c61b32f99e60f011f7160e32c89a758ae9b1d0c6d28e2c02ef0382300e2b"
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.0"
+    version: "0.7.1"
   json_annotation:
     dependency: transitive
     description:
@@ -322,10 +322,10 @@ packages:
     dependency: transitive
     description:
       name: lyell_gen
-      sha256: ff086b83f80a1182bd75a7239d8a30506fcddbe2cfca269b64e1cdf7a7f47d02
+      sha256: "287d66fde5cae3cedb1cd33a43c2c9765b1bdbb9d1651e97d4f0dc8762d3e63d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.4+1"
+    version: "1.3.1"
   matcher:
     dependency: transitive
     description:
@@ -338,10 +338,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
+      sha256: "7687075e408b093f36e6bbf6c91878cc0d4cd10f409506f7bc996f68220b9136"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.0"
+    version: "1.12.0"
   mime:
     dependency: transitive
     description:

@@ -8,25 +8,25 @@ builders:
     builder_factories: [ "dogsLinking" ]
     build_extensions: { ".dart": [ ".link.dogs" ] }
     runs_before: [ "dogs_generator:dogs_reactor" ]
-    auto_apply: dependents
+    auto_apply: root_package
     build_to: cache
   dogs_bindings:
     import: "package:dogs_generator/integrations.dart"
     builder_factories: [ "dogsBindings" ]
     build_extensions: { ".dart": [ ".conv.dogs", ".slib.dogs" ] }
     runs_before: [ "dogs_generator:dogs_reactor" ]
-    auto_apply: dependents
+    auto_apply: root_package
     build_to: cache
   dogs_descriptors:
     import: "package:dogs_generator/integrations.dart"
     builder_factories: [ "dogsConverters" ]
     build_extensions: { ".dart": [ ".conv.g.dart", "slib.g.dart" ] }
-    auto_apply: dependents
+    auto_apply: root_package
     build_to: source
   dogs_reactor:
     import: "package:dogs_generator/integrations.dart"
     builder_factories: [ "dogsReactor" ]
     build_extensions: { "$lib$": [ "dogs.g.dart" ] }
     required_inputs: [".dogs",".conv.g.dart"]
-    auto_apply: dependents
+    auto_apply: root_package
     build_to: source
