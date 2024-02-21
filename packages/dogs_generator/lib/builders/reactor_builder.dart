@@ -55,6 +55,7 @@ class DogReactorBuilder extends SubjectReactorBuilder {
     var converterNameArr = "[${descriptorNames.map((e) => "$e()").join(", ")}]";
     if (!isLibrary) {
       code.codeBuffer.writeln("""
+      
 Future initialiseDogs() async {
   var engine = DogEngine.hasValidInstance ? DogEngine.instance : DogEngine();
   engine.registerAllConverters($converterNameArr);
@@ -64,6 +65,7 @@ Future initialiseDogs() async {
       var fieldName = ReCase("$packageName converters").camelCase;
       var funcName = ReCase("install $packageName converters").camelCase;
       code.codeBuffer.writeln("""
+      
 final $fieldName = <DogConverter>$converterNameArr;
       
 void $funcName() {
@@ -72,6 +74,7 @@ void $funcName() {
   }
   DogEngine.instance.registerAllConverters($fieldName);
 }""");
+      print("Wrote: ${code.codeBuffer}");
     }
   }
 }
