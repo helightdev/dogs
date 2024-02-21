@@ -66,6 +66,11 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
           serializeArg(value, 1, engine),
         ));
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.map(
+        ofSchema: itemConverters[1].output,
+      );
 }
 
 /// [NTreeArgConverter] for [Optional]s.

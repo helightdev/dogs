@@ -57,6 +57,11 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter
   Iterable iterableDestructor<T>(value) {
     return factory.unwrap<T>(value as BASE);
   }
+
+  @override
+  APISchemaObject get output =>
+      APISchemaObject.array(ofSchema: converter.output)
+        ..description = "$BASE of ${itemSubtree.qualified.typeArgument}";
 }
 
 class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>

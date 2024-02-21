@@ -88,6 +88,9 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
             serializer: delegate.serialize, deserializer: delegate.deserialize),
         GraphSerializerMode: () => GraphSerializerMode.auto<BASE>(this),
       };
+
+  @override
+  APISchemaObject get output => delegate.output;
 }
 
 abstract class NTreeArgConverter<BASE> {
@@ -104,5 +107,8 @@ abstract class NTreeArgConverter<BASE> {
   }
 
   BASE deserialize(dynamic value, DogEngine engine);
+
   dynamic serialize(BASE value, DogEngine engine);
+
+  APISchemaObject get output => APISchemaObject.empty();
 }
