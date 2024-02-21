@@ -1,3 +1,7 @@
+## 8.4.0
+
+ - **FEAT**: add openapi scheme generation for nargs and iterable converters.
+
 ## 8.3.0
 
  - **FEAT**: add better error handling for projections.

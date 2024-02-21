@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v8.4.0`](#dogs_core---v840)
+ - [`dogs_generator` - `v5.3.1`](#dogs_generator---v531)
+ - [`dogs_firestore` - `v0.0.3+1`](#dogs_firestore---v0031)
+ - [`dogs_forms` - `v0.1.1+1`](#dogs_forms---v0111)
+ - [`dogs_odm` - `v1.0.0-alpha.6`](#dogs_odm---v100-alpha6)
+ - [`dogs_built` - `v2.0.7`](#dogs_built---v207)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.6`](#dogs_mongo_driver---v100-alpha6)
+ - [`dogs_cbor` - `v2.0.35`](#dogs_cbor---v2035)
+ - [`dogs_toml` - `v2.0.35`](#dogs_toml---v2035)
+ - [`dogs_yaml` - `v2.0.35`](#dogs_yaml---v2035)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.0.3+1`
+ - `dogs_forms` - `v0.1.1+1`
+ - `dogs_odm` - `v1.0.0-alpha.6`
+ - `dogs_built` - `v2.0.7`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.6`
+ - `dogs_cbor` - `v2.0.35`
+ - `dogs_toml` - `v2.0.35`
+ - `dogs_yaml` - `v2.0.35`
+
+---
+
+#### `dogs_core` - `v8.4.0`
+
+ - **FEAT**: add openapi scheme generation for nargs and iterable converters.
+
+#### `dogs_generator` - `v5.3.1`
+
+ - **FIX**: add missing whitespace for proper spacing.
+
+
 ## 2024-02-14
 
 ### Changes

@@ -1,3 +1,7 @@
+## 5.3.1
+
+ - **FIX**: add missing whitespace for proper spacing.
+
 ## 5.3.0
 
  - **FEAT**: post rebuild hooks.
