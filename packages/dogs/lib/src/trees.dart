@@ -13,12 +13,13 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 import "package:meta/meta.dart";
 
+part "trees/defaults.dart";
 part "trees/iterables.dart";
 part "trees/nargs.dart";
-part "trees/defaults.dart";
 
 /// A factory for [DogConverter]s that are derived from a [TypeTree].
 abstract class TreeBaseConverterFactory {
