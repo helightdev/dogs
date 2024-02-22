@@ -16,9 +16,8 @@
 
 import 'dart:collection';
 
+import 'package:conduit_open_api/v3.dart';
 import 'package:dogs_core/dogs_core.dart';
-
-import '../dogs_odm.dart';
 
 /// Collection that represents a page of results.
 class Page<T> with ListMixin<T> {
@@ -173,6 +172,17 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
       "content": value.content.map((e) => serializeArg(e, 0, engine)).toList(),
     };
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.object({
+        "number": APISchemaObject.integer(),
+        "size": APISchemaObject.integer(),
+        "totalElements": APISchemaObject.integer(),
+        "totalPages": APISchemaObject.integer(),
+        "content": APISchemaObject.array(
+          ofSchema: itemConverters[0].output,
+        )
+      });
 }
 
 class PageRequestConverter extends SimpleDogConverter<PageRequest> {
@@ -189,9 +199,15 @@ class PageRequestConverter extends SimpleDogConverter<PageRequest> {
 
   @override
   serialize(PageRequest value, DogEngine engine) {
-    return <String,dynamic>{
+    return <String, dynamic>{
       "page": value.page,
       "size": value.size,
     };
   }
+
+  @override
+  APISchemaObject get output => APISchemaObject.object({
+        "page": APISchemaObject.integer(),
+        "size": APISchemaObject.integer(),
+      });
 }

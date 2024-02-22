@@ -11,6 +11,7 @@ dependencies:
   collection: ^1.18.0
   meta: ^1.11.0
   uuid: ^4.3.3
+  conduit_open_api: ^4.4.0
 
 dev_dependencies:
   lints: ^3.0.0
