@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_generator` - `v5.3.3`](#dogs_generator---v533)
+ - [`dogs_odm` - `v1.0.0-alpha.8`](#dogs_odm---v100-alpha8)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.8`](#dogs_mongo_driver---v100-alpha8)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_mongo_driver` - `v1.0.0-alpha.8`
+
+---
+
+#### `dogs_generator` - `v5.3.3`
+
+ - **REFACTOR**: apply builder only to the root package since.
+
+#### `dogs_odm` - `v1.0.0-alpha.8`
+
+ - **FEAT**: add openapi descriptor to pagination types.
+
+
 ## 2024-02-21
 
 ### Changes

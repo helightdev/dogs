@@ -1,3 +1,7 @@
+## 1.0.0-alpha.8
+
+ - **FEAT**: add openapi descriptor to pagination types.
+
 ## 1.0.0-alpha.7
 
  - Update a dependency to the latest release.
