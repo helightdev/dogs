@@ -52,6 +52,7 @@ class DogEngine with MetadataMixin {
   };
 
   final List<DogEngine> _children = [];
+  final Map<Symbol, DogEngine> _identifiedChildren = HashMap();
 
   /// The [DogNativeCodec] used by this [DogEngine] instance.
   /// See [DogNativeCodec] for more details.
@@ -139,6 +140,7 @@ class DogEngine with MetadataMixin {
   }
 
   @internal
+
   /// Rebuilds this [DogEngine] instance from the supplied [engine].
   void rebuildFrom(DogEngine engine) {
     _parent = engine;
@@ -148,13 +150,34 @@ class DogEngine with MetadataMixin {
 
   /// Creates a new [DogEngine] instance that is a child of this instance.
   /// The [DogNativeCodec] will be inherited from this instance but can be
-  /// overridden by supplying a [codec].
-  DogEngine fork({DogNativeCodec? codec}) {
+  /// overridden by supplying a [codec]. If [identity] is specified, the child
+  /// will be associated with the given [identity] Symbol.
+  DogEngine fork({DogNativeCodec? codec, Symbol? identity}) {
     final DogEngine forked =
         DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked.rebuildFrom(this);
+    if (identity != null) {
+      _identifiedChildren[identity] = forked;
+    }
     return forked;
   }
+
+  /// Returns a child [DogEngine] instance that is associated with the given
+  /// [identity]. If no child is associated with the given [identity], a new
+  /// [DogEngine] instance will be created via [fork].
+  DogEngine getChildOrFork(Symbol identity,
+      {DogNativeCodec? codec, Function(DogEngine)? callback}) {
+    final existing = _identifiedChildren[identity];
+    if (existing != null) return existing;
+    final forkedEngine = fork(codec: codec, identity: identity);
+    callback?.call(forkedEngine);
+    return forkedEngine;
+  }
+
+  /// Returns a child [DogEngine] instance that is associated with the given
+  /// [identity]. If no child is associated with the given [identity], null will
+  /// be returned.
+  DogEngine? getChild(Symbol identity) => _identifiedChildren[identity];
 
   /// Populates an engine change to all children.
   /// This will cause all children to rebuild their cache and emit a change
@@ -176,6 +199,7 @@ class DogEngine with MetadataMixin {
     clear();
     _children.clear();
     _parent?._children.remove(this);
+    _parent?._identifiedChildren.removeWhere((key, value) => value == this);
   }
 
   /// Returns all [DogStructure]s registered in this [DogEngine] instance and its
