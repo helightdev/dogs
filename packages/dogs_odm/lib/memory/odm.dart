@@ -22,9 +22,10 @@ import 'database.dart';
 
 class MemoryOdmSystem extends OdmSystem<MemoryDatabase, String> {
 
-  MemoryOdmSystem();
-
   final Map<Type, MemoryDatabase> _databases = <Type, MemoryDatabase>{};
+
+  @override
+  late DogEngine engine;
 
   MemoryDatabase<T> _createDatabase<T extends Object>() {
     return MemoryDatabase<T>(this);
@@ -32,11 +33,17 @@ class MemoryOdmSystem extends OdmSystem<MemoryDatabase, String> {
 
   @override
   MemoryDatabase<T> getDatabase<T extends Object>([Repository? repository]) {
-    return _databases.putIfAbsent(T, () => _createDatabase<T>()) as MemoryDatabase<T>;
+    return _databases.putIfAbsent(T, () => _createDatabase<T>())
+        as MemoryDatabase<T>;
   }
 
-  @override
-  DogEngine engine = DogEngine.instance.fork();
+  MemoryOdmSystem([DogEngine? engine]) {
+    if (engine != null) {
+      this.engine = engine;
+    } else {
+      this.engine = dogs.getChildOrFork(#memoryOdmSystem);
+    }
+  }
 
   @override
   String generateId<T extends Object>(T entity) {
