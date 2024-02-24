@@ -112,6 +112,12 @@ extension DogEngineShortcuts on DogEngine {
   /// converter associated with [T] or [typeTree].
   DogGraphValue toGraph<T>(T value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
+    // If the type is explicitly nullable, manually handle null values.
+    final isNullable = null is T;
+    if (value == null && isNullable) {
+      return DogNull();
+    }
+
     if (typeTree != null) {
       final converter = getTreeConverter(typeTree);
       return modeRegistry.graphSerialization
@@ -125,6 +131,12 @@ extension DogEngineShortcuts on DogEngine {
   /// by using the converter associated with [T] or [typeTree].
   T fromGraph<T>(DogGraphValue value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
+    // If the type is explicitly nullable, manually handle null values.
+    final isNullable = null is T;
+    if (value is DogNull && isNullable) {
+      return null as T;
+    }
+
     if (typeTree != null) {
       final converter = getTreeConverter(typeTree);
       return modeRegistry.graphSerialization
@@ -139,6 +151,12 @@ extension DogEngineShortcuts on DogEngine {
   /// If [tree] is supplied, the converter associated with the tree is used.
   dynamic toNative<T>(T value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    // If the type is explicitly nullable, manually handle null values.
+    final isNullable = null is T;
+    if (value == null && isNullable) {
+      return null as T;
+    }
+
     if (tree != null) {
       if (!tree.isQualified) throw DogException("TypeTree must be qualified");
       final converter = getTreeConverter(tree);
@@ -155,6 +173,12 @@ extension DogEngineShortcuts on DogEngine {
   /// If [tree] is supplied, the converter associated with the tree is used.
   T fromNative<T>(dynamic value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    // If the type is explicitly nullable, manually handle null values.
+    final isNullable = null is T;
+    if (value == null && isNullable) {
+      return null as T;
+    }
+
     if (tree != null) {
       if (!tree.isQualified) throw DogException("TypeTree must be qualified");
       final converter = getTreeConverter(tree);
