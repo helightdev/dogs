@@ -14,9 +14,10 @@
  *    limitations under the License.
  */
 
+import "package:dogs_core/dogs_core.dart";
+
 /// Port of Java's Optional (https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 class Optional<T> {
-
   /// Common instance for [Optional.empty].
   final T? value;
 
@@ -73,4 +74,17 @@ class Optional<T> {
 
   @override
   int get hashCode => value.hashCode;
+}
+
+/// [NTreeArgConverter] for [Optional]s.
+class OptionalNTreeArgConverter<T> extends NTreeArgConverter<Optional> {
+  @override
+  Optional deserialize(value, DogEngine engine) {
+    return Optional<T>(value == null ? null : deserializeArg(value, 0, engine));
+  }
+
+  @override
+  serialize(Optional value, DogEngine engine) {
+    return value.isPresent ? serializeArg(value.get(), 0, engine) : null;
+  }
 }

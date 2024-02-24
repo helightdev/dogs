@@ -47,7 +47,8 @@ class DogEngine {
     Iterable: DefaultTreeBaseFactories.iterable,
     Set: DefaultTreeBaseFactories.set,
     Map: DefaultTreeBaseFactories.map,
-    Optional: DefaultTreeBaseFactories.optional
+    Optional: DefaultTreeBaseFactories.optional,
+    Page: DefaultTreeBaseFactories.page,
   };
 
   final List<DogEngine> _children = [];
@@ -96,6 +97,9 @@ class DogEngine {
       registerAutomatic(UriConverter(), false);
       registerAutomatic(Uint8ListConverter(), false);
       registerAutomatic(RegExpConverter(), false);
+
+      // Register Pagination Converters
+      registerAutomatic(PageRequestConverter(), false);
 
       // Register primitives
       // registerConverter(StringConverter(), false);
