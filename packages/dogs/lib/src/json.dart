@@ -14,8 +14,8 @@
  *    limitations under the License.
  */
 
-import "dart:convert";
 import "dart:convert" as conv;
+import "dart:convert";
 
 import "package:dogs_core/dogs_core.dart";
 
@@ -47,7 +47,7 @@ extension DogJsonExtension on DogEngine {
   /// converter associated with [T] or [tree].
   String toJson<T>(T value,
         {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final native = this.toNative(value, kind: kind, type: type, tree: tree);
+    final native = this.toNative<T>(value, kind: kind, type: type, tree: tree);
     return conv.jsonEncode(native);
   }
 
@@ -55,7 +55,7 @@ extension DogJsonExtension on DogEngine {
   /// by using the converter associated with [T] or [tree].
   T fromJson<T>(String encoded, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native = conv.jsonDecode(encoded);
-    return this.fromNative(native, kind: kind, type: type, tree: tree);
+    return this.fromNative<T>(native, kind: kind, type: type, tree: tree);
   }
 
   @Deprecated("Use toJson")
