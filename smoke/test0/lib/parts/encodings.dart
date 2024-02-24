@@ -16,78 +16,70 @@
 
 part of "../test.dart";
 
+typedef FromFunc<T> = T Function<T>(String encoded,
+    {IterableKind kind, Type? type, TypeTree? tree});
+typedef ToFunc<T> = String Function<T>(T decoded,
+    {IterableKind kind, Type? type, TypeTree? tree});
 
-void testCbor() {
-  testEncoding(dogs.cborSerializer, ModelA.variant0, ModelA.variant1);
-  testEncoding(dogs.cborSerializer, ModelA.variant1, ModelA.variant2);
-  testEncoding(dogs.cborSerializer, ModelB.variant0, ModelB.variant1);
-  testEncoding(dogs.cborSerializer, ModelC.variant0, ModelC.variant1);
-  testEncoding(dogs.cborSerializer, ModelD.variant0, ModelD.variant1);
-  testEncoding(dogs.cborSerializer, ModelE.variant0, ModelE.variant1);
-  testEncoding(dogs.cborSerializer, ModelF.variant0, ModelF.variant1);
-  testEncoding(dogs.cborSerializer, ModelG.variant0, ModelG.variant1);
-  testEncoding(dogs.cborSerializer, Note.variant0, Note.variant1);
+void testToFrom<T>(T value, FromFunc<T> from, ToFunc<T> to) {
+  // Explicit type argument
+  var a1 = to<T>(value);
+  var b1 = from<T>(a1);
+  expect(b1, value);
+
+  // Explicit type
+  var a2 = to(value, type: T);
+  var b2 = from(a2, type: T);
+  expect(b2, value);
+
+  // Explicit tree
+  var tree = QualifiedTypeTree.terminal<T>();
+  var a3 = to(value, tree: tree);
+  var b3 = from(a3, tree: tree);
+  expect(b3, value);
+
+  // Explicit kind
+  var a4 = to([value], type: T, kind: IterableKind.list);
+  var b4 = from<List<T>>(a4, type: T, kind: IterableKind.list);
+  expect(b4, deepEquals([value]));
+
+  // Nullable base type
+  var a5 = to<T?>(value, type: T);
+  var b5 = from<T?>(a5, type: T);
+  expect(b5, value);
+  var a6 = to<T?>(null, type: T);
+  var b6 = from<T?>(a6, type: T);
+  expect(b6, null);
+
+  // Nullable dynamic
+  var a7 = to(null, type: T);
+  var b7 = from(a7, type: T);
+  expect(b7, null);
+
+  // Nullable Tree
+  var a8 = to<T?>(null, tree: tree);
+  var b8 = from<T?>(a8, tree: tree);
+  expect(b8, null);
 }
 
-void testYaml() {
-  var serializer = dogs.yamlSerializer;
-  var decode = (v, t) => serializer.deserialize(v, t);
-  var encode = (v, t) => serializer.serialize(v, t);
-  testNewEncoding<ModelA>(encode, decode, ModelA.variant0, ModelA.variant1);
-  testNewEncoding<ModelA>(encode, decode, ModelA.variant1, ModelA.variant2);
-  testNewEncoding<ModelB>(encode, decode, ModelB.variant0, ModelB.variant1);
-  testNewEncoding<ModelC>(encode, decode, ModelC.variant0, ModelC.variant1);
-  testNewEncoding<ModelD>(encode, decode, ModelD.variant0, ModelD.variant1);
-  testNewEncoding<ModelE>(encode, decode, ModelE.variant0, ModelE.variant1);
-  testNewEncoding<ModelF>(encode, decode, ModelF.variant0, ModelF.variant1);
-  // testNewEncoding<ModelG>(encode, decode, ModelG.variant0, ModelG.variant1);
-  testNewEncoding<Note>(encode, decode, Note.variant0, Note.variant1);
-}
-
-void testToml() {
-  testEncoding(dogs.tomlSerializer, ModelA.variant0, ModelA.variant1);
-  testEncoding(dogs.tomlSerializer, ModelA.variant1, ModelA.variant2);
-  testEncoding(dogs.tomlSerializer, ModelB.variant0, ModelB.variant1);
-  testEncoding(dogs.tomlSerializer, ModelC.variant0, ModelC.variant1);
-  testEncoding(dogs.tomlSerializer, ModelD.variant0, ModelD.variant1);
-  testEncoding(dogs.tomlSerializer, ModelE.variant0, ModelE.variant1);
-  testEncoding(dogs.tomlSerializer, ModelF.variant0, ModelF.variant1);
-  // testEncoding(dogs.tomlSerializer, ModelG.variant0, ModelG.variant1);
-  testEncoding(dogs.tomlSerializer, Note.variant0, Note.variant1);
-}
-
-void testEncoding<T>(DogSerializer serializer, T Function() a, T Function() b) {
-  var va0 = a();
-  var va1 = a();
-  var vb0 = b();
-  var vb1 = b();
-  var ga = dogs.convertObjectToGraph(va0, T);
-  var gb = dogs.convertObjectToGraph(vb0, T);
-  var ea = serializer.serialize(ga);
-  var eb = serializer.serialize(gb);
-  var gda = serializer.deserialize(ea);
-  var gdb = serializer.deserialize(eb);
-  var da = dogs.convertObjectFromGraph(gda, T);
-  var db = dogs.convertObjectFromGraph(gdb, T);
-  expect(va1, da, reason: "Non-pure serialization");
-  expect(va0, da, reason: "Non-pure serialization");
-  expect(vb1, db, reason: "Non-pure serialization");
-  expect(vb0, db, reason: "Non-pure serialization");
-  expect(ea, isNot(eb), reason: "Wrong equality");
-}
-
-void testNewEncoding<T>(dynamic Function(dynamic, Type) encode, dynamic Function(dynamic, Type) decode, T Function() a, T Function() b) {
-  var va0 = a();
-  var va1 = a();
-  var vb0 = b();
-  var vb1 = b();
-  var ea = encode(va0, T);
-  var eb = encode(vb0, T);
-  var da = decode(ea, T);
-  var db = decode(eb, T);
-  expect(va1, da, reason: "Non-pure serialization");
-  expect(va0, da, reason: "Non-pure serialization");
-  expect(vb1, db, reason: "Non-pure serialization");
-  expect(vb0, db, reason: "Non-pure serialization");
-  expect(ea, isNot(eb), reason: "Wrong equality");
+void testEncoding(FromFunc from, ToFunc to) {
+  testToFrom<ModelA>(ModelA.variant0(), from, to);
+  testToFrom<ModelA>(ModelA.variant1(), from, to);
+  testToFrom<ModelA>(ModelA.variant2(), from, to);
+  testToFrom<ModelB>(ModelB.variant0(), from, to);
+  testToFrom<ModelB>(ModelB.variant1(), from, to);
+  testToFrom<ModelC>(ModelC.variant0(), from, to);
+  testToFrom<ModelC>(ModelC.variant1(), from, to);
+  testToFrom<ModelD>(ModelD.variant0(), from, to);
+  testToFrom<ModelD>(ModelD.variant1(), from, to);
+  testToFrom<ModelE>(ModelE.variant0(), from, to);
+  testToFrom<ModelE>(ModelE.variant1(), from, to);
+  testToFrom<ModelF>(ModelF.variant0(), from, to);
+  testToFrom<ModelF>(ModelF.variant1(), from, to);
+  testToFrom<ModelG>(ModelG.variant0(), from, to);
+  testToFrom<ModelG>(ModelG.variant1(), from, to);
+  testToFrom<Note>(Note.variant0(), from, to);
+  testToFrom<Note>(Note.variant1(), from, to);
+  testToFrom<DeepPolymorphic>(DeepPolymorphic.variant0(), from, to);
+  testToFrom<DeepPolymorphic>(DeepPolymorphic.variant1(), from, to);
 }

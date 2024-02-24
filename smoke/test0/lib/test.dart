@@ -29,9 +29,18 @@ Future main() async {
     test("Projection", testProjection);
 
     group("Encodings", () {
-      test("CBOR", testCbor);
-      test("Yaml", testYaml);
-      test("Toml", testToml);
+      test("Json", () {
+        testEncoding(dogs.fromJson, dogs.toJson);
+      });
+      test("Cbor", () {
+        testEncoding(dogs.fromCborString, dogs.toCborString);
+      });
+      test("Yaml", () {
+        testEncoding(dogs.fromYaml, dogs.toYaml);
+      });
+      test("Toml", () {
+        testEncoding(dogs.fromToml, dogs.toToml);
+      });
     });
   });
 }
