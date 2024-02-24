@@ -20,8 +20,8 @@ import "dart:collection";
 import "package:dogs_core/dogs_core.dart";
 import "package:meta/meta.dart";
 
-/// Registry and interface for [DogConverter]s, [DogStructure]s and [Copyable]s.
-class DogEngine {
+/// Registry and interface for everything related to dogs.
+class DogEngine with MetadataMixin {
   static DogEngine? _instance;
 
   /// Checks if a valid instance of [DogEngine] is statically available.
