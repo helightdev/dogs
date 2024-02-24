@@ -149,8 +149,11 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                   args.add(null);
                 } else if (iterableKind != IterableKind.none) {
                   args.add(adjustIterable([], iterableKind));
+                } else if (operation.canSerializeNull) {
+                  args.add(operation.deserialize(null, engine));
                 } else {
-                  throw DogException("Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
+                  throw DogException(
+                      "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");
                 }
               } else {
                 if (isKeepIterables) {

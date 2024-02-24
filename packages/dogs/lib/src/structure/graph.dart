@@ -99,6 +99,8 @@ class StructureGraphSerialization<T> extends GraphSerializerMode<T>
                 args.add(null);
               } else if (iterableKind != IterableKind.none) {
                 args.add(adjustIterable([], iterableKind));
+              } else if (operation.canSerializeNull) {
+                args.add(operation.deserialize(DogNull(), engine));
               } else {
                 throw Exception(
                     "Expected a value of serial type ${field.serial.typeArgument} at ${field.name} but got $mapValue");

@@ -85,7 +85,9 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
   @override
   Map<Type, OperationMode<BASE> Function()> get modes => {
         NativeSerializerMode: () => NativeSerializerMode.create<BASE>(
-            serializer: delegate.serialize, deserializer: delegate.deserialize),
+            serializer: delegate.serialize,
+            deserializer: delegate.deserialize,
+            canSerializeNull: delegate.canSerializeNull),
         GraphSerializerMode: () => GraphSerializerMode.auto<BASE>(this),
       };
 
@@ -111,4 +113,6 @@ abstract class NTreeArgConverter<BASE> {
   dynamic serialize(BASE value, DogEngine engine);
 
   APISchemaObject get output => APISchemaObject.empty();
+
+  bool get canSerializeNull => false;
 }

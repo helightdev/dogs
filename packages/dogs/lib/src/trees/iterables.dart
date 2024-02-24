@@ -79,6 +79,7 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
 
   @override
   deserialize(value, DogEngine engine) {
+    if (value == null) return mixin.create([]);
     var entries =
         (value as Iterable).map((e) => operation.deserialize(e, engine));
     return mixin.create(entries);
@@ -90,6 +91,9 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
         mixin.destruct(value).map((e) => operation.serialize(e, engine));
     return entries.toList();
   }
+
+  @override
+  bool get canSerializeNull => true;
 }
 
 mixin IterableTreeBaseConverterMixin on DogConverter {

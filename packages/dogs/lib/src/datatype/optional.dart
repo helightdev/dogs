@@ -87,4 +87,7 @@ class OptionalNTreeArgConverter<T> extends NTreeArgConverter<Optional> {
   serialize(Optional value, DogEngine engine) {
     return value.isPresent ? serializeArg(value.get(), 0, engine) : null;
   }
+
+  @override
+  bool get canSerializeNull => true;
 }

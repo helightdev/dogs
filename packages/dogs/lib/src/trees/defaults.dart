@@ -18,7 +18,6 @@ part of "../trees.dart";
 
 /// Collection of default [TreeBaseConverterFactory]s.
 class DefaultTreeBaseFactories {
-
   DefaultTreeBaseFactories._();
 
   /// Factory for [List]s.
@@ -56,6 +55,7 @@ class DefaultTreeBaseFactories {
 class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   @override
   Map deserialize(value, DogEngine engine) {
+    if (value == null) return <K, V>{}; // Similar to primitive coercion
     return (value as Map).map<K, V>((key, value) => MapEntry<K, V>(
           deserializeArg(key, 0, engine),
           deserializeArg(value, 1, engine),
@@ -74,4 +74,7 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   APISchemaObject get output => APISchemaObject.map(
         ofSchema: itemConverters[1].output,
       );
+
+  @override
+  bool get canSerializeNull => true;
 }

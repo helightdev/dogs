@@ -23,6 +23,10 @@ abstract class GraphSerializerMode<T> implements OperationMode<T> {
   /// Converts a [DogGraphValue] to [T].
   T deserialize(DogGraphValue value, DogEngine engine);
 
+  /// Returns true if the serializer can handle null values and create [T]
+  /// instances from them.
+  bool get canSerializeNull => false;
+
   DogGraphValue serializeIterable(
       dynamic value, DogEngine engine, IterableKind kind) {
     if (kind == IterableKind.none) {
@@ -48,9 +52,12 @@ abstract class GraphSerializerMode<T> implements OperationMode<T> {
           {required DogGraphValue Function(T value, DogEngine engine)
               serializer,
           required T Function(DogGraphValue value, DogEngine engine)
-              deserializer}) =>
+              deserializer,
+          bool canSerializeNull = false}) =>
       _InlineGraphSerializer(
-          serializer: serializer, deserializer: deserializer);
+          serializer: serializer,
+          deserializer: deserializer,
+          canSerializeNull: canSerializeNull);
 
   static GraphSerializerMode<T> auto<T>(DogConverter<T> converter) =>
       _NativeBridgeSerializer(
@@ -76,16 +83,22 @@ class _NativeBridgeSerializer<T> extends GraphSerializerMode<T>
   @override
   DogGraphValue serialize(T value, DogEngine engine) =>
       engine.codec.fromNative(nativeMode.serialize(value, engine));
+
+  @override
+  bool get canSerializeNull => nativeMode.canSerializeNull;
 }
 
 class _InlineGraphSerializer<T> extends GraphSerializerMode<T>
     with TypeCaptureMixin<T> {
   DogGraphValue Function(T value, DogEngine engine) serializer;
   T Function(DogGraphValue value, DogEngine engine) deserializer;
+  @override
+  final bool canSerializeNull;
 
   _InlineGraphSerializer({
     required this.serializer,
     required this.deserializer,
+    required this.canSerializeNull,
   });
 
   @override

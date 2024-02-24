@@ -23,6 +23,10 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
   /// Aggressively converts a "primitive" dart type to [T].
   T deserialize(dynamic value, DogEngine engine);
 
+  /// Returns true if the serializer can handle null values and create [T]
+  /// instances from them.
+  bool get canSerializeNull => false;
+
   /// Converts the [value], which can be either a [Iterable] or instance of
   /// the type associated type, depending on the [IterableKind],
   /// to its native representation using the converter associated with
@@ -57,19 +61,25 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
 
   static NativeSerializerMode<T> create<T>(
           {required dynamic Function(T value, DogEngine engine) serializer,
-          required T Function(dynamic value, DogEngine engine) deserializer}) =>
+          required T Function(dynamic value, DogEngine engine) deserializer,
+          bool canSerializeNull = false}) =>
       _InlineNativeSerializer(
-          serializer: serializer, deserializer: deserializer);
+          serializer: serializer,
+          deserializer: deserializer,
+          canSerializeNull: canSerializeNull);
 }
 
 class _InlineNativeSerializer<T> extends NativeSerializerMode<T>
     with TypeCaptureMixin<T> {
   dynamic Function(T value, DogEngine engine) serializer;
   T Function(dynamic value, DogEngine engine) deserializer;
+  @override
+  final bool canSerializeNull;
 
   _InlineNativeSerializer({
     required this.serializer,
     required this.deserializer,
+    required this.canSerializeNull,
   });
 
   @override
