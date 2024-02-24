@@ -16,6 +16,15 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// Deeply converts a map with dynamic keys to a map with string keys.
+Object? stringKeyedMapFrom(Object? value) => switch (value) {
+      null => null,
+      Map() => value.map<String, dynamic>(
+          (key, value) => MapEntry(key.toString(), stringKeyedMapFrom(value))),
+      List() => value.map((e) => stringKeyedMapFrom(e)).toList(),
+      _ => value
+    };
+
 class StringKeyedMapVisitor extends DogVisitor<dynamic> {
   Map<String, dynamic> visitFinal(DogMap map) {
     return visit(map) as Map<String, dynamic>;
