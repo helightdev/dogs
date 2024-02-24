@@ -73,7 +73,6 @@ class NoCodecPrimitiveCoercion implements CodecPrimitiveCoercion {
 ///
 /// Can also convert [Iterable]s and [Map]s of native types.
 class DefaultNativeCodec extends DogNativeCodec {
-
   /// Default implementation of [DogNativeCodec].
   const DefaultNativeCodec();
 

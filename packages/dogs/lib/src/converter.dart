@@ -97,6 +97,7 @@ class _Polymorphic extends StructureMetadata {
 const polymorphic = _Polymorphic();
 
 @internal
+
 /// Checks if a field is marked as polymorphic.
 bool isPolymorphicField(DogStructureField field) {
   return field.annotationsOf<_Polymorphic>().isNotEmpty;
@@ -105,7 +106,6 @@ bool isPolymorphicField(DogStructureField field) {
 /// Overrides the name that will be used by the [GeneratedDogConverter] for this
 /// specific property. By default, the field name will be used.
 class PropertyName {
-
   /// The name of the property used as a map key in serialization.
   final String name;
 
@@ -117,7 +117,6 @@ class PropertyName {
 /// for this specific property. By default, the field will be serialized using
 /// the convert associated with its type.
 class PropertySerializer {
-
   /// The type of the serializer.
   final Type type;
 
@@ -130,7 +129,6 @@ class PropertySerializer {
 /// as well as a synthetic [DogStructure] with the given [SimpleDogConverter.serialName].
 abstract class SimpleDogConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
-
   /// Instantiates a new [SimpleDogConverter] with the given [serialName].
   /// Specify the [serialName] using `: super(serialName: "")`.
   SimpleDogConverter({required String serialName})

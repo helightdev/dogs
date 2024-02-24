@@ -263,7 +263,8 @@ class DogEngine with MetadataMixin {
 
   /// Returns the first registered [DogConverter] of the given [type].
   DogConverter? findConverter(Type type) =>
-      _converters.firstWhereOrNullDogs((element) => element.runtimeType == type) ??
+      _converters
+          .firstWhereOrNullDogs((element) => element.runtimeType == type) ??
       _parent?.findConverter(type);
 
   /// Returns the [DogConverter] that is associated with [type] or

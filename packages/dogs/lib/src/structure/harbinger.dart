@@ -19,7 +19,6 @@ import "package:meta/meta.dart";
 
 /// Utility class for resolving converters for a [DogStructure].
 class StructureHarbinger<T> {
-
   /// The structure this harbinger is for.
   final DogStructure<T> structure;
 
@@ -39,6 +38,7 @@ class StructureHarbinger<T> {
   }
 
   @internal
+
   /// Performs the converter lookup for a single field.
   DogConverter? getConverter(DogEngine engine, DogStructureField field) {
     // Try resolving using supplying visitors

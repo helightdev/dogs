@@ -20,7 +20,6 @@ import "package:dogs_core/dogs_core.dart";
 /// A [FieldValidator] that restricts the size of an [Iterable].
 class SizeRange extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
-
   /// The minimum number of items. (inclusive)
   final int? min;
 

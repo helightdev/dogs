@@ -27,7 +27,6 @@ const email = Regex(
 /// A [FieldValidator] that validates a [String] using a [RegExp].
 class Regex extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
-
   /// The regex pattern.
   final String pattern;
 
@@ -59,7 +58,8 @@ class Regex extends StructureMetadata
     final entry = cached as _RegexCacheEntry;
     if (entry.isIterable) {
       if (value == null) return true;
-      return (value as Iterable).every((e) => _validateSingle(entry.matcher, e));
+      return (value as Iterable)
+          .every((e) => _validateSingle(entry.matcher, e));
     } else {
       return _validateSingle(entry.matcher, value);
     }

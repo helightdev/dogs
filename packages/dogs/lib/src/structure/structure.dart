@@ -24,7 +24,6 @@ abstract class StructureMetadata extends RetainedAnnotation {
 
 /// Annotation to override the converter used for a field.
 abstract class ConverterSupplyingVisitor extends StructureMetadata {
-
   /// Annotation to override the converter used for a field.
   const ConverterSupplyingVisitor();
 

@@ -87,8 +87,8 @@ mixin Dataclass<T> {
   String toString() {
     try {
       return "$T ${DogEngine.instance.convertObjectToGraph(this, T).coerceString()}";
-    } catch (e,st) {
-      assert((){
+    } catch (e, st) {
+      assert(() {
         print("Error in Dataclass toString(): $e:\n$st");
         return true;
       }());

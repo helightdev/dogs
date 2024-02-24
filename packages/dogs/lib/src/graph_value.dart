@@ -21,7 +21,6 @@ import "package:dogs_core/dogs_core.dart";
 
 /// Graph node of the serialized DOG graph.
 abstract class DogGraphValue {
-
   /// Graph node of the serialized DOG graph.
   const DogGraphValue();
 
@@ -86,7 +85,6 @@ abstract class DogGraphValue {
 
 /// Wrapped native value.
 class DogNative extends DogGraphValue {
-
   /// The actual native value.
   final Object value;
 
@@ -133,7 +131,6 @@ class DogNative extends DogGraphValue {
 
 /// Graph node representing a string value.
 class DogString extends DogGraphValue {
-
   /// The string value of this node.
   final String value;
 
@@ -162,7 +159,6 @@ class DogString extends DogGraphValue {
 
 /// Graph node representing an integer value.
 class DogInt extends DogGraphValue {
-
   /// The integer value of this node.
   final int value;
 
@@ -191,7 +187,6 @@ class DogInt extends DogGraphValue {
 
 /// Graph node representing a double value.
 class DogDouble extends DogGraphValue {
-
   /// The double value of this node.
   final double value;
 
@@ -220,7 +215,6 @@ class DogDouble extends DogGraphValue {
 
 /// Graph node representing a boolean value.
 class DogBool extends DogGraphValue {
-
   /// The boolean value of this node.
   final bool value;
 
@@ -249,7 +243,6 @@ class DogBool extends DogGraphValue {
 
 /// Graph node representing a null value.
 class DogNull extends DogGraphValue {
-
   /// Graph node representing a null value.
   const DogNull();
 
@@ -273,7 +266,6 @@ class DogNull extends DogGraphValue {
 
 /// Graph node representing a list value.
 class DogList extends DogGraphValue {
-
   /// The list value of this node.
   final List<DogGraphValue> value;
 
@@ -313,7 +305,6 @@ class DogList extends DogGraphValue {
 
 /// Graph node representing a map value.
 class DogMap extends DogGraphValue {
-
   /// The map value of this node.
   final Map<DogGraphValue, DogGraphValue> value;
 

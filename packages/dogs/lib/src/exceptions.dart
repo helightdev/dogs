@@ -18,7 +18,6 @@ import "package:dogs_core/dogs_core.dart";
 
 /// General exception for dogs related errors.
 abstract class DogException implements Exception {
-
   /// The message of this exception.
   String get message;
 
@@ -69,7 +68,8 @@ abstract class DogSerializerException implements DogException {
     Object? cause,
     StackTrace? innerStackTrace,
   }) {
-    return _DogSerializerExceptionImpl(message, converter, structure, cause, innerStackTrace);
+    return _DogSerializerExceptionImpl(
+        message, converter, structure, cause, innerStackTrace);
   }
 
   @override
@@ -95,8 +95,8 @@ class _DogSerializerExceptionImpl implements DogSerializerException {
   @override
   final StackTrace? innerStackTrace;
 
-  _DogSerializerExceptionImpl(
-      this.message, this.converter, this.structure, this.cause, this.innerStackTrace);
+  _DogSerializerExceptionImpl(this.message, this.converter, this.structure,
+      this.cause, this.innerStackTrace);
 }
 
 /// Specific [DogSerializerException] thrown when a [DogConverter] fails to convert a field.
@@ -117,7 +117,8 @@ class DogFieldSerializerException implements DogSerializerException {
   final DogStructureField field;
 
   /// Creates a new [DogFieldSerializerException] with the given attributes.
-  DogFieldSerializerException(this.message, this.converter, this.structure, this.field, this.cause, this.innerStackTrace);
+  DogFieldSerializerException(this.message, this.converter, this.structure,
+      this.field, this.cause, this.innerStackTrace);
 
   @override
   String toString() {
@@ -137,7 +138,7 @@ class DogProjectionException implements DogException {
   final String message;
 
   /// The document that failed the projection.
-  final Map<String,dynamic>? document;
+  final Map<String, dynamic>? document;
 
   /// The object that failed the projection.
   final Object? object;
@@ -176,6 +177,7 @@ class DogProjectionException implements DogException {
 }
 
 /// Formats an exception with attributes into a nicer looking message.
-String _formatException(String name, String message, Map<String,dynamic> fields) {
+String _formatException(
+    String name, String message, Map<String, dynamic> fields) {
   return "$name: $message\n${fields.entries.map((e) => "  ${e.key}: ${e.value}").join("\n")}";
 }

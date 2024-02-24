@@ -20,10 +20,9 @@ import "package:dogs_core/dogs_core.dart";
 /// A [FieldValidator] that restricts the length of a [String].
 class LengthRange extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
-  
   /// The minimum length. (inclusive)
   final int? min;
-  
+
   /// The maximum length. (inclusive)
   final int? max;
 

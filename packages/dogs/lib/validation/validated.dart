@@ -25,7 +25,6 @@ const validated = Validated();
 
 /// A [FieldValidator] that requires a field to be deeply validated.
 class Validated extends StructureMetadata implements FieldValidator {
-  
   /// Requires a field to be deeply validated.
   /// Example: You have a class Group with a field `List<Person> members` as well as
   /// a type Person which is validatable. You can then annotate your field

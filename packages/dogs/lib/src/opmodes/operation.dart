@@ -18,8 +18,8 @@ import "dart:collection";
 
 import "package:dogs_core/dogs_core.dart";
 
-export "modes/native.dart";
 export "modes/graph.dart";
+export "modes/native.dart";
 export "modes/validation.dart";
 
 abstract interface class OperationMode<T> implements TypeCapture<T> {
@@ -82,7 +82,6 @@ class OperationModeRegistry {
 /// A cache entry for [OperationMode]s.
 /// Holds all resolved [OperationMode]s for the specified [OperationModeCacheEntry.modeType].
 class OperationModeCacheEntry<T extends OperationMode> {
-
   /// The [Type] of the [OperationMode]s that are cached in this entry.
   final Type modeType;
 

@@ -25,7 +25,6 @@ typedef _FieldDeserializer = void Function(
 /// A [NativeSerializerMode] that supplies native serialization for [DogStructure]s.
 class StructureNativeSerialization<T> extends NativeSerializerMode<T>
     with TypeCaptureMixin<T> {
-  
   /// The structure this serializer is for.
   final DogStructure<T> structure;
 
@@ -95,8 +94,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 if (fieldType.isAssignable(mapValue)) {
                   args.add(mapValue);
                 } else {
-                  args.add(adjustWithCoercion(mapValue, iterableKind, serialType,
-                      engine.codec.primitiveCoercion, fieldName));
+                  args.add(adjustWithCoercion(mapValue, iterableKind,
+                      serialType, engine.codec.primitiveCoercion, fieldName));
                 }
               }
             } on DogFieldSerializerException {

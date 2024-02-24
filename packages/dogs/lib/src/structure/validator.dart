@@ -19,7 +19,6 @@ import "package:dogs_core/dogs_core.dart";
 
 /// Property level validator for annotations of [DogStructureField]s.
 abstract class FieldValidator {
-
   /// Property level validator for annotations of [DogStructureField]s.
   const FieldValidator();
 
@@ -42,7 +41,6 @@ abstract class FieldValidator {
 
 /// Class level validator for annotations of [ClassValidator]s.
 abstract class ClassValidator {
-
   /// Class level validator for annotations of [ClassValidator]s.
   const ClassValidator();
 
@@ -54,7 +52,6 @@ abstract class ClassValidator {
 
   /// Validates [value] against this validator.
   bool validate(dynamic cached, dynamic value, DogEngine engine);
-
 
   /// Annotates [value] with this validator returning an [AnnotationResult].
   /// This mechanic is used to provide more information about the validation
@@ -170,7 +167,6 @@ class ValidationException implements DogException {
 /// A [ValidationMode] that provides validation for [DogStructure]s.
 class StructureValidation<T> extends ValidationMode<T>
     with TypeCaptureMixin<T> {
-
   /// The structure this validator is for.
   DogStructure<T> structure;
 

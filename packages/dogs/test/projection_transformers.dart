@@ -49,8 +49,8 @@ void main() {
         "c": 2,
       }
     };
-    final transformed =
-        Projections.iterable("a.b", (TraverseResult e) => (e.value as int) * 2)(buffer);
+    final transformed = Projections.iterable(
+        "a.b", (TraverseResult e) => (e.value as int) * 2)(buffer);
     expect(transformed["a"]["b"], [2, 4, 6]);
     expect(buffer["a"]["b"], [1, 2, 3]);
   });

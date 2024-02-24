@@ -32,16 +32,15 @@ const negativeOrZero = Range(max: 0, maxExclusive: false);
 /// A [FieldValidator] that restricts a numeric type to a minimum and maximum value.
 class Range extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
-  
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
-  
+
   /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
-  
+
   /// Whether [min] is exclusive.
   final bool minExclusive;
-  
+
   /// Whether [max] is exclusive.
   final bool maxExclusive;
 
@@ -128,10 +127,9 @@ class Range extends StructureMetadata
 /// A [FieldValidator] that restricts a numeric type to a minimum value.
 class Minimum extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
-  
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
-  
+
   /// Whether [min] is exclusive.
   final bool minExclusive;
 
@@ -199,10 +197,9 @@ class Minimum extends StructureMetadata
 /// A [FieldValidator] that restricts a numeric type to a maximum value.
 class Maximum extends StructureMetadata
     implements APISchemaObjectMetaVisitor, FieldValidator {
-  
   /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
-  
+
   /// Whether [max] is exclusive.
   final bool maxExclusive;
 

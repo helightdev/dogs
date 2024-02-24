@@ -37,7 +37,6 @@ class DogJsonSerializer extends DogSerializer {
 }
 
 extension DogJsonExtension on DogEngine {
-  
   static final _jsonSerializer = DogJsonSerializer();
 
   @Deprecated("Serializers are deprecated. Just use toJson/fromJson methods")
@@ -46,19 +45,21 @@ extension DogJsonExtension on DogEngine {
   /// Converts a [value] to its JSON representation using the
   /// converter associated with [T] or [tree].
   String toJson<T>(T value,
-        {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native = this.toNative<T>(value, kind: kind, type: type, tree: tree);
     return conv.jsonEncode(native);
   }
 
   /// Converts JSON supplied via [encoded] to its normal representation
   /// by using the converter associated with [T] or [tree].
-  T fromJson<T>(String encoded, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+  T fromJson<T>(String encoded,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native = conv.jsonDecode(encoded);
     return this.fromNative<T>(native, kind: kind, type: type, tree: tree);
   }
 
   @Deprecated("Use toJson")
+
   /// Encodes this [value] to json, using the [DogConverter] associated with [T].
   String jsonEncode<T>(T value) {
     final native = convertObjectToNative(value, T);
@@ -66,6 +67,7 @@ extension DogJsonExtension on DogEngine {
   }
 
   @Deprecated("Use fromJson")
+
   /// Decodes this [encoded] json to an [T] instance,
   /// using the [DogConverter] associated with [T].
   T jsonDecode<T>(String encoded) {
