@@ -205,7 +205,7 @@ packages:
       path: "../../packages/dogs_generator"
       relative: true
     source: path
-    version: "5.3.2"
+    version: "5.3.3"
   dogs_toml:
     dependency: "direct main"
     description:

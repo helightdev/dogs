@@ -5,19 +5,15 @@ library;
 
 import 'package:dogs_core/dogs_core.dart';
 
-import 'dogs_odm.dart';
-
-export 'src/annotations.dart';
 export 'src/analysis.dart';
+export 'src/annotations.dart';
 export 'src/database.dart';
 export 'src/odm.dart';
-export 'src/pagination.dart';
 export 'src/query.dart';
 export 'src/repository.dart';
 export 'src/sort.dart';
 
 void installOdmConverters([DogEngine? engine]) {
   engine ??= DogEngine.instance;
-  engine.registerTreeBaseFactory(Page, pageBaseFactory);
-  engine.registerAutomatic(PageRequestConverter());
+  // Currently does nothing as pagination is now moved to the core package
 }

@@ -17,8 +17,8 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
+import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_odm/dogs_odm.dart';
-import 'package:dogs_odm/memory/sort.dart';
 import 'package:dogs_odm/memory_db.dart';
 
 class MemoryDatabase<T extends Object> extends CrudDatabase<T, String>

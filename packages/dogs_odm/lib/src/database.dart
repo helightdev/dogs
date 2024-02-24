@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import 'package:dogs_core/dogs_core.dart';
+
 import '../dogs_odm.dart';
 
 abstract class CrudDatabase<ENTITY extends Object, ID extends Object> {

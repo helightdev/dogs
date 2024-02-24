@@ -47,6 +47,9 @@ class DefaultTreeBaseFactories {
   /// Factory for [Optional]s.
   static final optional = TreeBaseConverterFactory.createNargsFactory<Optional>(
       nargs: 1, consume: <T>() => OptionalNTreeArgConverter<T>());
+
+  static final page = TreeBaseConverterFactory.createNargsFactory<Page>(
+      nargs: 1, consume: <T>() => PageNTreeArgConverter<T>());
 }
 
 /// [NTreeArgConverter] for [Map]s.
@@ -71,17 +74,4 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   APISchemaObject get output => APISchemaObject.map(
         ofSchema: itemConverters[1].output,
       );
-}
-
-/// [NTreeArgConverter] for [Optional]s.
-class OptionalNTreeArgConverter<T> extends NTreeArgConverter<Optional> {
-  @override
-  Optional deserialize(value, DogEngine engine) {
-    return Optional<T>(value == null ? null : deserializeArg(value, 0, engine));
-  }
-
-  @override
-  serialize(Optional value, DogEngine engine) {
-    return value.isPresent ? serializeArg(value.get(), 0, engine) : null;
-  }
 }
