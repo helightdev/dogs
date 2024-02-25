@@ -39,30 +39,44 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
         tree: QualifiedTypeTree.map<String,Person>()
     );
     ```
-    
+
     !!! example "This is a general example for TypeTrees"
         This can also be used for custom collections, wrappers, etc.  
         For more information, refer to [Tree Converters](/advanced/tree_converters) and
         [Structures](/advanced/structures#type-tree-resolution).
 
 === "Runtime Type"
-    ``` { .dart title="Json Encode Dynamic Type"}
-    var person = Person("Alex", 22, {"developer", "dart"});
-    var type = PersonSupertype;
-    var json = dogs.toJson(person,
-        type: type
-    );
-    ```
+``` { .dart title="Json Encode Dynamic Type"}
+var person = Person("Alex", 22, {"developer", "dart"});
+var type = PersonSupertype;
+var json = dogs.toJson(person,
+type: type
+);
+```
+
+=== "Nullable"
+``` { .dart title="Json Encode Nullable"}
+var json = dogs.toJson<Person?>(null,
+type: Person,
+);
+```
+
+    !!! example "Syntax"
+        To support nullable types without Optional wrappers, you need to explicitly specify a nullable
+        type parameter. Since most of the time no converter is bound to the nullable type, you also
+        need to specify the type explicitly using the named 'type' parameter. You can also use a tree
+        to resolve the type.
 
 ### Decoding
+
 === "Single"
-    ``` { .dart title="Json Decode" }
-    var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
-    var person = dogs.fromJson<Person>(person);
-    ```
-    !!! tip "Type Parameter required!"
-        Even when the type is inferred, you should always specify the type
-        to avoid unexpected behavior.
+``` { .dart title="Json Decode" }
+var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
+var person = dogs.fromJson<Person>(person);
+```
+!!! tip "Type Parameter required!"
+Even when the type is inferred, you should always specify the type
+to avoid unexpected behavior.
 
 === "List"
     ``` { .dart .annotate title="Json Decode List" }
@@ -88,18 +102,27 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
         It is just specified here so you **don't have to cast** the resulting type.
 
 === "Runtime Type"
-    ``` { .dart title="Json Decode Dynamic Type" }
-    var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
-    var type = PersonSupertype;
-    var person = dogs.fromJson(encoded,
-        type: type
-    );
-    ```
-    !!! example "Type Parameter not required!"
-        In this case, the type parameter is **not required**, as type tree already dictates the type.  
-        It is just specified here so you **don't have to cast** the resulting type.
+``` { .dart title="Json Decode Dynamic Type" }
+var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
+var type = PersonSupertype;
+var person = dogs.fromJson(encoded,
+type: type
+);
+```
+!!! example "Type Parameter not required!"
+In this case, the type parameter is **not required**, as type tree already dictates the type.  
+It is just specified here so you **don't have to cast** the resulting type.#
+
+=== "Nullable"
+``` { .dart title="Json Decode Nullable" }
+var json = """null""";
+var person = dogs.fromJson<Person?>(json,
+type: Person,
+);
+```
 
 ## Native Serialization
+
 You can also encode and decode objects from and to native dart objects.
 Values are considered native if they are serializable by the dart json encoder.
 All examples from the previous section can be used with native serialization as well by just

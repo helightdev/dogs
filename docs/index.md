@@ -15,6 +15,8 @@ to support a wide array of encodings and comes with json support out of the box.
     [Discord](https://discord.gg/6HKuGSzYKJ).
 
     [Getting Started! :material-send:](/serializables/){ .md-button .md-button--primary }
+
+    [Learn by Example! :material-send:](https://github.com/helightdev/dogs_examples){ .md-button .md-button--primary }
     
 
 ## Important Links
