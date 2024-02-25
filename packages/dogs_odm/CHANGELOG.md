@@ -1,3 +1,8 @@
+## 1.0.0-alpha.9
+
+ - **REFACTOR**: make MemoryOdmSystem optionally consume an engine instance or create an identified fork by default.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+
 ## 1.0.0-alpha.8
 
  - **FEAT**: add openapi descriptor to pagination types.

@@ -1,3 +1,16 @@
+## 8.5.0
+
+ - **REFACTOR**: reformat code.
+ - **REFACTOR**: support serialization of nullable values.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+ - **FIX**: pass on type argument.
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+ - **FEAT**: add utils for non graph serializers.
+ - **FEAT**: add mechanism for identifying and retrieving forked engine instances making them reusable.
+ - **FEAT**: add canSerializeNull for non-structure converters.
+ - **FEAT**: add metadata mixin and use it for the engine.
+ - **FEAT**: add pagination objects to dogs_core from dogs_odm.
+
 ## 8.4.1
 
  - **FIX**: ups add trees back.

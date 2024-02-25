@@ -3,6 +3,75 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_cbor` - `v2.1.0`](#dogs_cbor---v210)
+ - [`dogs_core` - `v8.5.0`](#dogs_core---v850)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.9`](#dogs_mongo_driver---v100-alpha9)
+ - [`dogs_odm` - `v1.0.0-alpha.9`](#dogs_odm---v100-alpha9)
+ - [`dogs_toml` - `v2.1.0`](#dogs_toml---v210)
+ - [`dogs_yaml` - `v2.1.0`](#dogs_yaml---v210)
+ - [`dogs_generator` - `v5.3.4`](#dogs_generator---v534)
+ - [`dogs_firestore` - `v0.0.3+3`](#dogs_firestore---v0033)
+ - [`dogs_built` - `v2.0.9`](#dogs_built---v209)
+ - [`dogs_forms` - `v0.1.1+3`](#dogs_forms---v0113)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.3.4`
+ - `dogs_firestore` - `v0.0.3+3`
+ - `dogs_built` - `v2.0.9`
+ - `dogs_forms` - `v0.1.1+3`
+
+---
+
+#### `dogs_cbor` - `v2.1.0`
+
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
+#### `dogs_core` - `v8.5.0`
+
+ - **REFACTOR**: reformat code.
+ - **REFACTOR**: support serialization of nullable values.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+ - **FIX**: pass on type argument.
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+ - **FEAT**: add utils for non graph serializers.
+ - **FEAT**: add mechanism for identifying and retrieving forked engine instances making them reusable.
+ - **FEAT**: add canSerializeNull for non-structure converters.
+ - **FEAT**: add metadata mixin and use it for the engine.
+ - **FEAT**: add pagination objects to dogs_core from dogs_odm.
+
+#### `dogs_mongo_driver` - `v1.0.0-alpha.9`
+
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+
+#### `dogs_odm` - `v1.0.0-alpha.9`
+
+ - **REFACTOR**: make MemoryOdmSystem optionally consume an engine instance or create an identified fork by default.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+
+#### `dogs_toml` - `v2.1.0`
+
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
+#### `dogs_yaml` - `v2.1.0`
+
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
+
 ## 2024-02-22
 
 ### Changes

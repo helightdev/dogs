@@ -1,3 +1,7 @@
+## 2.1.0
+
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
 ## 2.0.36
 
  - Update a dependency to the latest release.

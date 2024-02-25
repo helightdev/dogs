@@ -1,3 +1,7 @@
+## 1.0.0-alpha.9
+
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+
 ## 1.0.0-alpha.8
 
  - Update a dependency to the latest release.
