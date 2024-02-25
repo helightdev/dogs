@@ -25,7 +25,7 @@ class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   @override
   DogConverter getConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
+    final argumentConverters = TreeBaseConverterFactory.argumentConverters(
         tree, engine, allowPolymorphic);
     if (argumentConverters.length > 1) {
       throw ArgumentError("Lists can only have one generic type argument");
@@ -64,11 +64,16 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter
         ..description = "$BASE of ${itemSubtree.qualified.typeArgument}";
 }
 
+/// The native operation implementation for [IterableTreeBaseConverterMixin].
 class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
     with TypeCaptureMixin<dynamic> {
-  IterableTreeBaseConverterMixin mixin;
+  /// The parent mixin.
+  final IterableTreeBaseConverterMixin mixin;
+
+  /// Creates a new native operation for the given [mixin].
   IterableTreeNativeOperation(this.mixin);
 
+  /// The operation for the native serialization mode.
   late NativeSerializerMode operation;
 
   @override
@@ -80,14 +85,14 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
   @override
   deserialize(value, DogEngine engine) {
     if (value == null) return mixin.create([]);
-    var entries =
+    final entries =
         (value as Iterable).map((e) => operation.deserialize(e, engine));
     return mixin.create(entries);
   }
 
   @override
   serialize(value, DogEngine engine) {
-    var entries =
+    final entries =
         mixin.destruct(value).map((e) => operation.serialize(e, engine));
     return entries.toList();
   }
@@ -96,15 +101,27 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
   bool get canSerializeNull => true;
 }
 
+/// A mixin for [DogConverter]s that handle iterable types.
 mixin IterableTreeBaseConverterMixin on DogConverter {
+  /// The type tree of the items in the iterable.
   TypeTree get itemSubtree;
+
+  /// The converter for the items in the iterable.
   DogConverter get converter;
 
+  /// Creates a new value from the given [entries].
+  /// Needs to be invoked by [create].
   dynamic iterableCreator<T>(Iterable entries);
+
+  /// Destructs the given [value] into an iterable.
+  /// Needs to be invoked by [destruct].
   Iterable iterableDestructor<T>(dynamic value);
 
+  /// Creates a new value from the given [entries].
   dynamic create(Iterable entries) =>
       itemSubtree.qualified.consumeTypeArg(iterableCreator, entries);
+
+  /// Destructs the given [value] into an iterable.
   Iterable destruct(dynamic value) =>
       itemSubtree.qualified.consumeTypeArg(iterableDestructor, value);
 

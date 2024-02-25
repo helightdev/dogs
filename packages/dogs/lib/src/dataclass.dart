@@ -75,6 +75,8 @@ bool Function(dynamic, dynamic) _createDataclassEqualityProvider<T>() {
   return provider;
 }
 
+/// A mixin that provides dataclass functionality to a class, including
+/// validation shortcuts, equality, hashcode and toString
 mixin Dataclass<T> {
   /// Returns true if this object is valid.
   /// Does not throw any exceptions if the object is invalid.

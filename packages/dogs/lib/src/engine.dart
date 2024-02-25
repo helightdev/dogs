@@ -188,6 +188,7 @@ class DogEngine with MetadataMixin {
       try {
         child.rebuildFrom(this); // Also rebuild children
       } on Exception catch (e) {
+        // ignore: avoid_print
         print("Error while populating change to child: $e");
         _children.remove(child);
       }
@@ -552,6 +553,9 @@ dynamic adjustIterable<T>(dynamic value, IterableKind kind) {
   }
 }
 
+/// Converts a [value] to the given [IterableKind]. Tries to coerce the value to
+/// the desired type using the [coercion] if the value is not assignable to the
+/// [target] type.
 dynamic adjustWithCoercion(dynamic value, IterableKind kind, TypeCapture target,
     CodecPrimitiveCoercion coercion, String? fieldName) {
   if (kind == IterableKind.none) {
@@ -575,4 +579,13 @@ dynamic adjustWithCoercion(dynamic value, IterableKind kind, TypeCapture target,
 }
 
 /// Common iterable kinds which are compatible with dogs.
-enum IterableKind { list, set, none }
+enum IterableKind {
+  /// A iterable of the type [List]
+  list,
+
+  /// A iterable of the type [Set]
+  set,
+
+  /// A value that is not iterable or none of the above types
+  none
+}

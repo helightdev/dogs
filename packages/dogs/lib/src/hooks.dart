@@ -44,6 +44,8 @@ abstract class SerializationHook implements StructureMetadata {
       Map<String, dynamic> map, DogStructure structure, DogEngine engine) {}
 }
 
+/// A function that may be used to transform a map before deserialization.
+/// May be used in conjunction with [LightweightMigration] or [RevisionMigration].
 typedef MigrationFunction = Function(
     Map<String, dynamic> map, DogStructure structure, DogEngine engine);
 

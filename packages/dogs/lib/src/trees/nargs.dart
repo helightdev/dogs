@@ -25,12 +25,12 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   @override
   DogConverter getConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    var argumentConverters = TreeBaseConverterFactory.argumentConverters(
+    final argumentConverters = TreeBaseConverterFactory.argumentConverters(
         tree, engine, allowPolymorphic);
     if (tree.arguments.length != nargs) {
       throw ArgumentError("Expected $nargs type arguments");
     }
-    var factory = switch (tree.arguments.length) {
+    final factory = switch (tree.arguments.length) {
       1 => tree.arguments.first.qualified
           .consumeType(captureFactory as Function<_>()),
       2 => TypeContainers.arg2(
@@ -65,8 +65,8 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
         ).consume(captureFactory as Function<_0, _1, _2, _3, _4, _5>()),
       int() => throw Exception("Too many type arguments")
     };
-    var castedFactory = factory as NTreeArgConverter<BASE>;
-    var modeCacheEntry = engine.modeRegistry.nativeSerialization;
+    final castedFactory = factory as NTreeArgConverter<BASE>;
+    final modeCacheEntry = engine.modeRegistry.nativeSerialization;
     castedFactory.tree = tree;
     castedFactory.itemConverters = argumentConverters;
     castedFactory.nativeModes = argumentConverters
@@ -95,24 +95,38 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
   APISchemaObject get output => delegate.output;
 }
 
+/// A converter interface for a generic type with a fixed number of type arguments.
+/// Used together with [TreeBaseConverterFactory.createNargsFactory] to create
+/// a [DogConverter] for generic types.
 abstract class NTreeArgConverter<BASE> {
+  /// The type tree of the generic type instance.
   late TypeTree tree;
+
+  /// Pre-resolved item converters for the type arguments.
   late List<DogConverter> itemConverters;
+
+  /// Pre-resolved native serializers for the type arguments.
   late List<NativeSerializerMode> nativeModes;
 
+  /// Deserializes a the [value] using the converter of the [index]th type argument.
   dynamic deserializeArg(dynamic value, int index, DogEngine engine) {
     return nativeModes[index].deserialize(value, engine);
   }
 
+  /// Serializes a the [value] using the converter of the [index]th type argument.
   dynamic serializeArg(dynamic value, int index, DogEngine engine) {
     return nativeModes[index].serialize(value, engine);
   }
 
+  /// Deserializes a [value] to an instance of [BASE].
   BASE deserialize(dynamic value, DogEngine engine);
 
+  /// Serializes a [value] to a dynamic value.
   dynamic serialize(BASE value, DogEngine engine);
 
+  /// The output schema of the converter.
   APISchemaObject get output => APISchemaObject.empty();
 
+  /// Whether this converter can serialize null values.
   bool get canSerializeNull => false;
 }
