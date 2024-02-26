@@ -16,10 +16,13 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// Transformer that applies a projection to a [Map] document and returns the
+/// transformed document if a change was made.
 typedef ProjectionTransformer = Map<String, dynamic> Function(
   Map<String, dynamic> data,
 );
 
+/// Extensions on the [DogEngine] related to projections.
 extension ProjectionExtension on DogEngine {
   /// Creates a projection document from the given [properties] and [objects].
   /// The [properties] are merged into the document first, followed by the
@@ -315,8 +318,9 @@ class Projections {
     return (data) {
       final result = $get(data, path);
       if (!result.exists) return function((value: null, exists: false));
-      if (result.value is! Iterable)
+      if (result.value is! Iterable) {
         throw ArgumentError("Value at path '$path' is not iterable");
+      }
       final transformedData = (result.value as Iterable)
           .map((e) => function((value: e, exists: true)))
           .toList();

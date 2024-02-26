@@ -34,30 +34,6 @@ bool kWarnPolymorphicTerminalNode = true;
 /// Static [DeepCollectionEquality] instance used by the dog library.
 const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 
-@Deprecated("Use dogs.toJson")
-
-/// Encodes this [value] to json, using the [DogConverter] associated with [T].
-String toJson<T>(T value) => DogEngine.instance.jsonEncode<T>(value);
-
-@Deprecated("Use dogs.fromJson")
-
-/// Decodes this [json] to an [T] instance, using the [DogConverter] associated with [T].
-T fromJson<T>(String json) => DogEngine.instance.jsonDecode(json);
-
-@Deprecated("Use dogs.toNative")
-
-/// Converts an [T] instance to a native value, using the [DogConverter] associated with [T].
-/// Output follows the default [DogNativeCodec] implementation, [DefaultNativeCodec].
-dynamic toNative<T>(T value) =>
-    DogEngine.instance.convertObjectToNative(value, T);
-
-@Deprecated("Use dogs.fromNative")
-
-/// Converts an a native value to an [T] instance, using the [DogConverter] associated with [T].
-/// Input must follow the default [DogNativeCodec] implementation, [DefaultNativeCodec].
-T fromNative<T>(dynamic native) =>
-    DogEngine.instance.convertObjectFromNative(native, T);
-
 /// Creates a projection resulting in an instance of [T]. All input fields are dynamic and contain following:
 /// 1. Serializable Object (which is then converted to a field map)
 /// 2. String Keyed Maps

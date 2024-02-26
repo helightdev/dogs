@@ -113,17 +113,16 @@ void main() {
     fakeEngine.registerAutomatic(LatLngConverter());
 
     test("Serialization", () {
-      final encoded =
-          fakeEngine.jsonEncode<Person>(Person(name: "John", age: 42));
+      final encoded = fakeEngine.toJson<Person>(Person(name: "John", age: 42));
       expect(encoded, r'"{\"name\":\"John\",\"age\":42}"');
-      final decoded = fakeEngine.jsonDecode<Person>(encoded);
+      final decoded = fakeEngine.fromJson<Person>(encoded);
       expect(decoded, Person(name: "John", age: 42));
     });
 
     test("LatLng", () {
-      final encoded = fakeEngine.jsonEncode<LatLng>(LatLng(1.0, 2.0));
+      final encoded = fakeEngine.toJson<LatLng>(LatLng(1.0, 2.0));
       expect(encoded, r"[1.0,2.0]");
-      final decoded = fakeEngine.jsonDecode<LatLng>(encoded);
+      final decoded = fakeEngine.fromJson<LatLng>(encoded);
       expect(decoded, LatLng(1.0, 2.0));
     });
 

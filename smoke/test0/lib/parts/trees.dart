@@ -80,13 +80,12 @@ void testTrees() {
 }
 
 void testTypeTree(TypeTree tree, dynamic initialValue, bool Function(dynamic a, dynamic b) comparator) {
-  var converter = dogs.getTreeConverter(tree);
-  GraphSerializerMode graphMode = dogs.modeRegistry.graphSerialization.forConverter(converter, dogs);
-  NativeSerializerMode nativeMode = dogs.modeRegistry.nativeSerialization.forConverter(converter, dogs);
-  var resultGraph = graphMode.serialize(initialValue, dogs);
-  var resultNative = nativeMode.serialize(initialValue, dogs);
-  var reGraph = graphMode.deserialize(resultGraph, dogs);
-  var reNative = nativeMode.deserialize(resultNative, dogs);
-  expect(true, comparator(reGraph, initialValue), reason: "Graph result not equal: $reGraph != $initialValue");
-  expect(true, comparator(reNative, initialValue), reason: "Native result not equal: $reNative != $initialValue");
+  var resultGraph = dogs.toGraph(initialValue, tree: tree);
+  var resultNative = dogs.toNative(initialValue, tree: tree);
+  var reGraph = dogs.fromGraph(resultGraph, tree: tree);
+  var reNative = dogs.fromNative(resultNative, tree: tree);
+  expect(true, comparator(reGraph, initialValue),
+      reason: "Graph result not equal: $reGraph != $initialValue");
+  expect(true, comparator(reNative, initialValue),
+      reason: "Native result not equal: $reNative != $initialValue");
 }

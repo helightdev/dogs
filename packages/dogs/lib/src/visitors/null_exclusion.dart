@@ -14,8 +14,7 @@
  *    limitations under the License.
  */
 
-import "package:collection/collection.dart";
-import "package:dogs_core/dogs_core.dart";
+
 
 /// Deeply converts a map with dynamic keys to a map with string keys.
 Object? substituteNullValues(Object? value) => switch (value) {
@@ -26,6 +25,7 @@ Object? substituteNullValues(Object? value) => switch (value) {
       _ => value
     };
 
+/// Undoes the conversion of [substituteNullValues].
 Object? unsusbstituteNullValues(Object? value) => switch (value) {
       r"$null$" => null,
       Map() => value.map<String, dynamic>(
@@ -33,34 +33,3 @@ Object? unsusbstituteNullValues(Object? value) => switch (value) {
       List() => value.map((e) => unsusbstituteNullValues(e)).toList(),
       _ => value
     };
-
-class NullExclusionVisitor extends DogVisitor<DogGraphValue> {
-  @override
-  DogGraphValue visitNull(DogNull n) => throw Exception("Can't convert null!");
-
-  @override
-  DogGraphValue visitBool(DogBool b) => b;
-
-  @override
-  DogGraphValue visitDouble(DogDouble d) => d;
-
-  @override
-  DogGraphValue visitInt(DogInt i) => i;
-
-  @override
-  DogGraphValue visitString(DogString s) => s;
-
-  @override
-  DogGraphValue visitList(DogList l) {
-    return DogList(
-        l.value.whereNot((e) => e is DogNull).map((e) => visit(e)).toList());
-  }
-
-  @override
-  DogGraphValue visitMap(DogMap m) {
-    return DogMap(Map.fromEntries(m.value.entries
-        .whereNot(
-            (element) => element.key is DogNull || element.value is DogNull)
-        .map((e) => MapEntry(visit(e.key), visit(e.value)))));
-  }
-}

@@ -22,7 +22,6 @@ class GeneratedBuiltInteropConverter<T> extends DefaultStructureConverter<T> {
             },
           );
         },
-        GraphSerializerMode: () => GraphSerializerMode.auto<T>(this)
       };
 
   @override
@@ -54,7 +53,6 @@ class DogBuiltRuntimeConverter extends DogConverter with OperationMapMixin {
         return mapper.deserializeWith(serializer, value);
       },
     ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
 }
 

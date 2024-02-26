@@ -16,8 +16,8 @@
 
 import 'dart:typed_data';
 
-import 'package:dogs_core/dogs_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dogs_core/dogs_core.dart';
 
 /// Override the [DateTimeConverter] to use [Timestamp] instead of [String] as the native representation.
 class DateTimeToTimestampConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
@@ -29,10 +29,6 @@ class DateTimeToTimestampConverter extends DogConverter<DateTime> with Operation
         serializer: (value, engine) => Timestamp.fromDate(value),
         deserializer: (value, engine) => (value as Timestamp).toDate(),
     ),
-    GraphSerializerMode: () => GraphSerializerMode.create(
-        serializer: (value, engine) => DogNative(Timestamp.fromDate(value)),
-        deserializer: (value, engine) => ((value as DogNative).value as Timestamp).toDate(),
-    )
   };
 }
 
@@ -47,9 +43,5 @@ class Uint8ListToBlobConverter extends DogConverter<Uint8List> with OperationMap
         serializer: (value, engine) => Blob(value),
         deserializer: (value, engine) => (value as Blob).bytes,
     ),
-    GraphSerializerMode: () => GraphSerializerMode.create(
-        serializer: (value, engine) => DogNative(Blob(value)),
-        deserializer: (value, engine) => ((value as DogNative).value as Blob).bytes,
-    )
   };
 }

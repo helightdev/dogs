@@ -19,6 +19,7 @@ import "package:dogs_core/dogs_core.dart";
 /// Factory for [OperationMode]s.
 abstract class OperationModeFactory<T extends OperationMode>
     with TypeCaptureMixin<T> {
+  /// Factory for [OperationMode]s.
   const OperationModeFactory();
 
   /// Creates a new instance of [T] for the given [converter] and [engine].
@@ -45,9 +46,13 @@ abstract class OperationModeFactory<T extends OperationMode>
 /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
 class SingletonConverterOperationModeFactory<T extends OperationMode>
     extends OperationModeFactory<T> {
+  /// The type of the [DogConverter] to return the [mode] for.
   final Type targetType;
+
+  /// The [OperationMode] to return for [targetType].
   final T mode;
 
+  /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
   const SingletonConverterOperationModeFactory(this.targetType, this.mode);
 
   @override
@@ -60,9 +65,13 @@ class SingletonConverterOperationModeFactory<T extends OperationMode>
 /// A [OperationModeFactory] that returns a singleton [OperationMode] for a specific type.
 class SingletonTypeOperationModeFactory<T extends OperationMode>
     extends OperationModeFactory<T> {
+  /// The type of the object to return the [mode] for.
   final Type targetType;
+
+  /// The [OperationMode] to return for [targetType].
   final T mode;
 
+  /// A [OperationModeFactory] that returns a singleton [OperationMode] for a specific type.
   const SingletonTypeOperationModeFactory(this.targetType, this.mode);
 
   @override
@@ -77,6 +86,7 @@ class ComposableOperationModeFactory<T extends OperationMode>
     extends OperationModeFactory<T> {
   final List<OperationModeFactory> _factories;
 
+  /// A [OperationModeFactory] that composes multiple other factories.
   const ComposableOperationModeFactory(this._factories);
 
   @override

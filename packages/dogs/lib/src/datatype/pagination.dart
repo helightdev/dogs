@@ -111,6 +111,7 @@ class PageMeta {
   /// The total number of pages.
   final int totalPages;
 
+  /// Metadata about a page.
   PageMeta({
     required this.number,
     required this.size,
@@ -140,6 +141,7 @@ class PageRequest {
   /// The size of the page.
   late final int size;
 
+  /// Simple page and size based pagination request.
   PageRequest({
     int? page,
     int? skip,
@@ -155,8 +157,11 @@ class PageRequest {
     }
   }
 
+  /// Creates a [PageRequest] with the given [page] and [size].
   PageRequest.of(this.page, this.size);
 
+  /// Creates a [PageRequest] from a page query.
+  /// Takes the `page` and `size` parameters from a query parameter map.
   factory PageRequest.fromPageQuery(Map<String, dynamic> query) {
     return PageRequest(
       page: query["page"],
@@ -164,6 +169,8 @@ class PageRequest {
     );
   }
 
+  /// Creates a [PageRequest] from a cursor query.
+  /// Takes the `skip` and `limit` parameters from a query parameter map.
   factory PageRequest.fromCursorQuery(Map<String, dynamic> query) {
     return PageRequest(
       skip: query["skip"],
@@ -174,30 +181,36 @@ class PageRequest {
   /// Calculates the number of elements to skip.
   int get skip => page * size;
 
+  /// Returns a [Map] representation of the cursor query.
+  /// Contains the `skip` and `limit` parameters.
   Map<String, dynamic> get cursorQuery => {
         "skip": skip,
         "limit": size,
       };
 
+  /// Returns a [Map] representation of the page query.
+  /// Contains the `page` and `size` parameters.
   Map<String, dynamic> get pageQuery => {
         "page": page,
         "size": size,
       };
 }
 
+/// A [NTreeArgConverter] for [Page]s.
 class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
   @override
   Page deserialize(value, DogEngine engine) {
     if (value is! Map) throw ArgumentError("Expected Map");
-    var meta = PageMeta(
+    final meta = PageMeta(
       number: value["number"],
       size: value["size"],
       totalElements: value["totalElements"],
       totalPages: value["totalPages"],
     );
-    var content = value["content"];
+    final content = value["content"];
     if (content is! List) throw ArgumentError("Expected List");
-    var result = content.map((e) => deserializeArg(e, 0, engine) as T).toList();
+    final result =
+        content.map((e) => deserializeArg(e, 0, engine) as T).toList();
     return Page<T>(meta, result);
   }
 
@@ -224,7 +237,9 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
       });
 }
 
+/// A [DogConverter] for [PageRequest]s.
 class PageRequestConverter extends SimpleDogConverter<PageRequest> {
+  /// A [DogConverter] for [PageRequest]s.
   PageRequestConverter() : super(serialName: "PageRequest");
 
   @override

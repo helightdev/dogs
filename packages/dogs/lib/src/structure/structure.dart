@@ -125,7 +125,10 @@ enum StructureConformity {
   dataclass
 }
 
+/// Static way to provide additional opmode factories to the default structure
+/// converter.
 abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode>
     with TypeCaptureMixin<MODE_TYPE> {
+  /// Returns the operation mode for the [structure].
   MODE_TYPE resolve(DogStructure structure);
 }

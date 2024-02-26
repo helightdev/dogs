@@ -18,7 +18,6 @@ import "dart:collection";
 
 import "package:dogs_core/dogs_core.dart";
 
-export "modes/graph.dart";
 export "modes/native.dart";
 export "modes/validation.dart";
 
@@ -43,9 +42,6 @@ class OperationModeRegistry {
   /// Fast access to the [entry] for [NativeSerializerMode].
   late OperationModeCacheEntry<NativeSerializerMode> nativeSerialization;
 
-  /// Fast access to the [entry] for [GraphSerializerMode].
-  late OperationModeCacheEntry<GraphSerializerMode> graphSerialization;
-
   /// Fast access to the [entry] for [ValidationMode].
   late OperationModeCacheEntry<ValidationMode> validation;
 
@@ -53,7 +49,6 @@ class OperationModeRegistry {
   /// The cache is empty at this point and will be lazily populated.
   OperationModeRegistry() {
     nativeSerialization = entry<NativeSerializerMode>();
-    graphSerialization = entry<GraphSerializerMode>();
     validation = entry<ValidationMode>();
   }
 

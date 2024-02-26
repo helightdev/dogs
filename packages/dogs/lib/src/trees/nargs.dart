@@ -88,7 +88,6 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
             serializer: delegate.serialize,
             deserializer: delegate.deserialize,
             canSerializeNull: delegate.canSerializeNull),
-        GraphSerializerMode: () => GraphSerializerMode.auto<BASE>(this),
       };
 
   @override

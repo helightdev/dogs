@@ -30,7 +30,6 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
   Map<Type, OperationMode Function()> get modes => {
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: serialize, deserializer: deserialize),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   deserialize(value, DogEngine engine) {
@@ -122,7 +121,6 @@ class DefaultListConverter extends DogConverter<List>
                   .forConverter(polymorphicConverter, engine)
                   .deserializeIterable(value, engine, IterableKind.list),
             ),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override
@@ -154,7 +152,6 @@ class DefaultSetConverter extends DogConverter<Set>
                   .forConverter(polymorphicConverter, engine)
                   .deserializeIterable(value, engine, IterableKind.set),
             ),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override
@@ -186,7 +183,6 @@ class DefaultIterableConverter extends DogConverter<Iterable>
                   .forConverter(polymorphicConverter, engine)
                   .deserializeIterable(value, engine, IterableKind.list),
             ),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override

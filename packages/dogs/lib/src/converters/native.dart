@@ -25,9 +25,6 @@ class NativeRetentionConverter<T> extends DogConverter<T>
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => value,
             deserializer: (value, engine) => value),
-        GraphSerializerMode: () => GraphSerializerMode.create(
-            serializer: (value, engine) => engine.codec.fromNative(value),
-            deserializer: (value, engine) => (value as DogNative).value as T)
       };
 
   @override

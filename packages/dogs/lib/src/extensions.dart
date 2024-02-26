@@ -17,7 +17,9 @@
 import "package:collection/collection.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// Extensions on [DogGraphValue]s.
 extension DogValueExtension on DogGraphValue {
+  /// Checks if this [DogGraphValue] is an [DogNull]
   bool get isNull => this is DogNull;
 
   /// Checks if this [DogGraphValue] is an [DogString]
@@ -69,15 +71,10 @@ extension DogValueExtension on DogGraphValue {
   }
 }
 
+/// Extensions on [Iterable]s.
 extension DogsIterableExtension<T> on Iterable<T> {
-  Type get typeArgument => T;
-
-  Type get deriveListType => List<T>;
-
-  Type get deriveSetType => Set<T>;
-
-  Type get deriveIterableType => Iterable<T>;
-
+  /// Returns the first element that satisfies the given [predicate] or null if
+  /// no elements are found.
   T? firstWhereOrNullDogs(bool Function(T element) func) {
     for (var element in this) {
       if (func(element)) return element;
@@ -86,20 +83,7 @@ extension DogsIterableExtension<T> on Iterable<T> {
   }
 }
 
-extension DogsMapExtension<K, V> on Map<K, V> {
-  Type get keyTypeArgument => K;
-
-  Type get valueTypeArgument => V;
-
-  @Deprecated("Moved to DefaultNativeCodec")
-  DogGraphValue get asGraph => DogGraphValue.fromNative(this);
-}
-
-extension DogsListExtension<T> on List<T> {
-  @Deprecated("Moved to DefaultNativeCodec")
-  DogGraphValue get asGraph => DogGraphValue.fromNative(this);
-}
-
+/// Extensions which provide easier shortcuts for common operations.
 extension DogEngineShortcuts on DogEngine {
   /// Validates the supplied [value] using the [ValidationMode] mapped to [T].
   /// Throws a [ValidationException] if [validateObject] returns false.
@@ -109,41 +93,19 @@ extension DogEngineShortcuts on DogEngine {
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the
-  /// converter associated with [T] or [typeTree].
+  /// converter associated with [T] or [tree].
   DogGraphValue toGraph<T>(T value,
-      {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
-    // If the type is explicitly nullable, manually handle null values.
-    final isNullable = null is T;
-    if (value == null && isNullable) {
-      return DogNull();
-    }
-
-    if (typeTree != null) {
-      final converter = getTreeConverter(typeTree);
-      return modeRegistry.graphSerialization
-          .forConverter(converter, this)
-          .serialize(value, this);
-    }
-    return convertIterableToGraph(value, type ?? T, kind);
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final native = toNative<T>(value, kind: kind, type: type, tree: tree);
+    return codec.fromNative(native);
   }
 
   /// Converts [DogGraphValue] supplied via [value] to its normal representation
-  /// by using the converter associated with [T] or [typeTree].
+  /// by using the converter associated with [T] or [tree].
   T fromGraph<T>(DogGraphValue value,
-      {IterableKind kind = IterableKind.none, Type? type, TypeTree? typeTree}) {
-    // If the type is explicitly nullable, manually handle null values.
-    final isNullable = null is T;
-    if (value is DogNull && isNullable) {
-      return null as T;
-    }
-
-    if (typeTree != null) {
-      final converter = getTreeConverter(typeTree);
-      return modeRegistry.graphSerialization
-          .forConverter(converter, this)
-          .deserialize(value, this);
-    }
-    return convertIterableFromGraph(value, type ?? T, kind);
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final native = value.coerceNative();
+    return fromNative<T>(native, kind: kind, type: type, tree: tree);
   }
 
   /// Converts a [value] to its native representation using the converter
@@ -196,6 +158,7 @@ extension DogEngineShortcuts on DogEngine {
   }
 }
 
+/// Extensions on [DogStructure]s.
 extension StructureExtensions on DogStructure {
   /// Returns all field getters for this structure.
   List<dynamic Function(dynamic)> get getters => List.generate(
@@ -241,11 +204,15 @@ extension StructureExtensions on DogStructure {
   }
 }
 
+/// Extensions on [DogStructureField]s.
 extension FieldExtension on DogStructureField {
+  /// Returns all annotations of type [T] for this field.
   List<T> metadataOf<T>() {
     return annotations.whereType<T>().toList();
   }
 
+  /// Returns the [DogConverter] the [StructureHarbinger] would use to convert
+  /// this field.
   DogConverter? findConverter(DogStructure structure, [DogEngine? engine]) {
     engine ??= DogEngine.instance;
     final harbinger = StructureHarbinger.create(structure, engine);

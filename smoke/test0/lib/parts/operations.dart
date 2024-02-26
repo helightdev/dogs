@@ -35,12 +35,12 @@ void testOperations() {
 }
 
 void testOperation(Type type, dynamic initialValue, bool Function(dynamic a, dynamic b) comparator) {
-  var nativeOperation = dogs.modeRegistry.nativeSerialization.forType(type, dogs);
-  var graphOperation = dogs.modeRegistry.graphSerialization.forType(type, dogs);
-  var resultGraph = graphOperation.serialize(initialValue, dogs);
-  var resultNative = nativeOperation.serialize(initialValue, dogs);
-  var reGraph = graphOperation.deserialize(resultGraph, dogs);
-  var reNative = nativeOperation.deserialize(resultNative, dogs);
-  expect(true, comparator(reGraph, initialValue), reason: "Graph result not equal: $reGraph != $initialValue");
-  expect(true, comparator(reNative, initialValue), reason: "Native result not equal: $reNative != $initialValue");
+  var resultGraph = dogs.toGraph(initialValue, type: type);
+  var resultNative = dogs.toNative(initialValue, type: type);
+  var reGraph = dogs.fromGraph(resultGraph, type: type);
+  var reNative = dogs.fromNative(resultNative, type: type);
+  expect(true, comparator(reGraph, initialValue),
+      reason: "Graph result not equal: $reGraph != $initialValue");
+  expect(true, comparator(reNative, initialValue),
+      reason: "Native result not equal: $reNative != $initialValue");
 }

@@ -35,7 +35,6 @@ class FirebaseTimestampConverter extends DogConverter<Timestamp> with OperationM
         serializer: (value, engine) => engine.convertObjectToNative(value.toDate(), DateTime),
         deserializer: (value, engine) => Timestamp.fromDate(engine.convertObjectFromNative(value, DateTime)),
     ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
 }
 
@@ -48,7 +47,6 @@ class FirebaseGeoPointConverter extends DogConverter<GeoPoint> with OperationMap
       serializer: (value, engine) => encode(value),
       deserializer: (value, engine) => decode(value),
     ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
 
   static String encode(GeoPoint value) => "${value.latitude},${value.longitude}";
@@ -67,6 +65,5 @@ class FirebaseBlobConverter extends DogConverter<Blob> with OperationMapMixin<Bl
       serializer: (value, engine) => base64Encode(value.bytes),
       deserializer: (value, engine) => Blob(base64Decode(value)),
     ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
 }

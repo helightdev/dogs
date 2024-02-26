@@ -45,19 +45,7 @@ class ConvertableAConverter extends DogConverter<ConvertableA> with OperationMap
         serializer: (value, engine) => [value.a, value.b],
         deserializer: (value, engine) => ConvertableA(value[0], value[1]),
     ),
-    GraphSerializerMode: () => GraphSerializerMode.auto(this)
   };
-
-  @override
-  ConvertableA convertFromGraph(DogGraphValue value, DogEngine engine) {
-    var list = value.asList!.value;
-    return ConvertableA(list[0].asInt!, list[1].asInt!);
-  }
-
-  @override
-  DogGraphValue convertToGraph(ConvertableA value, DogEngine engine) {
-    return DogList([DogInt(value.a), DogInt(value.b)]);
-  }
 
   ConvertableAConverter() : super(
     struct: DogStructure<ConvertableA>.synthetic("ConvertableA")

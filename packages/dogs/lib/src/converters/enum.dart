@@ -32,7 +32,6 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => toStr(value),
             deserializer: (value, engine) => fromStr(value)!),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override

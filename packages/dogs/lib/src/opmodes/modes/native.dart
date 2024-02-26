@@ -16,6 +16,13 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// Operation mode that converters a value to a native representation as
+/// defined by the [DogNativeCodec] of the current [DogEngine]. For most
+/// implementations, this means converting the value to a "primitive" dart type,
+/// that could also be encoded using [jsonEncode].
+///
+/// Consider using [SimpleDogConverter] since this base class already implements
+/// this operation mode for you.
 abstract class NativeSerializerMode<T> implements OperationMode<T> {
   /// Aggressively converts [T] to a "primitive" dart type.
   dynamic serialize(T value, DogEngine engine);
@@ -59,6 +66,9 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
     }
   }
 
+  /// Creates a new [NativeSerializerMode] instance using the provided
+  /// [serializer] and [deserializer] functions without needing to create a
+  /// new class.
   static NativeSerializerMode<T> create<T>(
           {required dynamic Function(T value, DogEngine engine) serializer,
           required T Function(dynamic value, DogEngine engine) deserializer,

@@ -88,7 +88,7 @@ mixin Dataclass<T> {
   @override
   String toString() {
     try {
-      return "$T ${DogEngine.instance.convertObjectToGraph(this, T).coerceString()}";
+      return "$T ${DogEngine.instance.toGraph(this, type: T).coerceString()}";
     } catch (e, st) {
       assert(() {
         print("Error in Dataclass toString(): $e:\n$st");

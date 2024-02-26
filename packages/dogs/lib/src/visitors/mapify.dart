@@ -14,12 +14,14 @@
  *    limitations under the License.
  */
 
+/// Makes sure that the given [obj] is a map by wrapping it in a map if necessary.
 Map mapifyValue(dynamic obj) => switch (obj) {
       Map() => obj,
       List() => <String, dynamic>{r"$elements": obj},
       _ => <String, dynamic>{r"$value": obj}
     };
 
+/// Undo the [mapifyValue] operation.
 dynamic unmapifyValue(Map obj) {
   if (obj.containsKey(r"$elements") && obj.length == 1) {
     return obj[r"$elements"];

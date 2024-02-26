@@ -24,6 +24,8 @@ import "package:dogs_core/dogs_core.dart";
 /// Iso8601 string.
 class DateTimeConverter extends DogConverter<DateTime>
     with OperationMapMixin<DateTime> {
+  /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
+  /// Iso8601 string.
   DateTimeConverter()
       : super(struct: DogStructure<DateTime>.synthetic("DateTime"));
 
@@ -31,8 +33,7 @@ class DateTimeConverter extends DogConverter<DateTime>
   Map<Type, OperationMode<DateTime> Function()> get modes => {
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => value.toIso8601String(),
-            deserializer: (value, engine) => DateTime.parse(value)),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
+            deserializer: (value, engine) => DateTime.parse(value))
       };
 
   @override
@@ -43,6 +44,8 @@ class DateTimeConverter extends DogConverter<DateTime>
 /// Iso8601 string.
 class DurationConverter extends DogConverter<Duration>
     with OperationMapMixin<Duration> {
+  /// [DogConverter] for [Duration] instances which encode a duration as a
+  /// Iso8601 string.
   DurationConverter()
       : super(struct: DogStructure<Duration>.synthetic("Duration"));
 
@@ -51,7 +54,6 @@ class DurationConverter extends DogConverter<Duration>
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => _writeIso8601Duration(value),
             deserializer: (value, engine) => _parseDuration(value)),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override
@@ -104,13 +106,13 @@ class DurationConverter extends DogConverter<Duration>
           "Contains sub-second data which cannot be serialized.");
     }
     final buffer = StringBuffer(_durationToken)
-      ..write(days == 0 ? "" : '$days$_dayToken');
+      ..write(days == 0 ? "" : "$days$_dayToken");
     if (!(hours == 0 && minutes == 0 && seconds == 0)) {
       buffer
         ..write(_timeToken)
-        ..write(hours == 0 ? "" : '$hours$_hourToken')
-        ..write(minutes == 0 ? "" : '$minutes$_minuteToken')
-        ..write(seconds == 0 ? "" : '$seconds$_secondToken');
+        ..write(hours == 0 ? "" : "$hours$_hourToken")
+        ..write(minutes == 0 ? "" : "$minutes$_minuteToken")
+        ..write(seconds == 0 ? "" : "$seconds$_secondToken");
     }
     return buffer.toString();
   }
@@ -132,6 +134,7 @@ class DurationConverter extends DogConverter<Duration>
 
 /// [DogConverter] for [Uri] instances which encodes the uri into a string.
 class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
+  /// [DogConverter] for [Uri] instances which encodes the uri into a string.
   UriConverter() : super(struct: DogStructure<Uri>.synthetic("Uri"));
 
   @override
@@ -139,7 +142,6 @@ class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => value.toString(),
             deserializer: (value, engine) => Uri.parse(value)),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override
@@ -150,6 +152,8 @@ class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
 /// as a base64 string using [base64Encode].
 class Uint8ListConverter extends DogConverter<Uint8List>
     with OperationMapMixin<Uint8List> {
+  /// [DogConverter] for [Uint8List] instances which encodes the binary data
+  /// as a base64 string using [base64Encode].
   Uint8ListConverter()
       : super(struct: DogStructure<Uint8List>.synthetic("Uint8List"));
 
@@ -158,7 +162,6 @@ class Uint8ListConverter extends DogConverter<Uint8List>
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => base64Encode(value),
             deserializer: (value, engine) => base64Decode(value)),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   @override
@@ -168,6 +171,8 @@ class Uint8ListConverter extends DogConverter<Uint8List>
 /// [DogConverter] for [RegExp] instances which encodes the regular expression
 /// as a string.
 class RegExpConverter extends SimpleDogConverter<RegExp> {
+  /// [DogConverter] for [RegExp] instances which encodes the regular expression
+  /// as a string.
   RegExpConverter() : super(serialName: "RegExp");
 
   @override

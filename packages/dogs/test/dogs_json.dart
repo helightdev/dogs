@@ -16,10 +16,10 @@ void main() {
         MemoryDogStructureProxy());
     final converter = DogStructureConverterImpl(structure);
     final operation = engine.modeRegistry
-        .entry<GraphSerializerMode>()
+        .entry<NativeSerializerMode>()
         .forConverter(converter, engine);
     final graph = operation.serialize(["Christoph", 19, "Hello!"], engine);
     expect("""{"name":"Christoph","age":19,"note":"Hello!"}""",
-        engine.jsonSerializer.serialize(graph));
+        operation.deserialize(graph, engine));
   });
 }

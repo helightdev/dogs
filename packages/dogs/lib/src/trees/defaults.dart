@@ -47,6 +47,7 @@ class DefaultTreeBaseFactories {
   static final optional = TreeBaseConverterFactory.createNargsFactory<Optional>(
       nargs: 1, consume: <T>() => OptionalNTreeArgConverter<T>());
 
+  /// Factory for [Page]s.
   static final page = TreeBaseConverterFactory.createNargsFactory<Page>(
       nargs: 1, consume: <T>() => PageNTreeArgConverter<T>());
 }

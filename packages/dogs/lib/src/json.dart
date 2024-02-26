@@ -15,38 +15,18 @@
  */
 
 import "dart:convert" as conv;
-import "dart:convert";
 
 import "package:dogs_core/dogs_core.dart";
 
-// ignore: deprecated_member_use_from_same_package
-class DogJsonSerializer extends DogSerializer {
-  final codec = DefaultNativeCodec();
 
-  @override
-  DogGraphValue deserialize(value) {
-    final decoded = jsonDecode(value);
-    return codec.fromNative(decoded);
-  }
-
-  @override
-  dynamic serialize(DogGraphValue value) {
-    final native = value.coerceNative();
-    return jsonEncode(native);
-  }
-}
-
+/// Extension on [DogEngine] that provides JSON serialization and deserialization.
 extension DogJsonExtension on DogEngine {
-  static final _jsonSerializer = DogJsonSerializer();
-
-  @Deprecated("Serializers are deprecated. Just use toJson/fromJson methods")
-  DogJsonSerializer get jsonSerializer => _jsonSerializer;
 
   /// Converts a [value] to its JSON representation using the
   /// converter associated with [T] or [tree].
   String toJson<T>(T value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final native = this.toNative<T>(value, kind: kind, type: type, tree: tree);
+    final native = toNative<T>(value, kind: kind, type: type, tree: tree);
     return conv.jsonEncode(native);
   }
 
@@ -55,47 +35,6 @@ extension DogJsonExtension on DogEngine {
   T fromJson<T>(String encoded,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native = conv.jsonDecode(encoded);
-    return this.fromNative<T>(native, kind: kind, type: type, tree: tree);
-  }
-
-  @Deprecated("Use toJson")
-
-  /// Encodes this [value] to json, using the [DogConverter] associated with [T].
-  String jsonEncode<T>(T value) {
-    final native = convertObjectToNative(value, T);
-    return conv.jsonEncode(native);
-  }
-
-  @Deprecated("Use fromJson")
-
-  /// Decodes this [encoded] json to an [T] instance,
-  /// using the [DogConverter] associated with [T].
-  T jsonDecode<T>(String encoded) {
-    final native = conv.jsonDecode(encoded);
-    return convertObjectFromNative(native, T);
-  }
-
-  @Deprecated("use fromJson")
-  List<T> jsonDecodeList<T>(String encoded) {
-    final graph = _jsonSerializer.deserialize(encoded);
-    return convertIterableFromGraph(graph, T, IterableKind.list);
-  }
-
-  @Deprecated("use fromJson")
-  Set<T> jsonDecodeSet<T>(String encoded) {
-    final graph = _jsonSerializer.deserialize(encoded);
-    return convertIterableFromGraph(graph, T, IterableKind.set);
-  }
-
-  @Deprecated("use toJson")
-  String jsonEncodeList<T>(List<T> value) {
-    final graph = convertIterableToGraph(value, T, IterableKind.list);
-    return _jsonSerializer.serialize(graph);
-  }
-
-  @Deprecated("use toJson")
-  String jsonEncodeSet<T>(Set<T> value) {
-    final graph = convertIterableToGraph(value, T, IterableKind.set);
-    return _jsonSerializer.serialize(graph);
+    return fromNative<T>(native, kind: kind, type: type, tree: tree);
   }
 }

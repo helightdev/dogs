@@ -19,6 +19,8 @@ import "package:dogs_core/dogs_core.dart";
 /// Defines the native object types for a [DogEngine] and
 /// provides converters for them.
 abstract class DogNativeCodec {
+  /// Defines the native object types for a [DogEngine] and
+  /// provides converters for them.
   const DogNativeCodec();
 
   /// Coercion for native types.

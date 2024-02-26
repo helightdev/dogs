@@ -130,9 +130,6 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
     if (opmodeType == NativeSerializerMode) {
       return IterableTreeNativeOperation(this);
     }
-    if (opmodeType == GraphSerializerMode) {
-      return GraphSerializerMode.auto(this);
-    }
     return null;
   }
 }

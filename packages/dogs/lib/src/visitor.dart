@@ -16,25 +16,76 @@
 
 import "package:dogs_core/dogs_core.dart";
 
-abstract class DogVisitor<T> {
-  T visit(DogGraphValue v) {
-    if (v is DogMap) return visitMap(v);
-    if (v is DogList) return visitList(v);
-    if (v is DogString) return visitString(v);
-    if (v is DogInt) return visitInt(v);
-    if (v is DogDouble) return visitDouble(v);
-    if (v is DogBool) return visitBool(v);
-    if (v is DogNull) return visitNull(v);
-    if (v is DogNative) return visitNative(v);
-    return null as T;
-  }
+/// Visitor for [DogGraphValue]s that maps a value to type [T].
+abstract interface class DogVisitor<T> {
+  /// Visits an arbitrary [DogGraphValue] and returns a result of type [T].
+  T visit(DogGraphValue v);
+}
 
+/// A mixin that provides a default implementation for [ExpandedDogVisitor].
+/// Override the methods to provide custom behavior for each type of value.
+mixin ExpandedGraphDogVisitorMixin<T> on DogVisitor<T>
+    implements ExpandedDogVisitor<T> {
+  @override
+  T visit(DogGraphValue v) => switch (v) {
+        DogNative() => visitNative(v),
+        DogString() => visitString(v),
+        DogInt() => visitInt(v),
+        DogDouble() => visitDouble(v),
+        DogBool() => visitBool(v),
+        DogNull() => visitNull(v),
+        DogList() => visitList(v),
+        DogMap() => visitMap(v),
+      };
+
+  @override
   T visitMap(DogMap m) => null as T;
+
+  @override
   T visitList(DogList l) => null as T;
+
+  @override
   T visitString(DogString s) => null as T;
+
+  @override
   T visitInt(DogInt i) => null as T;
+
+  @override
   T visitDouble(DogDouble d) => null as T;
+
+  @override
   T visitBool(DogBool b) => null as T;
+
+  @override
   T visitNull(DogNull n) => null as T;
+
+  @override
   T visitNative(DogNative n) => null as T;
+}
+
+/// A visitor for [DogGraphValue]s that provides a visitor method for each type of value.
+abstract interface class ExpandedDogVisitor<T> {
+  /// Visits a [DogGraphValue] of type [DogMap].
+  T visitMap(DogMap m);
+
+  /// Visits a [DogGraphValue] of type [DogList].
+  T visitList(DogList l);
+
+  /// Visits a [DogGraphValue] of type [DogString].
+  T visitString(DogString s);
+
+  /// Visits a [DogGraphValue] of type [DogInt].
+  T visitInt(DogInt i);
+
+  /// Visits a [DogGraphValue] of type [DogDouble].
+  T visitDouble(DogDouble d);
+
+  /// Visits a [DogGraphValue] of type [DogBool].
+  T visitBool(DogBool b);
+
+  /// Visits a [DogGraphValue] of type [DogNull].
+  T visitNull(DogNull n);
+
+  /// Visits a [DogGraphValue] of type [DogNative].
+  T visitNative(DogNative n);
 }

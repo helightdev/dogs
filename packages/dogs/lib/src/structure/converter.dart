@@ -25,9 +25,6 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
     if (opmodeType == NativeSerializerMode) {
       return StructureNativeSerialization(struct!);
     }
-    if (opmodeType == GraphSerializerMode) {
-      return StructureGraphSerialization(struct!);
-    }
     if (opmodeType == ValidationMode) return StructureValidation(struct!);
     return structureOperationFactories[opmodeType]?.resolve(struct!)
         as OperationMode<T>?;

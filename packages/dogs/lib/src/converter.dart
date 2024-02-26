@@ -125,8 +125,8 @@ class PropertySerializer {
 }
 
 /// Simple converter base that only requires a [serialize] and [deserialize]
-/// method. Automatically adds [NativeSerializerMode] and [GraphSerializerMode]s,
-/// as well as a synthetic [DogStructure] with the given [SimpleDogConverter.serialName].
+/// method. Automatically adds [NativeSerializerMode] as well as a synthetic
+/// [DogStructure] with the given [SimpleDogConverter.serialName].
 abstract class SimpleDogConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
   /// Instantiates a new [SimpleDogConverter] with the given [serialName].
@@ -139,7 +139,6 @@ abstract class SimpleDogConverter<T> extends DogConverter<T>
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => serialize(value, engine),
             deserializer: (value, engine) => deserialize(value, engine)),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 
   /// Serializes the given [value] to a [DogNativeCodec] native value.

@@ -63,7 +63,6 @@ class DogEngine with MetadataMixin {
   late OperationModeRegistry modeRegistry = OperationModeRegistry();
 
   late var _nativeSerialization = modeRegistry.nativeSerialization;
-  late var _graphSerialization = modeRegistry.graphSerialization;
   late var _validation = modeRegistry.validation;
   DogEngine? _parent;
 
@@ -118,7 +117,6 @@ class DogEngine with MetadataMixin {
   void reset() {
     modeRegistry = OperationModeRegistry();
     _nativeSerialization = modeRegistry.nativeSerialization;
-    _graphSerialization = modeRegistry.graphSerialization;
     _validation = modeRegistry.validation;
     _runtimeTreeConverterCache.clear();
   }
@@ -390,52 +388,6 @@ class DogEngine with MetadataMixin {
     }
   }
 
-  // --- Deprecated methods ---
-  /// Returns the [DogStructure] that is associated with the serial name [name]
-  /// or null if not present.
-  ///
-  /// Deprecated: Use findStructureBySerialName instead
-  @Deprecated("Use findStructureBySerialName instead")
-  DogStructure? findSerialName(String name) => findStructureBySerialName(name);
-
-  /// Registers a [converter] in this [DogEngine] instance and emits a event to
-  /// the change stream if [emitChangeToStream] is true.
-  ///
-  /// Deprecated: Use registerAutomatic instead
-  @Deprecated("Use registerAutomatic instead")
-  Future<void> registerConverter(DogConverter converter,
-          [bool emitChangeToStream = true]) async =>
-      registerAutomatic(converter, emitChangeToStream);
-
-  /// Returns the [DogStructure] that is associated with the serial name [name]
-  /// or throws an exception if not present.
-  @Deprecated("Perform a null check instead")
-  DogStructure findSerialNameOrThrow(String name) {
-    final structure = findStructureBySerialName(name);
-    if (structure == null) {
-      throw ArgumentError.value(
-          name, "name", "No structure for given serial name found");
-    }
-    return structure;
-  }
-
-  /// Returns the [DogConverter] that is associated with [type] or
-  /// throws an exception if not present.
-  @Deprecated("Perform a null check instead")
-  DogConverter findAssociatedConverterOrThrow(Type type) {
-    final converter = findAssociatedConverter(type);
-    if (converter == null) {
-      if (type == dynamic) {
-        throw Exception("Tried to resolve the converter for 'dynamic'. "
-            "Consider explicitly specifying a type to resolve.");
-      } else {
-        throw ArgumentError.value(
-            type, "type", "No converter for given type found");
-      }
-    }
-    return converter;
-  }
-
   /// Validates the supplied [value] using the [ValidationMode] mapped to the
   /// [value]s runtime type or [type] if specified.
   bool validateObject(dynamic value, [Type? type]) {
@@ -462,41 +414,9 @@ class DogEngine with MetadataMixin {
     return result;
   }
 
-  /// Converts a [value] to its [DogGraphValue] representation using the
-  /// converter associated with [serialType].
-  DogGraphValue convertObjectToGraph(dynamic value, Type serialType) {
-    return _graphSerialization.forType(serialType, this).serialize(value, this);
-  }
-
-  /// Converts a [value] to its [DogGraphValue] representation using the
-  /// converter associated with [serialType].
-  DogGraphValue convertIterableToGraph(
-      dynamic value, Type serialType, IterableKind kind) {
-    return _graphSerialization
-        .forType(serialType, this)
-        .serializeIterable(value, this, kind);
-  }
-
-  /// Converts [DogGraphValue] supplied via [value] to its normal representation
-  /// by using the converter associated with [serialType].
-  dynamic convertObjectFromGraph(DogGraphValue value, Type serialType) {
-    return _graphSerialization
-        .forType(serialType, this)
-        .deserialize(value, this);
-  }
-
-  /// Converts [DogGraphValue] supplied via [value] to its normal representation
-  /// by using the converter associated with [serialType].
-  dynamic convertIterableFromGraph(
-      DogGraphValue value, Type serialType, IterableKind kind) {
-    return _graphSerialization
-        .forType(serialType, this)
-        .deserializeIterable(value, this, kind);
-  }
 
   /// Converts a [value] to its native representation using the
   /// converter associated with [serialType].
-
   dynamic convertObjectToNative(dynamic value, Type serialType) {
     return _nativeSerialization
         .forType(serialType, this)

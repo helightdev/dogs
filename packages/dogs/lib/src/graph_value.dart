@@ -20,7 +20,7 @@ import "package:collection/collection.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// Graph node of the serialized DOG graph.
-abstract class DogGraphValue {
+sealed class DogGraphValue {
   /// Graph node of the serialized DOG graph.
   const DogGraphValue();
 
@@ -47,39 +47,6 @@ abstract class DogGraphValue {
   /// Returns a string representation of this dog value.
   String toDescriptionString() {
     return describe(0);
-  }
-
-  /// Returns a [DogGraphValue] for the native value [value].
-  /// All values that can be serialised by [jsonEncode] are considered native.
-  /// Only values which fulfill [isNative] or [Iterable] and [Map] instances
-  /// containing only value which fulfill [isNative] are convertible.
-  @Deprecated("Moved to DefaultNativeCodec")
-  static DogGraphValue fromNative(dynamic value) {
-    if (value == null) return DogNull();
-    if (value is String) return DogString(value);
-    if (value is int) return DogInt(value);
-    if (value is double) return DogDouble(value);
-    if (value is bool) return DogBool(value);
-    if (value is Iterable) {
-      return DogList(value.map((e) => fromNative(e)).toList());
-    }
-    if (value is Map) {
-      return DogMap(value
-          .map((key, value) => MapEntry(fromNative(key), fromNative(value))));
-    }
-
-    throw ArgumentError.value(
-        value, null, "Can't coerce native value to dart object graph");
-  }
-
-  /// Returns true if [value] is of type [String], [int], [double] or [bool].
-  @Deprecated("Moved to DefaultNativeCodec")
-  static bool isNative(dynamic value) {
-    return (value == null ||
-        value is String ||
-        value is int ||
-        value is double ||
-        value is bool);
   }
 }
 

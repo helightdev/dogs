@@ -1,13 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dogs_built/dogs_built.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'dart:io';
-
 import 'package:smoke_test_1/dogs.g.dart';
 import 'package:smoke_test_1/dogs_values.dart';
 import 'package:smoke_test_1/serializers.dart';
-
 @SerializableLibrary()
 import 'package:smoke_test_1/values.dart';
 
@@ -44,14 +42,13 @@ Future main() async {
         }
       }
     });
-    var account = dogs.jsonDecode<Account>(encode);
+    var account = dogs.fromJson<Account>(encode);
     testGeneratedStructure<Account>(account);
     testEncoderDecoder<Account>(account);
 
     testEncoderDecoder<MyDogsModel>(MyDogsModel.variant0());
     testEncoderDecoder<MultimapModel>(MultimapModel.variant0());
     testEncoderDecoder<PolymorphicBuiltModel>(PolymorphicBuiltModel.variant0());
-
   } catch(ex,st) {
     print("$ex: $st");
     exit(1);
@@ -63,8 +60,8 @@ void testEncoderDecoder<T>(T value) {
   var decoded = dogs.convertObjectFromNative(native, T);
   if (decoded != value) throw Exception("Does not match!");
 
-  var json = dogs.jsonEncode<T>(value);
-  var decodedJson = dogs.jsonDecode<T>(json);
+  var json = dogs.toJson<T>(value);
+  var decodedJson = dogs.fromJson<T>(json);
   if (decodedJson != value) throw Exception("Json does not match!");
 }
 

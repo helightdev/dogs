@@ -34,7 +34,6 @@ class DateTimeWrapperConverter extends DogConverter<DateTime>
               serializer: (value, engine) => DateTimeWrapper(value),
               deserializer: (value, engine) => value.dateTime,
             ),
-        GraphSerializerMode: () => GraphSerializerMode.auto(this)
       };
 }
 

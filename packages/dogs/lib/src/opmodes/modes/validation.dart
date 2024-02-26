@@ -16,19 +16,26 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// Operation mode that provides a way to validate objects and return
+/// validation related error messages as annotations.
 abstract class ValidationMode<T> implements OperationMode<T> {
+  /// Validates the given [value] and returns true if the value is valid.
   bool validate(T value, DogEngine engine);
+
+  /// Annotates the given [value] and returns the result as an [AnnotationResult].
   AnnotationResult annotate(T value, DogEngine engine);
 
+  /// Creates a new [ValidationMode] with the given [initializer], [validator]
+  /// and [annotator].
   static ValidationMode<T> create<T, IR>(
       {IR? Function(DogEngine engine)? initializer,
       AnnotationResult Function(T value, DogEngine engine, IR? cached)?
           annotator,
       required bool Function(T value, DogEngine engine, IR? cached)
           validator}) {
-    IR? Function(DogEngine) initializerFunc =
+    final IR? Function(DogEngine) initializerFunc =
         initializer ?? _InlineValidationMode._noInit;
-    AnnotationResult Function(T, DogEngine, IR?) annotatorFunc =
+    final AnnotationResult Function(T, DogEngine, IR?) annotatorFunc =
         annotator ?? _InlineValidationMode._noAnnotate;
     return _InlineValidationMode(initializerFunc, validator, annotatorFunc);
   }
