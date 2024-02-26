@@ -78,7 +78,7 @@ class _DogsCompetitor extends JsonSerializeCompetitor<DogPerson> {
 
   @override
   void serialize(DogPerson item) {
-    dogs.jsonEncode<DogPerson>(item);
+    dogs.toJson<DogPerson>(item);
   }
 }
 

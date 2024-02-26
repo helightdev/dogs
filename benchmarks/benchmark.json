@@ -1,1 +1,88 @@
-[{"name":"Json Serialize","iterations":1000,"options":{"count":500},"times":{"native":924299,"json_ser":881202,"freezed":881219,"dogs":1006485,"built":1250134,"mappable":2391038}},{"name":"Json Deserialize","iterations":1000,"options":{"count":500},"times":{"native":674524,"json_ser":722911,"freezed":735751,"dogs":894164,"built":1002346,"mappable":1076039}},{"name":"Builders","iterations":1000,"options":{"count":500},"times":{"dogs":21415,"built":34778,"freezed":11767,"mappable":141253}},{"name":"Direct Equality","iterations":1000000,"options":{},"times":{"native":10373,"dogs":15861,"built":10748,"equatable":37991,"freezed":14433,"mappable":153503}},{"name":"Index Of","iterations":1000,"options":{"count":500},"times":{"native":1320760,"dogs":1336138,"built":1082435,"equatable":4521335,"freezed":1633956,"mappable":16448461}},{"name":"Map Key","iterations":1000,"options":{"count":500},"times":{"native":346661,"dogs":13406,"built":22165,"equatable":559157,"freezed":326905,"mappable":1105087}}]
+[
+  {
+    "name": "Json Serialize",
+    "iterations": 1000,
+    "options": {
+      "count": 500
+    },
+    "times": {
+      "native": 846743,
+      "json_ser": 845537,
+      "freezed": 848542,
+      "dogs": 988639,
+      "built": 1126858,
+      "mappable": 2385272
+    }
+  },
+  {
+    "name": "Json Deserialize",
+    "iterations": 1000,
+    "options": {
+      "count": 500
+    },
+    "times": {
+      "native": 678217,
+      "json_ser": 722527,
+      "freezed": 724358,
+      "dogs": 872475,
+      "built": 997094,
+      "mappable": 1096667
+    }
+  },
+  {
+    "name": "Builders",
+    "iterations": 1000,
+    "options": {
+      "count": 500
+    },
+    "times": {
+      "dogs": 22625,
+      "built": 36453,
+      "freezed": 12577,
+      "mappable": 136699
+    }
+  },
+  {
+    "name": "Direct Equality",
+    "iterations": 1000000,
+    "options": {},
+    "times": {
+      "native": 10425,
+      "dogs": 15762,
+      "built": 11961,
+      "equatable": 35700,
+      "freezed": 13446,
+      "mappable": 139424
+    }
+  },
+  {
+    "name": "Index Of",
+    "iterations": 1000,
+    "options": {
+      "count": 500
+    },
+    "times": {
+      "native": 1338166,
+      "dogs": 1349076,
+      "built": 1056771,
+      "equatable": 4200633,
+      "freezed": 1502488,
+      "mappable": 15204543
+    }
+  },
+  {
+    "name": "Map Key",
+    "iterations": 1000,
+    "options": {
+      "count": 500
+    },
+    "times": {
+      "native": 272888,
+      "dogs": 13430,
+      "built": 20652,
+      "equatable": 574265,
+      "freezed": 302901,
+      "mappable": 1075792
+    }
+  }
+]

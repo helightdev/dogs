@@ -81,12 +81,12 @@ class _DogsCompetitor extends JsonDeserializeCompetitor<DogPerson> {
 
   @override
   String serialize(DogPerson item) {
-    return dogs.jsonEncode<DogPerson>(item);
+    return dogs.toJson<DogPerson>(item);
   }
 
   @override
   DogPerson deserialize(String json) {
-    return dogs.jsonDecode<DogPerson>(json);
+    return dogs.fromJson<DogPerson>(json);
   }
 }
 
