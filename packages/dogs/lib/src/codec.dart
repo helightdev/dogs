@@ -21,6 +21,7 @@ import "package:dogs_core/dogs_core.dart";
 abstract class DogNativeCodec {
   const DogNativeCodec();
 
+  /// Coercion for native types.
   CodecPrimitiveCoercion get primitiveCoercion => NoCodecPrimitiveCoercion();
 
   /// The prefix used for metadata keys.
@@ -32,8 +33,20 @@ abstract class DogNativeCodec {
   /// The full key used for value discrimination.
   String get valueDiscriminator => "${metaPrefix}value";
 
+  /// Post-processes a generated value before it is returned from toNative.
+  /// This does not apply to any of the values defined in engine.dart since this
+  /// could lead to the processing of the same value multiple times which could
+  /// lead to unexpected results.
+  dynamic postProcessNative(dynamic value) => value;
+
+  /// Pre-processes a native value before it is passed to fromNative.
+  /// This does not apply to any of the values defined in engine.dart since this
+  /// could lead to the processing of the same value multiple times which could
+  /// lead to unexpected results.
+  dynamic preProcessNative(dynamic value) => value;
+
   /// Interop converters for native types.
-  /// These converters are most commonly used by [TreeBaseConverterFactory]s to
+  /// These converters are most commonly used by [TreeBaseConverterFactory]s
   /// since they require a [DogConverter] for every type.
   ///
   /// Since the values of the mapped types are native, this map should only

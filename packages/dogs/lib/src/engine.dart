@@ -365,12 +365,11 @@ class DogEngine with MetadataMixin {
   DogConverter<dynamic> _getTreeConverterUncached(TypeTree<dynamic> tree,
       [bool allowPolymorphic = true]) {
     if (tree.isTerminal) {
-      final associated = findAssociatedConverter(tree.base.typeArgument);
-
       if (codec.isNative(tree.base.typeArgument)) {
         return codec.bridgeConverters[tree.base.typeArgument]!;
       }
 
+      final associated = findAssociatedConverter(tree.base.typeArgument);
       if (associated != null) return associated;
       if (allowPolymorphic) {
         return TreeBaseConverterFactory.polymorphicConverter;

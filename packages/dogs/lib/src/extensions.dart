@@ -154,18 +154,22 @@ extension DogEngineShortcuts on DogEngine {
     // If the type is explicitly nullable, manually handle null values.
     final isNullable = null is T;
     if (value == null && isNullable) {
-      return null as T;
+      return codec.postProcessNative(null);
     }
+    dynamic result;
 
     if (tree != null) {
       if (!tree.isQualified) throw DogException("TypeTree must be qualified");
       final converter = getTreeConverter(tree);
-      return modeRegistry.nativeSerialization
+      result = modeRegistry.nativeSerialization
           .forConverter(converter, this)
           .serialize(value, this);
+    } else {
+      result = convertIterableToNative(value, type ?? T, kind);
     }
 
-    return convertIterableToNative(value, type ?? T, kind);
+    result = codec.postProcessNative(result);
+    return result;
   }
 
   /// Converts a [value] to its native representation using the converter
@@ -173,6 +177,8 @@ extension DogEngineShortcuts on DogEngine {
   /// If [tree] is supplied, the converter associated with the tree is used.
   T fromNative<T>(dynamic value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    value = codec.preProcessNative(value);
+
     // If the type is explicitly nullable, manually handle null values.
     final isNullable = null is T;
     if (value == null && isNullable) {
@@ -186,7 +192,6 @@ extension DogEngineShortcuts on DogEngine {
           .forConverter(converter, this)
           .deserialize(value, this);
     }
-
     return convertIterableFromNative(value, type ?? T, kind);
   }
 }
