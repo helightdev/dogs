@@ -1,3 +1,5 @@
+import "dart:convert";
+
 import "package:dogs_core/dogs_core.dart";
 import "package:test/test.dart";
 
@@ -19,7 +21,7 @@ void main() {
         .entry<NativeSerializerMode>()
         .forConverter(converter, engine);
     final graph = operation.serialize(["Christoph", 19, "Hello!"], engine);
-    expect("""{"name":"Christoph","age":19,"note":"Hello!"}""",
-        operation.deserialize(graph, engine));
+    expect(
+        jsonEncode(graph), """{"name":"Christoph","age":19,"note":"Hello!"}""");
   });
 }
