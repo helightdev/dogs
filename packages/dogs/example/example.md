@@ -1,2 +1,5 @@
 # Contents
-### [Various Usage Examples](https://github.com/DarwinFramework/dogs/blob/main/example/lib/example.dart)
+
+### [Dogs Examples](https://github.com/helightdev/dogs_examples)
+
+### [Documentation](https://dogs.helight.dev/)
