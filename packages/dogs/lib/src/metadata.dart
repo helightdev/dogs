@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import "package:dogs_core/dogs_core.dart";
+
 /// A mixin that provides a simple way to add metadata to a class.
 mixin MetadataMixin {
   final Map<Object, Object?> _metadata = {};
@@ -36,7 +38,7 @@ mixin MetadataMixin {
         _metadata[key] = newValue;
         return newValue;
       }
-      throw Exception("No data for key $key");
+      throw DogException("No data for key $key");
     }
     return data;
   }
