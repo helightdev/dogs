@@ -86,10 +86,6 @@ class DogEngine with MetadataMixin {
     if (registerBaseConverters) {
       // Register polymorphic converters
       registerAutomatic(PolymorphicConverter(), false);
-      registerAutomatic(DefaultMapConverter(), false);
-      registerAutomatic(DefaultIterableConverter(), false);
-      registerAutomatic(DefaultListConverter(), false);
-      registerAutomatic(DefaultSetConverter(), false);
 
       // Register common converters
       registerAutomatic(DateTimeConverter(), false);
@@ -100,12 +96,6 @@ class DogEngine with MetadataMixin {
 
       // Register Pagination Converters
       registerAutomatic(PageRequestConverter(), false);
-
-      // Register primitives
-      // registerConverter(StringConverter(), false);
-      // registerConverter(IntConverter(), false);
-      // registerConverter(DoubleConverter(), false);
-      // registerConverter(BoolConverter(), false);
     }
   }
 
@@ -413,7 +403,6 @@ class DogEngine with MetadataMixin {
     }
     return result;
   }
-
 
   /// Converts a [value] to its native representation using the
   /// converter associated with [serialType].

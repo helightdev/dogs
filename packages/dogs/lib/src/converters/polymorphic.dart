@@ -17,13 +17,16 @@
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
-/// Polymorphic converter for simple polymorphic datastructures.
-/// Currently only supports a maximum depth of 1.
+/// [DogConverter] that supports polymorphic serialization and deserialization.
+/// Supports a maximum of one level of polymorphism because of the lack of
+/// runtime type introspection available in Dart.
 class PolymorphicConverter extends DogConverter with OperationMapMixin {
+  /// [DogConverter] that supports polymorphic serialization and deserialization.
   PolymorphicConverter() : super(isAssociated: false);
 
-  //static const typePropertyKeyStr = "_type";
-  //static const valuePropertyKeyStr = "_value";
+  /// Whether native values should require type annotations for serialization.
+  /// By default, this is true, meaning that primitive values will be serialized
+  /// as is.
   bool serializeNativeValues = true;
 
   @override
@@ -32,24 +35,41 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
             serializer: serialize, deserializer: deserialize),
       };
 
-  deserialize(value, DogEngine engine) {
+  /// Performs a native deserialization of [value].
+  dynamic deserialize(value, DogEngine engine) {
     if (value == null) return null;
     final codec = engine.codec;
+    // Keep native values as is if they serializeNativeValues is true
     if (value is! Map &&
         codec.isNative(value.runtimeType) &&
         serializeNativeValues) return value;
+
+    /// Recursively try to deserialize the value
     if (value is Iterable) {
       return value.map((e) => deserialize(e, engine)).toList();
     }
-    if (value is! Map) throw Exception("Expected an map");
+    if (value is! Map) {
+      throw DogSerializerException(
+        message: "Expected an map but got $value",
+        converter: this,
+      );
+    }
+
     final String? typeValue = value[codec.typeDiscriminator];
+
+    // If no type value is specified, try to decode the value as a map
     if (typeValue == null) {
       return value.map(
           (key, value) => MapEntry(key as String, deserialize(value, engine)));
     }
+
+    // Try to decode the value using the type specified by the type value
     final structure = engine.findStructureBySerialName(typeValue)!;
     final operation = engine.modeRegistry.nativeSerialization
         .forType(structure.typeArgument, engine);
+
+    // Decide if the value is encoded using a value discriminator or not and
+    // deserialize accordingly.
     if (value.length == 2 && value.containsKey(codec.valueDiscriminator)) {
       final simpleValue = value[codec.valueDiscriminator]!;
       return operation.deserialize(simpleValue, engine);
@@ -60,26 +80,38 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     }
   }
 
-  serialize(value, DogEngine engine) {
+  /// Performs a native serialization of [value].
+  dynamic serialize(value, DogEngine engine) {
     if (value == null) return null;
     final codec = engine.codec;
+
+    // Keep native values as is if they serializeNativeValues is true
     if (value is! Map &&
         codec.isNative(value.runtimeType) &&
         serializeNativeValues) return value;
     final type = value.runtimeType;
     final operation =
         engine.modeRegistry.nativeSerialization.forTypeNullable(type, engine);
+    // Try to handle serialization of non serializable types
     if (operation == null) {
       if (value is Iterable) {
+        // Try to serialize the value of a runtime iterable
         return value.map((e) => serialize(e, engine)).toList();
       } else if (value is Map<String, dynamic>) {
+        // Try to serialize the value of a runtime map
         return value
             .map((key, value) => MapEntry(key, serialize(value, engine)));
       }
-      throw DogException("No operation mode found for type $type");
+      throw DogSerializerException(
+          message: "No operation mode found for type '$type'. "
+              "Runtime serialization of map and iterables also failed.",
+          converter: this);
     }
     final structure = engine.findStructureByType(type)!;
     final nativeValue = operation.serialize(value, engine);
+
+    // If the value is a map, add the type discriminator field, otherwise wrap
+    // the resulting data in a map using the value discriminator field.
     if (nativeValue is Map) {
       nativeValue[codec.typeDiscriminator] = structure.serialName;
       return nativeValue;
@@ -98,103 +130,4 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
         ..title = "Any"
         ..description =
             "A polymorphic object discriminated using the _type field.";
-}
-
-class DefaultListConverter extends DogConverter<List>
-    with OperationMapMixin<List> {
-  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
-
-  final TypeCapture? cast;
-
-  DefaultListConverter([this.cast])
-      : super(isAssociated: false, keepIterables: true);
-
-  @override
-  Map<Type, OperationMode<List> Function()> get modes => {
-        NativeSerializerMode: () => NativeSerializerMode.create(
-              serializer: (value, engine) => engine
-                  .modeRegistry.nativeSerialization
-                  .forConverter(polymorphicConverter, engine)
-                  .serializeIterable(value, engine, IterableKind.list),
-              deserializer: (value, engine) => engine
-                  .modeRegistry.nativeSerialization
-                  .forConverter(polymorphicConverter, engine)
-                  .deserializeIterable(value, engine, IterableKind.list),
-            ),
-      };
-
-  @override
-  APISchemaObject get output =>
-      APISchemaObject.array(ofSchema: polymorphicConverter.output)
-        ..title = cast == null
-            ? "Dynamic List"
-            : "${cast!.typeArgument.toString()} List";
-}
-
-class DefaultSetConverter extends DogConverter<Set>
-    with OperationMapMixin<Set> {
-  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
-
-  final TypeCapture? cast;
-
-  DefaultSetConverter([this.cast])
-      : super(isAssociated: false, keepIterables: true);
-
-  @override
-  Map<Type, OperationMode<Set> Function()> get modes => {
-        NativeSerializerMode: () => NativeSerializerMode.create(
-              serializer: (value, engine) => engine
-                  .modeRegistry.nativeSerialization
-                  .forConverter(polymorphicConverter, engine)
-                  .serializeIterable(value, engine, IterableKind.set),
-              deserializer: (value, engine) => engine
-                  .modeRegistry.nativeSerialization
-                  .forConverter(polymorphicConverter, engine)
-                  .deserializeIterable(value, engine, IterableKind.set),
-            ),
-      };
-
-  @override
-  APISchemaObject get output =>
-      APISchemaObject.array(ofSchema: polymorphicConverter.output)
-        ..title = cast == null
-            ? "Dynamic Set"
-            : "${cast!.typeArgument.toString()} Set";
-}
-
-class DefaultIterableConverter extends DogConverter<Iterable>
-    with OperationMapMixin<Iterable> {
-  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
-
-  final TypeCapture? cast;
-
-  DefaultIterableConverter([this.cast])
-      : super(isAssociated: false, keepIterables: true);
-
-  @override
-  Map<Type, OperationMode<Iterable> Function()> get modes => {
-        NativeSerializerMode: () => NativeSerializerMode.create(
-              serializer: (value, engine) => engine
-                  .modeRegistry.nativeSerialization
-                  .forConverter(polymorphicConverter, engine)
-                  .serializeIterable(value, engine, IterableKind.list),
-              deserializer: (value, engine) => engine
-                  .modeRegistry.nativeSerialization
-                  .forConverter(polymorphicConverter, engine)
-                  .deserializeIterable(value, engine, IterableKind.list),
-            ),
-      };
-
-  @override
-  APISchemaObject get output =>
-      APISchemaObject.array(ofSchema: polymorphicConverter.output)
-        ..title = cast == null
-            ? "Dynamic List"
-            : "${cast!.typeArgument.toString()} List";
-}
-
-class DefaultMapConverter extends DogConverter<Map> {
-  PolymorphicConverter polymorphicConverter = PolymorphicConverter();
-
-  DefaultMapConverter() : super(isAssociated: false);
 }
