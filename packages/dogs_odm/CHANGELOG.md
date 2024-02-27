@@ -1,3 +1,7 @@
+## 1.0.0-alpha.10
+
+ - Update a dependency to the latest release.
+
 ## 1.0.0-alpha.9
 
  - **REFACTOR**: make MemoryOdmSystem optionally consume an engine instance or create an identified fork by default.

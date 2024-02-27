@@ -1,3 +1,15 @@
+## 9.0.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: use DogException instead of Exception.
+ - **REFACTOR**: remove unused polymorphic converters which became obsolete with tree converters.
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+ - **DOCS**: add missing public member documentation and reformat code.
+ - **DOCS**: update example.md and remove empty main.dart.
+ - **DOCS**: add more documentation to public members.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
 ## 8.5.0
 
  - **REFACTOR**: reformat code.

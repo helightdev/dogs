@@ -1,6 +1,6 @@
 name: dogs_firestore
 description: "Support for using dogs object mapper as an odm for firestore."
-version: 0.0.3+3
+version: 0.1.0
 homepage: https://dogs.helight.dev/
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dogs_core: ^8.5.0
+  dogs_core: ^9.0.0
   cloud_firestore: ^4.13.6
   meta: ^1.10.0
 

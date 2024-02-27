@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-02-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_built` - `v3.0.0`](#dogs_built---v300)
+ - [`dogs_core` - `v9.0.0`](#dogs_core---v900)
+ - [`dogs_firestore` - `v0.1.0`](#dogs_firestore---v010)
+
+Packages with other changes:
+
+ - [`dogs_cbor` - `v2.2.0`](#dogs_cbor---v220)
+ - [`dogs_toml` - `v2.2.0`](#dogs_toml---v220)
+ - [`dogs_yaml` - `v2.2.0`](#dogs_yaml---v220)
+ - [`dogs_generator` - `v5.3.5`](#dogs_generator---v535)
+ - [`dogs_forms` - `v0.1.1+4`](#dogs_forms---v0114)
+ - [`dogs_odm` - `v1.0.0-alpha.10`](#dogs_odm---v100-alpha10)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.10`](#dogs_mongo_driver---v100-alpha10)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v5.3.5`
+ - `dogs_forms` - `v0.1.1+4`
+ - `dogs_odm` - `v1.0.0-alpha.10`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.10`
+
+---
+
+#### `dogs_built` - `v3.0.0`
+
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
+#### `dogs_core` - `v9.0.0`
+
+ - **REFACTOR**: use DogException instead of Exception.
+ - **REFACTOR**: remove unused polymorphic converters which became obsolete with tree converters.
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+ - **DOCS**: add missing public member documentation and reformat code.
+ - **DOCS**: update example.md and remove empty main.dart.
+ - **DOCS**: add more documentation to public members.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
+#### `dogs_firestore` - `v0.1.0`
+
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
+#### `dogs_cbor` - `v2.2.0`
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+
+#### `dogs_toml` - `v2.2.0`
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+
+#### `dogs_yaml` - `v2.2.0`
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+
+
 ## 2024-02-25
 
 ### Changes

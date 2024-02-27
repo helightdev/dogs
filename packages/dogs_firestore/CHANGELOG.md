@@ -1,3 +1,9 @@
+## 0.1.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
 ## 0.0.3+3
 
  - Update a dependency to the latest release.

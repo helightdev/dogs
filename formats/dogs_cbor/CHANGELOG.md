@@ -1,3 +1,7 @@
+## 2.2.0
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+
 ## 2.1.0
 
  - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
