@@ -578,13 +578,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graphserializermode" class="md-nav__link">
-    GraphSerializerMode
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#validationmode" class="md-nav__link">
     ValidationMode
   </a>
@@ -1191,13 +1184,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#graphserializermode" class="md-nav__link">
-    GraphSerializerMode
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#validationmode" class="md-nav__link">
     ValidationMode
   </a>
@@ -1233,9 +1219,9 @@
 
 <h1 id="operation-modes">Operation Modes</h1>
 <p>Operation modes are a relatively unique concept to the dogs serialization library. They are used to
-provide different ways of consuming the auto-generated structure definitions. </p>
+provide different ways of consuming the auto-generated structure definitions.</p>
 <p>All converters must implement <code>resolveOperationMode</code>. This function is used to lookup converter
-specific operation modes, like the <code>NativeSerializerMode</code> or the <code>GraphSerializerMode</code>.</p>
+specific operation modes, like the <code>NativeSerializerMode</code>.</p>
 <p>To make handling the operation modes more intuitive, the <code>OperationMapMixin&lt;T&gt;</code> is provided.
 It is used to provide a lookup table for operation modes.
 <div class="language-dart highlight"><span class="filename">OperationMapMixin getter of the DateTimeConverter</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nd">@override</span>
@@ -1243,8 +1229,7 @@ It is used to provide a lookup table for operation modes.
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nl">NativeSerializerMode:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">NativeSerializerMode</span><span class="p">.</span><span class="n">create</span><span class="p">(</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nl">serializer:</span><span class="w"> </span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">engine</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">toIso8601String</span><span class="p">(),</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nl">deserializer:</span><span class="w"> </span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">engine</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nl">GraphSerializerMode:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">GraphSerializerMode</span><span class="p">.</span><span class="n">auto</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">};</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">};</span>
 </span></code></pre></div></p>
 <h2 id="mode-registry">Mode Registry</h2>
 <p>Operation modes are always resolved through the <code>OperationModeRegistry</code>. This registry serves
@@ -1279,11 +1264,6 @@ and combine factories for specific converter or structure types.
 <p>The native operation mode is the most basic operation mode. It is used to serialize and deserialize
 objects to and from dart maps that can be directly serialized to json. Most of the dogs library
 is built around this operation mode.</p>
-<h3 id="graphserializermode">GraphSerializerMode</h3>
-<p>The graph operation mode is used to serialize and deserialize objects to and from DogGraphValues.
-DogGraphValues are a wrapped version of vanilla dart values, that provide additional information
-about the structure of the value and quality of life functions for introspection. The graph
-operation mode is used to create string representations of objects.</p>
 <div class="admonition tip">
 <p class="admonition-title">Not only for serialization!</p>
 <p>The operation modes are not only used to serialize and deserialize objects,
