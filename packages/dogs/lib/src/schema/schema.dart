@@ -20,17 +20,20 @@ import "dart:developer";
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// Provides the ability to generate openapi schema objects for all registered structures.
 class DogSchema {
   final Map<String, APISchemaObject> _cachedStructObjects = {};
 
   DogSchema._();
 
+  /// Creates a new instance of [DogSchema].
   factory DogSchema.create() {
     final schema = DogSchema._();
     schema.retrieveComponents(); // Cache all current structure objects
     return schema;
   }
 
+  /// Returns the schema object mapping for [structure].
   MapEntry<String, APISchemaObject> getStructureSchema(DogStructure structure) {
     final serialName = structure.serialName;
     if (_cachedStructObjects.containsKey(serialName)) {
@@ -40,16 +43,16 @@ class DogSchema {
       if (!e.structure) {
         APIType serialType;
         switch (e.serial.typeArgument) {
-          case String:
+          case const (String):
             serialType = APIType.string;
             break;
-          case int:
+          case const (int):
             serialType = APIType.integer;
             break;
-          case double:
+          case const (double):
             serialType = APIType.number;
             break;
-          case bool:
+          case const (bool):
             serialType = APIType.boolean;
             break;
           default:
@@ -114,6 +117,7 @@ class DogSchema {
     return MapEntry(serialName, value);
   }
 
+  /// Returns the component part of the openapi document.
   APIComponents retrieveComponents() {
     final schemas = Map<String, APISchemaObject>.fromEntries(DogEngine
         .instance.allStructures.values
@@ -122,6 +126,7 @@ class DogSchema {
     return APIComponents()..schemas = schemas;
   }
 
+  /// Returns a mockup of the openapi document.
   APIDocument getApiDocument() {
     final document = APIDocument();
     document.version = "3.0.0";
@@ -133,5 +138,6 @@ class DogSchema {
     return document;
   }
 
+  /// Returns the openapi mockup document as a json string.
   String getApiJson() => jsonEncode(getApiDocument().asMap());
 }

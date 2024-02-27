@@ -18,14 +18,30 @@ import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 import "package:meta/meta.dart";
 
+/// Base class for converters used by the [DogEngine].
+/// Contains structure information about the type being serialized and provides
+/// an [OperationMode] mapping for all supported operation modes.
 abstract class DogConverter<T> extends TypeCapture<T> {
+  /// If the converter is associated with the type [T].
+  /// Used by the [DogEngine.registerAutomatic] to determine if a converter
+  /// should be automatically registered to [T].
   final bool isAssociated;
+
+  /// If the converter should keep iterables as iterables or convert them
+  /// automatically if they occur inside a [DogStructure].
   final bool keepIterables;
+
+  /// The [DogStructure] associated with this converter and the type [T].
   final DogStructure<T>? struct;
 
+  /// Base class for converters used by the [DogEngine].
+  /// Contains structure information about the type being serialized and provides
+  /// an [OperationMode] mapping for all supported operation modes.
   const DogConverter(
       {this.struct, this.isAssociated = true, this.keepIterables = false});
 
+  /// Returns the operation mode for the given [opmodeType] or null if the
+  /// converter does not support the given operation mode by default.
   OperationMode<T>? resolveOperationMode(Type opmodeType) => null;
 
   /// Describes the converts output using openapi3 component specs.
@@ -34,6 +50,7 @@ abstract class DogConverter<T> extends TypeCapture<T> {
 
 /// See @[serializable].
 class Serializable {
+  /// See @[serializable].
   const Serializable();
 }
 
@@ -56,6 +73,8 @@ class SerializableLibrary {
 
   /// A list of regex patterns that match the type identifiers to exclude from the serialization.
   final List<String>? exclude;
+
+  /// see @[SerializableLibrary].
   const SerializableLibrary({this.include, this.exclude});
 }
 

@@ -209,6 +209,7 @@ class Maximum extends StructureMetadata
     this.maxExclusive = false,
   });
 
+  /// The message id used for the annotation result.
   static const String messageId = "number-maximum";
 
   @override

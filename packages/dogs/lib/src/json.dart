@@ -18,10 +18,8 @@ import "dart:convert" as conv;
 
 import "package:dogs_core/dogs_core.dart";
 
-
 /// Extension on [DogEngine] that provides JSON serialization and deserialization.
 extension DogJsonExtension on DogEngine {
-
   /// Converts a [value] to its JSON representation using the
   /// converter associated with [T] or [tree].
   String toJson<T>(T value,

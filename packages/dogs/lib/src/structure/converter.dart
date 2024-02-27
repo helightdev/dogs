@@ -17,7 +17,10 @@
 import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
+/// Default [DogConverter] base for [DogStructure]s.
+/// Normally extended by generated converters.
 abstract class DefaultStructureConverter<T> extends DogConverter<T> {
+  /// Default [DogConverter] base for [DogStructure]s.
   DefaultStructureConverter({required super.struct});
 
   @override
@@ -38,7 +41,9 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
   }
 }
 
+/// Mock implementation for [DefaultStructureConverter].
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
+  /// Mock implementation for [DefaultStructureConverter].
   DogStructureConverterImpl(DogStructure<T> structure)
       : super(struct: structure);
 }

@@ -21,11 +21,21 @@ import "package:dogs_core/dogs_core.dart";
 export "modes/native.dart";
 export "modes/validation.dart";
 
+/// An operation mode exposed by a [DogConverter].
+///
+/// Operation modes are used to provide a specific functionality to a [DogConverter],
+/// for example, a [NativeSerializerMode] provides a way to serialize and deserialize
+/// a value to a dart map while a [ValidationMode] provides a way to validate a value.
 abstract interface class OperationMode<T> implements TypeCapture<T> {
+  /// Initialises the operation mode with the given [engine].
+  /// This allows for the operation mode to possibly precache some data that would
+  /// need to be lookup on every invocation otherwise.
   void initialise(DogEngine engine) {}
 }
 
+/// Provides a more convenient way to resolve [OperationMode]s for [DogConverter]s.
 mixin OperationMapMixin<T> on DogConverter<T> {
+  /// Returns a map of [Type]s to [OperationMode] factories.
   Map<Type, OperationMode<T> Function()> get modes;
 
   @override

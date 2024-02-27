@@ -15,8 +15,8 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  conduit_open_api: ^4.4.0
   collection: ^1.18.0
+  conduit_open_api: ^4.4.0
   lyell: ^1.1.0
   meta: ^1.10.0
 

@@ -186,7 +186,7 @@ class StructureValidation<T> extends ValidationMode<T>
       if (applicable) {
         _hasValidation = true;
       } else {
-        print("$e is not applicable in $structure");
+        throw DogException("$e is not applicable in $structure");
       }
       return applicable;
     }).map((e) => MapEntry(e, e.getCachedValue(structure))));
@@ -200,7 +200,8 @@ class StructureValidation<T> extends ValidationMode<T>
             if (applicable) {
               _hasValidation = true;
             } else {
-              print("$e is not applicable for $field in $structure");
+              throw DogException(
+                  "$e is not for field $field applicable in $structure");
             }
             return applicable;
           })

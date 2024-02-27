@@ -1,10 +1,10 @@
 <h1 align="left">
     <img src="https://github.com/helightdev/dogs/blob/main/docs/assets/logo.png?raw=true" align="left" width="48" alt="Frosty">
     Dart Object Graphs
-    <a href="">
+    <a href="https://pub.dev/packages/dogs_core">
         <img src="https://img.shields.io/pub/v/dogs_core" alt="pub">
     </a>
-    <a href="https://discord.gg/6HKuGSzYKJ">
+    <a href="https://github.com/helightdev/dogs/actions">
         <img src="https://img.shields.io/github/actions/workflow/status/helightdev/dogs/dart.yaml" alt="Build">
     </a>
     <a href="https://dogs.helight.dev/">
@@ -16,9 +16,13 @@ DOGs, short for Dart Object Graphs, is a object mapping and serialization librar
 code generation to create a structure definition of your serializable classes, which is usable at
 runtime.
 
+[Documentation](https://dogs.helight.dev) |
+[Discord](https://discord.gg/6HKuGSzYKJ) |
+[Pub Package](https://pub.dev/packages/dogs_core)
+
 ```dart
 @serializable
-class Person with Dataclass<Person>{
+class Person with Dataclass<Person> {
 
   @LengthRange(max: 128)
   final String name;

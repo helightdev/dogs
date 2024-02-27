@@ -15,6 +15,7 @@
  */
 
 import "dart:collection";
+import "dart:developer";
 
 import "package:dogs_core/dogs_core.dart";
 
@@ -91,7 +92,7 @@ mixin Dataclass<T> {
       return "$T ${DogEngine.instance.toGraph(this, type: T).coerceString()}";
     } catch (e, st) {
       assert(() {
-        print("Error in Dataclass toString(): $e:\n$st");
+        log("Error in Dataclass toString(): $e:\n$st");
         return true;
       }());
       return "$T ${DogEngine.instance.findStructureByType(T)!.getFieldMap(this)}";

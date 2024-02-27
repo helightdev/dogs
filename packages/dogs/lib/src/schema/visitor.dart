@@ -16,8 +16,13 @@
 
 import "package:conduit_open_api/v3.dart";
 
+/// Visitor for [APISchemaObject] instances.
+/// Can be applied to structure annotations to additionally supply meta information.
 abstract class APISchemaObjectMetaVisitor {
+  /// Visitor for [APISchemaObject] instances.
+  /// Can be applied to structure annotations to additionally supply meta information.
   const APISchemaObjectMetaVisitor();
 
+  /// Visit the given [object].
   void visit(APISchemaObject object);
 }

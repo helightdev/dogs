@@ -41,9 +41,11 @@ const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 T project<T>(Object value, [Object? a, Object? b, Object? c]) =>
     DogEngine.instance.project<T>(value, a, b, c);
 
+/// Compares two types by their hashcodes.
 @internal
 int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);
 
+/// Internal registry for [StructureOperationModeFactory]s.
 @internal
 Map<Type, StructureOperationModeFactory> structureOperationFactories = {};
 

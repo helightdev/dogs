@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-
-
 /// Deeply converts a map with dynamic keys to a map with string keys.
 Object? substituteNullValues(Object? value) => switch (value) {
       null => r"$null$",

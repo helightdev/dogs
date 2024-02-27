@@ -16,8 +16,10 @@
 
 import "package:dogs_core/dogs_core.dart";
 
+/// Converter that just keeps the value as is.
 class NativeRetentionConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
+  /// Converter that just keeps the value as is.
   const NativeRetentionConverter() : super();
 
   @override
