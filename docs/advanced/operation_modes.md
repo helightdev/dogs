@@ -1,9 +1,9 @@
 # Operation Modes
 Operation modes are a relatively unique concept to the dogs serialization library. They are used to
-provide different ways of consuming the auto-generated structure definitions. 
+provide different ways of consuming the auto-generated structure definitions.
 
 All converters must implement `resolveOperationMode`. This function is used to lookup converter
-specific operation modes, like the `NativeSerializerMode` or the `GraphSerializerMode`.
+specific operation modes, like the `NativeSerializerMode`.
 
 To make handling the operation modes more intuitive, the `OperationMapMixin<T>` is provided.
 It is used to provide a lookup table for operation modes.
@@ -13,7 +13,6 @@ Map<Type, OperationMode<DateTime> Function()> get modes => {
   NativeSerializerMode: () => NativeSerializerMode.create(
     serializer: (value, engine) => value.toIso8601String(),
     deserializer: (value, engine) => DateTime.parse(value)),
-  GraphSerializerMode: () => GraphSerializerMode.auto(this)
 };
 ```
 
@@ -54,12 +53,6 @@ final defaultFormFactories = OperationModeFactory.compose<AutoFormFieldFactory>(
 The native operation mode is the most basic operation mode. It is used to serialize and deserialize
 objects to and from dart maps that can be directly serialized to json. Most of the dogs library
 is built around this operation mode.
-
-### GraphSerializerMode
-The graph operation mode is used to serialize and deserialize objects to and from DogGraphValues.
-DogGraphValues are a wrapped version of vanilla dart values, that provide additional information
-about the structure of the value and quality of life functions for introspection. The graph
-operation mode is used to create string representations of objects.
 
 !!! tip "Not only for serialization!"
     The operation modes are not only used to serialize and deserialize objects,
