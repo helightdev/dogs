@@ -11,6 +11,134 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - [`dogs_firestore` - `v0.2.0`](#dogs_firestore---v020)
+ - [`dogs_forms` - `v0.2.0`](#dogs_forms---v020)
+ - [`dogs_generator` - `v6.0.0`](#dogs_generator---v600)
+
+Packages with other changes:
+
+ - [`dogs_cbor` - `v2.3.0`](#dogs_cbor---v230)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.11`](#dogs_mongo_driver---v100-alpha11)
+ - [`dogs_odm` - `v1.0.0-alpha.11`](#dogs_odm---v100-alpha11)
+ - [`dogs_toml` - `v2.3.0`](#dogs_toml---v230)
+ - [`dogs_yaml` - `v2.3.0`](#dogs_yaml---v230)
+
+---
+
+#### `dogs_firestore` - `v0.2.0`
+
+ - **FIX**: rename example package to not have the same name as a dependency.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: fakeable firestore and fixed rebuild copy to include transient fields.
+ - **FEAT**: add more query methods and $store.
+ - **FEAT**: changes, queries and snapshot system for document reference.
+ - **FEAT**: first working version of dogs_firestore 🎉.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
+#### `dogs_forms` - `v0.2.0`
+
+ - **REFACTOR**: change to new field name.
+ - **REFACTOR**: use custom preference.
+ - **FIX**: correctly pass translations and attributes to child forms.
+ - **FIX**: switches and checkboxes with null values should return false.
+ - **FIX**: remove debug print and use instantValue instead of value.
+ - **FIX**: persist latest form values and fix set not propagating to form fields.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: reorderable lists, automatic structure lists.
+ - **FEAT**: add optional factory and a whole lot of reworks.
+ - **FEAT**: add hint and prefix, suffix fields.
+ - **FEAT**: add mechanism for precaching form field data that is then.
+ - **FEAT**: add first working version of dogs_forms 🎉.
+ - **BREAKING** **FEAT**: make form fields persistent between form rebuild and add the firstPass parameter to prepareFormField.
+
+#### `dogs_generator` - `v6.0.0`
+
+ - **REFACTOR**: fix common code style issues.
+ - **REFACTOR**: fix some linter warnings.
+ - **REFACTOR**: update to lyell 0.1.0.
+ - **REFACTOR**: remove long deprecated builder() method.
+ - **REFACTOR**: Fix lints and reformatted code.
+ - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.
+ - **REFACTOR**: replace deprecated isDynamic with is DynamicType.
+ - **REFACTOR**: apply builder only to the root package since.
+ - **REFACTOR**: remove unused variable.
+ - **REFACTOR**: auto reformat.
+ - **FIX**: make the generator use escaped field getter names.
+ - **FIX**: classes implementing core iterables shouldn't be treated as core iterables.
+ - **FIX**: add missing whitespace for proper spacing.
+ - **FIX**: use aliased identifier.
+ - **FIX**: use actual field name instead of property name for generated builder setter.
+ - **FIX**: required input now includes .conv.g.dart and runs_before keys are now valid.
+ - **FIX**: support super formal fields.
+ - **FIX**: log an severe error when a user tries to use class level generics.
+ - **FIX**: re-added README.md, generated builders now also have nullable parameters if the field is nullable.
+ - **FIX**: use cached alias counter for generating the reactor.
+ - **FIX**: refer to the runtimeType of polymorphic.
+ - **FIX**: generator linking.
+ - **FEAT**: initial commit.
+ - **FEAT**: add library option to code generation.
+ - **FEAT**: add structure support for built_types.
+ - **FEAT**: support non-formal constructor fields with backing fields or getters.
+ - **FEAT**: add support for named parameters, fix wrong field identification.
+ - **FEAT**: post rebuild hooks.
+ - **BREAKING** **REFACTOR**: cleanup structure, modify projection algorithm.
+ - **BREAKING** **FEAT**: prepare switch to operations.
+ - **BREAKING** **FEAT**: add new converter and polymorphic features.
+ - **BREAKING** **FEAT**: added validation, refactored library.
+ - **BREAKING** **FEAT**: switch to lyell generator utilities.
+ - **BREAKING** **FEAT**: extend structure, openapi schema, rework structure converter.
+ - **BREAKING** **FEAT**: polymorphic, serializer implementations, updated structure format.
+ - **BREAKING** **FEAT**: major rework and removed deprecations.
+
+#### `dogs_cbor` - `v2.3.0`
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
+#### `dogs_mongo_driver` - `v1.0.0-alpha.11`
+
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+ - **FEAT**: work on dogs_orm.
+ - **FEAT**: cleanup and improve pagination api.
+ - **FEAT**(negative): remove too specific query methods.
+ - **FEAT**: add pagination and some tests.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
+#### `dogs_odm` - `v1.0.0-alpha.11`
+
+ - **REFACTOR**: make MemoryOdmSystem optionally consume an engine instance or create an identified fork by default.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+ - **REFACTOR**: rename @id to @idField.
+ - **FIX**: change min sdk version to 3.0.0.
+ - **FIX**: actually return the serialized page.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: add openapi descriptor to pagination types.
+ - **FEAT**: work on dogs_orm.
+ - **FEAT**: add PageRequestConverter.
+ - **FEAT**: cleanup and improve pagination api.
+ - **FEAT**(negative): remove too specific query methods.
+ - **FEAT**: add pagination and some tests.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
+#### `dogs_toml` - `v2.3.0`
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
+#### `dogs_yaml` - `v2.3.0`
+
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+
+
+## 2024-04-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`dogs_built` - `v3.1.0`](#dogs_built---v310)
 
 Packages with other changes:

@@ -1,3 +1,21 @@
+## 0.2.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: change to new field name.
+ - **REFACTOR**: use custom preference.
+ - **FIX**: correctly pass translations and attributes to child forms.
+ - **FIX**: switches and checkboxes with null values should return false.
+ - **FIX**: remove debug print and use instantValue instead of value.
+ - **FIX**: persist latest form values and fix set not propagating to form fields.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: reorderable lists, automatic structure lists.
+ - **FEAT**: add optional factory and a whole lot of reworks.
+ - **FEAT**: add hint and prefix, suffix fields.
+ - **FEAT**: add mechanism for precaching form field data that is then.
+ - **FEAT**: add first working version of dogs_forms 🎉.
+ - **BREAKING** **FEAT**: make form fields persistent between form rebuild and add the firstPass parameter to prepareFormField.
+
 ## 0.1.1+4
 
  - Update a dependency to the latest release.

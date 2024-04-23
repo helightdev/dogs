@@ -37,7 +37,7 @@ dev_dependencies:
     sdk: flutter
 
   build_runner: ^2.4.6
-  dogs_generator: ^5.3.5
+  dogs_generator: ^6.0.0
   flutter_lints: ^2.0.0
 
 flutter:

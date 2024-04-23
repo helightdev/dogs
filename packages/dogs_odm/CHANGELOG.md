@@ -1,3 +1,19 @@
+## 1.0.0-alpha.11
+
+ - **REFACTOR**: make MemoryOdmSystem optionally consume an engine instance or create an identified fork by default.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+ - **REFACTOR**: rename @id to @idField.
+ - **FIX**: change min sdk version to 3.0.0.
+ - **FIX**: actually return the serialized page.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: add openapi descriptor to pagination types.
+ - **FEAT**: work on dogs_orm.
+ - **FEAT**: add PageRequestConverter.
+ - **FEAT**: cleanup and improve pagination api.
+ - **FEAT**(negative): remove too specific query methods.
+ - **FEAT**: add pagination and some tests.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+
 ## 1.0.0-alpha.10
 
  - Update a dependency to the latest release.

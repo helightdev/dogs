@@ -1,3 +1,44 @@
+## 6.0.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: fix common code style issues.
+ - **REFACTOR**: fix some linter warnings.
+ - **REFACTOR**: update to lyell 0.1.0.
+ - **REFACTOR**: remove long deprecated builder() method.
+ - **REFACTOR**: Fix lints and reformatted code.
+ - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.
+ - **REFACTOR**: replace deprecated isDynamic with is DynamicType.
+ - **REFACTOR**: apply builder only to the root package since.
+ - **REFACTOR**: remove unused variable.
+ - **REFACTOR**: auto reformat.
+ - **FIX**: make the generator use escaped field getter names.
+ - **FIX**: classes implementing core iterables shouldn't be treated as core iterables.
+ - **FIX**: add missing whitespace for proper spacing.
+ - **FIX**: use aliased identifier.
+ - **FIX**: use actual field name instead of property name for generated builder setter.
+ - **FIX**: required input now includes .conv.g.dart and runs_before keys are now valid.
+ - **FIX**: support super formal fields.
+ - **FIX**: log an severe error when a user tries to use class level generics.
+ - **FIX**: re-added README.md, generated builders now also have nullable parameters if the field is nullable.
+ - **FIX**: use cached alias counter for generating the reactor.
+ - **FIX**: refer to the runtimeType of polymorphic.
+ - **FIX**: generator linking.
+ - **FEAT**: initial commit.
+ - **FEAT**: add library option to code generation.
+ - **FEAT**: add structure support for built_types.
+ - **FEAT**: support non-formal constructor fields with backing fields or getters.
+ - **FEAT**: add support for named parameters, fix wrong field identification.
+ - **FEAT**: post rebuild hooks.
+ - **BREAKING** **REFACTOR**: cleanup structure, modify projection algorithm.
+ - **BREAKING** **FEAT**: prepare switch to operations.
+ - **BREAKING** **FEAT**: add new converter and polymorphic features.
+ - **BREAKING** **FEAT**: added validation, refactored library.
+ - **BREAKING** **FEAT**: switch to lyell generator utilities.
+ - **BREAKING** **FEAT**: extend structure, openapi schema, rework structure converter.
+ - **BREAKING** **FEAT**: polymorphic, serializer implementations, updated structure format.
+ - **BREAKING** **FEAT**: major rework and removed deprecations.
+
 ## 5.3.5
 
  - Update a dependency to the latest release.

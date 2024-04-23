@@ -1,6 +1,6 @@
 name: dogs_toml
 description: Toml serializer for the dogs graph serializer
-version: 2.2.0
+version: 2.3.0
 repository: https://github.com/DarwinFramework/dogs
 
 environment:
