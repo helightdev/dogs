@@ -1,3 +1,15 @@
+## 3.1.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: use new renamed methods.
+ - **REFACTOR**: reformatted code and removed some unused imports.
+ - **FIX**: add analysis_options.yaml.
+ - **FEAT**: add structure support for built_types.
+ - **FEAT**: add dogs_built.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+ - **BREAKING** **FEAT**: implement the improved built_value support library.
+
 ## 3.0.0
 
 > Note: This release has breaking changes.

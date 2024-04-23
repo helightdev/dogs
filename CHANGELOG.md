@@ -11,6 +11,33 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - [`dogs_built` - `v3.1.0`](#dogs_built---v310)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `dogs_built` - `v3.1.0`
+
+ - **REFACTOR**: use new renamed methods.
+ - **REFACTOR**: reformatted code and removed some unused imports.
+ - **FIX**: add analysis_options.yaml.
+ - **FEAT**: add structure support for built_types.
+ - **FEAT**: add dogs_built.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+ - **BREAKING** **FEAT**: implement the improved built_value support library.
+
+
+## 2024-04-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - [`dogs_core` - `v9.1.0`](#dogs_core---v910)
 
 Packages with other changes:
