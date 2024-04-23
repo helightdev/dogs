@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import 'dart:convert';
+
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_odm/dogs_odm.dart';
 import 'package:uuid/uuid.dart';
@@ -27,8 +29,39 @@ class MemoryOdmSystem extends OdmSystem<MemoryDatabase, String> {
   @override
   late DogEngine engine;
 
+  Map<String, String> _unloadedData = {};
+
+  void loadJsonDump(String json) {
+    _unloadedData = Map<String, String>.from(jsonDecode(json));
+    for (var entry in _databases.entries) {
+      var dump = _unloadedData.remove(entry.value.analysis.structure.serialName);
+      if (dump != null) {
+        entry.value.loadJsonDump(dump);
+      }
+    }
+  }
+
+  String createJsonDump() {
+    Map<String, String> data = {};
+    data.addAll(_unloadedData);
+    for (var entry in _databases.entries) {
+      data[entry.value.analysis.structure.serialName] = entry.value.createJsonDump();
+    }
+    return jsonEncode(data);
+  }
+
+  void reset() {
+    _databases.clear();
+    _unloadedData.clear();
+  }
+
   MemoryDatabase<T> _createDatabase<T extends Object>() {
-    return MemoryDatabase<T>(this);
+    var database = MemoryDatabase<T>(this);
+    var dump = _unloadedData.remove(database.analysis.structure.serialName);
+    if (dump != null) {
+      database.loadJsonDump(dump);
+    }
+    return database;
   }
 
   @override

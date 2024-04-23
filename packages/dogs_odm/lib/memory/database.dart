@@ -15,6 +15,7 @@
  */
 
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
@@ -31,6 +32,16 @@ class MemoryDatabase<T extends Object> extends CrudDatabase<T, String>
 
   late EntityAnalysis<T, MemoryDatabase, String> analysis =
       system.getAnalysis<T>();
+
+  String createJsonDump() {
+    return jsonEncode(_data);
+  }
+
+  void loadJsonDump(String json) {
+    _data.clear();
+    var data = jsonDecode(json) as Map<String, dynamic>;
+    _data.addAll(data.map((key, value) => MapEntry(key, value as Map<String, dynamic>)));
+  }
 
   @override
   Future<void> clear() {
