@@ -9,7 +9,7 @@ environment:
 dependencies:
   built_collection: ^5.1.1
   built_value: ^8.6.2
-  dogs_core: ^9.0.0
+  dogs_core: ^9.1.0
 
 dev_dependencies:
   lints: ^2.0.0

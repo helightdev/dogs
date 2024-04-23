@@ -3,6 +3,174 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-04-23
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_core` - `v9.1.0`](#dogs_core---v910)
+
+Packages with other changes:
+
+ - [`dogs_odm` - `v1.0.0-alpha.11`](#dogs_odm---v100-alpha11)
+ - [`dogs_built` - `v3.0.1`](#dogs_built---v301)
+ - [`dogs_generator` - `v5.3.6`](#dogs_generator---v536)
+ - [`dogs_forms` - `v0.1.1+5`](#dogs_forms---v0115)
+ - [`dogs_firestore` - `v0.1.0+1`](#dogs_firestore---v0101)
+ - [`dogs_toml` - `v2.2.1`](#dogs_toml---v221)
+ - [`dogs_cbor` - `v2.2.1`](#dogs_cbor---v221)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.11`](#dogs_mongo_driver---v100-alpha11)
+ - [`dogs_yaml` - `v2.2.1`](#dogs_yaml---v221)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_odm` - `v1.0.0-alpha.11`
+ - `dogs_built` - `v3.0.1`
+ - `dogs_generator` - `v5.3.6`
+ - `dogs_forms` - `v0.1.1+5`
+ - `dogs_firestore` - `v0.1.0+1`
+ - `dogs_toml` - `v2.2.1`
+ - `dogs_cbor` - `v2.2.1`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.11`
+ - `dogs_yaml` - `v2.2.1`
+
+---
+
+#### `dogs_core` - `v9.1.0`
+
+ - **REFACTOR**: make the type discriminator codec configurable.
+ - **REFACTOR**: reformat dart code.
+ - **REFACTOR**: remove unused polymorphic converters which became obsolete with tree converters.
+ - **REFACTOR**: fix some linter warnings.
+ - **REFACTOR**: reformat code.
+ - **REFACTOR**: support serialization of nullable values.
+ - **REFACTOR**: move pagination objects from dogs_odm to dogs_core.
+ - **REFACTOR**: Use DogEngine.instance instead of dogs.
+ - **REFACTOR**: some small refactoring changes and more api docs.
+ - **REFACTOR**: apply prefer final locals.
+ - **REFACTOR**: use double quote for dogs_core and add more lints.
+ - **REFACTOR**: make projections use native serialization by default.
+ - **REFACTOR**: use fieldmap as fallback if toString() using graph serialization fails.
+ - **REFACTOR**: auto reformat.
+ - **REFACTOR**: improve error handling and add custom exceptions.
+ - **REFACTOR**: rename internal firstWhereOrNull to firstWhereOrNullDogs to not clash with collections.
+ - **REFACTOR**: reformat code.
+ - **REFACTOR**: Fix lints and reformatted code.
+ - **REFACTOR**: add @factory annotation.
+ - **REFACTOR**: append runtime time to error message for easier debugging.
+ - **REFACTOR**: use DogException instead of Exception.
+ - **REFACTOR**: export hooks.
+ - **REFACTOR**: reformat code and remove some unused variables.
+ - **REFACTOR**: update pubspec.yaml.
+ - **REFACTOR**: use passed DogEngine reference instead of the static one.
+ - **REFACTOR**: remove unused import.
+ - **REFACTOR**: use final more often, add some docs along the way.
+ - **REFACTOR**: use instance instead of internalInstance everywhere and refactor internalInstance.
+ - **REFACTOR**: make fields final and add some docs.
+ - **REFACTOR**: add EnumConverter mixin for better readability when used in external packages.
+ - **REFACTOR**: use structure harbinger for findConverter instead of the outdated legacy algorithm.
+ - **REFACTOR**: reformatted code and removed some unused imports.
+ - **REFACTOR**: Use DogEngine.instance instead of dogs.
+ - **REFACTOR**: move global dogs field to globals.dart.
+ - **REFACTOR**: move IterableKind to engine.
+ - **REFACTOR**: fix common code style issues.
+ - **REFACTOR**: move annotations to converter.
+ - **REFACTOR**: export lyell.
+ - **REFACTOR**: use the new mode factories in operation mode resolution.
+ - **FIX**: handle null as empty collection if the field is not nullable.
+ - **FIX**: use qualified type for native check, not the serial type.
+ - **FIX**: broken relative markdown link.
+ - **FIX**: replace the wrongly used typeMapping with converterMapping.
+ - **FIX**: pass on type argument.
+ - **FIX**: make projection not shallow by default.
+ - **FIX**: remove unused parameter.
+ - **FIX**: downgrade meta package.
+ - **FIX**: make the PolymorphicConverter not associated with dynamic by default.
+ - **FIX**: only query serial converters for native collections.
+ - **FIX**: handle null in serialization.
+ - **FIX**: dogs_core tests.
+ - **FIX**: add case for synthetic structures.
+ - **FIX**: remove dart ffi import.
+ - **FIX**: disable test that needs a rework.
+ - **FIX**: do not associate polymorphic converters with types anymore.
+ - **FIX**: engine ignoring isAssociated.
+ - **FIX**: findConverter extension now works as expected.
+ - **FIX**: add native to graph visitor.
+ - **FIX**: recursively visit entries of maps and lists.
+ - **FIX**: ups add trees back.
+ - **FIX**: add continue statement I accidentally deleted.
+ - **FIX**: nullable structure fields now allow for null values.
+ - **FIX**: add item type name to the name of polymorphic schema fields if a cast is specified.
+ - **FIX**: handle field visitor specified converters for api schema generation.
+ - **FEAT**: add RegExpConverter.
+ - **FEAT**: implement native coercion in codec.
+ - **FEAT**: add projection transformers and tests for them.
+ - **FEAT**: cleanup DogEngine, fully implement child converters.
+ - **FEAT**: add support for deeper polymorphic serialization involving primitive types.
+ - **FEAT**: dogs_orm and dogs_mongo_driver initial commit.
+ - **FEAT**: add constant 'positive' accessor annotation to restrict numbers to be positive or zero.
+ - **FEAT**: add serializable library.
+ - **FEAT**: add short and more uniform to<Format> methods for native and json.
+ - **FEAT**(partial): add handler mechanism.
+ - **FEAT**: add simple createIterableFactory api method.
+ - **FEAT**: add annotations parameters.
+ - **FEAT**: add pre/post processors to native codec to clean up format implementations.
+ - **FEAT**: add metadata mixin and use it for the engine.
+ - **FEAT**: add mechanism for identifying and retrieving forked engine instances making them reusable.
+ - **FEAT**: add opmode factories for extending converter opmodes externally.
+ - **FEAT**: add annotations for validators in preparation for dogs_forms.
+ - **FEAT**: add pagination objects to dogs_core from dogs_odm.
+ - **FEAT**: add better error handling for projections.
+ - **FEAT**: initial commit.
+ - **FEAT**: add native serializer hooks.
+ - **FEAT**: adapt all formats to the new toFormat fromFormat scheme and actually make them pass all tests.
+ - **FEAT**: add openapi scheme generation for nargs and iterable converters.
+ - **FEAT**: add instantiateFromFieldMap to the structure extensions.
+ - **FEAT**: add findStructureByType.
+ - **FEAT**: add additional methods for encoding collections as json.
+ - **FEAT**: post rebuild hooks.
+ - **FEAT**: expand projection to allow for document projection.
+ - **FEAT**: add better error handling for api schema validation.
+ - **FEAT**: add DogEngine reference to validate calls.
+ - **FEAT**: add utils for non graph serializers.
+ - **FEAT**: add canSerializeNull for non-structure converters.
+ - **FEAT**: add SimpleDogConverter to reduce a bit of boilerplate code.
+ - **DOCS**: update polymorphic docs.
+ - **DOCS**: add some missing documentation.
+ - **DOCS**: add docs for structure proxy.
+ - **DOCS**: add documentation for default converters.
+ - **DOCS**: add example.md.
+ - **DOCS**: add docs comment.
+ - **DOCS**: update documentation for Validatable and Copyable.
+ - **DOCS**: add missing documentation.
+ - **DOCS**: add missing documentation for new methods.
+ - **DOCS**: add docs for SimpleDogConverter.
+ - **DOCS**: add more documentation to public members.
+ - **DOCS**: update example.md and remove empty main.dart.
+ - **DOCS**: add missing public member documentation and reformat code.
+ - **BREAKING** **REFACTOR**: change positive to exclude 0, add positiveOrNull, as well as negative versions.
+ - **BREAKING** **REFACTOR**: remove old non-operation methods.
+ - **BREAKING** **REFACTOR**: cleanup structure, modify projection algorithm.
+ - **BREAKING** **REFACTOR**: fix new projection algorithm, finish operation mode refactoring.
+ - **BREAKING** **REFACTOR**: Require explicit handling of polymorphic tree serialization.
+ - **BREAKING** **REFACTOR**: rename findConverterOrThrow.
+ - **BREAKING** **FEAT**: add new converter and polymorphic features.
+ - **BREAKING** **FEAT**: major rework and removed deprecations.
+ - **BREAKING** **FEAT**: prepare switch to operations.
+ - **BREAKING** **FEAT**: add simplified type tree system and remove old internal implementations.
+ - **BREAKING** **FEAT**: added validation, refactored library.
+ - **BREAKING** **FEAT**: switch to lyell generator utilities.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+ - **BREAKING** **FEAT**: extend structure, openapi schema, rework structure converter.
+ - **BREAKING** **FEAT**: polymorphic, serializer implementations, updated structure format.
+ - **BREAKING** **FEAT**: add notBlank and email validators.
+
+
 ## 2024-02-27
 
 ### Changes

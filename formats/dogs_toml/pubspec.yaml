@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  dogs_core: ^9.0.0
+  dogs_core: ^9.1.0
   toml: ^0.15.0
 
 dev_dependencies:

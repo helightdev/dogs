@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dogs_core: ^9.0.0
+  dogs_core: ^9.1.0
   cloud_firestore: ^4.13.6
   meta: ^1.10.0
 

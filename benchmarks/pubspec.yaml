@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  dogs_core: ^9.0.0
+  dogs_core: ^9.1.0
   dogs_yaml: ^2.2.0
   dogs_cbor: ^2.2.0
   dogs_toml: ^2.2.0
