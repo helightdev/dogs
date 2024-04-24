@@ -1,3 +1,7 @@
+## 1.0.0-alpha.12
+
+ - **FEAT**: add universal repository that works with all systems offering capabilities similar to the MemorySystem.
+
 ## 1.0.0-alpha.11
 
  - **REFACTOR**: make MemoryOdmSystem optionally consume an engine instance or create an identified fork by default.
