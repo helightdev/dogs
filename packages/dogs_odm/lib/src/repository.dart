@@ -57,7 +57,6 @@ abstract class Repository<T extends Object, ID extends Object> {
 
 /// Adds query support to a [Repository].
 abstract class QueryableRepository<T extends Object, ID extends Object> {
-
   /// Returns all entities that match the given [query] sorted by the given
   Future<List<T>> findAllByQuery(QueryLike query,
       [Sorted sort = const Sorted.empty()]);
@@ -81,7 +80,6 @@ abstract class QueryableRepository<T extends Object, ID extends Object> {
 
 /// Adds pagination support to a [QueryableRepository].
 abstract class PageableRepository<ENTITY extends Object, ID extends Object> {
-
   /// Returns a page of all entities for the given [request].
   Future<Page<ENTITY>> findPaginated(PageRequest request);
 
@@ -100,7 +98,6 @@ abstract class DatabaseReferences<
     SYS_DB_BASE extends CrudDatabase,
     SYS_DB extends CrudDatabase<ENTITY, SYS_ID>,
     SYS_ID extends Object> {
-
   /// Returns the backing system of this repository.
   OdmSystem<SYS_DB_BASE, SYS_ID> get system;
 
@@ -258,3 +255,112 @@ mixin PageableRepositoryMixin<
   }
 }
 //</editor-fold>
+
+class UniversalRepository<ENTITY extends Object, ID extends Object> {
+
+  // Internal Variables
+  CrudDatabase<ENTITY, Object>? _database;
+  OdmSystem? _system;
+
+  OdmSystem get system => _system ??= OdmSystem.any!;
+
+  CrudDatabase<ENTITY, Object> get database => _database ??= system.getDatabase<ENTITY>();
+
+  set system(OdmSystem value) => _system = value;
+  set database(CrudDatabase<ENTITY, Object> value) => _database = value;
+
+  QueryableDatabase<ENTITY, Object> get queryableDatabase => database as QueryableDatabase<ENTITY, Object>;
+  PageableDatabase<ENTITY, Object> get pageableDatabase => database as PageableDatabase<ENTITY, Object>;
+
+  UniversalRepository({OdmSystem? system, CrudDatabase<ENTITY, Object>? database}):
+        _system = system,
+        _database = database;
+
+
+  // Crud Mixin Methods
+  Future<ENTITY?> findById(ID id) {
+    return database.findById(system.transformId(id)!);
+  }
+
+  Future<List<ENTITY>> findAll() {
+    return database.findAll();
+  }
+
+  Future<bool> existsById(ID id) {
+    return database.existsById(system.transformId(id)!);
+  }
+
+  Future<int> count() {
+    return database.count();
+  }
+
+  Future<ENTITY> save(ENTITY value) {
+    return database.save(value);
+  }
+
+  Future<List<ENTITY>> saveAll(Iterable<ENTITY> values) {
+    return database.saveAll(values);
+  }
+
+  Future<void> deleteById(ID id) {
+    return database.deleteById(system.transformId(id)!);
+  }
+
+  Future<void> delete(ENTITY value) {
+    return database.delete(value);
+  }
+
+  Future<void> deleteAllById(Iterable<ID> ids) {
+    return database.deleteAllById(ids.map(system.transformId).nonNulls);
+  }
+
+  Future<void> deleteAll(Iterable<ENTITY> values) {
+    return database.deleteAll(values);
+  }
+
+  Future<void> clear() {
+    return database.clear();
+  }
+
+
+  // Queryable Mixin Methods
+  Future<List<ENTITY>> findAllByQuery(QueryLike query,
+      [Sorted sort = const Sorted.empty()]) {
+    return queryableDatabase.findAllByQuery(query.asQuery, sort);
+  }
+
+  Future<ENTITY?> findOneByQuery(QueryLike query,
+      [Sorted sort = const Sorted.empty()]) {
+    return queryableDatabase.findOneByQuery(query.asQuery, sort);
+  }
+
+  Future<int> countByQuery(QueryLike query) {
+    return queryableDatabase.countByQuery(query.asQuery);
+  }
+
+  Future<bool> existsByQuery(QueryLike query) {
+    return queryableDatabase.existsByQuery(query.asQuery);
+  }
+
+  Future<void> deleteOneByQuery(QueryLike query) {
+    return queryableDatabase.deleteOneByQuery(query.asQuery);
+  }
+
+  Future<void> deleteAllByQuery(QueryLike query) {
+    return queryableDatabase.deleteAllByQuery(query.asQuery);
+  }
+
+
+  // Pageable Mixin Methods
+  Future<Page<ENTITY>> findPaginated(PageRequest request) {
+    return pageableDatabase.findPaginatedByQuery(Query.empty(), Sorted.empty(),
+        skip: request.skip, limit: request.size);
+  }
+
+  Future<Page<ENTITY>> findPaginatedByQuery(
+      QueryLike query, PageRequest request,
+      [Sorted sort = const Sorted.empty()]) {
+    return pageableDatabase.findPaginatedByQuery(query.asQuery, sort,
+        skip: request.skip, limit: request.size);
+  }
+}

@@ -28,6 +28,10 @@ abstract class OdmSystem<SYS_DB extends CrudDatabase, SYS_ID extends Object> {
   static OdmSystem? get any {
     return _ormSystems.values.firstOrNull;
   }
+
+  static void reset() {
+    _ormSystems.clear();
+  }
   
   static void register<T extends OdmSystem>(T system) {
     _ormSystems[T] = system;
