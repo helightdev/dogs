@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 export 'fields/checkbox_field.dart';
+export 'fields/color_field.dart';
 export 'fields/data_choicechip.dart';
 export 'fields/data_dropdown.dart';
 export 'fields/data_radiogroup.dart';

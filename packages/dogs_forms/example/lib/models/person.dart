@@ -53,6 +53,13 @@ class Person with Dataclass<Person> {
   @Range(min: 0, max: 10)
   int happiness;
 
+  @AutoFormField(
+    factory: ColorFormFieldFactory(),
+    title: "Favourite Color",
+    subtitle: "Select your favourite color",
+  )
+  String favouriteColor;
+
   Person(
       {required this.name,
       required this.surname,
@@ -60,8 +67,9 @@ class Person with Dataclass<Person> {
       required this.birthday,
       required this.gender,
       required this.active,
-      required this.happiness
-      });
+      required this.happiness,
+      required this.favouriteColor
+  });
 }
 
 @serializable
