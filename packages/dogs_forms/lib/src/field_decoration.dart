@@ -24,14 +24,16 @@ import 'package:flutter/material.dart';
 class DecorationPreference {
   final BorderPreference borderPreference;
   final EdgeInsets? contentPadding;
+  final bool preferWidgets;
 
   const DecorationPreference(
-      {this.borderPreference = BorderPreference.normal, this.contentPadding});
+      {this.borderPreference = BorderPreference.normal, this.contentPadding, this.preferWidgets = false});
 
   /// A [DecorationPreference] that prefers a borderless style.
   static const DecorationPreference borderless = DecorationPreference(
       borderPreference: BorderPreference.borderless,
-      contentPadding: EdgeInsets.zero);
+      contentPadding: EdgeInsets.zero,
+  );
 
   /// A [DecorationPreference] that prefers an outline border.
   static const DecorationPreference outline =
@@ -94,7 +96,7 @@ extension FieldDecorationExtension on DogsFormField {
     decoration = formAnnotation?.decoration ?? decoration;
     // Apply data transformation
     var locale = Localizations.maybeLocaleOf(context);
-    decoration = _applyTitle(decoration, form, context, locale);
+    decoration = _applyTitle(decoration, form, context, locale, pref.preferWidgets);
     decoration = _applySubtitle(form, context, locale, decoration);
     decoration = _applyHint(form, context, locale, decoration);
     return decoration;
@@ -113,16 +115,22 @@ extension FieldDecorationExtension on DogsFormField {
             };
 
   InputDecoration _applyTitle(InputDecoration decoration,
-      DogsForm<dynamic> form, BuildContext context, Locale? locale) {
+      DogsForm<dynamic> form, BuildContext context, Locale? locale, bool preferWidgets) {
+
     if (decoration.labelText == null && decoration.label == null) {
+      String textValue;
       if (formAnnotation?.titleTranslationKey != null) {
         var translated = form.translationResolver
             .translate(context, formAnnotation!.titleTranslationKey!, locale);
-        decoration = decoration.copyWith(
-            helperText: translated ?? capitalizeString(title));
+
+        textValue = translated ?? capitalizeString(title);
       } else {
-        decoration = decoration.copyWith(labelText: capitalizeString(title));
+        textValue = capitalizeString(title);
       }
+      decoration = switch (preferWidgets) {
+        true => decoration.copyWith(label: Text(textValue)),
+        false => decoration.copyWith(labelText: textValue)
+      };
     }
     return decoration;
   }
