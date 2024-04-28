@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-04-29
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_forms` - `v0.2.1`](#dogs_forms---v021)
+
+---
+
+#### `dogs_forms` - `v0.2.1`
+
+ - **FEAT**: add a color field which serializes to a string, update dependencies.
+ - **FEAT**: add preferWidgets to alter if the built decoration contains text or a widget.
+
+
 ## 2024-04-25
 
 ### Changes
