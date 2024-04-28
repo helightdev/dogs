@@ -89,7 +89,9 @@ class DogsFormList<T> extends StatefulWidget {
   static Widget field<T>(DogsFormField field,
       {required ListElementBuilder elementFactory,
       Initializer defaultInit = nullInitializer,
+        // Encode Serialized Type => Field Type
       dynamic Function(dynamic) encoder = keepValue,
+        // Decode Field Type => Serialized Type
       dynamic Function(dynamic) decoder = keepValue,
       Function(BuildContext context, Function(dynamic) callback)? addItem}) {
     var isReorderable = field.formAnnotation?.listReorderable ?? false;
