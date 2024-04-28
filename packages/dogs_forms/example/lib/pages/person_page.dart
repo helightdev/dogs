@@ -14,6 +14,7 @@
  *    limitations under the License.
  */
 
+import 'package:dogs_forms/dogs_forms.dart';
 import 'package:forms_example/form_print_wrapper.dart';
 import 'package:forms_example/models/address.dart';
 import 'package:forms_example/models/person.dart';
@@ -32,7 +33,8 @@ class PersonPage extends StatelessWidget {
           active: true,
           birthday: DateTime(1981, 12, 1),
           gender: Gender.male,
-          happiness: 8
+          happiness: 8,
+          favouriteColor: ColorFormFieldUtils.encodeColor(Colors.indigo),
       ),
       modelCode: """
 @serializable
@@ -69,6 +71,13 @@ class Person with Dataclass<Person> {
   @Range(min: 0, max: 10)
   int happiness;
 
+  @AutoFormField(
+    factory: ColorFormFieldFactory(),
+    title: "Favourite Color",
+    subtitle: "Select your favourite color",
+  )
+  String favouriteColor;
+
   Person(
       {required this.name,
       required this.surname,
@@ -76,8 +85,9 @@ class Person with Dataclass<Person> {
       required this.birthday,
       required this.gender,
       required this.active,
-      required this.happiness
-      });
+      required this.happiness,
+      required this.favouriteColor
+  });
 }
 
 @serializable
