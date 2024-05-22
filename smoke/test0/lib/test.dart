@@ -8,6 +8,7 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 import 'conformities.dart';
+import 'macros.dart';
 import 'models.dart';
 
 part "parts/conformities.dart";
@@ -27,6 +28,7 @@ Future main() async {
     test("Validators", testValidators);
     test("Trees", testTrees);
     test("Projection", testProjection);
+    group("Macros", testMacros);
 
     group("Encodings", () {
       test("Json", () {

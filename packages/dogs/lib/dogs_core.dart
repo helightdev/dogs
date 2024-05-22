@@ -37,6 +37,7 @@ export "src/global.dart";
 export "src/graph_value.dart";
 export "src/hooks.dart";
 export "src/json.dart";
+export 'src/macro.dart';
 export "src/metadata.dart";
 export "src/opmodes/factory.dart";
 export "src/opmodes/operation.dart";

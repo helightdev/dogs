@@ -14,8 +14,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 #
-
-flutter pub get
-flutter pub upgrade
-flutter pub run build_runner build --delete-conflicting-outputs --verbose
-flutter pub test lib/test.dart
+dart get
+dart upgrade
+dart pub run build_runner build --delete-conflicting-outputs --verbose --enable-experiment=macros
+dart run --enable-experiment=macros lib/test.dart

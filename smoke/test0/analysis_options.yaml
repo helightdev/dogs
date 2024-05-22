@@ -13,15 +13,6 @@
 
 include: package:lints/recommended.yaml
 
-linter:
-  rules:
-    - public_member_api_docs
-    - sort_pub_dependencies
-    - prefer_double_quotes
-    - avoid_void_async
-    - avoid_print
-    - prefer_final_locals
-
 analyzer:
   enable-experiment:
     - macros
