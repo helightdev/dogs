@@ -24,7 +24,7 @@ abstract class DogNativeCodec {
   const DogNativeCodec();
 
   /// Coercion for native types.
-  CodecPrimitiveCoercion get primitiveCoercion => NoCodecPrimitiveCoercion();
+  CodecPrimitiveCoercion get primitiveCoercion => NumberPrimitiveCoercion();
 
   /// The prefix used for metadata keys.
   String get metaPrefix => "_";
@@ -69,13 +69,30 @@ abstract interface class CodecPrimitiveCoercion {
   dynamic coerce(TypeCapture expected, dynamic value, String? fieldName);
 }
 
-/// Default implementation of [CodecPrimitiveCoercion] that throws an error
+/// Simple implementation of [CodecPrimitiveCoercion] that throws an error
 /// when coercion is attempted.
 class NoCodecPrimitiveCoercion implements CodecPrimitiveCoercion {
   @override
   dynamic coerce(TypeCapture expected, value, String? fieldName) {
     throw ArgumentError.value(value, fieldName,
         "Can't coerce $value(${value.runtimeType}) to expected ${expected.typeArgument}");
+  }
+}
+
+/// [CodecPrimitiveCoercion] that allows coercion between [int] and [double].
+/// Should be used as the default [CodecPrimitiveCoercion] for [DogEngine]s.
+class NumberPrimitiveCoercion implements CodecPrimitiveCoercion {
+  @override
+  dynamic coerce(TypeCapture expected, value, String? fieldName) {
+    if (value is num) {
+      if (expected.typeArgument == int) {
+        return value.toInt();
+      } else if (expected.typeArgument == double) {
+        return value.toDouble();
+      }
+    }
+
+    throw ArgumentError.value(value, fieldName, "Can't coerce $value(${value.runtimeType}) to expected ${expected.typeArgument}");
   }
 }
 

@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import "dart:math";
+
 import "package:dogs_core/dogs_core.dart";
 import "package:test/expect.dart";
 import "package:test/scaffolding.dart";
@@ -101,6 +103,18 @@ void main() {
     final decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<String?>());
     expect(decoded[1], isA<CustomNative>());
+  });
+
+  test("Primitive Coerce", () {
+    final coercion = NumberPrimitiveCoercion();
+    final e1 =  QualifiedTypeTree.terminal<int>();
+    final e2 =  QualifiedTypeTree.terminal<double>();
+    final e3 =  QualifiedTypeTree.terminal<String>();
+    expect(coercion.coerce(e1, 1.0, "a"), 1);
+    expect(coercion.coerce(e2, 1, "a"), 1.0);
+    expect(() {
+      coercion.coerce(e3, 1, "a");
+    }, throwsArgumentError);
   });
 
   test("Test Custom Codec Overrides", () {
