@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-06-26
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v9.2.0`](#dogs_core---v920)
+ - [`dogs_forms` - `v0.2.2`](#dogs_forms---v022)
+ - [`dogs_odm` - `v1.0.0-alpha.13`](#dogs_odm---v100-alpha13)
+ - [`dogs_built` - `v3.1.1`](#dogs_built---v311)
+ - [`dogs_generator` - `v6.0.1`](#dogs_generator---v601)
+ - [`dogs_firestore` - `v0.2.0+1`](#dogs_firestore---v0201)
+ - [`dogs_cbor` - `v2.3.1`](#dogs_cbor---v231)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.13`](#dogs_mongo_driver---v100-alpha13)
+ - [`dogs_toml` - `v2.3.1`](#dogs_toml---v231)
+ - [`dogs_yaml` - `v2.3.1`](#dogs_yaml---v231)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_odm` - `v1.0.0-alpha.13`
+ - `dogs_built` - `v3.1.1`
+ - `dogs_generator` - `v6.0.1`
+ - `dogs_firestore` - `v0.2.0+1`
+ - `dogs_cbor` - `v2.3.1`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.13`
+ - `dogs_toml` - `v2.3.1`
+ - `dogs_yaml` - `v2.3.1`
+
+---
+
+#### `dogs_core` - `v9.2.0`
+
+ - **FEAT**: reimplement number primitive coercion and make it the default as a mitigation for common webserver interop problems.
+
+#### `dogs_forms` - `v0.2.2`
+
+ - **FEAT**: add a color field which serializes to a string, update dependencies.
+ - **FEAT**: add preferWidgets to alter if the built decoration contains text or a widget.
+ - **FEAT**: add a color field which serializes to a string, update dependencies.
+ - **FEAT**: add preferWidgets to alter if the built decoration contains text or a widget.
+
+
 ## 2024-04-29
 
 ### Changes

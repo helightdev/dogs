@@ -1,3 +1,7 @@
+## 9.2.0
+
+ - **FEAT**: reimplement number primitive coercion and make it the default as a mitigation for common webserver interop problems.
+
 ## 9.1.0
 
 > Note: This release has breaking changes.

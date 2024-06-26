@@ -1,3 +1,10 @@
+## 0.2.2
+
+ - **FEAT**: add a color field which serializes to a string, update dependencies.
+ - **FEAT**: add preferWidgets to alter if the built decoration contains text or a widget.
+ - **FEAT**: add a color field which serializes to a string, update dependencies.
+ - **FEAT**: add preferWidgets to alter if the built decoration contains text or a widget.
+
 ## 0.2.1
 
  - **FEAT**: add a color field which serializes to a string, update dependencies.

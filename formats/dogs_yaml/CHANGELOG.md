@@ -1,3 +1,7 @@
+## 2.3.1
+
+ - Update a dependency to the latest release.
+
 ## 2.3.0
 
  - **FEAT**: add pre/post processors to native codec to clean up format implementations.
