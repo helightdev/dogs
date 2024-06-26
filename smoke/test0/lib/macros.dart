@@ -24,10 +24,20 @@ void testMacros() {
     final person2 = person.rebuild((p0) => p0..name = "Adam");
     expect(person2, Person(name: "Adam", age: 19));
   });
+
+  test("Meta Annotation", () {
+    print(Person.structure.annotations);
+    expect(Person.structure.annotations.whereType<CustomAnnotation>().length, 1);
+  });
 }
 
 @Model()
 class Person {
   final String name;
   final int age;
+}
+
+class CustomAnnotation implements StructureMetadata {
+  final String name;
+  const CustomAnnotation(this.name);
 }
