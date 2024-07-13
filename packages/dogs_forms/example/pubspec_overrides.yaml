@@ -6,3 +6,5 @@ dependency_overrides:
     path: ..
   dogs_generator:
     path: ../../dogs_generator
+  form_builder_validators: 9.1.0
+  intl: 0.19.0

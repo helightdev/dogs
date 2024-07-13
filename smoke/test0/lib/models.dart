@@ -152,16 +152,19 @@ class ModelG with Dataclass<ModelG> {
 
   List<Optional<String>> opts;
 
-  ModelG(this.ints, this.m, this.dyna, this.opts);
+  @native
+  Object? nativeField;
+
+  ModelG(this.ints, this.m, this.dyna, this.opts, this.nativeField);
 
   factory ModelG.variant0() {
     return ModelG([[1,2,3],[4,5,6]], {"a": {1,2,3}, "b" : {1.1,2.2,3.3}}, {
       "test": [Note.variant0(), "Hello World"]
-    }, [Optional("Yes"), Optional(null)]);
+    }, [Optional("Yes"), Optional(null)], "a");
   }
 
   factory ModelG.variant1() {
-    return ModelG(null, null, {}, [Optional("No"), Optional(null)]);
+    return ModelG(null, null, {}, [Optional("No"), Optional(null)], null);
   }
 }
 

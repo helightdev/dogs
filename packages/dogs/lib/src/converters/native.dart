@@ -34,3 +34,19 @@ class NativeRetentionConverter<T> extends DogConverter<T>
     return "Native<$T>";
   }
 }
+
+/// Metadata that marks a property as native.
+class NativeProperty extends StructureMetadata implements ConverterSupplyingVisitor {
+
+  /// Metadata that marks a property as native.
+  const NativeProperty();
+
+  @override
+  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field, DogEngine engine) {
+    return NativeRetentionConverter();
+  }
+}
+
+/// Metadata that marks a property as native.
+/// The value will be kept as is during serialization and deserialization.
+const NativeProperty native = NativeProperty();
