@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-07-13
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v9.3.0`](#dogs_core---v930)
+ - [`dogs_forms` - `v0.2.3`](#dogs_forms---v023)
+ - [`dogs_built` - `v3.1.2`](#dogs_built---v312)
+ - [`dogs_generator` - `v6.0.2`](#dogs_generator---v602)
+ - [`dogs_firestore` - `v0.2.0+2`](#dogs_firestore---v0202)
+ - [`dogs_odm` - `v1.0.0-alpha.14`](#dogs_odm---v100-alpha14)
+ - [`dogs_toml` - `v2.3.2`](#dogs_toml---v232)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.14`](#dogs_mongo_driver---v100-alpha14)
+ - [`dogs_cbor` - `v2.3.2`](#dogs_cbor---v232)
+ - [`dogs_yaml` - `v2.3.2`](#dogs_yaml---v232)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_built` - `v3.1.2`
+ - `dogs_generator` - `v6.0.2`
+ - `dogs_firestore` - `v0.2.0+2`
+ - `dogs_odm` - `v1.0.0-alpha.14`
+ - `dogs_toml` - `v2.3.2`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.14`
+ - `dogs_cbor` - `v2.3.2`
+ - `dogs_yaml` - `v2.3.2`
+
+---
+
+#### `dogs_core` - `v9.3.0`
+
+ - **FEAT**: add native property annotation to retain field values during serialization and deserialization.
+
+#### `dogs_forms` - `v0.2.3`
+
+ - **FEAT**: add native property annotation to retain field values during serialization and deserialization.
+
+
 ## 2024-06-26
 
 ### Changes

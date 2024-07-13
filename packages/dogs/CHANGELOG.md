@@ -1,3 +1,7 @@
+## 9.3.0
+
+ - **FEAT**: add native property annotation to retain field values during serialization and deserialization.
+
 ## 9.2.0
 
  - **FEAT**: reimplement number primitive coercion and make it the default as a mitigation for common webserver interop problems.

@@ -1,3 +1,7 @@
+## 0.2.3
+
+ - **FEAT**: add native property annotation to retain field values during serialization and deserialization.
+
 ## 0.2.2
 
  - **FEAT**: add a color field which serializes to a string, update dependencies.
