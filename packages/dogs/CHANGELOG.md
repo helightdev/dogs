@@ -1,3 +1,7 @@
+## 9.4.0
+
+ - **FEAT**: add field serialization hook and the DefaultValue field annotation.
+
 ## 9.3.0
 
  - **FEAT**: add native property annotation to retain field values during serialization and deserialization.
