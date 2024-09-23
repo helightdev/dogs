@@ -198,6 +198,31 @@ have a backing field or getter with the same name. This list showcases all possi
     !!! note "Annotations go on the getter"
         Annotations for fields must be placed on the getter itself, not on the constructor parameter.
 
+## Default Values
+You can set default values for fields, which will be considered when deserializing and serializing
+the value of the field.
+
+```dart
+@DefaultValue("Alex")
+String name;
+```
+
+This will set the default value of the field to "Alex". If the **field is not present** in the serialized
+data, the **default value will be used**. If the field is present, the default value will be ignored.
+When the object is serialized, the serializer will check if the **value is equal to the default value**
+and will **omit the field** if it is. 
+
+
+!!! note "Including the default value"
+    If you want to include the field even if it is equal to the default
+    value, you can set the `keep` parameter to `true`.
+    
+    ```dart
+    @DefaultValue("Alex", keep: true)
+    String name;
+    ```
+
+
 ## Restrictions
 To make your serializable classes work with the serialization system, you must follow a few
 restrictions (to read more about the restrictions, expand the region below).
