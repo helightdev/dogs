@@ -43,6 +43,7 @@ Future initialiseDogs() async {
     gen3.InitializersModelConverter(),
     gen3.ConstructorBodyModelConverter(),
     gen3.GetterModelConverter(),
+    gen3.DefaultValueModelConverter(),
     gen3.EnumAConverter(),
     gen4.ConformityBeanConverter(),
     gen4.ConformityBasicConverter(),

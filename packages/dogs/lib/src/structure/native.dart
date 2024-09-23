@@ -51,6 +51,8 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
       final iterableKind = field.iterableKind;
       final fieldType = field.type;
       final serialType = field.serial;
+      final fieldSerializerHooks = field.annotationsOf<FieldSerializationHook>().toList();
+
       if (e.converter == null) {
         return (
           serialize: (dynamic v, Map<String, dynamic> map, DogEngine engine) {
@@ -64,6 +66,9 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 }
               } else {
                 map[fieldName] = fieldValue;
+              }
+              for (var hook in fieldSerializerHooks) {
+                hook.postFieldSerialization(fieldName, map, field, engine);
               }
             } on DogFieldSerializerException {
               rethrow;
@@ -79,6 +84,9 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
           },
           deserialize: (dynamic v, List args, DogEngine engine) {
             try {
+              for (var hook in fieldSerializerHooks) {
+                hook.beforeFieldDeserialization(fieldName, v, field, engine);
+              }
               final mapValue = v[fieldName];
               if (mapValue == null) {
                 if (isOptional) {
@@ -128,6 +136,9 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 map[fieldName] = operation.serializeIterable(
                     fieldValue, engine, iterableKind);
               }
+              for (var hook in fieldSerializerHooks) {
+                hook.postFieldSerialization(fieldName, map, field, engine);
+              }
             } on DogFieldSerializerException {
               rethrow;
             } catch (e, stacktrace) {
@@ -142,6 +153,9 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
           },
           deserialize: (dynamic v, List args, DogEngine engine) {
             try {
+              for (var hook in fieldSerializerHooks) {
+                hook.beforeFieldDeserialization(fieldName, v, field, engine);
+              }
               final mapValue = v[fieldName];
               if (mapValue == null) {
                 if (isOptional) {

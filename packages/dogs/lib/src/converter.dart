@@ -100,6 +100,9 @@ class LinkSerializer {
 /// The dogs_generator will then include an instance of this converter.
 const linkSerializer = LinkSerializer();
 
+/// Supplier function for default values.
+typedef DefaultValueSupplier = dynamic Function();
+
 class _BeanIgnore {
   const _BeanIgnore();
 }

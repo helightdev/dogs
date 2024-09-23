@@ -30,6 +30,19 @@ void testModels() {
   testSingleModel<InitializersModel>(InitializersModel.variant0, InitializersModel.variant1);
   testSingleModel<ConstructorBodyModel>(ConstructorBodyModel.variant0, ConstructorBodyModel.variant1);
   testSingleModel<GetterModel>(GetterModel.variant0, GetterModel.variant1);
+  testSingleModel<DefaultValueModel>(DefaultValueModel.variant0, DefaultValueModel.variant1);
+  
+  test("Default Values", () {
+    var defaultValues = DefaultValueModel.variant0();
+    var defaultMap = dogs.toNative(defaultValues) as Map;
+    expect(defaultMap.containsKey("a"), false);
+    expect(defaultMap.containsKey("b"), false);
+
+    var customValues = DefaultValueModel.variant1();
+    var customMap = dogs.toNative(customValues) as Map;
+    expect(customMap.containsKey("a"), true);
+    expect(customMap.containsKey("b"), true);
+  });
 }
 
 void testSingleModel<T>(T Function() a, T Function() b) => group("$T", () {

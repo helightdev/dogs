@@ -44,6 +44,22 @@ abstract class SerializationHook implements StructureMetadata {
       Map<String, dynamic> map, DogStructure structure, DogEngine engine) {}
 }
 
+/// `FieldSerializationHook` is a mixin for field structure metadata
+/// annotations to provide hooks which are able to change map values after
+/// serialization and before deserialization.
+///
+/// This interface is used by [NativeSerializerMode] and descendants.
+mixin FieldSerializationHook on StructureMetadata {
+
+  /// This method is called after a field is serialized by [NativeSerializerMode].
+  void postFieldSerialization(
+      String key, Map<String, dynamic> map, DogStructureField structure, DogEngine engine) {}
+
+  /// This method is called before a field is deserialized by [NativeSerializerMode].
+  void beforeFieldDeserialization(
+      String key, Map<String, dynamic> map, DogStructureField structure, DogEngine engine) {}
+}
+
 /// A function that may be used to transform a map before deserialization.
 /// May be used in conjunction with [LightweightMigration] or [RevisionMigration].
 typedef MigrationFunction = Function(
@@ -113,5 +129,41 @@ class RevisionMigration extends SerializationHook {
   void postSerialization(dynamic obj, Map<String, dynamic> map,
       DogStructure structure, DogEngine engine) {
     map[revisionKey] = migrations.length;
+  }
+}
+
+/// Contains the default value for a dog serializable field.
+class DefaultValue extends StructureMetadata with FieldSerializationHook {
+  /// The default value for the field.
+  final dynamic value;
+
+  /// If the default value should be kept even if the field is present in the serialized map.
+  final bool keep;
+
+  /// Creates a new [DefaultValue] with the given [value].
+  /// The [value] may be any constant dart value or a `dynamic Function()` which will
+  /// be evaluated as the supplier of the default value.
+  ///
+  /// If [keep] is set to `true`, the default value will be kept in the serialized map,
+  /// otherwise it will be removed if the field is equal to the default value.
+  const DefaultValue(this.value, {this.keep = false});
+
+  @override
+  void beforeFieldDeserialization(String key, Map<String, dynamic> map,
+      DogStructureField structure, DogEngine engine) {
+    if (!map.containsKey(key)) {
+      map[key] = value is DefaultValueSupplier ? value() : value;
+    }
+  }
+
+  @override
+  void postFieldSerialization(String key, Map<String, dynamic> map,
+      DogStructureField structure, DogEngine engine) {
+    if (!keep) {
+      final v = value is DefaultValueSupplier ? value() : value;
+      if (map[key] == v) {
+        map.remove(key);
+      }
+    }
   }
 }

@@ -158,3 +158,29 @@ class GetterModel with Dataclass<GetterModel> {
     return GetterModel("id1", "data1");
   }
 }
+
+@serializable
+class DefaultValueModel with Dataclass<DefaultValueModel> {
+
+  @DefaultValue("default")
+  String a;
+
+  @DefaultValue(bSupplier)
+  int b;
+
+  DefaultValueModel({
+    this.a = "default",
+    required this.b,
+  });
+
+  factory DefaultValueModel.variant0() {
+    return DefaultValueModel(b: bSupplier());
+  }
+
+  factory DefaultValueModel.variant1() {
+    return DefaultValueModel(a: "custom", b: 1001);
+  }
+
+  static int bSupplier() => 420;
+
+}
