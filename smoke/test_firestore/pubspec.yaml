@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  cloud_firestore: ^4.13.6
-  firebase_core: ^2.24.2
+  cloud_firestore: ^5.6.0
+  firebase_core: ^3.9.0
 
   dogs_core: any
   dogs_firestore: any
