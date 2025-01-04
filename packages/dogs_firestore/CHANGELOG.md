@@ -1,3 +1,15 @@
+## 0.2.1
+
+> Note: This release has breaking changes.
+
+ - **FIX**: rename example package to not have the same name as a dependency.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: fakeable firestore and fixed rebuild copy to include transient fields.
+ - **FEAT**: add more query methods and $store.
+ - **FEAT**: changes, queries and snapshot system for document reference.
+ - **FEAT**: first working version of dogs_firestore 🎉.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
 ## 0.2.0+3
 
  - Update a dependency to the latest release.

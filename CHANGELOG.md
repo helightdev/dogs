@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-01-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_firestore` - `v0.2.1`](#dogs_firestore---v021)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `dogs_firestore` - `v0.2.1`
+
+ - **FIX**: rename example package to not have the same name as a dependency.
+ - **FEAT**: add json dump/load functionality for the memory db.
+ - **FEAT**: fakeable firestore and fixed rebuild copy to include transient fields.
+ - **FEAT**: add more query methods and $store.
+ - **FEAT**: changes, queries and snapshot system for document reference.
+ - **FEAT**: first working version of dogs_firestore 🎉.
+ - **BREAKING** **FEAT**: fully remove the graph operation mode and other deprecations.
+
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## 2024-09-23
 
 ### Changes
