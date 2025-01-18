@@ -146,6 +146,7 @@ class ModelG with Dataclass<ModelG> {
 
   List<List<int>>? ints;
   Map<String, Set<double>>? m;
+  Map<int,List<String>> intMap;
 
   @polymorphic
   Map<String, List<Object>> dyna;
@@ -155,16 +156,18 @@ class ModelG with Dataclass<ModelG> {
   @native
   Object? nativeField;
 
-  ModelG(this.ints, this.m, this.dyna, this.opts, this.nativeField);
+  ModelG(this.ints, this.m, this.intMap, this.dyna, this.opts, this.nativeField);
 
   factory ModelG.variant0() {
-    return ModelG([[1,2,3],[4,5,6]], {"a": {1,2,3}, "b" : {1.1,2.2,3.3}}, {
+    return ModelG([[1,2,3],[4,5,6]], {"a": {1,2,3}, "b" : {1.1,2.2,3.3}},
+        {1: ["A","B","C"], 2: ["D","E","F"]},
+        {
       "test": [Note.variant0(), "Hello World"]
     }, [Optional("Yes"), Optional(null)], "a");
   }
 
   factory ModelG.variant1() {
-    return ModelG(null, null, {}, [Optional("No"), Optional(null)], null);
+    return ModelG(null, null, {}, {}, [Optional("No"), Optional(null)], null);
   }
 }
 

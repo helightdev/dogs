@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dogs_cbor/dogs_cbor.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_toml/dogs_toml.dart';

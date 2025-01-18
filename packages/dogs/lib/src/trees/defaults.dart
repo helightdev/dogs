@@ -57,18 +57,46 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   @override
   Map deserialize(value, DogEngine engine) {
     if (value == null) return <K, V>{}; // Similar to primitive coercion
-    return (value as Map).map<K, V>((key, value) => MapEntry<K, V>(
-          deserializeArg(key, 0, engine),
-          deserializeArg(value, 1, engine),
-        ));
+    if (value is Map) {
+      return value.map<K, V>((key, value) => MapEntry<K, V>(
+        deserializeArg(key, 0, engine),
+        deserializeArg(value, 1, engine),
+      ));
+    } else if (value is List) {
+      final Map<K, V> map = {};
+      for (var entry in value) {
+        if (entry is Map) {
+          map[deserializeArg(entry["key"], 0, engine)] =
+              deserializeArg(entry["value"], 1, engine);
+        } else {
+          throw ArgumentError("Expected map entry");
+        }
+      }
+      return map;
+    }
+    throw ArgumentError("Expected map or entry list");
   }
 
   @override
   serialize(Map value, DogEngine engine) {
-    return value.map((key, value) => MapEntry(
+    final data = value.map((key, value) => MapEntry(
           serializeArg(key, 0, engine),
           serializeArg(value, 1, engine),
         ));
+
+    // Encode to entry list instead of map
+    if (data.keys.any((key) => key is! String)) {
+      final entries = <Map<String, dynamic>>[];
+      for (var entry in data.entries) {
+        entries.add({
+          "key": entry.key,
+          "value": entry.value,
+        });
+      }
+      return entries;
+    }
+
+    return data;
   }
 
   @override
