@@ -1,3 +1,7 @@
+## 9.4.1
+
+ - **FIX**: Use entry list for non string key based maps serialized using MapNTreeArgConverter.
+
 ## 9.4.0
 
  - **FEAT**: add field serialization hook and the DefaultValue field annotation.

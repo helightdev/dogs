@@ -1,13 +1,13 @@
 name: dogs_toml
 description: Toml serializer for the dogs graph serializer
-version: 2.3.3
+version: 2.3.4
 repository: https://github.com/DarwinFramework/dogs
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  dogs_core: ^9.4.0
+  dogs_core: ^9.4.1
   toml: ^0.15.0
 
 dev_dependencies:

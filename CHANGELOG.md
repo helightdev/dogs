@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-01-18
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v9.4.1`](#dogs_core---v941)
+ - [`dogs_odm` - `v1.0.0-alpha.16`](#dogs_odm---v100-alpha16)
+ - [`dogs_built` - `v3.1.4`](#dogs_built---v314)
+ - [`dogs_forms` - `v0.2.4+1`](#dogs_forms---v0241)
+ - [`dogs_generator` - `v6.0.4`](#dogs_generator---v604)
+ - [`dogs_firestore` - `v0.2.1+1`](#dogs_firestore---v0211)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.16`](#dogs_mongo_driver---v100-alpha16)
+ - [`dogs_toml` - `v2.3.4`](#dogs_toml---v234)
+ - [`dogs_yaml` - `v2.3.4`](#dogs_yaml---v234)
+ - [`dogs_cbor` - `v2.3.4`](#dogs_cbor---v234)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_odm` - `v1.0.0-alpha.16`
+ - `dogs_built` - `v3.1.4`
+ - `dogs_forms` - `v0.2.4+1`
+ - `dogs_generator` - `v6.0.4`
+ - `dogs_firestore` - `v0.2.1+1`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.16`
+ - `dogs_toml` - `v2.3.4`
+ - `dogs_yaml` - `v2.3.4`
+ - `dogs_cbor` - `v2.3.4`
+
+---
+
+#### `dogs_core` - `v9.4.1`
+
+ - **FIX**: Use entry list for non string key based maps serialized using MapNTreeArgConverter.
+
+
 ## 2025-01-04
 
 ### Changes
