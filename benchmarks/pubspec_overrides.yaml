@@ -9,3 +9,4 @@ dependency_overrides:
     path: ../formats/dogs_cbor
   dogs_toml:
     path: ../formats/dogs_toml
+  analyzer: ^7.0.0
