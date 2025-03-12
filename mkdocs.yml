@@ -5,50 +5,56 @@ theme:
   palette:
     primary: indigo
     scheme: slate
+  font:
+    text: Roboto
   features:
     - content.code.copy
     - content.tabs.link
     - navigation.indexes
     - navigation.path
     - navigation.sections
+    - navigation.tabs
+    - navigation.footer
     - attr_list
 
 extra_css:
+  - stylesheets/theme-tweaks.css
   - stylesheets/extra.css
 
 nav:
-  - index.md
-  - installation.md
-  - "Getting Started":
+  - "DOGs":
+    - index.md
+    - installation.md
+    - "Getting Started":
       - serializables.md
       - serialization.md
       - projection.md
       - validation.md
       - polymorphism.md
       - converters.md
-  - "Advanced Concepts":
+    - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md
       - advanced/operation_modes.md
       - advanced/tree_converters.md
-  - "Database Support (ODM)":
-        - odm/start.md
-        - odm/query_dsl.md
-  - "Official Packages":
-      - "Built [dogs_built]":
-          - built/index.md
-          - built/start.md
-      - "Forms [dogs_forms]":
-          - forms/index.md
-          - forms/start.md
-          - forms/customization.md
-          - forms/translation.md
-      - "Firestore [dogs_firestore]":
-          - firestore/index.md
-          - firestore/start.md
-          - firestore/queries.md
-          - firestore/subcollections.md
-          - firestore/mappings.md
+    - "Database Support (ODM)":
+      - odm/start.md
+      - odm/query_dsl.md
+  - "Built [dogs_built]":
+      - built/index.md
+      - built/start.md
+  - "Forms [dogs_forms]":
+      - forms/index.md
+      - forms/start.md
+      - forms/customization.md
+      - forms/translation.md
+  - "Firestore [dogs_firestore]":
+      - firestore/index.md
+      - firestore/start.md
+      - firestore/queries.md
+      - firestore/subcollections.md
+      - firestore/mappings.md
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -72,3 +78,12 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra:
+  social:
+    - icon: simple/dart
+      link: https://pub.dev/packages/dogs_core
+    - icon: fontawesome/brands/github
+      link: https://github.com/helightdev/dogs
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/XqMNpXUEe3

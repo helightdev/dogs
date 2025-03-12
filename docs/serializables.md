@@ -271,6 +271,18 @@ restrictions (to read more about the restrictions, expand the region below).
 You can use the automatically generated builder to modify serializable classes easily.
 Depending on your prefer code style, you can use either the imperative or lambda builder.
 
+=== "Copy"
+    
+    ```dart
+    var updated = person.copy(
+      name: "Alex",
+      age: 22,
+    );
+    ```
+    
+    This method is similar to Kotlin's copy and copyWith. Parameters which
+    aren't explicitly overridden retain their original values.
+
 === "Lambda Builder"
 
     ```dart
@@ -279,6 +291,8 @@ Depending on your prefer code style, you can use either the imperative or lambda
       ..age = 22
     );
     ```
+
+    This method is similar to built's builder implementation.
 
 === "Imperative Builder"
 
