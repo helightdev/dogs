@@ -28,7 +28,12 @@ class DogEngine with MetadataMixin {
   static bool get hasValidInstance => _instance != null;
 
   /// Returns the current statically linked [DogEngine].
-  static DogEngine get instance => _instance!;
+  static DogEngine get instance {
+    if (_instance == null) {
+      throw DogException("No valid DogEngine instance available. Did you forget to await initialiseDogs() in your main?");
+    }
+    return _instance!;
+  }
 
   /// Read-only list of [DogConverter]s.
   final List<DogConverter> _converters = [];
