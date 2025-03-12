@@ -20,7 +20,6 @@ import 'package:benchmarks/dogs.g.dart';
 import 'package:benchmarks/serializables.dart';
 import 'package:benchmarks/system.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart';
 
@@ -109,22 +108,6 @@ class _FreezedCompetitor extends BuildersCompetitor<FreezedPerson> {
   @override
   FreezedPerson rebuild(FreezedPerson from, FreezedPerson to) {
     return from.copyWith(name: to.name, tags: to.tags);
-  }
-}
-
-class _DartJsonMapperCompetitor extends BuildersCompetitor<DartJsonMapperPerson> {
-
-  _DartJsonMapperCompetitor() : super(name: "d_j_m");
-
-  @override
-  DartJsonMapperPerson generateItem(int index) => dartJsonMapperPerson();
-
-  @override
-  DartJsonMapperPerson rebuild(DartJsonMapperPerson from, DartJsonMapperPerson to) {
-    return JsonMapper.copyWith<DartJsonMapperPerson>(from, {
-      "name": to.name,
-      "tags": to.tags,
-    })!;
   }
 }
 

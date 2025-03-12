@@ -170,11 +170,12 @@ class BuiltPersonBuilder implements Builder<BuiltPerson, BuiltPersonBuilder> {
     try {
       _$result = _$v ??
           new _$BuiltPerson._(
-              name: BuiltValueNullFieldError.checkNotNull(
-                  name, r'BuiltPerson', 'name'),
-              age: BuiltValueNullFieldError.checkNotNull(
-                  age, r'BuiltPerson', 'age'),
-              tags: tags.build());
+            name: BuiltValueNullFieldError.checkNotNull(
+                name, r'BuiltPerson', 'name'),
+            age: BuiltValueNullFieldError.checkNotNull(
+                age, r'BuiltPerson', 'age'),
+            tags: tags.build(),
+          );
     } catch (_) {
       late String _$failedField;
       try {
@@ -201,7 +202,7 @@ JsonSerializablePerson _$JsonSerializablePersonFromJson(
         Map<String, dynamic> json) =>
     JsonSerializablePerson(
       json['name'] as String,
-      json['age'] as int,
+      (json['age'] as num).toInt(),
       (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
@@ -213,14 +214,14 @@ Map<String, dynamic> _$JsonSerializablePersonToJson(
       'tags': instance.tags,
     };
 
-_$FreezedPersonImpl _$$FreezedPersonImplFromJson(Map<String, dynamic> json) =>
-    _$FreezedPersonImpl(
+FreezedPerson _$FreezedPersonFromJson(Map<String, dynamic> json) =>
+    FreezedPerson(
       name: json['name'] as String,
-      age: json['age'] as int,
+      age: (json['age'] as num).toInt(),
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$FreezedPersonImplToJson(_$FreezedPersonImpl instance) =>
+Map<String, dynamic> _$FreezedPersonToJson(FreezedPerson instance) =>
     <String, dynamic>{
       'name': instance.name,
       'age': instance.age,

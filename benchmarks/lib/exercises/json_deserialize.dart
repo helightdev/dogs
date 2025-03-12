@@ -18,7 +18,6 @@ import 'dart:convert';
 
 import 'package:benchmarks/serializables.dart';
 import 'package:benchmarks/system.dart';
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart';
 
@@ -105,24 +104,6 @@ class _JsonSerializableCompetitor extends JsonDeserializeCompetitor<JsonSerializ
   @override
   JsonSerializablePerson deserialize(String json) {
     return JsonSerializablePerson.fromJson(jsonDecode(json));
-  }
-}
-
-class _DartJsonMapperCompetitor extends JsonDeserializeCompetitor<DartJsonMapperPerson> {
-
-  _DartJsonMapperCompetitor() : super(name: "d_j_m");
-
-  @override
-  DartJsonMapperPerson generateItem(int index) => dartJsonMapperPerson();
-
-  @override
-  String serialize(DartJsonMapperPerson item) {
-    return JsonMapper.serialize(item);
-  }
-
-  @override
-  DartJsonMapperPerson deserialize(String json) {
-    return JsonMapper.deserialize<DartJsonMapperPerson>(json)!;
   }
 }
 

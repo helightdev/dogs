@@ -9,12 +9,9 @@ import 'package:benchmarks/exercises/map_key.dart';
 import 'package:benchmarks/serializables.dart';
 import 'package:benchmarks/system.dart';
 
-import 'benchmarks.mapper.g.dart';
-
 void main(List<String> arguments) {
   initialiseDogs();
   initMappers();
-  initializeJsonMapper();
 
   var benchmarkReactor = Benchmark(exercises: [
     JsonSerializeExercise(),

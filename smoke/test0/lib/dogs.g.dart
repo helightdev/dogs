@@ -48,7 +48,7 @@ Future initialiseDogs() async {
     gen4.ConformityBeanConverter(),
     gen4.ConformityBasicConverter(),
     gen4.ConformityDataConverter(),
-    gen4.ConformityDataArgConverter()
+    gen4.ConformityDataArgConverter(),
   ]);
   engine.setSingleton();
 }

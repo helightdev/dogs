@@ -108,15 +108,17 @@ class MappableBenchmarkDataclassEntity with MappableBenchmarkDataclassEntityMapp
 @freezed
 class FreezedBenchmarkDataclassEntity with _$FreezedBenchmarkDataclassEntity {
 
-  const factory FreezedBenchmarkDataclassEntity({
-    required String name,
-    required int age,
-    required List<String> tags,
-    required Map<String, String> fields,
-  }) = _FreezedBenchmarkDataclassEntity;
+  final String name;
+  final int age;
+  final List<String> tags;
+  final Map<String, String> fields;
 
-  factory FreezedBenchmarkDataclassEntity.fromJson(Map<String, dynamic> json) =>
-      _$FreezedBenchmarkDataclassEntityFromJson(json);
+  const FreezedBenchmarkDataclassEntity({
+    required this.name,
+    required this.age,
+    required this.tags,
+    required this.fields,
+  });
 
 }
 

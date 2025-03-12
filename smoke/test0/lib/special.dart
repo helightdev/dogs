@@ -17,6 +17,8 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/dogs_validation.dart';
 
+import 'models.dart';
+
 class ConvertableA {
 
   int a;
@@ -168,19 +170,24 @@ class DefaultValueModel with Dataclass<DefaultValueModel> {
   @DefaultValue(bSupplier)
   int b;
 
+  @DefaultValue(cSupplier)
+  ModelA c;
+
   DefaultValueModel({
     this.a = "default",
     required this.b,
+    required this.c,
   });
 
   factory DefaultValueModel.variant0() {
-    return DefaultValueModel(b: bSupplier());
+    return DefaultValueModel(b: bSupplier(), c: cSupplier());
   }
 
   factory DefaultValueModel.variant1() {
-    return DefaultValueModel(a: "custom", b: 1001);
+    return DefaultValueModel(a: "custom", b: 1001, c: ModelA.variant1());
   }
 
   static int bSupplier() => 420;
+  static ModelA cSupplier() => ModelA.variant0();
 
 }
