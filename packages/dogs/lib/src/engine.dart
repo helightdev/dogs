@@ -29,11 +29,17 @@ class DogEngine with MetadataMixin {
 
   /// Returns the current statically linked [DogEngine].
   static DogEngine get instance {
+    if (instanceOverride != null) return instanceOverride!;
+
     if (_instance == null) {
       throw DogException("No valid DogEngine instance available. Did you forget to await initialiseDogs() in your main?");
     }
     return _instance!;
   }
+
+  /// Overrides the static instance of [DogEngine] with the given [instance].
+  @internal
+  static DogEngine? instanceOverride;
 
   /// Read-only list of [DogConverter]s.
   final List<DogConverter> _converters = [];
@@ -75,10 +81,6 @@ class DogEngine with MetadataMixin {
   /// If [registerBaseConverters] is true, the following converters will be
   /// registered:
   /// - [PolymorphicConverter]
-  /// - [DefaultMapConverter]
-  /// - [DefaultIterableConverter]
-  /// - [DefaultListConverter]
-  /// - [DefaultSetConverter]
   /// - [DateTimeConverter]
   /// - [DurationConverter]
   /// - [UriConverter]
@@ -106,6 +108,14 @@ class DogEngine with MetadataMixin {
 
   /// Sets this current instance as [_instance].
   void setSingleton() => _instance = this;
+
+  /// Uses this [DogEngine] instance for global instance calls for the duration of [block].
+  void use(void Function() block) {
+    final previous = instanceOverride;
+    instanceOverride = this;
+    block();
+    instanceOverride = previous;
+  }
 
   /// Resets the [DogEngine]'s operation mode cache.
   /// All registered converters and structures will not be affected.
