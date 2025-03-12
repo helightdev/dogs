@@ -40,8 +40,8 @@ abstract class SerializationHook implements StructureMetadata {
   /// - `map`: The map representation of the object to be deserialized.
   /// - `structure`: The `DogStructure` instance associated with the object to be deserialized.
   /// - `engine`: The `DogEngine` instance that will perform the deserialization.
-  void beforeDeserialization(
-      Map<String, dynamic> map, DogStructure structure, DogEngine engine) {}
+  void beforeDeserialization(Map<String, dynamic> map, DogStructure structure,
+      DogEngine engine) {}
 }
 
 /// `FieldSerializationHook` is a mixin for field structure metadata
@@ -52,12 +52,10 @@ abstract class SerializationHook implements StructureMetadata {
 mixin FieldSerializationHook on StructureMetadata {
 
   /// This method is called after a field is serialized by [NativeSerializerMode].
-  void postFieldSerialization(
-      String key, Map<String, dynamic> map, DogStructureField structure, DogEngine engine) {}
+  void postFieldSerialization(NativeStructureContext context, NativeStructureFieldContext fieldContext, Map<String, dynamic> map, DogEngine engine) {}
 
   /// This method is called before a field is deserialized by [NativeSerializerMode].
-  void beforeFieldDeserialization(
-      String key, Map<String, dynamic> map, DogStructureField structure, DogEngine engine) {}
+  void beforeFieldDeserialization(NativeStructureContext context, NativeStructureFieldContext fieldContext, Map<String, dynamic> map, DogEngine engine) {}
 }
 
 /// A function that may be used to transform a map before deserialization.
@@ -81,8 +79,8 @@ class LightweightMigration extends SerializationHook {
 
   /// Executes each migration function in the `migrations` list before deserialization.
   @override
-  void beforeDeserialization(
-      Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
+  void beforeDeserialization(Map<String, dynamic> map, DogStructure structure,
+      DogEngine engine) {
     for (var value in migrations) {
       value(map, structure, engine);
     }
@@ -114,8 +112,8 @@ class RevisionMigration extends SerializationHook {
   /// Executes each migration function in the `migrations` list that corresponds to
   /// a version number greater than or equal to the current version.
   @override
-  void beforeDeserialization(
-      Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
+  void beforeDeserialization(Map<String, dynamic> map, DogStructure structure,
+      DogEngine engine) {
     final version = map[revisionKey] as int? ?? 0;
     for (var i = version; i < migrations.length; i++) {
       if (i >= version) {
@@ -148,21 +146,25 @@ class DefaultValue extends StructureMetadata with FieldSerializationHook {
   /// otherwise it will be removed if the field is equal to the default value.
   const DefaultValue(this.value, {this.keep = false});
 
+  dynamic _getNativeDefault(NativeStructureFieldContext fieldContext, DogEngine engine) {
+    final provided = value is DefaultValueSupplier ? value() : value;
+    final native = fieldContext.encodeValue(provided, engine);
+    return native;
+  }
+
   @override
-  void beforeFieldDeserialization(String key, Map<String, dynamic> map,
-      DogStructureField structure, DogEngine engine) {
-    if (!map.containsKey(key)) {
-      map[key] = value is DefaultValueSupplier ? value() : value;
+  void beforeFieldDeserialization(NativeStructureContext context, NativeStructureFieldContext fieldContext, Map<String, dynamic> map, DogEngine engine) {
+    if (!map.containsKey(fieldContext.key)) {
+      map[fieldContext.key] = _getNativeDefault(fieldContext, engine);
     }
   }
 
   @override
-  void postFieldSerialization(String key, Map<String, dynamic> map,
-      DogStructureField structure, DogEngine engine) {
+  void postFieldSerialization(NativeStructureContext context, NativeStructureFieldContext fieldContext, Map<String, dynamic> map, DogEngine engine) {
     if (!keep) {
-      final v = value is DefaultValueSupplier ? value() : value;
-      if (map[key] == v) {
-        map.remove(key);
+      final nativeValue = _getNativeDefault(fieldContext, engine);
+      if (deepEquality.equals(map[fieldContext.key], nativeValue)) {
+        map.remove(fieldContext.key);
       }
     }
   }
