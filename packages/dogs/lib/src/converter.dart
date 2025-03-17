@@ -37,7 +37,9 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   /// Contains structure information about the type being serialized and provides
   /// an [OperationMode] mapping for all supported operation modes.
   const DogConverter(
-      {this.struct, this.isAssociated = true, this.keepIterables = false});
+      {this.struct, this.isAssociated = true, @Deprecated(
+          "This parameter has been removed in favor of the shift towards tree based converters. "
+          "This value is effectively a no-op, please remove it.") this.keepIterables = false});
 
   /// Returns the operation mode for the given [opmodeType] or null if the
   /// converter does not support the given operation mode by default.
@@ -93,7 +95,9 @@ class SerializableLibrary {
 }
 
 /// Marks a class or enum as serializable.
-const serializable = Serializable();
+const serializable = Structure(
+  serializable: true
+);
 
 @internal
 class LinkSerializer {

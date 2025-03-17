@@ -34,38 +34,6 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
   /// instances from them.
   bool get canSerializeNull => false;
 
-  /// Converts the [value], which can be either a [Iterable] or instance of
-  /// the type associated type, depending on the [IterableKind],
-  /// to its native representation using the converter associated with
-  /// [serialType].
-  dynamic serializeIterable(
-      dynamic value, DogEngine engine, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return serialize(value, engine);
-    } else {
-      if (value is! Iterable) throw Exception("value is not iterable");
-      return value.map((e) => serialize(e, engine)).toList();
-    }
-  }
-
-  /// Converts the [value], which can be either a [Iterable] or instance of
-  /// the associated type, depending on the [IterableKind],
-  /// to its native representation using the converter associated with
-  /// [serialType].
-  ///
-  /// If the value is a [Iterable] implementation, it will converted to the
-  /// desired [IterableKind]. Trying to convert singular values to an [Iterable]
-  /// will result in an exception.
-  dynamic deserializeIterable(
-      dynamic value, DogEngine engine, IterableKind kind) {
-    if (kind == IterableKind.none) {
-      return deserialize(value, engine);
-    } else {
-      if (value is! Iterable) throw Exception("value is not iterable");
-      return adjustIterable(value.map((e) => deserialize(e, engine)), kind);
-    }
-  }
-
   /// Creates a new [NativeSerializerMode] instance using the provided
   /// [serializer] and [deserializer] functions without needing to create a
   /// new class.

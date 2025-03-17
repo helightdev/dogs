@@ -71,7 +71,7 @@ class IRStructureField {
       this.$isMap);
 
   String get code {
-    return "$genAlias.DogStructureField($typeTree, ${genPrefix.str("TypeToken<$serialType>()")}, $converterType, ${genPrefix.str(iterableKind.toString())}, '${sqsLiteralEscape(name)}', $optional, $structure, $metadataSource)";
+    return "$genAlias.DogStructureField($typeTree, $converterType, '${sqsLiteralEscape(name)}', $optional, $structure, $metadataSource)";
   }
 }
 
@@ -205,13 +205,9 @@ Future<StructurizeResult> structurizeConstructor(
       "return ${counter.get(element.thisType)}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
     var y = fields[i];
     if (e.isNamed) {
-      if (y.iterableKind == IterableKind.none) return "${e.name}: list[$i]";
-      if (y.optional) return "${e.name}: list[$i]?.cast<${y.serialType}>()";
-      return "${e.name}: list[$i].cast<${y.serialType}>()";
+      return "${e.name}: list[$i]";
     } else {
-      if (y.iterableKind == IterableKind.none) return "list[$i]";
-      if (y.optional) return "list[$i]?.cast<${y.serialType}>()";
-      return "list[$i].cast<${y.serialType}>()";
+      return "list[$i]";
     }
   }).join(", ")});";
   var isDataclass = dataclassChecker.isAssignableFromType(element.thisType);

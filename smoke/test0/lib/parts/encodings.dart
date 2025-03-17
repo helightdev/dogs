@@ -40,7 +40,7 @@ void testToFrom<T>(T value, FromFunc<T> from, ToFunc<T> to) {
 
   // Explicit kind
   var a4 = to([value], type: T, kind: IterableKind.list);
-  var b4 = from<List<T>>(a4, type: T, kind: IterableKind.list);
+  var b4 = from<List>(a4, type: T, kind: IterableKind.list);
   expect(b4, deepEquals([value]));
 
   // Nullable base type

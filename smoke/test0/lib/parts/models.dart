@@ -86,7 +86,7 @@ void _testListKind<T>(T va0, T va1, T vb0, T vb1) {
   var encodedList = dogs.toJson(list,
       type: T, kind: IterableKind.list
   );
-  var decodedList = dogs.fromJson<List<T>>(encodedList,
+  var decodedList = dogs.fromJson(encodedList,
       type: T, kind: IterableKind.list
   );
   expect(decodedList, orderedEquals(list));
@@ -98,7 +98,7 @@ void _testSetKind<T>(T va0, T va1, T vb0, T vb1) {
   var encodedList = dogs.toJson(list,
       type: T, kind: IterableKind.set
   );
-  var decodedList = dogs.fromJson<Set<T>>(encodedList,
+  var decodedList = dogs.fromJson(encodedList,
       type: T, kind: IterableKind.set
   );
   expect(decodedList, orderedEquals(list));

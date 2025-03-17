@@ -26,16 +26,8 @@ class DogStructureField extends RetainedAnnotationHolder
   /// Declared type of the structure.
   final QualifiedTypeTree type;
 
-  /// Serial type of the structure.
-  /// If the declared type is [Iterable], [List] or [Set], the type argument
-  /// of the iterable will be the serial type.
-  final TypeCapture serial;
-
   /// Optional converter type override.
   final Type? converterType;
-
-  /// Type of the iterable, if this field is iterable.
-  final IterableKind iterableKind;
 
   /// The name of the field.
   final String name;
@@ -49,18 +41,39 @@ class DogStructureField extends RetainedAnnotationHolder
   @override
   final List<RetainedAnnotation> annotations;
 
+  /// The kind of iterable this field is.
+  ///
+  /// NOTE: Originally, this was a custom field that has since been removed and
+  /// replaced with this getter for compatibility reasons.
+  IterableKind get iterableKind {
+    if (type.arguments.length == 1) {
+      final base = type.base.typeArgument;
+      if (base == List) {
+        return IterableKind.list;
+      } else if (base == Set) {
+        return IterableKind.set;
+      }
+    }
+    return IterableKind.none;
+  }
+
+  /// Returns the serial type of this field.
+  ///
+  /// NOTE: Originally, this was a custom field that has since been removed and
+  /// replaced with this getter for compatibility reasons.
+  TypeCapture get serial {
+    if (iterableKind == IterableKind.none) {
+      return type.qualified;
+    } else {
+      return type.arguments[0].qualified;
+    }
+  }
+
   /// Creates a new [DogStructureField].
   ///
   /// See also: https://dogs.helight.dev/advanced/structures
-  const DogStructureField(
-      this.type,
-      this.serial,
-      this.converterType,
-      this.iterableKind,
-      this.name,
-      this.optional,
-      this.structure,
-      this.annotations);
+  const DogStructureField(this.type, this.converterType, this.name,
+      this.optional, this.structure, this.annotations);
 
   @override
   String toString() {
@@ -70,80 +83,80 @@ class DogStructureField extends RetainedAnnotationHolder
   /// Creates a synthetic [String] field.
   factory DogStructureField.string(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType,
-      List<RetainedAnnotation> annotations = const []}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType,
+        List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<String>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<String>();
     } else if (iterable == IterableKind.set) {
       type = QualifiedTypeTree.set<String>();
     }
-    return DogStructureField(type, TypeToken<String>(), converterType, iterable,
-        name, optional, false, annotations);
+    return DogStructureField(
+        type, converterType, name, optional, false, annotations);
   }
 
   /// Creates a synthetic [int] field.
   factory DogStructureField.int(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType,
-      List<RetainedAnnotation> annotations = const []}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType,
+        List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<int>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<int>();
     } else if (iterable == IterableKind.set) {
       type = QualifiedTypeTree.set<int>();
     }
-    return DogStructureField(type, TypeToken<int>(), converterType, iterable,
-        name, optional, false, annotations);
+    return DogStructureField(
+        type, converterType, name, optional, false, annotations);
   }
 
   /// Creates a synthetic [double] field.
   factory DogStructureField.double(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType,
-      List<RetainedAnnotation> annotations = const []}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType,
+        List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<double>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<double>();
     } else if (iterable == IterableKind.set) {
       type = QualifiedTypeTree.set<double>();
     }
-    return DogStructureField(type, TypeToken<double>(), converterType, iterable,
-        name, optional, false, annotations);
+    return DogStructureField(
+        type, converterType, name, optional, false, annotations);
   }
 
   /// Creates a synthetic [bool] field.
   factory DogStructureField.bool(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType,
-      List<RetainedAnnotation> annotations = const []}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType,
+        List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<bool>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<bool>();
     } else if (iterable == IterableKind.set) {
       type = QualifiedTypeTree.set<bool>();
     }
-    return DogStructureField(type, TypeToken<bool>(), converterType, iterable,
-        name, optional, false, annotations);
+    return DogStructureField(
+        type, converterType, name, optional, false, annotations);
   }
 
   /// Creates a synthetic field for a terminal serial type.
   static DogStructureField create<TYPE>(String name,
       {bool optional = false,
-      IterableKind iterable = IterableKind.none,
-      Type? converterType,
-      List<RetainedAnnotation> annotations = const []}) {
+        IterableKind iterable = IterableKind.none,
+        Type? converterType,
+        List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<TYPE>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<TYPE>();
     } else if (iterable == IterableKind.set) {
       type = QualifiedTypeTree.set<TYPE>();
     }
-    return DogStructureField(type, TypeToken<TYPE>(), converterType, iterable,
-        name, optional, false, annotations);
+    return DogStructureField(
+        type, converterType, name, optional, false, annotations);
   }
 }

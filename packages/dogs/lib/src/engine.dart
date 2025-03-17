@@ -32,7 +32,8 @@ class DogEngine with MetadataMixin {
     if (instanceOverride != null) return instanceOverride!;
 
     if (_instance == null) {
-      throw DogException("No valid DogEngine instance available. Did you forget to await initialiseDogs() in your main?");
+      throw DogException(
+          "No valid DogEngine instance available. Did you forget to await initialiseDogs() in your main?");
     }
     return _instance!;
   }
@@ -357,6 +358,10 @@ class DogEngine with MetadataMixin {
   /// If [allowPolymorphic] is true, the returned converter may contain
   /// polymorphic converters if any type tree terminals are not concrete.
   DogConverter getTreeConverter(TypeTree tree, [bool allowPolymorphic = true]) {
+    if (!tree.isQualified) {
+      throw DogException("TypeTree '$tree' must be qualified");
+    }
+
     final cachedConverter =
         _runtimeTreeConverterCache[tree.qualified.typeArgument];
     if (cachedConverter != null) return cachedConverter;
@@ -441,9 +446,15 @@ class DogEngine with MetadataMixin {
   /// [serialType].
   dynamic convertIterableToNative(
       dynamic value, Type serialType, IterableKind kind) {
-    return _nativeSerialization
-        .forType(serialType, this)
-        .serializeIterable(value, this, kind);
+    if (kind == IterableKind.none) {
+      return convertObjectToNative(value, serialType);
+    } else if (value is! Iterable) {
+      throw DogException(
+          "Cannot convert non-iterable value to iterable of type $serialType");
+    }
+    return value.map((e) {
+      return convertObjectToNative(e, serialType);
+    }).toList();
   }
 
   /// Converts the [value], which can be either a [Iterable] or instance of
@@ -456,9 +467,18 @@ class DogEngine with MetadataMixin {
   /// will result in an exception.
   dynamic convertIterableFromNative(
       dynamic value, Type serialType, IterableKind kind) {
-    return _nativeSerialization
-        .forType(serialType, this)
-        .deserializeIterable(value, this, kind);
+    if (kind == IterableKind.none) {
+      return convertObjectFromNative(value, serialType);
+    } else if (value is! Iterable) {
+      throw DogException(
+          "Cannot convert non-iterable value to iterable of type $serialType");
+    }
+    return adjustIterable(
+      value.map((e) {
+        return convertObjectFromNative(e, serialType);
+      }),
+      kind,
+    );
   }
 }
 

@@ -46,7 +46,7 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter
   TypeTree itemSubtree;
 
   _IterableTreeBaseConverter(this.factory, this.converter, this.itemSubtree)
-      : super(keepIterables: true);
+      : super();
 
   @override
   iterableCreator<T>(Iterable entries) {
