@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// A [FieldValidator] that restricts a numeric type to be positive.
@@ -31,7 +30,7 @@ const negativeOrZero = Range(max: 0, maxExclusive: false);
 
 /// A [FieldValidator] that restricts a numeric type to a minimum and maximum value.
 class Range extends StructureMetadata
-    implements APISchemaObjectMetaVisitor, FieldValidator {
+    implements SchemaFieldVisitor, FieldValidator {
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
 
@@ -57,11 +56,22 @@ class Range extends StructureMetadata
   static const String messageId = "number-range";
 
   @override
-  void visit(APISchemaObject object) {
-    object.minimum = min;
-    object.maximum = max;
-    object.exclusiveMinimum = minExclusive;
-    object.exclusiveMaximum = maxExclusive;
+  void visitSchemaField(SchemaField object) {
+    if (min != null) {
+      if (minExclusive) {
+        object[SchemaProperties.exclusiveMinimum] = min;
+      } else {
+        object[SchemaProperties.minimum] = min;
+      }
+    }
+
+    if (max != null) {
+      if (maxExclusive) {
+        object[SchemaProperties.exclusiveMaximum] = max;
+      } else {
+        object[SchemaProperties.maximum] = max;
+      }
+    }
   }
 
   @override
@@ -126,7 +136,7 @@ class Range extends StructureMetadata
 
 /// A [FieldValidator] that restricts a numeric type to a minimum value.
 class Minimum extends StructureMetadata
-    implements APISchemaObjectMetaVisitor, FieldValidator {
+    implements SchemaFieldVisitor, FieldValidator {
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
 
@@ -143,9 +153,14 @@ class Minimum extends StructureMetadata
   static const String messageId = "number-minimum";
 
   @override
-  void visit(APISchemaObject object) {
-    object.minimum = min;
-    object.exclusiveMinimum = minExclusive;
+  void visitSchemaField(SchemaField object) {
+    if (min != null) {
+      if (minExclusive) {
+        object[SchemaProperties.exclusiveMinimum] = min;
+      } else {
+        object[SchemaProperties.minimum] = min;
+      }
+    }
   }
 
   @override
@@ -196,7 +211,7 @@ class Minimum extends StructureMetadata
 
 /// A [FieldValidator] that restricts a numeric type to a maximum value.
 class Maximum extends StructureMetadata
-    implements APISchemaObjectMetaVisitor, FieldValidator {
+    implements SchemaFieldVisitor, FieldValidator {
   /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
 
@@ -213,9 +228,14 @@ class Maximum extends StructureMetadata
   static const String messageId = "number-maximum";
 
   @override
-  void visit(APISchemaObject object) {
-    object.maximum = max;
-    object.exclusiveMaximum = maxExclusive;
+  void visitSchemaField(SchemaField object) {
+    if (max != null) {
+      if (maxExclusive) {
+        object[SchemaProperties.exclusiveMaximum] = max;
+      } else {
+        object[SchemaProperties.maximum] = max;
+      }
+    }
   }
 
   @override

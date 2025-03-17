@@ -46,6 +46,11 @@ void testModels() {
 }
 
 void testSingleModel<T>(T Function() a, T Function() b) => group("$T", () {
+
+  SchemaPass.run((pass) {
+    print(dogs.findAssociatedConverter(T)!.describeOutput(dogs, SchemaConfig()).toJson());
+  });
+
   var va0 = a();
   var va1 = a();
   var vb0 = b();

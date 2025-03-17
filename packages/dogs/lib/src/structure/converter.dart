@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// Default [DogConverter] base for [DogStructure]s.
@@ -26,7 +25,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
   @override
   OperationMode<T>? resolveOperationMode(Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
-      return StructureNativeSerialization(struct!);
+      return StructureNativeSerialization<T>(struct!);
     }
     if (opmodeType == ValidationMode) return StructureValidation(struct!);
     return structureOperationFactories[opmodeType]?.resolve(struct!)
@@ -34,10 +33,32 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
   }
 
   @override
-  APISchemaObject get output {
-    if (struct!.isSynthetic) return APISchemaObject.empty();
-    return APISchemaObject()
-      ..referenceURI = Uri(path: "/components/schemas/${struct!.serialName}");
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
+    final pass = SchemaPass.current!;
+
+    final structure = struct!;
+    if (structure.isSynthetic) return SchemaType.any;
+    if (config.useReferences && pass.depth >= 1) {
+      return SchemaReference(structure.serialName);
+    }
+
+    pass.depth++;
+    final fields = structure.fields.map((e) {
+      final converter = engine.getTreeConverter(e.type);
+      final type = converter.describeOutput(engine, config);
+      type.nullable = e.optional;
+
+      final schemaField = SchemaField(e.name, type);
+      e.annotationsOf<SchemaFieldVisitor>().forEach((visitor) {
+        visitor.visitSchemaField(schemaField);
+      });
+      return schemaField;
+    }).toList();
+    pass.depth--;
+
+    final object = SchemaObject(fields: fields);
+    object[SchemaProperties.serialName] = structure.serialName;
+    return object;
   }
 }
 

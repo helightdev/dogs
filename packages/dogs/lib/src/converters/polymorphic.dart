@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// [DogConverter] that supports polymorphic serialization and deserialization.
@@ -42,7 +41,9 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     // Keep native values as is if they serializeNativeValues is true
     if (value is! Map &&
         codec.isNative(value.runtimeType) &&
-        serializeNativeValues) return value;
+        serializeNativeValues) {
+      return value;
+    }
 
     /// Recursively try to deserialize the value
     if (value is Iterable) {
@@ -88,7 +89,9 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     // Keep native values as is if they serializeNativeValues is true
     if (value is! Map &&
         codec.isNative(value.runtimeType) &&
-        serializeNativeValues) return value;
+        serializeNativeValues) {
+      return value;
+    }
     final type = value.runtimeType;
     final operation =
         engine.modeRegistry.nativeSerialization.forTypeNullable(type, engine);
@@ -122,12 +125,4 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       };
     }
   }
-
-  @override
-  APISchemaObject get output => APISchemaObject.object({
-        "_type": APISchemaObject.string(),
-      })
-        ..title = "Any"
-        ..description =
-            "A polymorphic object discriminated using the _type field.";
 }

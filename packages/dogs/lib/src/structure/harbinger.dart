@@ -37,9 +37,8 @@ class StructureHarbinger<T> {
     }).toList();
   }
 
-  @internal
-
   /// Performs the converter lookup for a single field.
+  @internal
   DogConverter? getConverter(DogEngine engine, DogStructureField field) {
     // Try resolving using supplying visitors
     final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
@@ -65,9 +64,10 @@ class StructureHarbinger<T> {
     if (field.iterableKind != IterableKind.none) {
       // Try resolving using the serial type argument (i.E. the first type argument)
       final serialConverter =
-          engine.findAssociatedConverter(field.serial.typeArgument);
+      engine.findAssociatedConverter(field.serial.typeArgument);
       if (serialConverter != null) return serialConverter;
     }
+
     // Resolve using tree converter
     return engine.getTreeConverter(field.type, isPolymorphicField(field));
   }

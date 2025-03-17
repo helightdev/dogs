@@ -3,3 +3,5 @@
 .dart_tool/
 
 *.g.dart
+*.freezed.dart
+*.mapper.dart

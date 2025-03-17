@@ -14,12 +14,11 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// A [FieldValidator] that restricts the length of a [String].
 class LengthRange extends StructureMetadata
-    implements APISchemaObjectMetaVisitor, FieldValidator {
+    implements SchemaFieldVisitor, FieldValidator {
   /// The minimum length. (inclusive)
   final int? min;
 
@@ -33,10 +32,11 @@ class LengthRange extends StructureMetadata
   static const String messageId = "length-range";
 
   @override
-  void visit(APISchemaObject object) {
-    object.minLength = min;
-    object.maxLength = max;
+  void visitSchemaField(SchemaField object) {
+    if (min != null) object[SchemaProperties.minLength] = min;
+    if (max != null) object[SchemaProperties.maxLength] = max;
   }
+
 
   @override
   getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {

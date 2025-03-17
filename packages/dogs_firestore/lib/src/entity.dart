@@ -18,7 +18,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_firestore/dogs_firestore.dart';
 import 'package:dogs_firestore/src/engine.dart';
-import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 /// If this is set to true, the latest snapshot of a document will be cached and reused.
@@ -71,7 +70,7 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
         return latestSnapshot;
       }
     }
-    if (kDebugMode) print("Snapshot cache miss for $id");
+    //if (kDebugMode) print("Snapshot cache miss for $id");
 
     // No similar snapshot exists - This is either a new object, or the object has been modified
     var currentSnapshot = selfDocument.get();

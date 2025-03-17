@@ -16,7 +16,6 @@
 
 import "dart:collection";
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// Collection that represents a page of results.
@@ -226,15 +225,20 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.object({
-        "number": APISchemaObject.integer(),
-        "size": APISchemaObject.integer(),
-        "totalElements": APISchemaObject.integer(),
-        "totalPages": APISchemaObject.integer(),
-        "content": APISchemaObject.array(
-          ofSchema: itemConverters[0].output,
-        )
-      });
+  SchemaType inferSchemaType(DogEngine engine, SchemaConfig config) {
+    return SchemaObject(
+      fields: [
+        SchemaField("number", SchemaType.integer),
+        SchemaField("size", SchemaType.integer),
+        SchemaField("totalElements", SchemaType.integer),
+        SchemaField("totalPages", SchemaType.integer),
+        SchemaField(
+          "content",
+          itemConverters[0].describeOutput(engine, config),
+        ),
+      ],
+    );
+  }
 }
 
 /// A [DogConverter] for [PageRequest]s.
@@ -260,8 +264,12 @@ class PageRequestConverter extends SimpleDogConverter<PageRequest> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.object({
-        "page": APISchemaObject.integer(),
-        "size": APISchemaObject.integer(),
-      });
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
+    return SchemaObject(
+      fields: [
+        SchemaField("page", SchemaType.integer),
+        SchemaField("size", SchemaType.integer),
+      ],
+    );
+  }
 }

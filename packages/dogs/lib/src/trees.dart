@@ -13,8 +13,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
+import "package:dogs_core/src/schema/spec.dart";
 import "package:meta/meta.dart";
 
 part "trees/defaults.dart";
@@ -32,7 +32,6 @@ abstract class TreeBaseConverterFactory {
       TypeTree tree, DogEngine engine, bool allowPolymorphic);
 
   @internal
-
   /// Cached polymorphic converter.
   static final PolymorphicConverter polymorphicConverter =
       PolymorphicConverter();

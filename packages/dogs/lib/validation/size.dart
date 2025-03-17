@@ -14,12 +14,11 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// A [FieldValidator] that restricts the size of an [Iterable].
 class SizeRange extends StructureMetadata
-    implements APISchemaObjectMetaVisitor, FieldValidator {
+    implements SchemaFieldVisitor, FieldValidator {
   /// The minimum number of items. (inclusive)
   final int? min;
 
@@ -33,9 +32,9 @@ class SizeRange extends StructureMetadata
   static const String messageId = "size-range";
 
   @override
-  void visit(APISchemaObject object) {
-    object.minItems = min;
-    object.maxItems = max;
+  void visitSchemaField(SchemaField object) {
+    if (min != null) object[SchemaProperties.minItems] = min;
+    if (max != null) object[SchemaProperties.maxItems] = max;
   }
 
   @override

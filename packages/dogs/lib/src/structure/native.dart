@@ -115,6 +115,17 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
 
   @override
   void initialise(DogEngine engine) {
+    // Validate the structure for serializability
+    final structureAnnotation = structure.firstAnnotationOf<Structure>();
+    if (structureAnnotation != null) {
+      if (!structureAnnotation.serializable) {
+        throw DogSerializerException(
+          message: "Structure is not serializable",
+          structure: structure,
+        );
+      }
+    }
+
     _hooks = structure.annotationsOf<SerializationHook>().toList();
     _hasHooks = _hooks.isNotEmpty;
     final harbinger = StructureHarbinger.create(structure, engine);

@@ -91,7 +91,10 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
       };
 
   @override
-  APISchemaObject get output => delegate.output;
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
+    return delegate.inferSchemaType(engine, config);
+  }
+
 }
 
 /// A converter interface for a generic type with a fixed number of type arguments.
@@ -123,8 +126,10 @@ abstract class NTreeArgConverter<BASE> {
   /// Serializes a [value] to a dynamic value.
   dynamic serialize(BASE value, DogEngine engine);
 
-  /// The output schema of the converter.
-  APISchemaObject get output => APISchemaObject.empty();
+  /// Infers the schema type of the [BASE] type.
+  SchemaType inferSchemaType(DogEngine engine, SchemaConfig config) {
+    return SchemaType.any;
+  }
 
   /// Whether this converter can serialize null values.
   bool get canSerializeNull => false;

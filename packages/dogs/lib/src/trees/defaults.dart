@@ -100,9 +100,20 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.map(
-        ofSchema: itemConverters[1].output,
-      );
+  SchemaType inferSchemaType(DogEngine engine, SchemaConfig config) {
+    final keyOutput = itemConverters[0].describeOutput(engine, config);
+    final valueOutput = itemConverters[1].describeOutput(engine, config);
+    if (keyOutput.type == SchemaCoreType.string) {
+      return SchemaType.map(valueOutput);
+    } else {
+      return SchemaArray(SchemaObject(
+          fields: [
+            SchemaField("key", keyOutput),
+            SchemaField("value", valueOutput),
+          ]
+      ));
+    }
+  }
 
   @override
   bool get canSerializeNull => true;

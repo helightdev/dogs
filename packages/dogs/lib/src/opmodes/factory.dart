@@ -26,7 +26,7 @@ abstract class OperationModeFactory<T extends OperationMode>
   /// See [OperationModeCacheEntry.forConverter] for details.
   T? forConverter(DogConverter converter, DogEngine engine);
 
-  /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
+  /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [schema].
   static OperationModeFactory<T>
       converterSingleton<TARGET extends DogConverter, T extends OperationMode>(
               T mode) =>
@@ -43,7 +43,7 @@ abstract class OperationModeFactory<T extends OperationMode>
       ComposableOperationModeFactory<T>(factories);
 }
 
-/// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
+/// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [schema].
 class SingletonConverterOperationModeFactory<T extends OperationMode>
     extends OperationModeFactory<T> {
   /// The type of the [DogConverter] to return the [mode] for.
@@ -52,7 +52,7 @@ class SingletonConverterOperationModeFactory<T extends OperationMode>
   /// The [OperationMode] to return for [targetType].
   final T mode;
 
-  /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [type].
+  /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [schema].
   const SingletonConverterOperationModeFactory(this.targetType, this.mode);
 
   @override

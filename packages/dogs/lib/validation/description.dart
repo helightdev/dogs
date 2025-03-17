@@ -14,12 +14,12 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
+import "package:dogs_core/src/schema/spec.dart";
 
-/// A [APISchemaObjectMetaVisitor] that adds a description to an [APISchemaObject].
+/// A [SchemaFieldVisitor] that adds a description to an [APISchemaObject].
 class Description extends StructureMetadata
-    implements APISchemaObjectMetaVisitor {
+    implements SchemaFieldVisitor {
   /// The description which will be added to the [APISchemaObject].
   final String description;
 
@@ -27,7 +27,7 @@ class Description extends StructureMetadata
   const Description(this.description);
 
   @override
-  void visit(APISchemaObject object) {
-    object.description = description;
+  void visitSchemaField(SchemaField object) {
+    object[SchemaProperties.description] = description;
   }
 }

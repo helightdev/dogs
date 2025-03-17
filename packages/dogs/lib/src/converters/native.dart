@@ -19,8 +19,12 @@ import "package:dogs_core/dogs_core.dart";
 /// Converter that just keeps the value as is.
 class NativeRetentionConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
+
+  /// The schema type of the value.
+  final SchemaType Function()? schema;
+
   /// Converter that just keeps the value as is.
-  const NativeRetentionConverter() : super();
+  const NativeRetentionConverter({this.schema}) : super();
 
   @override
   Map<Type, OperationMode<T> Function()> get modes => {
@@ -28,6 +32,11 @@ class NativeRetentionConverter<T> extends DogConverter<T>
             serializer: (value, engine) => value,
             deserializer: (value, engine) => value),
       };
+
+  @override
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
+    return schema?.call() ?? SchemaType.any;
+  }
 
   @override
   String toString() {

@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// Reduced version of a RFC 5322 email regex from https://www.regular-expressions.info/email.html
@@ -26,7 +25,7 @@ const email = Regex(
 
 /// A [FieldValidator] that validates a [String] using a [RegExp].
 class Regex extends StructureMetadata
-    implements APISchemaObjectMetaVisitor, FieldValidator {
+    implements SchemaFieldVisitor, FieldValidator {
   /// The regex pattern.
   final String pattern;
 
@@ -80,8 +79,8 @@ class Regex extends StructureMetadata
   }
 
   @override
-  void visit(APISchemaObject object) {
-    object.pattern = pattern;
+  void visitSchemaField(SchemaField object) {
+    object[SchemaProperties.pattern] = pattern;
   }
 
   @override

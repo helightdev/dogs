@@ -17,7 +17,6 @@
 import "dart:convert";
 import "dart:typed_data";
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
@@ -37,7 +36,8 @@ class DateTimeConverter extends DogConverter<DateTime>
       };
 
   @override
-  APISchemaObject get output => APISchemaObject.string(format: "date-time");
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      SchemaType.string..[SchemaProperties.format] = "date-time";
 }
 
 /// [DogConverter] for [Duration] instances which encode a duration as a
@@ -57,7 +57,8 @@ class DurationConverter extends DogConverter<Duration>
       };
 
   @override
-  APISchemaObject get output => APISchemaObject.integer();
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      SchemaType.integer;
 
   // From https://github.com/google/built_value.dart/blob/master/built_value/lib/iso_8601_duration_serializer.dart
   Duration _parseDuration(String value) {
@@ -145,7 +146,8 @@ class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
       };
 
   @override
-  APISchemaObject get output => APISchemaObject.string(format: "uri");
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      SchemaType.string..[SchemaProperties.format] = "uri";
 }
 
 /// [DogConverter] for [Uint8List] instances which encodes the binary data
@@ -165,7 +167,8 @@ class Uint8ListConverter extends DogConverter<Uint8List>
       };
 
   @override
-  APISchemaObject get output => APISchemaObject.string(format: "byte");
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      SchemaType.string..[SchemaProperties.format] = "byte";
 }
 
 /// [DogConverter] for [RegExp] instances which encodes the regular expression
@@ -186,5 +189,6 @@ class RegExpConverter extends SimpleDogConverter<RegExp> {
   }
 
   @override
-  APISchemaObject get output => APISchemaObject.string(format: "regex");
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      SchemaType.string..[SchemaProperties.format] = "regex";
 }

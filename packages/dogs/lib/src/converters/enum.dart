@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 
-import "package:conduit_open_api/v3.dart";
 import "package:dogs_core/dogs_core.dart";
 
 /// Decodes a enum value from a string.
@@ -43,17 +42,17 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
       };
 
   @override
-  APISchemaObject get output {
-    return APISchemaObject.string()
-      ..title = T.toString()
-      ..enumerated = values;
-  }
-
-  @override
   T? valueFromString(String value) => fromStr(value)!;
 
   @override
   String valueToString(T? value) => toStr(value);
+
+  @override
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
+    final type = SchemaType.string;
+    type[SchemaProperties.$enum] = values;
+    return type;
+  }
 }
 
 /// Mixin that exposes a public api surface for enum converters.

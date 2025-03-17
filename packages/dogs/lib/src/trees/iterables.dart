@@ -59,9 +59,8 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter
   }
 
   @override
-  APISchemaObject get output =>
-      APISchemaObject.array(ofSchema: converter.output)
-        ..description = "$BASE of ${itemSubtree.qualified.typeArgument}";
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) => SchemaType.array(converter.describeOutput(engine, config));
+
 }
 
 /// The native operation implementation for [IterableTreeBaseConverterMixin].

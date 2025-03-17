@@ -97,6 +97,16 @@ class _DogSerializerExceptionImpl implements DogSerializerException {
 
   _DogSerializerExceptionImpl(this.message, this.converter, this.structure,
       this.cause, this.innerStackTrace);
+
+  @override
+  String toString() {
+    return _formatException("DogSerializerException", message, {
+      if (cause != null) "cause": cause,
+      if (converter != null) "converter": converter,
+      if (structure != null) "structure": structure,
+      if (innerStackTrace != null) "innerStackTrace": innerStackTrace,
+    });
+  }
 }
 
 /// Specific [DogSerializerException] thrown when a [DogConverter] fails to convert a field.
