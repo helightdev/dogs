@@ -24,6 +24,8 @@ typedef ProjectionTransformer = Map<String, dynamic> Function(
 
 /// Extensions on the [DogEngine] related to projections.
 extension ProjectionExtension on DogEngine {
+
+  @Deprecated("Use Projection<T>().perform() instead")
   /// Creates a projection document from the given [properties] and [objects].
   /// The [properties] are merged into the document first, followed by the
   /// [objects]. If [shallow] is true, the objects are not converted to
@@ -80,6 +82,8 @@ extension ProjectionExtension on DogEngine {
     return buffer;
   }
 
+
+  @Deprecated("Use Projection<T>().perform() instead")
   /// Creates a projection from the given [properties] and [objects] using
   /// [createProjectionDocument]. If [shallow] is true, the objects are not
   /// converted to their native representation, but instead their field map
@@ -106,6 +110,7 @@ extension ProjectionExtension on DogEngine {
     return struct.proxy.instantiate(fieldValues);
   }
 
+  @Deprecated("Use Projection<T>().perform() instead")
   /// Creates a projection document from the given values, see [createProjectionDocument].
   Map<String, dynamic> projectDocument(
     Object value, [
@@ -136,6 +141,7 @@ extension ProjectionExtension on DogEngine {
     return createProjectionDocument(properties: properties, objects: objects);
   }
 
+  @Deprecated("Use Projection<T>().perform() instead")
   /// Creates a shallow projection document from the given values, see [createProjectionDocument].
   Map<String, dynamic> projectDocumentShallow(
     Object value, [
@@ -167,6 +173,7 @@ extension ProjectionExtension on DogEngine {
         properties: properties, objects: objects, shallow: true);
   }
 
+  @Deprecated("Use Projection<T>().perform() instead")
   /// Creates a projection from the given values, see [createProjection].
   /// Parameters can be either a [Map] or an [Object]. If an [Object] is given,
   /// it's runtime type is used to find the corresponding [DogStructure] before
@@ -197,6 +204,7 @@ extension ProjectionExtension on DogEngine {
     return createProjection(TARGET, properties: properties, objects: objects);
   }
 
+  @Deprecated("Use Projection<T>().perform() instead")
   /// Creates a shallow projection from the given values, see [createProjection].
   TARGET projectShallow<TARGET>(Object value,
       [Object? a, Object? b, Object? c]) {
@@ -222,6 +230,88 @@ extension ProjectionExtension on DogEngine {
 
     return createProjection(TARGET,
         properties: properties, objects: objects, shallow: true);
+  }
+}
+
+/// Creates a reusable list of projections that can be applied to a document.
+final class Projection<T> {
+
+  /// The engine to use for converting values.
+  final DogEngine engine;
+
+  /// Optional [TypeTree] that will be passed to [DogEngineShortcuts.fromNative] when merging values.
+  final TypeTree? tree;
+  
+  /// Optional type that will be passed to [DogEngineShortcuts.fromNative] when merging values.
+  final Type? type;
+  
+  /// Creates a new projection with the given [engine] or the global [dogs] engine.
+  Projection({DogEngine? engine, this.tree, this.type}) : engine = engine ?? dogs;
+
+  /// Ordered list of transformers that make up the projection.
+  final List<ProjectionTransformer> transformers = [];
+
+  /// Merge the given [map] into the projection.
+  Projection<T> mergeMap(Map<String, dynamic> map) {
+    transformers.add((v) {
+      final result = <String, dynamic>{};
+      result.addAll(v);
+      result.addAll(map);
+      return result;
+    });
+    return this;
+  }
+
+  /// Merges the given [value] into the projection.
+  Projection<T> merge<S>(S value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final native = engine.toNative<S>(value, kind: kind, type: type, tree: tree);
+    transformers.add((v) {
+      final result = <String, dynamic>{};
+      result.addAll(v);
+      result.addAll(native);
+      return result;
+    });
+    return this;
+  }
+
+  /// Sets the value at [path] to the [value].
+  Projection<T> setValue(String path, dynamic value) {
+    transformers.add((v) => Projections.$set(v, path, value));
+    return this;
+  }
+
+  /// Moves the value from [from] and writes it to [to].
+  Projection<T> move(String from, String to) {
+    transformers.add(Projections.move(from, to));
+    return this;
+  }
+
+  /// Deletes the value at the given [path].
+  Projection<T> delete(String path) {
+    transformers.add(Projections.delete(path));
+    return this;
+  }
+
+  /// Sets the value at the given [path] to the native map representation of [instance].
+  Projection<T> set<S>(String path, S value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final native = engine.toNative<S>(value, kind: kind, type: type, tree: tree);
+    transformers.add((v) => Projections.$set(v, path, native));
+    return this;
+  }
+
+  /// Adds a transformer to the projection.
+  Projection<T> addTransformer(ProjectionTransformer transformer) {
+    transformers.add(transformer);
+    return this;
+  }
+
+  /// Applies the projection to the given optional [initial] map and returns the result.
+  T perform([Map<String, dynamic>? initial]) {
+    var result = initial ?? <String, dynamic>{};
+    for (final transformer in transformers) {
+      result = transformer(result);
+    }
+    return engine.fromNative<T>(result, type: type, tree: tree);
   }
 }
 
