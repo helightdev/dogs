@@ -65,7 +65,12 @@ class DogStructureField extends RetainedAnnotationHolder
     if (iterableKind == IterableKind.none) {
       return type.qualified;
     } else {
-      return type.arguments[0].qualified;
+      final arg = type.arguments[0];
+      if (arg.isQualified) {
+        return arg.qualified;
+      } else {
+        return arg.base;
+      }
     }
   }
 

@@ -39,7 +39,7 @@ abstract class TreeBaseConverterFactory {
   /// Returns the converter for a [tree].
   static DogConverter treeConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    if (tree.isTerminal && tree.qualified.typeArgument == dynamic) {
+    if (tree.isTerminal && tree.base.typeArgument == dynamic) {
       return polymorphicConverter;
     }
     return engine.getTreeConverter(tree, allowPolymorphic);

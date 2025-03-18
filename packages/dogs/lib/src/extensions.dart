@@ -121,7 +121,6 @@ extension DogEngineShortcuts on DogEngine {
     dynamic result;
 
     if (tree != null) {
-      if (!tree.isQualified) throw DogException("TypeTree must be qualified");
       final converter = getTreeConverter(tree);
       result = modeRegistry.nativeSerialization
           .forConverter(converter, this)
@@ -148,7 +147,6 @@ extension DogEngineShortcuts on DogEngine {
     }
 
     if (tree != null) {
-      if (!tree.isQualified) throw DogException("TypeTree must be qualified");
       final converter = getTreeConverter(tree);
       return modeRegistry.nativeSerialization
           .forConverter(converter, this)

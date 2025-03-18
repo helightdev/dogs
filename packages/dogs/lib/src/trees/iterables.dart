@@ -118,11 +118,11 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
 
   /// Creates a new value from the given [entries].
   dynamic create(Iterable entries) =>
-      itemSubtree.qualified.consumeTypeArg(iterableCreator, entries);
+      itemSubtree.qualifiedOrBase.consumeTypeArg(iterableCreator, entries);
 
   /// Destructs the given [value] into an iterable.
   Iterable destruct(dynamic value) =>
-      itemSubtree.qualified.consumeTypeArg(iterableDestructor, value);
+      itemSubtree.qualifiedOrBase.consumeTypeArg(iterableDestructor, value);
 
   @override
   OperationMode<dynamic>? resolveOperationMode(Type opmodeType) {

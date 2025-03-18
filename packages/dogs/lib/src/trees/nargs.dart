@@ -25,43 +25,43 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   @override
   DogConverter getConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    final argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
     if (tree.arguments.length != nargs) {
       throw ArgumentError("Expected $nargs type arguments");
     }
+    final argumentConverters = TreeBaseConverterFactory.argumentConverters(
+        tree, engine, allowPolymorphic);
     final factory = switch (tree.arguments.length) {
-      1 => tree.arguments.first.qualified
+      1 => tree.arguments.first.qualifiedOrBase
           .consumeType(captureFactory as Function<_>()),
       2 => TypeContainers.arg2(
-          tree.arguments[0].qualified,
-          tree.arguments[1].qualified,
+          tree.arguments[0].qualifiedOrBase,
+          tree.arguments[1].qualifiedOrBase,
         ).consume(captureFactory as Function<_0, _1>()),
       3 => TypeContainers.arg3(
-          tree.arguments[0].qualified,
-          tree.arguments[1].qualified,
-          tree.arguments[2].qualified,
+          tree.arguments[0].qualifiedOrBase,
+          tree.arguments[1].qualifiedOrBase,
+          tree.arguments[2].qualifiedOrBase,
         ).consume(captureFactory as Function<_0, _1, _2>()),
       4 => TypeContainers.arg4(
-          tree.arguments[0].qualified,
-          tree.arguments[1].qualified,
-          tree.arguments[2].qualified,
-          tree.arguments[3].qualified,
+          tree.arguments[0].qualifiedOrBase,
+          tree.arguments[1].qualifiedOrBase,
+          tree.arguments[2].qualifiedOrBase,
+          tree.arguments[3].qualifiedOrBase,
         ).consume(captureFactory as Function<_0, _1, _2, _3>()),
       5 => TypeContainers.arg5(
-          tree.arguments[0].qualified,
-          tree.arguments[1].qualified,
-          tree.arguments[2].qualified,
-          tree.arguments[3].qualified,
-          tree.arguments[4].qualified,
+          tree.arguments[0].qualifiedOrBase,
+          tree.arguments[1].qualifiedOrBase,
+          tree.arguments[2].qualifiedOrBase,
+          tree.arguments[3].qualifiedOrBase,
+          tree.arguments[4].qualifiedOrBase,
         ).consume(captureFactory as Function<_0, _1, _2, _3, _4>()),
       6 => TypeContainers.arg6(
-          tree.arguments[0].qualified,
-          tree.arguments[1].qualified,
-          tree.arguments[2].qualified,
-          tree.arguments[3].qualified,
-          tree.arguments[4].qualified,
-          tree.arguments[5].qualified,
+          tree.arguments[0].qualifiedOrBase,
+          tree.arguments[1].qualifiedOrBase,
+          tree.arguments[2].qualifiedOrBase,
+          tree.arguments[3].qualifiedOrBase,
+          tree.arguments[4].qualifiedOrBase,
+          tree.arguments[5].qualifiedOrBase,
         ).consume(captureFactory as Function<_0, _1, _2, _3, _4, _5>()),
       int() => throw Exception("Too many type arguments")
     };
@@ -94,7 +94,6 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
   SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
     return delegate.inferSchemaType(engine, config);
   }
-
 }
 
 /// A converter interface for a generic type with a fixed number of type arguments.

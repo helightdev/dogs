@@ -359,7 +359,7 @@ class DogEngine with MetadataMixin {
   /// polymorphic converters if any type tree terminals are not concrete.
   DogConverter getTreeConverter(TypeTree tree, [bool allowPolymorphic = true]) {
     if (!tree.isQualified) {
-      throw DogException("TypeTree '$tree' must be qualified");
+      return _getAnonymousTreeConverter(tree, allowPolymorphic);
     }
 
     final cachedConverter =
@@ -368,6 +368,29 @@ class DogEngine with MetadataMixin {
     final created = _getTreeConverterUncached(tree, allowPolymorphic);
     _runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
     return created;
+  }
+
+  DogConverter<dynamic> _getAnonymousTreeConverter(TypeTree<dynamic> tree, [bool allowPolymorphic = true]) {
+    if (tree.isTerminal) {
+      if (codec.isNative(tree.base.typeArgument)) {
+        return codec.bridgeConverters[tree.base.typeArgument]!;
+      }
+
+      final associated = findAssociatedConverter(tree.base.typeArgument);
+      if (associated != null) return associated;
+      if (allowPolymorphic) {
+        return TreeBaseConverterFactory.polymorphicConverter;
+      }
+      throw DogException(
+          "No type tree converter for tree ${tree.qualified} found. (Polymorphism disabled)");
+    } else {
+      // Use factory
+      final factory = _treeBaseFactories[tree.base.typeArgument];
+      if (factory == null) {
+        throw DogException("No type tree converter for ${tree.base} found");
+      }
+      return factory.getConverter(tree, this, allowPolymorphic);
+    }
   }
 
   DogConverter<dynamic> _getTreeConverterUncached(TypeTree<dynamic> tree,
