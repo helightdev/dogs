@@ -86,12 +86,12 @@ graph LR
   B{Is Terminal?} -->|Yes| C;
   C{Is Native?} --> |Yes|D[Retain value];
   C --> |No| E;
-  E{Has associated\nDogConverter?} --> |Yes| F;
-  E --> |No| G[Polymorphic\nSerializer];
+  E{Has associated DogConverter?} --> |Yes| F;
+  E --> |No| G[Polymorphic Serializer];
   B --> |No| H;
-  H{Has associated\nDogConverter?} ---> |Yes| F[Use Serializer];
+  H{Has associated DogConverter?} ---> |Yes| F[Use Converter];
   H --> |No| I;
-  I{Has associated\nTreeConverter?} --> |Yes| J;
+  I{Has associated TreeConverter?} --> |Yes| J;
   J[Use TreeConverter] ----> |Potentially for type arguments| A;
   I --> |No| K[Throw Exception];
 ```

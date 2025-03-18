@@ -50,14 +50,14 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
     var person = Person("Alex", 22, {"developer", "dart"});
     var type = PersonSupertype;
     var json = dogs.toJson(person,
-    type: type
+        type: type
     );
     ```
 
 === "Nullable"
     ``` { .dart title="Json Encode Nullable"}
     var json = dogs.toJson<Person?>(null,
-    type: Person,
+        type: Person,
     );
     ```
 
@@ -81,10 +81,10 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
 === "List"
     ``` { .dart .annotate title="Json Decode List" }
     var encoded = """[{"name":"Alex","age":22,"tags":["developer","dart"]}]""";
-    var persons = dogs.fromJson<List<Person>>(encoded,
+    var persons = dogs.fromJson<List>(encoded,
         type: Person,
         kind: IterableKind.list
-    );
+    ).cast<Person>();
     ```
     !!! example "Type Parameter not required!"
         In this case, the type parameter is **not required**, as type tree already dictates the type.  
@@ -106,7 +106,7 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
     var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
     var type = PersonSupertype;
     var person = dogs.fromJson(encoded,
-    type: type
+        type: type
     );
     ```
     !!! example "Type Parameter not required!"
@@ -117,7 +117,7 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
     ``` { .dart title="Json Decode Nullable" }
     var json = """null""";
     var person = dogs.fromJson<Person?>(json,
-    type: Person,
+        type: Person,
     );
     ```
 

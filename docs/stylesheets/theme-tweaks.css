@@ -51,6 +51,10 @@
     --md-fg-elevated: #448aff;
 }
 
+.question {
+    --md-fg-elevated: #77e92f;
+}
+
 /* Admonition Tweaks */
 div.admonition {
     border-radius: var(--md-border-radius) !important;
