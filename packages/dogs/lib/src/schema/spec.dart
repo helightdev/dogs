@@ -16,6 +16,22 @@
 
 import "dart:convert";
 
+import "package:dogs_core/dogs_core.dart";
+
+extension SchemaGenerateExtension on DogEngine {
+
+  /// Generates a schema for the given type [T].
+  SchemaType describe<T>({SchemaConfig config = const SchemaConfig()}) {
+    final converter = findAssociatedConverter(T);
+    if (converter == null) {
+      throw DogException("No converter found for type $T");
+    }
+    return SchemaPass.run((pass) {
+      return converter.describeOutput(this, config);
+    });
+  }
+}
+
 class SchemaConfig {
   final bool useReferences;
 

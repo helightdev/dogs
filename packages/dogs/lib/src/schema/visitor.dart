@@ -36,12 +36,12 @@ class SchemaPass {
   int depth = 0;
 
   @internal
-  static void run(Function(SchemaPass) block) {
+  static T run<T>(T Function(SchemaPass) block) {
     if (current != null) throw Exception("Already in a schema pass, this should not happen.");
     final pass = SchemaPass();
     try {
       current = pass;
-      block(pass);
+      return block(pass);
     } finally {
       current = null;
     }
