@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`dogs_flutter` - `v0.0.1-dev.0`](#dogs_flutter---v001-dev0)
+
+---
+
+#### `dogs_flutter` - `v0.0.1-dev.0`
+
+ - Bump "dogs_flutter" to `0.0.1-dev.0`.
+
+
+## 2025-04-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`dogs_flutter` - `v0.0.1-dev`](#dogs_flutter---v001-dev)
 
 ---
@@ -38,7 +59,7 @@ Packages with breaking changes:
 
 Packages with other changes:
 
- - [`dogs_flutter` - `v0.0.2-dev.0`](#dogs_flutter---v002-dev0)
+ - [`dogs_flutter` - `v0.0.1-dev.0`](#dogs_flutter---v002-dev0)
  - [`dogs_built` - `v3.1.5-dev.0`](#dogs_built---v315-dev0)
  - [`dogs_odm` - `v1.0.0-alpha.17`](#dogs_odm---v100-alpha17)
  - [`dogs_forms` - `v0.2.4-dev.0+2`](#dogs_forms---v024-dev02)
