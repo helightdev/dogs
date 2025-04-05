@@ -32,14 +32,16 @@ class StructureHarbinger<T> {
   /// Creates a new [StructureHarbinger] for the supplied [structure] and [engine].
   StructureHarbinger(this.structure, this.engine) {
     fieldConverters = structure.fields.map((e) {
-      final fieldConverter = getConverter(engine, e);
+      final fieldConverter = getConverter(engine, structure, e);
       return (field: e, converter: fieldConverter);
     }).toList();
   }
 
   /// Performs the converter lookup for a single field.
   @internal
-  DogConverter? getConverter(DogEngine engine, DogStructureField field) {
+  static DogConverter? getConverter(DogEngine engine, DogStructure structure, DogStructureField field, {
+    bool nativeConverters = false,
+  }) {
     // Try resolving using supplying visitors
     final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
     if (supplier != null) {
@@ -53,6 +55,9 @@ class StructureHarbinger<T> {
 
     // This value is native, we don't need a converter
     if (engine.codec.isNative(field.type.qualified.typeArgument)) {
+      if (nativeConverters) {
+        return engine.codec.bridgeConverters[field.type.qualified.typeArgument];
+      }
       return null;
     }
 
