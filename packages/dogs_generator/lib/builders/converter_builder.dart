@@ -258,9 +258,30 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
       String constructorName,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
+    var copyWithFrontendName = "${element.name}\$Copy";
+    var copyClazz = Class((builder) {
+      builder.name = copyWithFrontendName;
+      builder.abstract = true;
+
+      // Call method base
+      builder.methods.add(Method((builder) {
+        builder.name = "call";
+
+        builder.returns = Reference(codeContext.className(element));
+        for (var field in structurized.structure.fields) {
+          builder.optionalParameters.add(Parameter((param) {
+            param.name = field.accessor;
+            param.named = true;
+            param.type = Reference("${field.type}?");
+          }));
+        }
+      }));
+    });
+
     var builderName = "${element.name}Builder";
     var clazz = Class((builder) {
       builder.name = builderName;
+      builder.implements.add(Reference(copyWithFrontendName));
 
       builder.fields.add(Field((builder) => builder
         ..name = "\$values"
@@ -295,6 +316,31 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
           ..body = Code("\$values[$index]")));
       }
 
+      builder.methods.add(Method((builder) {
+        builder.name = "call";
+        builder.annotations.add(CodeExpression(Code("override")));
+
+        var bodyBuilder = StringBuffer();
+        builder.returns = Reference(codeContext.className(element));
+        for (var field in structurized.structure.fields) {
+          builder.optionalParameters.add(Parameter((param) {
+            param.name = field.accessor;
+            param.named = true;
+            param.type = Reference("Object?");
+            param.defaultTo = Code("#sentinel");
+          }));
+
+          bodyBuilder.write("""
+          if (${field.accessor} != #sentinel) {
+            this.${field.accessor} = ${field.accessor} as ${field.type + (field.optional ? "?" : "")};
+          }
+          """);
+        }
+
+        bodyBuilder.writeln("return build();");
+        builder.body = Code(bodyBuilder.toString());
+      }));
+
       var hasRebuildHook = TypeChecker.fromRuntime(PostRebuildHook).isAssignableFromType(element.thisType);
 
       builder.methods.add(Method((builder) => builder
@@ -307,6 +353,8 @@ ${!hasRebuildHook ? "" : """if (\$src != null) {
 }"""}
 return instance;""")));
     });
+
+    codeContext.codeBuffer.writeln(copyClazz.accept(emitter));
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
@@ -335,6 +383,14 @@ return instance;""")));
           f(builder);
           return builder.build();
           """)));
+
+      builder.methods.add(Method((builder) => builder
+        ..name = "copy"
+        ..type = MethodType.getter
+        ..returns = Reference("${element.name}\$Copy")
+        ..body = Code("toBuilder()")
+        ..lambda = true
+      ));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toBuilder"
