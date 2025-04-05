@@ -17,8 +17,8 @@
 import "package:dogs_core/dogs_core.dart";
 
 /// A [FieldValidator] that restricts the length of a [String].
-class LengthRange extends StructureMetadata
-    implements SchemaFieldVisitor, FieldValidator {
+class LengthRange extends FieldValidator<bool>
+    implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum length. (inclusive)
   final int? min;
 
@@ -30,6 +30,10 @@ class LengthRange extends StructureMetadata
 
   /// The message id used for the annotation result.
   static const String messageId = "length-range";
+  /// The message id used when only the min length is set.
+  static const String messageMinId = "length-range-min";
+  /// The message id used when only the max length is set.
+  static const String messageMaxId = "length-range-max";
 
   @override
   void visitSchemaField(SchemaField object) {
@@ -37,20 +41,19 @@ class LengthRange extends StructureMetadata
     if (max != null) object[SchemaProperties.maxLength] = max;
   }
 
-
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+  bool getCachedValue(DogStructureField field) {
     return field.iterableKind != IterableKind.none;
   }
 
   @override
-  bool isApplicable(DogStructure<dynamic> structure, DogStructureField field) {
-    return field.serial.typeArgument == String;
+  void verifyUsage(DogStructureField field) {
+    if (field.serial.typeArgument != String) throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @LengthRange().");
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
-    if (cached as bool) {
+  bool validate(bool cached, value, DogEngine engine) {
+    if (cached) {
       if (value == null) return true;
       return (value as Iterable).every((e) => _validateSingle(e));
     } else {
@@ -73,13 +76,31 @@ class LengthRange extends StructureMetadata
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
+    if (max == null) {
+      return AnnotationResult(messages: [
+        AnnotationMessage(
+            id: messageMinId,
+            message: "Must be at least %min% characters long")
+      ]).withVariables({
+        "min": min.toString(),
+      });
+    } else if (min == null) {
+      return AnnotationResult(messages: [
+        AnnotationMessage(
+            id: messageMaxId,
+            message: "Must be at most %max% characters long")
+      ]).withVariables({
+        "max": max.toString(),
+      });
+    }
+
     return AnnotationResult(messages: [
       AnnotationMessage(
           id: messageId,
-          message: "Must be between %min% and %max% characters long.")
+          message: "Must be between %min% and %max% characters long")
     ]).withVariables({
       "min": min.toString(),
       "max": max.toString(),

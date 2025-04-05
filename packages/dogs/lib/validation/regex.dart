@@ -15,6 +15,7 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
 /// Reduced version of a RFC 5322 email regex from https://www.regular-expressions.info/email.html
 /// This regex omits IP addresses, double quotes and square brackets.
@@ -24,8 +25,8 @@ const email = Regex(
     message: "Invalid email address.");
 
 /// A [FieldValidator] that validates a [String] using a [RegExp].
-class Regex extends StructureMetadata
-    implements SchemaFieldVisitor, FieldValidator {
+class Regex extends FieldValidator<RegexCacheEntry>
+    implements SchemaFieldVisitor, StructureMetadata {
   /// The regex pattern.
   final String pattern;
 
@@ -42,25 +43,24 @@ class Regex extends StructureMetadata
   static const String defaultMessageId = "regex";
 
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
-    return _RegexCacheEntry(
+  RegexCacheEntry getCachedValue(DogStructureField field) {
+    return RegexCacheEntry(
         RegExp(pattern), field.iterableKind != IterableKind.none);
   }
 
   @override
-  bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == String;
+  void verifyUsage(DogStructureField field) {
+    if (field.serial.typeArgument != String) throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @Regex().");
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
-    final entry = cached as _RegexCacheEntry;
-    if (entry.isIterable) {
+  bool validate(RegexCacheEntry cached, value, DogEngine engine) {
+    if (cached.isIterable) {
       if (value == null) return true;
       return (value as Iterable)
-          .every((e) => _validateSingle(entry.matcher, e));
+          .every((e) => _validateSingle(cached.matcher, e));
     } else {
-      return _validateSingle(entry.matcher, value);
+      return _validateSingle(cached.matcher, value);
     }
   }
 
@@ -84,20 +84,20 @@ class Regex extends StructureMetadata
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(RegexCacheEntry cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(
           id: messageId ?? defaultMessageId,
-          message: message ?? "Invalid format.")
+          message: message ?? "Invalid format")
     ]);
   }
 }
 
-class _RegexCacheEntry {
+class RegexCacheEntry {
   RegExp matcher;
   bool isIterable;
 
-  _RegexCacheEntry(this.matcher, this.isIterable);
+  RegexCacheEntry(this.matcher, this.isIterable);
 }

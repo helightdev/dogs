@@ -20,7 +20,7 @@ import "package:dogs_core/dogs_core.dart";
 const notBlank = NotBlank();
 
 /// A [FieldValidator] that requires non-null strings to not be blank.
-class NotBlank extends StructureMetadata implements FieldValidator {
+class NotBlank extends FieldValidator<bool> implements StructureMetadata {
   /// Requires non-null strings to not be blank.
   const NotBlank();
 
@@ -28,18 +28,18 @@ class NotBlank extends StructureMetadata implements FieldValidator {
   static const String messageId = "not-blank";
 
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+  bool getCachedValue(DogStructureField field) {
     return field.iterableKind != IterableKind.none;
   }
 
   @override
-  bool isApplicable(DogStructure<dynamic> structure, DogStructureField field) {
-    return field.serial.typeArgument == String;
+  void verifyUsage(DogStructureField field) {
+    if (field.serial.typeArgument != String) throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @notBlank.");
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
-    if (cached as bool) {
+  bool validate(bool cached, value, DogEngine engine) {
+    if (cached) {
       if (value == null) return true;
       return (value as Iterable).every((e) => _validateSingle(e));
     } else {
@@ -54,11 +54,11 @@ class NotBlank extends StructureMetadata implements FieldValidator {
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
-      AnnotationMessage(id: messageId, message: "Must not be blank.")
+      AnnotationMessage(id: messageId, message: "Must not be blank")
     ]);
   }
 }

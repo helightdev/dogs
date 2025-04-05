@@ -29,8 +29,8 @@ const negative = Range(max: 0, maxExclusive: true);
 const negativeOrZero = Range(max: 0, maxExclusive: false);
 
 /// A [FieldValidator] that restricts a numeric type to a minimum and maximum value.
-class Range extends StructureMetadata
-    implements SchemaFieldVisitor, FieldValidator {
+class Range extends FieldValidator<bool>
+    implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
 
@@ -75,18 +75,21 @@ class Range extends StructureMetadata
   }
 
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+  bool getCachedValue(DogStructureField field) {
     return field.iterableKind != IterableKind.none;
   }
 
   @override
-  bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == int ||
-        field.serial.typeArgument == double;
+  void verifyUsage(DogStructureField field) {
+    final arg = field.serial.typeArgument;
+    if (arg != int && arg != double) {
+      throw DogException(
+          "Field '${field.name}' must be a int|double/-List/-Iterable to use @Range().");
+    }
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
+  bool validate(bool cached, value, DogEngine engine) {
     if (cached as bool) {
       if (value == null) return true;
       return (value as Iterable).every((e) => _validateSingle(e));
@@ -118,13 +121,14 @@ class Range extends StructureMetadata
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(
           id: messageId,
-          message: "Must be between %min% and %max% characters long.")
+          message:
+              "Must be between %min%(%minExclusive%) and %max%(%maxExclusive%).")
     ]).withVariables({
       "min": min.toString(),
       "max": max.toString(),
@@ -135,8 +139,8 @@ class Range extends StructureMetadata
 }
 
 /// A [FieldValidator] that restricts a numeric type to a minimum value.
-class Minimum extends StructureMetadata
-    implements SchemaFieldVisitor, FieldValidator {
+class Minimum extends FieldValidator<bool>
+    implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
 
@@ -164,19 +168,22 @@ class Minimum extends StructureMetadata
   }
 
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+  bool getCachedValue(DogStructureField field) {
     return field.iterableKind != IterableKind.none;
   }
 
   @override
-  bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == int ||
-        field.serial.typeArgument == double;
+  void verifyUsage(DogStructureField field) {
+    final arg = field.serial.typeArgument;
+    if (arg != int && arg != double) {
+      throw DogException(
+          "Field '${field.name}' must be a int|double/-List/-Iterable to use @Minimum().");
+    }
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
-    if (cached as bool) {
+  bool validate(bool cached, value, DogEngine engine) {
+    if (cached) {
       if (value == null) return true;
       return (value as Iterable).every((e) => _validateSingle(e));
     } else {
@@ -196,7 +203,7 @@ class Minimum extends StructureMetadata
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
@@ -210,8 +217,8 @@ class Minimum extends StructureMetadata
 }
 
 /// A [FieldValidator] that restricts a numeric type to a maximum value.
-class Maximum extends StructureMetadata
-    implements SchemaFieldVisitor, FieldValidator {
+class Maximum extends FieldValidator<bool>
+    implements SchemaFieldVisitor, StructureMetadata {
   /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
 
@@ -239,19 +246,21 @@ class Maximum extends StructureMetadata
   }
 
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
+  bool getCachedValue(DogStructureField field) {
     return field.iterableKind != IterableKind.none;
   }
 
   @override
-  bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.serial.typeArgument == int ||
-        field.serial.typeArgument == double;
+  void verifyUsage(DogStructureField field) {
+    final arg = field.serial.typeArgument;
+    if (arg != int && arg != double)
+      throw DogException(
+          "Field '${field.name}' must be a int|double/-List/-Iterable to use @Maximum().");
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
-    if (cached as bool) {
+  bool validate(bool cached, value, DogEngine engine) {
+    if (cached) {
       if (value == null) return true;
       return (value as Iterable).every((e) => _validateSingle(e));
     } else {
@@ -271,12 +280,12 @@ class Maximum extends StructureMetadata
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
       AnnotationMessage(
-          id: messageId, message: "Must be less than %max% (%maxExclusive%).")
+          id: messageId, message: "Must be less than %max% (%maxExclusive%)")
     ]).withVariables({
       "max": max.toString(),
       "maxExclusive": maxExclusive ? "exclusive" : "inclusive",

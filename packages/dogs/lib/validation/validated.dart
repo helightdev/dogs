@@ -24,7 +24,7 @@ import "package:dogs_core/dogs_core.dart";
 const validated = Validated();
 
 /// A [FieldValidator] that requires a field to be deeply validated.
-class Validated extends StructureMetadata implements FieldValidator {
+class Validated extends FieldValidator<ValidatedCacheEntry> implements StructureMetadata {
   /// Requires a field to be deeply validated.
   /// Example: You have a class Group with a field `List<Person> members` as well as
   /// a type Person which is validatable. You can then annotate your field
@@ -36,23 +36,22 @@ class Validated extends StructureMetadata implements FieldValidator {
   static const String messageId = "validated";
 
   @override
-  getCachedValue(DogStructure<dynamic> structure, DogStructureField field) {
-    return _ValidatedCacheEntry(
+  ValidatedCacheEntry getCachedValue(DogStructureField field) {
+    return ValidatedCacheEntry(
         field.serial.typeArgument, field.iterableKind != IterableKind.none);
   }
 
   @override
-  bool isApplicable(DogStructure structure, DogStructureField field) {
-    return field.structure;
+  void verifyUsage(DogStructureField field) {
+    if (!field.structure) throw DogException("Field '${field.name}' must not be primitive in order to use @validated.");
   }
 
   @override
-  bool validate(cached, value, DogEngine engine) {
-    final entry = cached as _ValidatedCacheEntry;
+  bool validate(ValidatedCacheEntry cached, value, DogEngine engine) {
     final validatorMode =
-        engine.modeRegistry.validation.forTypeNullable(entry.serial, engine);
+        engine.modeRegistry.validation.forTypeNullable(cached.serial, engine);
     if (validatorMode == null) return true;
-    if (entry.iterable) {
+    if (cached.iterable) {
       if (value == null) return true;
       return (value as Iterable)
           .every((e) => _validateSingle(e, validatorMode, engine));
@@ -67,18 +66,18 @@ class Validated extends StructureMetadata implements FieldValidator {
   }
 
   @override
-  AnnotationResult annotate(cached, value, DogEngine engine) {
+  AnnotationResult annotate(ValidatedCacheEntry cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
-      AnnotationMessage(id: messageId, message: "Invalid subtree.")
+      AnnotationMessage(id: messageId, message: "Invalid value")
     ]);
   }
 }
 
-class _ValidatedCacheEntry {
+class ValidatedCacheEntry {
   Type serial;
   bool iterable;
 
-  _ValidatedCacheEntry(this.serial, this.iterable);
+  ValidatedCacheEntry(this.serial, this.iterable);
 }

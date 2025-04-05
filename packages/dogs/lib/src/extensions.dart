@@ -89,7 +89,9 @@ extension DogEngineShortcuts on DogEngine {
   /// Throws a [ValidationException] if [validateObject] returns false.
   void validate<T>(T value) {
     final isValid = validateObject(value, T);
-    if (!isValid) throw ValidationException();
+    if (!isValid) {
+      throw ValidationException(validateAnnotated(value, T));
+    }
   }
 
   /// Converts a [value] to its [DogGraphValue] representation using the
@@ -180,7 +182,7 @@ extension StructureExtensions on DogStructure {
       } else if (value != null) {
         values.add(value);
       } else {
-        throw Exception("Missing required field ${field.name}");
+        throw DogException("Missing required field ${field.name}");
       }
     }
     return proxy.instantiate(values);
@@ -200,6 +202,47 @@ extension StructureExtensions on DogStructure {
     }
     return null;
   }
+
+  /// Returns an [IsolatedClassValidator] that can be used to evaluate the
+  /// [ClassValidator]s and [FieldValidator]s of this structure.
+  IsolatedClassValidator getClassValidator({DogEngine? engine, List<IsolatedFieldValidator>? fieldValidators}) {
+    engine ??= DogEngine.instance;
+    final classValidators = annotationsOf<ClassValidator>().toList();
+    for (var value in classValidators) {
+      value.verifyUsage(this);
+    }
+    final classValidatorCacheData =
+        classValidators.map((e) => e.getCachedValue(this)).toList();
+
+    fieldValidators ??= fields
+          .map((e) => e.getFieldValidator(this, engine: engine))
+          .toList();
+
+    final fieldAccessors = <dynamic Function(dynamic)>[];
+    for (var i = 0; i < fields.length; i++) {
+      fieldAccessors.add((instance) => proxy.getField(instance, i));
+    }
+    final contextValidators = <ContextFieldValidator>[];
+    final contextValidatorCacheData = <dynamic>[];
+    for (var field in fields) {
+      for (var contextValidator in field.metadataOf<ContextFieldValidator>()) {
+        contextValidator.verifyUsage(this, field);
+        contextValidators.add(contextValidator);
+        contextValidatorCacheData
+            .add(contextValidator.getCachedValue(this, field));
+      }
+    }
+
+    return IsolatedClassValidator(
+        engine: engine,
+        classValidators: classValidators,
+        classValidatorCacheData: classValidatorCacheData,
+        contextValidators: contextValidators,
+        contextValidatorCacheData: contextValidatorCacheData,
+        fieldValidators: fieldValidators,
+        fieldAccessors: fieldAccessors,
+        structure: this);
+  }
 }
 
 /// Extensions on [DogStructureField]s.
@@ -211,9 +254,35 @@ extension FieldExtension on DogStructureField {
 
   /// Returns the [DogConverter] the [StructureHarbinger] would use to convert
   /// this field.
-  DogConverter? findConverter(DogStructure structure, [DogEngine? engine]) {
+  DogConverter? findConverter(DogStructure structure,
+      {DogEngine? engine, bool nativeConverters = false}) {
     engine ??= DogEngine.instance;
-    final harbinger = StructureHarbinger.create(structure, engine);
-    return harbinger.getConverter(engine, this);
+    return StructureHarbinger.getConverter(engine, structure, this,
+        nativeConverters: nativeConverters);
+  }
+
+  /// Returns an [IsolatedFieldValidator] that can be used to evaluate the [FieldValidator]s of this field.
+  IsolatedFieldValidator getFieldValidator(
+    DogStructure structure, {
+    DogEngine? engine,
+    FieldValidator? guardValidator,
+  }) {
+    engine ??= DogEngine.instance;
+    final fieldValidators = annotationsOf<FieldValidator>().toList();
+    if (guardValidator != null) {
+      fieldValidators.insert(0, guardValidator);
+    }
+    for (var value in fieldValidators) {
+      value.verifyUsage(this);
+    }
+    final cacheData =
+        fieldValidators.map((e) => e.getCachedValue(this)).toList();
+    return IsolatedFieldValidator(
+      hasGuardValidator: guardValidator != null,
+      engine: engine,
+      field: this,
+      fieldValidators: fieldValidators,
+      fieldValidatorCacheData: cacheData,
+    );
   }
 }
