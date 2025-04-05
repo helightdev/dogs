@@ -1,3 +1,10 @@
+## 7.0.0-dev.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: add modern copy implementation for generator.
+ - **BREAKING** **FEAT**: remove the usage of iterable kinds for serialization.
+
 ## 6.0.4
 
  - Update a dependency to the latest release.

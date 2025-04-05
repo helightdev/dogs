@@ -1,3 +1,21 @@
+## 10.0.0-dev.0
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: make the harbinger return bridge converters.
+ - **REFACTOR**: adjust default validators and extensions for the upgraded validation system.
+ - **REFACTOR**: use converter type argument as fallback.
+ - **REFACTOR**: limited support for non qualified type trees.
+ - **FIX**: throw proper exception when dog isn't currently initialized.
+ - **FEAT**: add nullable converter resolver.
+ - **FEAT**: add generator extension.
+ - **FEAT**: Add new more explicit system for projection.
+ - **FEAT**: add a way to override the global dog engine instance for custom call scopes.
+ - **BREAKING** **REFACTOR**: make validation more generally usable.
+ - **BREAKING** **FEAT**: remove the usage of iterable kinds for serialization.
+ - **BREAKING** **FEAT**: replace the schema validation with custom implementation.
+ - **BREAKING** **FEAT**: use context objects for structure native hooks.
+
 ## 9.4.1
 
  - **FIX**: Use entry list for non string key based maps serialized using MapNTreeArgConverter.

@@ -3,6 +3,73 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_core` - `v10.0.0-dev.0`](#dogs_core---v1000-dev0)
+ - [`dogs_firestore` - `v0.3.0-dev.0`](#dogs_firestore---v030-dev0)
+ - [`dogs_generator` - `v7.0.0-dev.0`](#dogs_generator---v700-dev0)
+
+Packages with other changes:
+
+ - [`dogs_flutter` - `v0.0.2-dev.0`](#dogs_flutter---v002-dev0)
+ - [`dogs_built` - `v3.1.5-dev.0`](#dogs_built---v315-dev0)
+ - [`dogs_odm` - `v1.0.0-alpha.17`](#dogs_odm---v100-alpha17)
+ - [`dogs_forms` - `v0.2.4-dev.0+2`](#dogs_forms---v024-dev02)
+ - [`dogs_toml` - `v2.3.5-dev.0`](#dogs_toml---v235-dev0)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.17`](#dogs_mongo_driver---v100-alpha17)
+ - [`dogs_yaml` - `v2.3.5-dev.0`](#dogs_yaml---v235-dev0)
+ - [`dogs_cbor` - `v2.3.5-dev.0`](#dogs_cbor---v235-dev0)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_built` - `v3.1.5-dev.0`
+ - `dogs_odm` - `v1.0.0-alpha.17`
+ - `dogs_forms` - `v0.2.4-dev.0+2`
+ - `dogs_toml` - `v2.3.5-dev.0`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.17`
+ - `dogs_yaml` - `v2.3.5-dev.0`
+ - `dogs_cbor` - `v2.3.5-dev.0`
+
+---
+
+#### `dogs_core` - `v10.0.0-dev.0`
+
+ - **REFACTOR**: make the harbinger return bridge converters.
+ - **REFACTOR**: adjust default validators and extensions for the upgraded validation system.
+ - **REFACTOR**: use converter type argument as fallback.
+ - **REFACTOR**: limited support for non qualified type trees.
+ - **FIX**: throw proper exception when dog isn't currently initialized.
+ - **FEAT**: add nullable converter resolver.
+ - **FEAT**: add generator extension.
+ - **FEAT**: Add new more explicit system for projection.
+ - **FEAT**: add a way to override the global dog engine instance for custom call scopes.
+ - **BREAKING** **REFACTOR**: make validation more generally usable.
+ - **BREAKING** **FEAT**: remove the usage of iterable kinds for serialization.
+ - **BREAKING** **FEAT**: replace the schema validation with custom implementation.
+ - **BREAKING** **FEAT**: use context objects for structure native hooks.
+
+#### `dogs_firestore` - `v0.3.0-dev.0`
+
+ - **BREAKING** **FEAT**: replace the schema validation with custom implementation.
+
+#### `dogs_generator` - `v7.0.0-dev.0`
+
+ - **FEAT**: add modern copy implementation for generator.
+ - **BREAKING** **FEAT**: remove the usage of iterable kinds for serialization.
+
+#### `dogs_flutter` - `v0.0.2-dev.0`
+
+ - **FEAT**: dogs_flutter initial alpha commit.
+
+
 ## 2025-01-18
 
 ### Changes
