@@ -1,7 +1,6 @@
 name: dogs_flutter
-description: "A new Flutter package project."
+description: "Flutter support for the dogs_core package"
 version: 0.0.1-dev.0
-homepage:
 
 environment:
   sdk: ^3.7.0
