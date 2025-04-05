@@ -77,6 +77,10 @@ class SingletonTypeOperationModeFactory<T extends OperationMode>
   @override
   T? forConverter(DogConverter converter, DogEngine engine) {
     if (converter.struct?.typeArgument == targetType) return mode;
+    if (converter.typeArgument != dynamic &&
+        converter.typeArgument == targetType) {
+      return mode;
+    }
     return null;
   }
 }
