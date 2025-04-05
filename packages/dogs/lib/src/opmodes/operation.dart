@@ -105,10 +105,24 @@ class OperationModeCacheEntry<T extends OperationMode> {
     if (cached != null) return cached as T;
     var resolved = converter.resolveOperationMode(modeType);
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
+
     if (resolved == null) {
       throw DogException(
           "DogConverter $converter doesn't support opmode $modeType");
     }
+    resolved.initialise(engine);
+    converterMapping[converter] = resolved;
+    return resolved as T;
+  }
+
+  /// Returns the [OperationMode] for the given [converter] and [engine] but allows null.
+  T? forConverterNullable(DogConverter converter, DogEngine engine) {
+    final cached = converterMapping[converter];
+    if (cached != null) return cached as T;
+    var resolved = converter.resolveOperationMode(modeType);
+    resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
+
+    if (resolved == null) return null;
     resolved.initialise(engine);
     converterMapping[converter] = resolved;
     return resolved as T;
