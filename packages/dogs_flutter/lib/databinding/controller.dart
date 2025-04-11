@@ -320,9 +320,10 @@ extension FieldBindingControllerExtension on FieldBindingController {
   String get fieldName => bindingContext.field.name;
 }
 
-
-typedef AnnotationTransformer = AnnotationResult Function(AnnotationResult result);
-typedef MessageTransformer = AnnotationMessage Function(AnnotationMessage message);
+typedef AnnotationTransformer =
+    AnnotationResult Function(AnnotationResult result);
+typedef MessageTransformer =
+    AnnotationMessage Function(AnnotationMessage message);
 
 /// Extension methods for [AnnotationResult].
 extension AnnotationResultExtensions on AnnotationResult {
@@ -334,17 +335,22 @@ extension AnnotationResultExtensions on AnnotationResult {
     return func(this);
   }
 
-  AnnotationResult replace(String id, {MessageTransformer? func, String? message}) {
-    final newMessages = messages.map((e) {
-      if (e.id == id) {
-        if (func != null) {
-          return func(e);
-        } else if (message != null) {
-          return e.withMessage(message);
-        }
-      }
-      return e;
-    }).toList();
+  AnnotationResult replace(
+    String id, {
+    MessageTransformer? func,
+    String? message,
+  }) {
+    final newMessages =
+        messages.map((e) {
+          if (e.id == id) {
+            if (func != null) {
+              return func(e);
+            } else if (message != null) {
+              return e.withMessage(message);
+            }
+          }
+          return e;
+        }).toList();
     return AnnotationResult(messages: newMessages);
   }
 
@@ -352,7 +358,6 @@ extension AnnotationResultExtensions on AnnotationResult {
     final newMessages = messages.where((e) => e.id != id).toList();
     return AnnotationResult(messages: newMessages);
   }
-
 }
 
 /// An [InheritedWidget] that provides a [StructureBindingController] to the widget tree.
@@ -393,5 +398,71 @@ class StructureBindingProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(StructureBindingProvider old) {
     return controller != old.controller;
+  }
+}
+
+class StructureViewer<T> {
+  final DogEngine engine;
+  final DogStructure structure;
+
+  late List<FlutterWidgetBinder> factories;
+
+  StructureViewer(this.engine, this.structure) {
+    factories =
+        structure.fields.map((e) {
+          final (binder, context) = FlutterWidgetBinder.resolveBinder(
+            engine,
+            structure,
+            e,
+          );
+          return binder;
+        }).toList();
+  }
+
+  static StructureViewer<T> create<T>({DogEngine? engine}) {
+    engine ??= DogEngine.instance;
+    final structure = engine.findStructureByType(T);
+    if (structure == null) {
+      throw ArgumentError("No structure found for type $T");
+    }
+    return StructureViewer<T>(engine, structure);
+  }
+
+  Iterable<Widget> buildRow(T value) sync* {
+    final fieldValues = structure.proxy.getFieldValues(value);
+    for (var i = 0; i < factories.length; i++) {
+      final factory = factories[i];
+      final value = fieldValues[i];
+      yield factory.buildView(value);
+    }
+  }
+
+  Iterable<Widget> buildHeaderRow() sync* {
+    for (var i = 0; i < factories.length; i++) {
+      var field = structure.fields[i];
+      yield Text(field.name);
+    }
+  }
+
+  Widget fieldAt(T value, int index) {
+    if (index < 0 || index >= factories.length) {
+      throw ArgumentError("No field with index $index");
+    }
+    return factories[index].buildView(structure.proxy.getFieldValues(value)[index]);
+  }
+
+  Widget fieldNamed(T value, String name) {
+    final index = structure.fields.indexWhere((e) => e.name == name);
+    if (index == -1) {
+      throw ArgumentError("No field with name $name");
+    }
+    return fieldAt(value, index);
+  }
+
+  Widget headerAt(int index) {
+    if (index < 0 || index >= factories.length) {
+      throw ArgumentError("No field with index $index");
+    }
+    return Text(structure.fields[index].name);
   }
 }

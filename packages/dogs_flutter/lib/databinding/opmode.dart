@@ -32,10 +32,9 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
     var binder = field.firstAnnotationOf<FlutterWidgetBinder>();
     final converter =
         field.findConverter(structure, engine: engine, nativeConverters: true)!;
-    binder ??= engine.modeRegistry.entry<FlutterWidgetBinder>().forConverterNullable(
-      converter,
-      engine,
-    );
+    binder ??= engine.modeRegistry
+        .entry<FlutterWidgetBinder>()
+        .forConverterNullable(converter, engine);
     binder ??= FallbackFlutterBinder.shared;
     FieldBindingContext creator<CAPTURE>() => FieldBindingContext<CAPTURE>(
       engine: engine,
@@ -58,13 +57,18 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
 
   FieldBindingController<T> createBindingController(
     StructureBindingController parent,
-    FieldBindingContext<T> context
+    FieldBindingContext<T> context,
   );
 
   Widget buildBindingField(
     BuildContext context,
     FieldBindingController<T> controller,
   );
+
+  Widget buildView(T? value) {
+    if (value == null) return SizedBox.shrink();
+    return Text(value.toString());
+  }
 }
 
 class FieldBindingContext<T> with TypeCaptureMixin<T> {
