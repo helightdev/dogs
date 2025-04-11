@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-11
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_flutter` - `v0.0.1-dev.1`](#dogs_flutter---v001-dev1)
+
+---
+
+#### `dogs_flutter` - `v0.0.1-dev.1`
+
+ - **FEAT**: field view builder and structure viewer for easily building table views.
+
+
 ## 2025-04-05
 
 ### Changes
