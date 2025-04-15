@@ -103,7 +103,7 @@ class _ExampleContentState extends State<ExampleContent> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: isDark ? ThemeData.dark() : ThemeData.light(),
+      style: isDark ? ThemeData.dark() : ThemeData.light(),
       child: Scaffold(
         floatingActionButton: ButtonBar(
           children: [

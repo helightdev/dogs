@@ -156,6 +156,24 @@ extension DogEngineShortcuts on DogEngine {
     }
     return convertIterableFromNative(value, type ?? T, kind);
   }
+
+  T fromFieldMap<T>(Map<String,dynamic> fieldMap, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final structureType = tree?.base.typeArgument ?? type ?? T;
+    final structure = findStructureByType(structureType);
+    if (structure == null) {
+      throw DogException("No structure found for type $structureType");
+    }
+    return structure.instantiateFromFieldMap(fieldMap);
+  }
+
+  Map<String,dynamic> toFieldMap<T>(T value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final structureType = tree?.base.typeArgument ?? type ?? T;
+    final structure = findStructureByType(structureType);
+    if (structure == null) {
+      throw DogException("No structure found for type $structureType");
+    }
+    return structure.getFieldMap(value);
+  }
 }
 
 /// Extensions on [DogStructure]s.
