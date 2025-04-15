@@ -1,3 +1,7 @@
+## 0.2.4-dev.2
+
+ - Update a dependency to the latest release.
+
 ## 0.2.4-dev.1
 
  - **REFACTOR**: add field map projections.

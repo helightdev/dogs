@@ -22,7 +22,7 @@ dependencies:
     sdk: flutter
 
   flutter_form_builder: ^9.1.1
-  dogs_core: ^10.0.0-dev.1
+  dogs_core: ^10.0.0-dev.2
   dogs_forms:
     path: ../
   intl: ^0.19.0
@@ -37,7 +37,7 @@ dev_dependencies:
     sdk: flutter
 
   build_runner: ^2.4.6
-  dogs_generator: ^7.0.0-dev.1
+  dogs_generator: ^7.0.0-dev.2
   flutter_lints: ^2.0.0
 
 flutter:

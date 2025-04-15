@@ -1,3 +1,7 @@
+## 10.0.0-dev.2
+
+ - **REFACTOR**: remove the supplier argument.
+
 ## 10.0.0-dev.1
 
  - **REFACTOR**: add field map projections.
