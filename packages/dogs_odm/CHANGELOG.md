@@ -1,3 +1,7 @@
+## 1.0.0-alpha.18
+
+ - Update a dependency to the latest release.
+
 ## 1.0.0-alpha.17
 
  - Update a dependency to the latest release.

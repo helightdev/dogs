@@ -1,6 +1,6 @@
 name: dogs_forms
 description: "Support for creating form_builder forms for DOGs structures."
-version: 0.2.4-dev.0+2
+version: 0.2.4-dev.1
 homepage: https://dogs.helight.dev/forms/
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dogs_core: ^10.0.0-dev.0
+  dogs_core: ^10.0.0-dev.1
   flutter_form_builder: ^9.1.1
   form_builder_validators: ^9.1.0
   form_builder_extra_fields: ^10.1.0

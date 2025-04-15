@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v10.0.0-dev.1`](#dogs_core---v1000-dev1)
+ - [`dogs_forms` - `v0.2.4-dev.1`](#dogs_forms---v024-dev1)
+ - [`dogs_odm` - `v1.0.0-alpha.18`](#dogs_odm---v100-alpha18)
+ - [`dogs_built` - `v3.1.5-dev.1`](#dogs_built---v315-dev1)
+ - [`dogs_generator` - `v7.0.0-dev.1`](#dogs_generator---v700-dev1)
+ - [`dogs_firestore` - `v0.3.0-dev.1`](#dogs_firestore---v030-dev1)
+ - [`dogs_flutter` - `v0.0.1-dev.2`](#dogs_flutter---v001-dev2)
+ - [`dogs_toml` - `v2.3.5-dev.1`](#dogs_toml---v235-dev1)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.18`](#dogs_mongo_driver---v100-alpha18)
+ - [`dogs_cbor` - `v2.3.5-dev.1`](#dogs_cbor---v235-dev1)
+ - [`dogs_yaml` - `v2.3.5-dev.1`](#dogs_yaml---v235-dev1)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_odm` - `v1.0.0-alpha.18`
+ - `dogs_built` - `v3.1.5-dev.1`
+ - `dogs_generator` - `v7.0.0-dev.1`
+ - `dogs_firestore` - `v0.3.0-dev.1`
+ - `dogs_flutter` - `v0.0.1-dev.2`
+ - `dogs_toml` - `v2.3.5-dev.1`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.18`
+ - `dogs_cbor` - `v2.3.5-dev.1`
+ - `dogs_yaml` - `v2.3.5-dev.1`
+
+---
+
+#### `dogs_core` - `v10.0.0-dev.1`
+
+ - **REFACTOR**: add field map projections.
+
+#### `dogs_forms` - `v0.2.4-dev.1`
+
+ - **REFACTOR**: add field map projections.
+
+
 ## 2025-04-11
 
 ### Changes

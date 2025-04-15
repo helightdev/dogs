@@ -1,13 +1,13 @@
 name: dogs_yaml
 description: Yaml serializer for the dogs graph serializer
-version: 2.3.5-dev.0
+version: 2.3.5-dev.1
 repository: https://github.com/DarwinFramework/dogs
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  dogs_core: ^10.0.0-dev.0
+  dogs_core: ^10.0.0-dev.1
   yaml: ^3.1.2
   json2yaml: ^3.0.1
 
