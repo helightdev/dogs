@@ -305,13 +305,8 @@ final class Projection<T> {
   }
 
   /// Sets the value at [path] to the [value].
-  Projection<T> setValue(
-    String path, {
-    dynamic value = #none,
-    Supplier<dynamic>? supplier,
-  }) {
-    final val = value == #none ? supplier?.call() : value;
-    transformers.add((v) => Projections.$set(v, path, val));
+  Projection<T> setValue(String path, dynamic value) {
+    transformers.add((v) => Projections.$set(v, path, value));
     return this;
   }
 
