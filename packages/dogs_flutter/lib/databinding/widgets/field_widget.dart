@@ -16,6 +16,7 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/controller.dart';
+import 'package:dogs_flutter/databinding/opmode.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -29,6 +30,7 @@ class FieldBinding extends StatefulWidget {
   final BindingStyle? style;
   final ValidationTrigger? validationTrigger;
   final AnnotationTransformer? annotationTransformer;
+  final FlutterWidgetBinder? binder;
 
   const FieldBinding({
     super.key,
@@ -38,6 +40,7 @@ class FieldBinding extends StatefulWidget {
     this.style,
     this.validationTrigger,
     this.annotationTransformer,
+    this.binder,
   });
 
   @override
@@ -58,7 +61,9 @@ class _FieldBindingState extends State<FieldBinding> {
       final structureController = rootProvider.controller;
       final fieldName = widget.field;
       if (fieldName == null) {
-        throw ArgumentError('Field name cannot be null when controller is not provided');
+        throw ArgumentError(
+          'Field name cannot be null when controller is not provided',
+        );
       }
       controller = structureController.field(fieldName);
     } else {
@@ -66,15 +71,20 @@ class _FieldBindingState extends State<FieldBinding> {
     }
 
     // Apply validation trigger if provided
-    final triggerOverride = widget.validationTrigger ?? StructureBindingProvider.maybeOf(context)?.validationTrigger;
-    if (triggerOverride != null) controller!.validationTrigger = triggerOverride;
+    final triggerOverride =
+        widget.validationTrigger ??
+        StructureBindingProvider.maybeOf(context)?.validationTrigger;
+    if (triggerOverride != null)
+      controller!.validationTrigger = triggerOverride;
 
     generatedStyle = BindingStyle(label: controller!.fieldName);
-    fieldStyleData = controller!.bindingContext.field
-        .annotationsOf<BindingStyleModifier>()
-        .map((e) => e.createStyleOverrides())
-        .toList();
-    styleBuilder = widget.styleBuilder ?? (style) => widget.style?.merge(style) ?? style;
+    fieldStyleData =
+        controller!.bindingContext.field
+            .annotationsOf<BindingStyleModifier>()
+            .map((e) => e.createStyleOverrides())
+            .toList();
+    styleBuilder =
+        widget.styleBuilder ?? (style) => widget.style?.merge(style) ?? style;
   }
 
   @override
@@ -93,15 +103,30 @@ class _FieldBindingState extends State<FieldBinding> {
         .maybeTransform(parentBindingTheme?.annotationTransformer)
         .maybeTransform(widget.annotationTransformer);
 
+    var currentBinder = controller!.binder;
+    var currentController = controller!;
+
+    if (widget.binder != null && structureBindingProvider != null) {
+      if (currentBinder != widget.binder) {
+        var structureBindingController = structureBindingProvider.controller;
+        structureBindingController.rebindField(
+          controller!.fieldName,
+          widget.binder!,
+        );
+        currentBinder = widget.binder!;
+        currentController = structureBindingController.field(
+          controller!.fieldName,
+        );
+        print("Forcing widget rebind for ${controller!.fieldName}");
+      }
+    }
+
     return BindingTheme(
       style: currentStyle,
       annotationTransformer: annotationTransformer,
       child: Builder(
         builder: (context) {
-          return controller!.binder.buildBindingField(
-            context,
-            controller!,
-          );
+          return currentBinder.buildBindingField(context, currentController);
         },
       ),
     );
@@ -112,11 +137,16 @@ class BindingTheme extends InheritedWidget {
   final BindingStyle style;
   final AnnotationTransformer? annotationTransformer;
 
-  const BindingTheme({super.key, required super.child, required this.style, this.annotationTransformer});
+  const BindingTheme({
+    super.key,
+    required super.child,
+    required this.style,
+    this.annotationTransformer,
+  });
 
   static BindingTheme of(BuildContext context) {
     final BindingTheme? result =
-    context.dependOnInheritedWidgetOfExactType<BindingTheme>();
+        context.dependOnInheritedWidgetOfExactType<BindingTheme>();
     assert(result != null, 'No BindingContext found in context');
     return result!;
   }
@@ -124,7 +154,7 @@ class BindingTheme extends InheritedWidget {
   static BindingTheme? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<BindingTheme>();
   }
-  
+
   String? toErrorText(AnnotationResult result) {
     if (!result.hasErrors) return null;
     return result.maybeTransform(annotationTransformer).errorText;

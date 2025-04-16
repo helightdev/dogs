@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-import 'dart:async';
-
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
 import 'package:flutter/foundation.dart';
@@ -168,6 +166,50 @@ class StructureBindingController<T> {
     return fields[index];
   }
 
+  /// Swaps out a field's binding controller with a new one while preserving its current value.
+  ///
+  /// This method allows dynamically replacing how a field is handled at runtime by
+  /// switching to a different controller implementation. The current value of the field
+  /// is preserved during the swap.
+  void swapController(
+    String fieldName,
+    FieldBindingController controller, {
+    FlutterWidgetBinder? binder,
+  }) {
+    final index = _fieldNames.indexOf(fieldName);
+    if (index == -1) {
+      throw ArgumentError("No field with name $fieldName");
+    }
+    if (binder != null) {
+      factories[index] = binder;
+    }
+    final currentValue = fields[index].getValue();
+    fields[index] = controller;
+    controller.setValue(currentValue);
+  }
+
+  /// Rebinds a field to use a different widget binder.
+  ///
+  /// This method allows changing how a field is rendered and bound to widgets at runtime.
+  /// It preserves the current value of the field while switching to the new binding.
+  void rebindField(String fieldName, FlutterWidgetBinder binder) {
+    final index = _fieldNames.indexOf(fieldName);
+    if (index == -1) {
+      throw ArgumentError("No field with name $fieldName");
+    }
+    var field = fields[index];
+    final currentValue = field.getValue();
+    final (binder, context) = FlutterWidgetBinder.resolveBinder(
+      this.engine,
+      structure,
+      field.bindingContext.field,
+    );
+    final controller = binder.createBindingController(this, context);
+    factories[index] = binder;
+    fields[index] = controller;
+    controller.setValue(currentValue);
+  }
+
   /// Reads the current state of all fields without validation.
   ///
   /// Returns the instantiated object of type [T] if all required fields are present,
@@ -242,6 +284,15 @@ class StructureBindingController<T> {
     } else {
       return _readSound();
     }
+  }
+
+  T? submit() => read(false);
+
+
+  /// Adds a custom runtime error to the error buffer and recalculates field errors.
+  void addRuntimeError(AnnotationResultLike error) {
+    _errorBuffer.putCustom(error.asAnnotationResult());
+    _errorBuffer.recalculateFieldErrors();
   }
 }
 
@@ -373,11 +424,11 @@ class StructureBindingProvider extends InheritedWidget {
   /// Creates a new [StructureBindingProvider] with the given [controller] and [child].
   const StructureBindingProvider({
     super.key,
-    required Widget child,
+    required super.child,
     required this.controller,
     this.validationTrigger,
     this.annotationTransformer,
-  }) : super(child: child);
+  });
 
   /// Gets the nearest [StructureBindingProvider] in the widget tree.
   ///
@@ -448,7 +499,9 @@ class StructureViewer<T> {
     if (index < 0 || index >= factories.length) {
       throw ArgumentError("No field with index $index");
     }
-    return factories[index].buildView(structure.proxy.getFieldValues(value)[index]);
+    return factories[index].buildView(
+      structure.proxy.getFieldValues(value)[index],
+    );
   }
 
   Widget fieldNamed(T value, String name) {
