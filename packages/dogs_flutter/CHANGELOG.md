@@ -1,3 +1,8 @@
+## 0.0.1-dev.4
+
+ - **FEAT**: add dynamic field rebind and controller swap methods.
+ - **FEAT**: add TextFieldStyle for customizable text field properties.
+
 ## 0.0.1-dev.3
 
  - Update a dependency to the latest release.

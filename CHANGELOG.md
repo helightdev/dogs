@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-04-16
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_flutter` - `v0.0.1-dev.4`](#dogs_flutter---v001-dev4)
+
+---
+
+#### `dogs_flutter` - `v0.0.1-dev.4`
+
+ - **FEAT**: add dynamic field rebind and controller swap methods.
+ - **FEAT**: add TextFieldStyle for customizable text field properties.
+
+
 ## 2025-04-15
 
 ### Changes
