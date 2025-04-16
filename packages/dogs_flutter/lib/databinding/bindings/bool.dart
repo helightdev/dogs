@@ -24,7 +24,10 @@ import 'package:flutter/material.dart';
 import '../widgets/field_widget.dart';
 
 class BoolFlutterBinder extends FlutterWidgetBinder<bool>
-    with TypeCaptureMixin<bool> {
+    with TypeCaptureMixin<bool> implements StructureMetadata {
+
+  const BoolFlutterBinder();
+
   @override
   Widget buildBindingField(
     BuildContext context,

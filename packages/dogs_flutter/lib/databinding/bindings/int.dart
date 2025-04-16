@@ -22,6 +22,7 @@ import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
 import 'package:dogs_flutter/databinding/validators/format.dart';
 import 'package:dogs_flutter/databinding/validators/required.dart';
+import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -29,7 +30,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import '../widgets/field_widget.dart';
 
 class IntFlutterBinder extends FlutterWidgetBinder<int>
-    with TypeCaptureMixin<int> {
+    with TypeCaptureMixin<int> implements StructureMetadata {
+
+  const IntFlutterBinder();
+
   @override
   Widget buildBindingField(
     BuildContext context,
@@ -141,16 +145,33 @@ class IntBindingFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
     final inputDecoration = theme.style.buildMaterialDecoration(context);
+    final textFieldStyle = theme.style.getTextFieldStyle();
+
+    // For int fields, we default to number keyboard
+    final defaultKeyboardType = TextInputType.number;
+
     return ValueListenableBuilder(
       valueListenable: controller.errorListenable,
       builder: (context, error, _) {
         return TextField(
           controller: controller.textController,
           focusNode: controller.focusNode,
-          keyboardType: TextInputType.number,
           decoration: inputDecoration.copyWith(
             errorText: theme.toErrorText(error),
           ),
+          // Apply all the text field properties directly from the TextFieldStyle
+          obscureText: textFieldStyle.obscureText ?? false,
+          keyboardType: textFieldStyle.keyboardType ?? defaultKeyboardType,
+          maxLines: textFieldStyle.maxLines ?? 1,
+          minLines: textFieldStyle.minLines,
+          maxLength: textFieldStyle.maxLength,
+          textAlign: textFieldStyle.textAlign ?? TextAlign.start,
+          style: textFieldStyle.textStyle,
+          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          enabled: textFieldStyle.enabled,
+          readOnly: textFieldStyle.readOnly ?? false,
+          autofocus: textFieldStyle.autofocus ?? false,
+          inputFormatters: textFieldStyle.inputFormatters,
         );
       },
     );

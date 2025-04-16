@@ -20,6 +20,7 @@ export 'databinding/widgets/field_builder.dart';
 export 'databinding/controller.dart';
 export 'databinding/opmode.dart';
 export 'databinding/bindings/string.dart';
+export 'databinding/text_field_style.dart';
 
 final defaultFactories = OperationModeFactory.compose<FlutterWidgetBinder>([
   OperationModeFactory.typeSingleton<String, FlutterWidgetBinder>(StringFlutterBinder()),
