@@ -16,20 +16,17 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/controller.dart';
+import 'package:dogs_flutter/databinding/field_controller.dart';
 import 'package:dogs_flutter/databinding/material/style.dart';
 import 'package:dogs_flutter/databinding/opmode.dart';
-import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/databinding/text_field_style.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dogs_flutter/databinding/widgets/field_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import '../widgets/field_widget.dart';
 
 class StringFlutterBinder extends FlutterWidgetBinder<String>
-    with TypeCaptureMixin<String> implements StructureMetadata {
-
+    with TypeCaptureMixin<String>
+    implements StructureMetadata {
   const StringFlutterBinder();
 
   @override
@@ -45,15 +42,22 @@ class StringFlutterBinder extends FlutterWidgetBinder<String>
 
   @override
   FieldBindingController<String> createBindingController(
-    StructureBindingController parent,
+    FieldBindingParent parent,
     FieldBindingContext<String> context,
   ) {
-
     return StringBindingFieldController(parent, this, context);
   }
 
   @override
   void initialise(DogEngine engine) {}
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StringFlutterBinder && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => 0;
 }
 
 class StringBindingFieldController extends FieldBindingController<String> {
@@ -114,7 +118,7 @@ class StringBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(context);
+    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     return ValueListenableBuilder(
@@ -124,7 +128,7 @@ class StringBindingFieldWidget extends StatelessWidget {
           controller: controller.textController,
           focusNode: controller.focusNode,
           decoration: inputDecoration.copyWith(
-            errorText: theme.toErrorText(error)
+            errorText: theme.toErrorText(error),
           ),
 
           // Apply all the text field properties directly from the TextFieldStyle
@@ -135,7 +139,8 @@ class StringBindingFieldWidget extends StatelessWidget {
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,
           style: textFieldStyle.textStyle,
-          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          textCapitalization:
+              textFieldStyle.textCapitalization ?? TextCapitalization.none,
           enabled: textFieldStyle.enabled,
           readOnly: textFieldStyle.readOnly ?? false,
           autofocus: textFieldStyle.autofocus ?? false,

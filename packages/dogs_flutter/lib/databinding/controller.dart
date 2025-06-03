@@ -14,19 +14,20 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_flutter/databinding/validation.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'dart:async';
 
-import 'opmode.dart';
+import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_flutter/databinding/field_controller.dart';
+import 'package:dogs_flutter/databinding/opmode.dart';
+import 'package:dogs_flutter/databinding/validation.dart';
+import 'package:flutter/widgets.dart';
 
 /// A controller that manages the binding between a data structure and Flutter widgets.
 ///
 /// This controller handles field validation, error states, and value management for
 /// a structured data type [T]. It provides a way to bind form fields to a data structure
 /// while maintaining validation and error handling.
-class StructureBindingController<T> {
+class StructureBindingController<T> implements FieldBindingParent {
   /// The underlying data structure definition that describes the shape of the data.
   final DogStructure structure;
 
@@ -40,6 +41,7 @@ class StructureBindingController<T> {
   final bool checkErrorStates = true;
 
   /// The DOGs engine instance used for validation and structure operations.
+  @override
   late final DogEngine engine;
 
   /// A list of widget binders that handle the conversion between data and widgets for each field.
@@ -52,6 +54,12 @@ class StructureBindingController<T> {
   final ValueNotifier<AnnotationResult> classErrorListenable = ValueNotifier(
     AnnotationResult.empty(),
   );
+
+  final StreamController<(String, dynamic)> _fieldValueChangeController =
+      StreamController.broadcast();
+
+  Stream<(String, dynamic)> get fieldValueChangeStream =>
+      _fieldValueChangeController.stream;
 
   final List<String> _fieldNames = [];
   late final IsolatedClassValidator _classValidator;
@@ -114,6 +122,20 @@ class StructureBindingController<T> {
     );
   }
 
+  static StructureBindingController schema({
+    required SchemaType schema,
+    DogEngine? engine,
+    Map<String, dynamic>? initialValue,
+  }) {
+    engine ??= DogEngine.instance;
+    final materialized = engine.materialize(schema);
+    return StructureBindingController(
+      materialized.structure,
+      materialized.engineFork,
+      initialValues: initialValue ?? {},
+    );
+  }
+
   /// Sets the initial values for the fields in this controller.
   ///
   /// This does change the current value of the fields, those will only occur
@@ -137,6 +159,9 @@ class StructureBindingController<T> {
     for (var i = 0; i < fields.length; i++) {
       final field = fields[i];
       field.reset();
+      _fieldValueChangeController.add(
+        (field.fieldName, field.getValue()),
+      );
     }
   }
 
@@ -144,6 +169,7 @@ class StructureBindingController<T> {
   ///
   /// This method updates the validation state and error handling for the field named [fieldName]
   /// with the new [fieldValue].
+  @override
   void notifyFieldValue(String fieldName, dynamic fieldValue) {
     final (results, isGuard) = _classValidator.annotateFieldExtended(
       fieldName,
@@ -152,12 +178,14 @@ class StructureBindingController<T> {
     _errorBuffer.putAll(results);
     _errorBuffer.recalculateFieldErrors();
     field(fieldName).handleErrors(_errorBuffer.fieldErrors[fieldName]!);
+    _fieldValueChangeController.add((fieldName, fieldValue));
   }
 
   /// Gets the binding controller for a specific field.
   ///
   /// Returns the [FieldBindingController] for the specified [name]. Throws an
   /// [ArgumentError] if no field with the given name exists.
+  @override
   FieldBindingController field(String name) {
     final index = _fieldNames.indexOf(name);
     if (index == -1) {
@@ -199,12 +227,10 @@ class StructureBindingController<T> {
     }
     var field = fields[index];
     final currentValue = field.getValue();
-    final (binder, context) = FlutterWidgetBinder.resolveBinder(
-      this.engine,
-      structure,
-      field.bindingContext.field,
+    final controller = binder.createBindingController(
+      this,
+      field.bindingContext,
     );
-    final controller = binder.createBindingController(this, context);
     factories[index] = binder;
     fields[index] = controller;
     controller.setValue(currentValue);
@@ -243,12 +269,17 @@ class StructureBindingController<T> {
       if (field.hasStateError) {
         hasStateError = true;
       }
+
+      // Forward validation trigger to nested fields
+      field.performValidation(ValidationTrigger.onSubmitGuard);
+
       // Silent because we annotate later
       final fieldValue = field.getValue();
       final (results, isGuard) = _classValidator.annotateFieldExtended(
         field.fieldName,
         fieldValue,
       );
+
       _errorBuffer.putAll(results);
       if (isGuard) {
         hasGuardMatched = true;
@@ -288,87 +319,33 @@ class StructureBindingController<T> {
 
   T? submit() => read(false);
 
+  void runValidation(ValidationTrigger trigger) {
+    for (var i = 0; i < fields.length; i++) {
+      final field = fields[i];
+      field.performValidation(trigger);
+    }
+    _errorBuffer.recalculateFieldErrors();
+  }
+
+  void load(T value) {
+    final fieldValues = structure.getFieldMap(value);
+    for (var i = 0; i < fields.length; i++) {
+      final field = fields[i];
+      final fieldValue = fieldValues[field.fieldName];
+      field.setValue(fieldValue);
+      _fieldValueChangeController.add(
+        (field.fieldName, fieldValue),
+      );
+    }
+    _errorBuffer.clearCustom();
+    _errorBuffer.recalculateFieldErrors();
+  }
 
   /// Adds a custom runtime error to the error buffer and recalculates field errors.
   void addRuntimeError(AnnotationResultLike error) {
     _errorBuffer.putCustom(error.asAnnotationResult());
     _errorBuffer.recalculateFieldErrors();
   }
-}
-
-/// Base class for field binding controllers that manage individual field bindings.
-///
-/// This class provides the foundation for binding individual form fields to their
-/// corresponding data structure fields.
-abstract class FieldBindingController<T> extends ChangeNotifier {
-  /// The parent [StructureBindingController] that manages this field.
-  final StructureBindingController parent;
-
-  /// The binding context containing field metadata and validation rules.
-  final FieldBindingContext<T> bindingContext;
-
-  /// The widget binder that handles the conversion between data and widgets.
-  final FlutterWidgetBinder binder;
-
-  /// Creates a new [FieldBindingController] with the given [parent], [binder], and [context].
-  FieldBindingController(this.parent, this.binder, this.bindingContext);
-
-  /// The validation trigger that determines when validation occurs.
-  ValidationTrigger validationTrigger = ValidationTrigger.always;
-
-  /// The initial value of this field, will be applied post construct and
-  /// may change over the lifetime of the controller. Do not manually set this
-  /// here, use the [StructureBindingController] to set or change initial values.
-  T? initialValue;
-
-  /// Indicates whether this field has any state errors.
-  bool get hasStateError => false;
-
-  /// Streaming error notifier for this field.
-  ValueNotifier<AnnotationResult> errorListenable = ValueNotifier(
-    AnnotationResult.empty(),
-  );
-
-  /// Disposes of any resources held by this controller.
-  @override
-  @mustCallSuper
-  void dispose() {
-    super.dispose();
-    errorListenable.dispose();
-  }
-
-  /// Sets the value for this field.
-  void setValue(T? value);
-
-  /// Gets the current value of this field.
-  T? getValue();
-
-  /// Requests focus for this field.
-  void focus() {}
-
-  /// Resets this field to its initial state.
-  void reset() {
-    setValue(initialValue);
-  }
-
-  /// Handles validation errors for this field.
-  void handleErrors(AnnotationResult result) {
-    errorListenable.value = result;
-  }
-
-  void performValidation([ValidationTrigger? trigger]) {
-    if (trigger != null && !validationTrigger.has(trigger)) {
-      return;
-    }
-    final value = getValue();
-    parent.notifyFieldValue(fieldName, value);
-  }
-}
-
-/// Extension methods for [FieldBindingController].
-extension FieldBindingControllerExtension on FieldBindingController {
-  /// Gets the name of the field this controller is bound to.
-  String get fieldName => bindingContext.field.name;
 }
 
 typedef AnnotationTransformer =
@@ -518,4 +495,22 @@ class StructureViewer<T> {
     }
     return Text(structure.fields[index].name);
   }
+}
+
+abstract interface class FieldBindingParent {
+
+  /// The dogs engine instance associated with this binding parent.
+  DogEngine get engine;
+
+  /// Notifies the controller of a field value change.
+  ///
+  /// This method updates the validation state and error handling for the field named [fieldName]
+  /// with the new [fieldValue].
+  void notifyFieldValue(String fieldName, dynamic fieldValue) {}
+
+  /// Gets the binding controller for a specific field.
+  ///
+  /// Returns the [FieldBindingController] for the specified [name]. Throws an
+  /// [ArgumentError] if no field with the given name exists.
+  FieldBindingController field(String name);
 }

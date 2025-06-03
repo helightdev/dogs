@@ -16,10 +16,10 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/bindings/fallback.dart';
+import 'package:dogs_flutter/databinding/controller.dart';
+import 'package:dogs_flutter/databinding/field_controller.dart';
+import 'package:dogs_flutter/databinding/validators/required.dart';
 import 'package:flutter/widgets.dart';
-
-import 'controller.dart';
-import 'validators/required.dart';
 
 abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
   const FlutterWidgetBinder();
@@ -39,24 +39,22 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
     FieldBindingContext creator<CAPTURE>() => FieldBindingContext<CAPTURE>(
       engine: engine,
       converter: converter,
-      structure: structure,
       field: field,
       serializerMode: engine.modeRegistry.nativeSerialization.forConverter(
         converter,
         engine,
       ),
       fieldValidator: field.getFieldValidator(
-        structure,
         guardValidator: field.optional ? null : DatabindRequiredGuard(),
       ),
     );
 
-    final context = field.type.consumeType(creator);
+    final context = field.type.qualifiedOrBase.consumeType(creator);
     return (binder, context);
   }
 
   FieldBindingController<T> createBindingController(
-    StructureBindingController parent,
+    FieldBindingParent parent,
     FieldBindingContext<T> context,
   );
 
@@ -74,7 +72,6 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
 class FieldBindingContext<T> with TypeCaptureMixin<T> {
   DogEngine engine;
   DogConverter converter;
-  DogStructure structure;
   DogStructureField field;
 
   NativeSerializerMode serializerMode;
@@ -83,7 +80,6 @@ class FieldBindingContext<T> with TypeCaptureMixin<T> {
   FieldBindingContext({
     required this.engine,
     required this.converter,
-    required this.structure,
     required this.field,
     required this.serializerMode,
     required this.fieldValidator,

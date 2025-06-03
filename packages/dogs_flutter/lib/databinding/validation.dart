@@ -1,8 +1,6 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:flutter/foundation.dart';
 
-import 'controller.dart';
-
 class BindingsErrorBuffer {
   final DogStructure _structure;
   final IsolatedClassValidator _classValidator;
@@ -91,6 +89,7 @@ extension type ValidationTrigger(int value) {
   static final onInteraction = ValidationTrigger(1);
   static final onUnfocus = ValidationTrigger(2);
   static final onSubmit = ValidationTrigger(4);
+  static final onSubmitGuard = ValidationTrigger(8);
 
   static final ValidationTrigger always = onInteraction | onUnfocus | onSubmit;
 

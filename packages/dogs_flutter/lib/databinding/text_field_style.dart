@@ -1,8 +1,7 @@
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_flutter/databinding/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'style.dart';
 
 /// A style extension for TextField properties that are commonly modified.
 /// This extension is not tied to Material Design and can be used with any theme.

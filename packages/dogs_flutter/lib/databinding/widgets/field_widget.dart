@@ -16,12 +16,13 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/controller.dart';
+import 'package:dogs_flutter/databinding/field_controller.dart';
 import 'package:dogs_flutter/databinding/opmode.dart';
+import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import '../style.dart';
 
 class FieldBinding extends StatefulWidget {
   final FieldBindingController? controller;
@@ -74,8 +75,9 @@ class _FieldBindingState extends State<FieldBinding> {
     final triggerOverride =
         widget.validationTrigger ??
         StructureBindingProvider.maybeOf(context)?.validationTrigger;
-    if (triggerOverride != null)
+    if (triggerOverride != null) {
       controller!.validationTrigger = triggerOverride;
+    }
 
     generatedStyle = BindingStyle(label: controller!.fieldName);
     fieldStyleData =
@@ -108,16 +110,22 @@ class _FieldBindingState extends State<FieldBinding> {
 
     if (widget.binder != null && structureBindingProvider != null) {
       if (currentBinder != widget.binder) {
+        print("Current binder: $currentBinder (${identityHashCode(currentBinder)}), Widget binder: ${widget.binder} (${identityHashCode(widget.binder)})");
+
         var structureBindingController = structureBindingProvider.controller;
         structureBindingController.rebindField(
           controller!.fieldName,
           widget.binder!,
         );
+
         currentBinder = widget.binder!;
         currentController = structureBindingController.field(
           controller!.fieldName,
         );
-        print("Forcing widget rebind for ${controller!.fieldName}");
+        controller = currentController;
+        if (kDebugMode) {
+          print("Forcing widget rebind for ${controller!.fieldName}");
+        }
       }
     }
 

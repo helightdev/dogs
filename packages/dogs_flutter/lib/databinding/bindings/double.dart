@@ -14,24 +14,12 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_flutter/databinding/controller.dart';
-import 'package:dogs_flutter/databinding/material/style.dart';
-import 'package:dogs_flutter/databinding/opmode.dart';
-import 'package:dogs_flutter/databinding/style.dart';
-import 'package:dogs_flutter/databinding/validation.dart';
-import 'package:dogs_flutter/databinding/validators/format.dart';
-import 'package:dogs_flutter/databinding/validators/required.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import '../widgets/field_widget.dart';
 
 class DoubleFlutterBinder extends FlutterWidgetBinder<double>
-    with TypeCaptureMixin<double> implements StructureMetadata {
-
+    with TypeCaptureMixin<double>
+    implements StructureMetadata {
   const DoubleFlutterBinder();
 
   @override
@@ -47,7 +35,7 @@ class DoubleFlutterBinder extends FlutterWidgetBinder<double>
 
   @override
   FieldBindingController<double> createBindingController(
-    StructureBindingController parent,
+    FieldBindingParent parent,
     FieldBindingContext<double> context,
   ) {
     return DoubleBindingFieldController(parent, this, context);
@@ -55,6 +43,14 @@ class DoubleFlutterBinder extends FlutterWidgetBinder<double>
 
   @override
   void initialise(DogEngine engine) {}
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DoubleFlutterBinder && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => 0;
 }
 
 class DoubleBindingFieldController extends FieldBindingController<double> {
@@ -96,9 +92,9 @@ class DoubleBindingFieldController extends FieldBindingController<double> {
       double.parse(textController.text);
       _formatError = null;
     } catch (e) {
-      _formatError = AnnotationResult(messages: [
-        FormatMessages.invalidNumberFormat.withTarget(fieldName),
-      ]);
+      _formatError = AnnotationResult(
+        messages: [FormatMessages.invalidNumberFormat.withTarget(fieldName)],
+      );
     }
   }
 
@@ -144,7 +140,7 @@ class DoubleBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(context);
+    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     // For double fields, we default to number keyboard with decimal
@@ -167,7 +163,8 @@ class DoubleBindingFieldWidget extends StatelessWidget {
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,
           style: textFieldStyle.textStyle,
-          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          textCapitalization:
+              textFieldStyle.textCapitalization ?? TextCapitalization.none,
           enabled: textFieldStyle.enabled,
           readOnly: textFieldStyle.readOnly ?? false,
           autofocus: textFieldStyle.autofocus ?? false,
@@ -176,4 +173,4 @@ class DoubleBindingFieldWidget extends StatelessWidget {
       },
     );
   }
-} 
+}

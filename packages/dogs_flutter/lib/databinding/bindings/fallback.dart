@@ -1,14 +1,12 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/controller.dart';
+import 'package:dogs_flutter/databinding/field_controller.dart';
 import 'package:dogs_flutter/databinding/opmode.dart';
+import 'package:dogs_flutter/databinding/validation.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import '../validation.dart';
 
 class FallbackFlutterBinder extends FlutterWidgetBinder<dynamic>
     with TypeCaptureMixin<dynamic> {
-
   static final FallbackFlutterBinder shared = FallbackFlutterBinder();
 
   @override
@@ -24,7 +22,7 @@ class FallbackFlutterBinder extends FlutterWidgetBinder<dynamic>
 
   @override
   FieldBindingController createBindingController(
-    StructureBindingController parent,
+    FieldBindingParent parent,
     FieldBindingContext context,
   ) {
     return FallbackBindingFieldController(parent, this, context);
@@ -32,6 +30,14 @@ class FallbackFlutterBinder extends FlutterWidgetBinder<dynamic>
 
   @override
   void initialise(DogEngine engine) {}
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FallbackFlutterBinder && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => 0;
 }
 
 class FallbackBindingFieldController extends FieldBindingController<dynamic> {
@@ -63,6 +69,8 @@ class FallbackBindingFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ErrorWidget("No binding available for field ${controller.fieldName}");
+    return ErrorWidget(
+      "No binding available for field ${controller.fieldName}",
+    );
   }
 }

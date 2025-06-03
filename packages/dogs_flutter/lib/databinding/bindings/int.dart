@@ -14,24 +14,12 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_flutter/databinding/controller.dart';
-import 'package:dogs_flutter/databinding/material/style.dart';
-import 'package:dogs_flutter/databinding/opmode.dart';
-import 'package:dogs_flutter/databinding/style.dart';
-import 'package:dogs_flutter/databinding/validation.dart';
-import 'package:dogs_flutter/databinding/validators/format.dart';
-import 'package:dogs_flutter/databinding/validators/required.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import '../widgets/field_widget.dart';
 
 class IntFlutterBinder extends FlutterWidgetBinder<int>
-    with TypeCaptureMixin<int> implements StructureMetadata {
-
+    with TypeCaptureMixin<int>
+    implements StructureMetadata {
   const IntFlutterBinder();
 
   @override
@@ -47,7 +35,7 @@ class IntFlutterBinder extends FlutterWidgetBinder<int>
 
   @override
   FieldBindingController<int> createBindingController(
-    StructureBindingController parent,
+    FieldBindingParent parent,
     FieldBindingContext<int> context,
   ) {
     return IntBindingFieldController(parent, this, context);
@@ -55,6 +43,14 @@ class IntFlutterBinder extends FlutterWidgetBinder<int>
 
   @override
   void initialise(DogEngine engine) {}
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is IntFlutterBinder && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => 0;
 }
 
 class IntBindingFieldController extends FieldBindingController<int> {
@@ -63,11 +59,7 @@ class IntBindingFieldController extends FieldBindingController<int> {
   String _lastText = "";
   AnnotationResult? _formatError;
 
-  IntBindingFieldController(
-    super.parent,
-    super.binder,
-    super.bindingContext,
-  ) {
+  IntBindingFieldController(super.parent, super.binder, super.bindingContext) {
     textController.addListener(_onTextChanged);
     focusNode.addListener(_onFocusChanged);
   }
@@ -96,9 +88,9 @@ class IntBindingFieldController extends FieldBindingController<int> {
       int.parse(textController.text);
       _formatError = null;
     } catch (e) {
-      _formatError = AnnotationResult(messages: [
-        FormatMessages.invalidNumberFormat.withTarget(fieldName),
-      ]);
+      _formatError = AnnotationResult(
+        messages: [FormatMessages.invalidNumberFormat.withTarget(fieldName)],
+      );
     }
   }
 
@@ -144,7 +136,7 @@ class IntBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(context);
+    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     // For int fields, we default to number keyboard
@@ -167,7 +159,8 @@ class IntBindingFieldWidget extends StatelessWidget {
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,
           style: textFieldStyle.textStyle,
-          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          textCapitalization:
+              textFieldStyle.textCapitalization ?? TextCapitalization.none,
           enabled: textFieldStyle.enabled,
           readOnly: textFieldStyle.readOnly ?? false,
           autofocus: textFieldStyle.autofocus ?? false,
@@ -176,4 +169,4 @@ class IntBindingFieldWidget extends StatelessWidget {
       },
     );
   }
-} 
+}

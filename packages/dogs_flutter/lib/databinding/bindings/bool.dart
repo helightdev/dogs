@@ -16,16 +16,16 @@
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/controller.dart';
+import 'package:dogs_flutter/databinding/field_controller.dart';
 import 'package:dogs_flutter/databinding/material/style.dart';
 import 'package:dogs_flutter/databinding/opmode.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
+import 'package:dogs_flutter/databinding/widgets/field_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/field_widget.dart';
-
 class BoolFlutterBinder extends FlutterWidgetBinder<bool>
-    with TypeCaptureMixin<bool> implements StructureMetadata {
-
+    with TypeCaptureMixin<bool>
+    implements StructureMetadata {
   const BoolFlutterBinder();
 
   @override
@@ -41,7 +41,7 @@ class BoolFlutterBinder extends FlutterWidgetBinder<bool>
 
   @override
   FieldBindingController<bool> createBindingController(
-    StructureBindingController parent,
+    FieldBindingParent parent,
     FieldBindingContext<bool> context,
   ) {
     return BoolBindingFieldController(parent, this, context);
@@ -49,6 +49,14 @@ class BoolFlutterBinder extends FlutterWidgetBinder<bool>
 
   @override
   void initialise(DogEngine engine) {}
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BoolFlutterBinder && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => 0;
 }
 
 class BoolBindingFieldController extends FieldBindingController<bool> {
@@ -87,16 +95,17 @@ class BoolBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final actualInputDecoration = theme.style.buildMaterialDecoration(
-      context,
-      includeLabel: true,
-    );
 
     return ValueListenableBuilder(
       valueListenable: controller.errorListenable,
       builder: (context, error, _) {
         final outerDecoration = theme.style
-            .buildMaterialDecoration(context, includeLabel: false, includeHint: false, includeHelper: false)
+            .buildMaterialDecoration(
+              context, controller,
+              includeLabel: false,
+              includeHint: false,
+              includeHelper: false,
+            )
             .copyWith(
               errorText: theme.toErrorText(error),
               border: InputBorder.none,

@@ -1,12 +1,10 @@
+import 'package:dogs_core/dogs_schema.dart' as z;
+import 'package:dogs_flutter/databinding/bindings/list.dart';
 import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
-import 'package:dogs_flutter/databinding/validators/format.dart';
-import 'package:dogs_flutter/dogs.g.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:example/dogs.g.dart';
 import 'package:flutter/material.dart';
-
-import 'models.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,18 +38,39 @@ class TestForm extends StatefulWidget {
 }
 
 class _TestFormState extends State<TestForm> {
-  final controller = StructureBindingController.create<Person>(
-    // initialValue: Person(
-    //   "John",
-    //   "Doe",
-    //   21,
-    //   249.2,
-    //   true,
-    //   "ABC123",
-    //   "myTag",
-    //   "password",
-    //   "password",
-    // ),
+  // final controller = StructureBindingController.create<Person>(
+  //   // initialValue: Person(
+  //   //   "John",
+  //   //   "Doe",
+  //   //   21,
+  //   //   249.2,
+  //   //   true,
+  //   //   "ABC123",
+  //   //   "myTag",
+  //   //   "password",
+  //   //   "password",
+  //   // ),
+  // );
+
+  final mainSchema = dogs.materialize(
+    z.object({
+      "name": z.string(),
+      "surname": z.string(),
+      "age": z.integer(),
+      "subschema":  z.object({
+        "subfield1": z.string(),
+        "subfield2": z.integer()
+      }),
+      "array": z.string().array().min(3).max(5),
+      "objectArray": z.object({
+        "name": z.string(),
+        "value": z.integer().positive(),
+      }).array()
+    }),
+  );
+
+  late final controller = StructureBindingController.schema(
+    schema: mainSchema.originalSchema,
   );
 
   @override
@@ -61,94 +80,79 @@ class _TestFormState extends State<TestForm> {
         data: Theme.of(
           context,
         ).copyWith(inputDecorationTheme: InputDecorationTheme()),
-        child: StructureBinding<Person>(
-          controller: controller,
-          validationTrigger: ValidationTrigger.onSubmit,
-          child: Column(
-            spacing: 12,
-            children: [
-              FieldBinding(
-                field: "name",
-                validationTrigger: ValidationTrigger.always,
-              ),
-              FieldBinding(
-                field: "surname",
-                style: BindingStyle(helper: "This is a helper"),
-              ),
-              FieldBinding(
-                field: "age",
-                validationTrigger: ValidationTrigger.always,
-                annotationTransformer:
-                    (result) => result.replace(
-                      FormatMessages.invalidNumberFormat.id,
-                      message: "Write a proper number please",
-                    ),
-              ),
-              FieldBinding(
-                field: "balance",
-                validationTrigger: ValidationTrigger.always,
-              ),
-              FieldBinding(
-                field: "isActive",
-                style: BindingStyle(
-                  label: "Is this active?",
-                  helper: "This is a helper",
-                ),
-              ),
-              FieldBinding(
-                field: "plate",
-                styleBuilder: (style) => style.copy(label: "License plate"),
-              ),
-              //FieldBinding(field: "tag"),
-              SizedBox(height: 32),
-              FieldBinding(field: "password"),
-              FieldBinding(field: "confirm"),
-              FieldBindingBuilder(
-                fieldName: "tag",
-                builder: (context, controller) {
-                  return ListenableBuilder(
-                    listenable: controller,
-                    builder: (context, _) {
-                      return DropdownButton<String>(
-                        items: [
-                          DropdownMenuItem(
-                            value: "option1",
-                            child: Text("Option 1"),
-                          ),
-                          DropdownMenuItem(
-                            value: "option2",
-                            child: Text("Option 2"),
-                          ),
-                          DropdownMenuItem(
-                            value: "option3",
-                            child: Text("Option 3"),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          controller.setValue(value);
-                        },
-                        value: controller.getValue(),
+        child: Center(
+          child: SizedBox(
+            width: 600,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  StructureBinding<dynamic>(
+                    controller: controller,
+                    validationTrigger: ValidationTrigger.always,
+                    //child: _buildForm(),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      print(
+                        "Button pressed: ${controller.read(false)}, ${controller.read(true)}",
                       );
+                      setState(() {
+                        // Update the state to trigger a rebuild
+                      });
                     },
-                  );
-                },
-              ),
+                    child: const Text("Submit"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.load({
+                        "name": "John",
+                        "surname": "Doe",
+                        "age": 21,
+                        "subschema": {"subfield1": "value1", "subfield2": 42},
+                        "array": ["item1", "item2", "item3"],
+                        "objectArray": [
+                          {"name": "Item1", "value": 1},
+                          {"name": "Item2", "value": 2},
+                        ],
+                      });
 
-              ElevatedButton(
-                onPressed: () {
-                  print(
-                    "Button pressed: ${controller.read(false)}, ${controller.read(true)}",
-                  );
-                  setState(() {
-                    // Update the state to trigger a rebuild
-                  });
-                },
-                child: const Text("Submit"),
+                      setState(() {
+                        // Update the state to trigger a rebuild
+                      });
+                    },
+                    child: const Text("Load"),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Column _buildForm() {
+    return Column(
+      spacing: 12,
+      children: [
+        FieldBinding(
+          field: "name",
+          validationTrigger: ValidationTrigger.always,
+        ),
+        FieldBinding(
+          field: "surname",
+          style: BindingStyle(helper: "This is a helper"),
+        ),
+        FieldBinding(field: "age"),
+        FieldBinding(
+          field: "subschema",
+          //binder: NestedStructureFlutterBinder(subSchema.structure),
+        ),
+        FieldBinding(field: "array",
+            //binder: ListFlutterBinder(StringFlutterBinder(), QualifiedTypeTree.terminal<String>())
+        ),
+      ],
     );
   }
 }
