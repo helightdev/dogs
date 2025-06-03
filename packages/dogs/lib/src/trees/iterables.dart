@@ -117,18 +117,18 @@ class IterableTreeValidationMode extends ValidationMode<dynamic>
   IterableTreeValidationMode(this.converter, this.iterableDestructor);
 
   /// The operation for the validation mode.
-  late ValidationMode operation;
+  late ValidationMode? operation;
 
   @override
   void initialise(DogEngine engine) {
-    operation = engine.modeRegistry.validation.forConverter(converter, engine);
+    operation = engine.modeRegistry.validation.forConverterNullable(converter, engine);
   }
 
   @override
   bool validate(value, DogEngine engine) {
     if (value == null) return true;
     return iterableDestructor(value)
-        .map((e) => operation.validate(e, engine))
+        .map((e) => operation?.validate(e, engine) ?? true)
         .every((e) => e);
   }
 
@@ -136,7 +136,7 @@ class IterableTreeValidationMode extends ValidationMode<dynamic>
   AnnotationResult annotate(value, DogEngine engine) {
     if (value == null) return AnnotationResult.empty();
     return AnnotationResult.combine(iterableDestructor(value)
-        .map((e) => operation.annotate(e, engine))
+        .map((e) => operation?.annotate(e, engine) ?? AnnotationResult.empty())
         .toList());
   }
 }
