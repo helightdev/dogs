@@ -63,11 +63,11 @@ class EntityAnalysis<T extends Object,SYS_DB extends CrudDatabase, SYS_ID extend
 
   //<editor-fold desc="Ids">
   SYS_ID? getId(T entity) {
-    return idProperty.type.consumeTypeArg(_getId, entity);
+    return idProperty.type.qualifiedOrBase.consumeTypeArg(_getId, entity);
   }
 
   Object toForeignId(SYS_ID id) {
-    return idProperty.type.consumeTypeArg(_toForeignId, id);
+    return idProperty.type.qualifiedOrBase.consumeTypeArg(_toForeignId, id);
   }
 
   Object _toForeignId<FOREIGN_ID>(SYS_ID id) {

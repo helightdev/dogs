@@ -64,11 +64,11 @@ class BuiltCompatibility {
 void installBuiltSerializers(Serializers serializers) {
   serializers = (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
-  dogs.registerTreeBaseFactory(BuiltList, BuiltCollectionFactories.builtList);
-  dogs.registerTreeBaseFactory(BuiltSet, BuiltCollectionFactories.builtSet);
-  dogs.registerTreeBaseFactory(BuiltMap, BuiltCollectionFactories.builtMap);
-  dogs.registerTreeBaseFactory(BuiltListMultimap, BuiltCollectionFactories.builtListMultimap);
-  dogs.registerTreeBaseFactory(BuiltSetMultimap, BuiltCollectionFactories.builtSetMultimap);
+  dogs.registerTreeBaseFactory(TypeToken<BuiltList>(), BuiltCollectionFactories.builtList);
+  dogs.registerTreeBaseFactory(TypeToken<BuiltSet>(), BuiltCollectionFactories.builtSet);
+  dogs.registerTreeBaseFactory(TypeToken<BuiltMap>(), BuiltCollectionFactories.builtMap);
+  dogs.registerTreeBaseFactory(TypeToken<BuiltListMultimap>(), BuiltCollectionFactories.builtListMultimap);
+  dogs.registerTreeBaseFactory(TypeToken<BuiltSetMultimap>(), BuiltCollectionFactories.builtSetMultimap);
 
   for (var serializer in serializers.serializers) {
     for (var type in serializer.types) {
