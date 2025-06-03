@@ -39,13 +39,15 @@ class StructureHarbinger<T> {
 
   /// Performs the converter lookup for a single field.
   @internal
-  static DogConverter? getConverter(DogEngine engine, DogStructure structure, DogStructureField field, {
+  static DogConverter? getConverter(DogEngine engine, DogStructure? structure, DogStructureField field, {
     bool nativeConverters = false,
   }) {
-    // Try resolving using supplying visitors
-    final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
-    if (supplier != null) {
-      return supplier.resolve(structure, field, engine);
+    if (structure != null) {
+      // Try resolving using supplying visitors
+      final supplier = field.firstAnnotationOf<ConverterSupplyingVisitor>();
+      if (supplier != null) {
+        return supplier.resolve(structure, field, engine);
+      }
     }
 
     // Converter type is specifically defined
@@ -54,7 +56,7 @@ class StructureHarbinger<T> {
     }
 
     // This value is native, we don't need a converter
-    if (engine.codec.isNative(field.type.qualified.typeArgument)) {
+    if (field.type.isQualified && engine.codec.isNative(field.type.qualified.typeArgument)) {
       if (nativeConverters) {
         return engine.codec.bridgeConverters[field.type.qualified.typeArgument];
       }
@@ -63,7 +65,7 @@ class StructureHarbinger<T> {
 
     // Try resolving the type directly
     final directConverter =
-        engine.findAssociatedConverter(field.type.typeArgument);
+        engine.findAssociatedConverter(field.type.qualifiedOrBase.typeArgument);
     if (directConverter != null) return directConverter;
 
     // Resolve using tree converter

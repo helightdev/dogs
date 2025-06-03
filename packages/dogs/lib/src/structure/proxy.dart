@@ -65,6 +65,38 @@ class MemoryDogStructureProxy extends DogStructureProxy {
   int Function(dynamic obj)? get hashFunc => null;
 }
 
+/// Simple class-less implementation of [DogStructureProxy], that serializes to
+/// a string keyed field map.
+class FieldMapStructureProxy extends DogStructureProxy {
+
+  /// Ordered list of the field names of the structure.
+  final List<String> fieldNames;
+
+  /// Simple class-less implementation of [DogStructureProxy], that serializes to
+  /// a string keyed field map.
+  const FieldMapStructureProxy(this.fieldNames);
+
+  @override
+  dynamic instantiate(List args) => Map<String,dynamic>.fromIterables(fieldNames, args);
+
+  @override
+  dynamic getField(obj, int index) {
+    return obj[fieldNames[index]];
+  }
+
+  @override
+  List getFieldValues(obj) {
+    return fieldNames.map((e) => obj[e]).toList();
+  }
+
+  @override
+  int Function(dynamic obj)? get hashFunc => null;
+
+  @override
+  bool Function(dynamic a, dynamic b)? get equalsFunc => null;
+}
+
+
 /// [DogStructureProxy] implementation for creating universal object factories.
 class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
   /// Factory method for instantiating [T] using a sorted list of field values.

@@ -16,6 +16,7 @@
 
 import "dart:async";
 import "dart:collection";
+import "dart:developer";
 
 import "package:dogs_core/dogs_core.dart";
 import "package:meta/meta.dart";
@@ -49,21 +50,32 @@ class DogEngine with MetadataMixin {
   /// Read-only mapping of [DogConverter]s.
   final Map<Type, DogConverter> _associatedConverters = HashMap();
 
+  /// Read-only mapping of [DogConverter]s by their serial name.
+  final Map<String, DogConverter> _serialNameAssociatedConverters = HashMap();
+
   /// Read-only mapping of [DogStructure]s.
+  /// Multiple structures may be registered with the same type, though only
+  /// the last registered structure will available here.
   final Map<Type, DogStructure> _structures = HashMap();
+
+  /// Read-only mapping of [DogStructure]s by their serial name.
+  /// The serial name of a structure must be unique while the type argument
+  /// mapped under [_structures] doesn't have to be unique.
+  final Map<String, DogStructure> _structuresBySerialName = HashMap();
+
   final Map<String, String> _annotationTranslations = {};
   final Map<Type, DogConverter> _runtimeTreeConverterCache = HashMap();
 
-  final Map<Type, TreeBaseConverterFactory> _treeBaseFactories = {
-    List: DefaultTreeBaseFactories.list,
-    Iterable: DefaultTreeBaseFactories.iterable,
-    Set: DefaultTreeBaseFactories.set,
-    Map: DefaultTreeBaseFactories.map,
-    Optional: DefaultTreeBaseFactories.optional,
-    Page: DefaultTreeBaseFactories.page,
+  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories = {
+    TypeToken<List>(): DefaultTreeBaseFactories.list,
+    TypeToken<Iterable>(): DefaultTreeBaseFactories.iterable,
+    TypeToken<Set>(): DefaultTreeBaseFactories.set,
+    TypeToken<Map>(): DefaultTreeBaseFactories.map,
+    TypeToken<Optional>(): DefaultTreeBaseFactories.optional,
+    TypeToken<Page>(): DefaultTreeBaseFactories.page,
   };
 
-  final List<DogEngine> _children = [];
+  final List<WeakReference<DogEngine>> _children = [];
   final Map<Symbol, DogEngine> _identifiedChildren = HashMap();
 
   /// The [DogNativeCodec] used by this [DogEngine] instance.
@@ -155,13 +167,20 @@ class DogEngine with MetadataMixin {
   /// Creates a new [DogEngine] instance that is a child of this instance.
   /// The [DogNativeCodec] will be inherited from this instance but can be
   /// overridden by supplying a [codec]. If [identity] is specified, the child
-  /// will be associated with the given [identity] Symbol.
-  DogEngine fork({DogNativeCodec? codec, Symbol? identity}) {
+  /// will be associated with the given [identity] Symbol. If [listen] is set
+  /// to false, changes in the parent will not rebuild the child, already
+  /// cached converters in the child will therefore persist, otherwise,
+  /// the child will have its caches cleared so future calls access the parents
+  /// updated state.
+  DogEngine fork({DogNativeCodec? codec, Symbol? identity, bool listen = true}) {
     final DogEngine forked =
         DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked.rebuildFrom(this);
-    if (identity != null) {
-      _identifiedChildren[identity] = forked;
+    if (listen) {
+      if (identity != null) {
+        _identifiedChildren[identity] = forked;
+      }
+      _children.add(WeakReference(forked));
     }
     return forked;
   }
@@ -188,12 +207,16 @@ class DogEngine with MetadataMixin {
   /// events to their children.
   void populateChange() {
     reset(); // After a change we need to reset the cache
+
+    // Cleanup orphaned weak references
+    _children.removeWhere((child) => child.target == null);
+
     for (var child in _children) {
       try {
-        child.rebuildFrom(this); // Also rebuild children
-      } on Exception catch (e) {
-        // ignore: avoid_print
-        print("Error while populating change to child: $e");
+        child.target?.rebuildFrom(this); // Also rebuild children
+      } on Exception catch (e, trace) {
+        log("Error while populating change to child",
+            error: e, stackTrace: trace);
         _children.remove(child);
       }
     }
@@ -203,15 +226,15 @@ class DogEngine with MetadataMixin {
   void close() {
     clear();
     _children.clear();
-    _parent?._children.remove(this);
+    _parent?._children.removeWhere((child) => child.target == this);
     _parent?._identifiedChildren.removeWhere((key, value) => value == this);
   }
 
   /// Returns all [DogStructure]s registered in this [DogEngine] instance and its
   /// parents.
-  Map<Type, DogStructure> get allStructures => {
+  Map<String, DogStructure> get allStructures => {
         if (_parent != null) ..._parent!.allStructures,
-        ..._structures,
+        ..._structuresBySerialName,
       };
 
   /// Returns all [DogConverter]s registered in this [DogEngine] instance and its
@@ -223,7 +246,7 @@ class DogEngine with MetadataMixin {
 
   /// Returns all [OperationModeFactory]s registered in this [DogEngine] instance
   /// and its parents.
-  Map<Type, TreeBaseConverterFactory> get allTreeBaseFactories => {
+  Map<TypeCapture, TreeBaseConverterFactory> get allTreeBaseFactories => {
         if (_parent != null) ..._parent!.allTreeBaseFactories,
         ..._treeBaseFactories,
       };
@@ -250,20 +273,15 @@ class DogEngine with MetadataMixin {
   /// Returns the [DogStructure] that is associated with the serial name [name]
   /// or null if not present.
   DogStructure? findStructureBySerialName(String name) =>
-      _structures.entries
-          .firstWhereOrNullDogs((element) => element.value.serialName == name)
-          ?.value ??
-      _parent?.findStructureBySerialName(name);
+      _structuresBySerialName[name] ?? _parent?._structuresBySerialName[name];
 
   /// Returns the [DogStructure] that is associated with the serial name [name]
   DogConverter? findConverterBySerialName(String name) {
-    final associatedStructureType = _structures.entries
-        .firstWhereOrNullDogs((element) => element.value.serialName == name)
-        ?.key;
+    final associatedStructureType = _serialNameAssociatedConverters[name];
     if (associatedStructureType == null) {
       return _parent?.findConverterBySerialName(name);
     }
-    return findAssociatedConverter(associatedStructureType);
+    return associatedStructureType;
   }
 
   /// Returns the first registered [DogConverter] of the given [type].
@@ -290,8 +308,10 @@ class DogEngine with MetadataMixin {
   Future<void> registerAutomatic(DogConverter converter,
       [bool emitChangeToStream = true]) async {
     if (converter.isAssociated) {
-      if (converter.struct != null) {
-        _structures[converter.struct!.typeArgument] = converter.struct!;
+      final struct = converter.struct;
+      if (struct != null) {
+        registerStructure(struct, emitChangeToStream: false);
+        _serialNameAssociatedConverters[struct.serialName] = converter;
       }
       _associatedConverters[converter.typeArgument] = converter;
     }
@@ -322,7 +342,26 @@ class DogEngine with MetadataMixin {
   /// to the change stream if [emitChangeToStream] is true.
   void registerStructure(DogStructure structure,
       {bool emitChangeToStream = true, Type? type}) {
-    _structures[type ?? structure.typeArgument] = structure;
+    if (type == null &&
+        (structure.typeArgument == dynamic ||
+            structure.typeArgument == Object)) {}
+
+    if (type == null) {
+      if (structure.typeArgument != dynamic &&
+          structure.typeArgument != Object) {
+        _structures[type ?? structure.typeArgument] = structure;
+      } else {
+        log(
+          "Structure '$structure' has dynamic or Object as the type argument "
+              "and will therefore not be associated with the type.",
+          level: 500,
+        );
+      }
+    } else {
+      _structures[type] = structure;
+    }
+
+    _structuresBySerialName[structure.serialName] = structure;
     if (emitChangeToStream) populateChange();
   }
 
@@ -344,13 +383,13 @@ class DogEngine with MetadataMixin {
   }
 
   /// Registers and associates a single [TreeBaseConverterFactory] with [Type].
-  void registerTreeBaseFactory(Type type, TreeBaseConverterFactory factory) {
+  void registerTreeBaseFactory(TypeCapture type, TreeBaseConverterFactory factory) {
     _treeBaseFactories[type] = factory;
   }
 
   /// Registers multiple tree base factories using [registerTreeBaseFactory].
   void registerAllTreeBaseFactories(
-      Iterable<MapEntry<Type, TreeBaseConverterFactory>> entries) {
+      Iterable<MapEntry<TypeCapture, TreeBaseConverterFactory>> entries) {
     _treeBaseFactories.addAll(Map.fromEntries(entries));
   }
 
@@ -370,8 +409,17 @@ class DogEngine with MetadataMixin {
     return created;
   }
 
-  DogConverter<dynamic> _getAnonymousTreeConverter(TypeTree<dynamic> tree, [bool allowPolymorphic = true]) {
+  DogConverter<dynamic> _getAnonymousTreeConverter(TypeTree<dynamic> tree,
+      [bool allowPolymorphic = true]) {
     if (tree.isTerminal) {
+      if (tree is SyntheticTypeCapture) {
+        final syntheticConverter = findConverterBySerialName(tree.identity);
+        if (syntheticConverter != null) {
+          return syntheticConverter;
+        }
+        throw DogException("No converter found for synthetic type ${tree.identity} in tree");
+      }
+
       if (codec.isNative(tree.base.typeArgument)) {
         return codec.bridgeConverters[tree.base.typeArgument]!;
       }
@@ -382,10 +430,10 @@ class DogEngine with MetadataMixin {
         return TreeBaseConverterFactory.polymorphicConverter;
       }
       throw DogException(
-          "No type tree converter for tree ${tree.qualified} found. (Polymorphism disabled)");
+          "No type tree converter for tree $tree found. (Polymorphism disabled)");
     } else {
       // Use factory
-      final factory = _treeBaseFactories[tree.base.typeArgument];
+      final factory = _treeBaseFactories[tree.base];
       if (factory == null) {
         throw DogException("No type tree converter for ${tree.base} found");
       }
@@ -413,7 +461,7 @@ class DogEngine with MetadataMixin {
       if (associated != null) return associated;
 
       // Use factory
-      final factory = _treeBaseFactories[tree.base.typeArgument];
+      final factory = _treeBaseFactories[tree.base];
       if (factory == null) {
         throw DogException("No type tree converter for ${tree.base} found");
       }

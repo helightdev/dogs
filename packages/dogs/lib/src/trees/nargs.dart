@@ -67,10 +67,14 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
     };
     final castedFactory = factory as NTreeArgConverter<BASE>;
     final modeCacheEntry = engine.modeRegistry.nativeSerialization;
+    final validationModeCacheEntry = engine.modeRegistry.validation;
     castedFactory.tree = tree;
     castedFactory.itemConverters = argumentConverters;
     castedFactory.nativeModes = argumentConverters
         .map((e) => modeCacheEntry.forConverter(e, engine))
+        .toList();
+    castedFactory.validationModes = argumentConverters
+        .map((e) => validationModeCacheEntry.forConverterNullable(e, engine))
         .toList();
     return _NTreeArgConverterImpl<BASE>(castedFactory);
   }
@@ -88,6 +92,27 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
             serializer: delegate.serialize,
             deserializer: delegate.deserialize,
             canSerializeNull: delegate.canSerializeNull),
+        ValidationMode: () =>
+            ValidationMode.create(validator: (value, engine, _) {
+              if (value == null) return true;
+              return delegate.traverse(value, engine).map((e) {
+                final (value, argIndex) = e;
+                if (value == null) return true;
+                final mode = delegate.validationModes[argIndex];
+                if (mode == null) return true;
+                return mode.validate(value, engine);
+              }).every((e) => e);
+            }, annotator: (value, engine, _) {
+              if (value == null) return AnnotationResult.empty();
+              return AnnotationResult.combine(
+                  delegate.traverse(value, engine).map((e) {
+                final (value, argIndex) = e;
+                if (value == null) return AnnotationResult.empty();
+                final mode = delegate.validationModes[argIndex];
+                if (mode == null) return AnnotationResult.empty();
+                return mode.annotate(value, engine);
+              }).toList());
+            })
       };
 
   @override
@@ -109,6 +134,9 @@ abstract class NTreeArgConverter<BASE> {
   /// Pre-resolved native serializers for the type arguments.
   late List<NativeSerializerMode> nativeModes;
 
+  /// Pre-resolved validation modes for the type arguments.
+  late List<ValidationMode?> validationModes;
+
   /// Deserializes a the [value] using the converter of the [index]th type argument.
   dynamic deserializeArg(dynamic value, int index, DogEngine engine) {
     return nativeModes[index].deserialize(value, engine);
@@ -129,6 +157,9 @@ abstract class NTreeArgConverter<BASE> {
   SchemaType inferSchemaType(DogEngine engine, SchemaConfig config) {
     return SchemaType.any;
   }
+
+  Iterable<(dynamic value, int argIndex)> traverse(
+      dynamic value, DogEngine engine) sync* {}
 
   /// Whether this converter can serialize null values.
   bool get canSerializeNull => false;

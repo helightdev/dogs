@@ -15,6 +15,7 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
+import "package:dogs_core/validation/utils.dart";
 
 /// A [FieldValidator] that restricts a numeric type to be positive.
 const positive = Range(min: 0, minExclusive: true);
@@ -57,19 +58,20 @@ class Range extends FieldValidator<bool>
 
   @override
   void visitSchemaField(SchemaField object) {
+    final target = itemSchemaTarget(object);
     if (min != null) {
       if (minExclusive) {
-        object[SchemaProperties.exclusiveMinimum] = min;
+        target[SchemaProperties.exclusiveMinimum] = min;
       } else {
-        object[SchemaProperties.minimum] = min;
+        target[SchemaProperties.minimum] = min;
       }
     }
 
     if (max != null) {
       if (maxExclusive) {
-        object[SchemaProperties.exclusiveMaximum] = max;
+        target[SchemaProperties.exclusiveMaximum] = max;
       } else {
-        object[SchemaProperties.maximum] = max;
+        target[SchemaProperties.maximum] = max;
       }
     }
   }
@@ -90,7 +92,7 @@ class Range extends FieldValidator<bool>
 
   @override
   bool validate(bool cached, value, DogEngine engine) {
-    if (cached as bool) {
+    if (cached) {
       if (value == null) return true;
       return (value as Iterable).every((e) => _validateSingle(e));
     } else {
@@ -124,12 +126,21 @@ class Range extends FieldValidator<bool>
   AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
-    return AnnotationResult(messages: [
-      AnnotationMessage(
+    AnnotationMessage result;
+    if (min != null && max == null) {
+      result = AnnotationMessage(
+          id: messageId, message: "Must be more than %min% (%minExclusive%).");
+    } else if (min == null && max != null) {
+      result = AnnotationMessage(
+          id: messageId, message: "Must be less than %max% (%maxExclusive%)");
+    } else {
+      result = AnnotationMessage(
           id: messageId,
           message:
-              "Must be between %min%(%minExclusive%) and %max%(%maxExclusive%).")
-    ]).withVariables({
+              "Must be between %min%(%minExclusive%) and %max%(%maxExclusive%).");
+    }
+
+    return AnnotationResult(messages: [result]).withVariables({
       "min": min.toString(),
       "max": max.toString(),
       "minExclusive": minExclusive ? "exclusive" : "inclusive",
@@ -158,11 +169,12 @@ class Minimum extends FieldValidator<bool>
 
   @override
   void visitSchemaField(SchemaField object) {
+    final target = itemSchemaTarget(object);
     if (min != null) {
       if (minExclusive) {
-        object[SchemaProperties.exclusiveMinimum] = min;
+        target[SchemaProperties.exclusiveMinimum] = min;
       } else {
-        object[SchemaProperties.minimum] = min;
+        target[SchemaProperties.minimum] = min;
       }
     }
   }
@@ -236,11 +248,12 @@ class Maximum extends FieldValidator<bool>
 
   @override
   void visitSchemaField(SchemaField object) {
+    final target = itemSchemaTarget(object);
     if (max != null) {
       if (maxExclusive) {
-        object[SchemaProperties.exclusiveMaximum] = max;
+        target[SchemaProperties.exclusiveMaximum] = max;
       } else {
-        object[SchemaProperties.maximum] = max;
+        target[SchemaProperties.maximum] = max;
       }
     }
   }
@@ -253,9 +266,10 @@ class Maximum extends FieldValidator<bool>
   @override
   void verifyUsage(DogStructureField field) {
     final arg = field.serial.typeArgument;
-    if (arg != int && arg != double)
+    if (arg != int && arg != double) {
       throw DogException(
           "Field '${field.name}' must be a int|double/-List/-Iterable to use @Maximum().");
+    }
   }
 
   @override

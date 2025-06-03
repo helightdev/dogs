@@ -67,4 +67,9 @@ class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
   /// Mock implementation for [DefaultStructureConverter].
   DogStructureConverterImpl(DogStructure<T> structure)
       : super(struct: structure);
+
+  @override
+  String toString() {
+    return "DogStructureConverterImpl<$T>(serialName: ${struct?.serialName})";
+  }
 }

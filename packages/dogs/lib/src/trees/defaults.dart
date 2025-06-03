@@ -116,5 +116,14 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
   }
 
   @override
+  Iterable<(dynamic, int)> traverse(dynamic value, DogEngine engine) sync* {
+    if (value == null || value is! Map) return;
+    for (var entry in value.entries) {
+      yield (entry.key, 0);
+      yield (entry.value, 1);
+    }
+  }
+
+  @override
   bool get canSerializeNull => true;
 }

@@ -221,6 +221,16 @@ extension StructureExtensions on DogStructure {
     return null;
   }
 
+  /// Returns the first field with the supplied [name] or null if not found.
+  DogStructureField? getFieldByName(String name) {
+    for (var field in fields) {
+      if (field.name == name) {
+        return field;
+      }
+    }
+    return null;
+  }
+
   /// Returns an [IsolatedClassValidator] that can be used to evaluate the
   /// [ClassValidator]s and [FieldValidator]s of this structure.
   IsolatedClassValidator getClassValidator({DogEngine? engine, List<IsolatedFieldValidator>? fieldValidators}) {
@@ -233,7 +243,7 @@ extension StructureExtensions on DogStructure {
         classValidators.map((e) => e.getCachedValue(this)).toList();
 
     fieldValidators ??= fields
-          .map((e) => e.getFieldValidator(this, engine: engine))
+          .map((e) => e.getFieldValidator(engine: engine))
           .toList();
 
     final fieldAccessors = <dynamic Function(dynamic)>[];
@@ -261,6 +271,52 @@ extension StructureExtensions on DogStructure {
         fieldAccessors: fieldAccessors,
         structure: this);
   }
+
+  String toDebugString(DogEngine? engine) {
+    final buffer = StringBuffer();
+    buffer.writeln("Structure: $serialName");
+    buffer.writeln("  Type: $typeArgument");
+    buffer.writeln("  Proxy: $proxy");
+    buffer.writeln("  Conformity: $conformity");
+    if (fields.isNotEmpty) {
+      buffer.writeln("  Fields:");
+      for (var field in fields) {
+        buffer.write("    ${field.name}: ${field.type.qualifiedOrBase.typeArgument}");
+        if (field.optional) {
+          buffer.write("?");
+        }
+        if (field.structure) {
+          buffer.write(" (structure)");
+        }
+        if (field.annotations.isNotEmpty) {
+          buffer.write(" [${field.annotations.map((e) => e).join(", ")}]");
+        }
+        buffer.writeln();
+      }
+    } else {
+      buffer.writeln("  No fields (Synthetic structure)");
+    }
+    if (annotations.isNotEmpty) {
+      buffer.writeln("  Annotations:");
+      for (var annotation in annotations) {
+        buffer.writeln("    ${annotation.runtimeType}");
+      }
+    }
+    if (engine != null && fields.isNotEmpty) {
+      buffer.writeln("  Converters:");
+      for (var field in fields) {
+        final converter = field.findConverter(this, engine: engine);
+        if (converter != null) {
+          buffer.writeln("    ${field.name}: ${converter.toString()}");
+        } else {
+          buffer.writeln("    ${field.name}: null");
+        }
+      }
+    }
+
+    return buffer.toString();
+  }
+
 }
 
 /// Extensions on [DogStructureField]s.
@@ -272,7 +328,7 @@ extension FieldExtension on DogStructureField {
 
   /// Returns the [DogConverter] the [StructureHarbinger] would use to convert
   /// this field.
-  DogConverter? findConverter(DogStructure structure,
+  DogConverter? findConverter(DogStructure? structure,
       {DogEngine? engine, bool nativeConverters = false}) {
     engine ??= DogEngine.instance;
     return StructureHarbinger.getConverter(engine, structure, this,
@@ -280,8 +336,7 @@ extension FieldExtension on DogStructureField {
   }
 
   /// Returns an [IsolatedFieldValidator] that can be used to evaluate the [FieldValidator]s of this field.
-  IsolatedFieldValidator getFieldValidator(
-    DogStructure structure, {
+  IsolatedFieldValidator getFieldValidator({
     DogEngine? engine,
     FieldValidator? guardValidator,
   }) {

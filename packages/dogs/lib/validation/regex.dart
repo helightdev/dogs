@@ -15,6 +15,7 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
+import "package:dogs_core/validation/utils.dart";
 import "package:meta/meta.dart";
 
 /// Reduced version of a RFC 5322 email regex from https://www.regular-expressions.info/email.html
@@ -80,7 +81,8 @@ class Regex extends FieldValidator<RegexCacheEntry>
 
   @override
   void visitSchemaField(SchemaField object) {
-    object[SchemaProperties.pattern] = pattern;
+    final target = itemSchemaTarget(object);
+    target[SchemaProperties.pattern] = pattern;
   }
 
   @override

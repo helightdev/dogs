@@ -59,8 +59,13 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter
   }
 
   @override
-  SchemaType describeOutput(DogEngine engine, SchemaConfig config) => SchemaType.array(converter.describeOutput(engine, config));
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      SchemaType.array(converter.describeOutput(engine, config));
 
+  @override
+  String toString() {
+    return "IterableTreeBaseConverter for ${itemSubtree.qualifiedOrBase.typeArgument}";
+  }
 }
 
 /// The native operation implementation for [IterableTreeBaseConverterMixin].
@@ -100,6 +105,42 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
   bool get canSerializeNull => true;
 }
 
+class IterableTreeValidationMode extends ValidationMode<dynamic>
+    with TypeCaptureMixin<dynamic> {
+  /// The converter used to validate instances of this iterable type.
+  final DogConverter converter;
+
+  /// Deconstructs a value into an iterable so it can be validated.
+  final Iterable Function(dynamic) iterableDestructor;
+
+  /// Creates a new validation mode for the given [mixin].
+  IterableTreeValidationMode(this.converter, this.iterableDestructor);
+
+  /// The operation for the validation mode.
+  late ValidationMode operation;
+
+  @override
+  void initialise(DogEngine engine) {
+    operation = engine.modeRegistry.validation.forConverter(converter, engine);
+  }
+
+  @override
+  bool validate(value, DogEngine engine) {
+    if (value == null) return true;
+    return iterableDestructor(value)
+        .map((e) => operation.validate(e, engine))
+        .every((e) => e);
+  }
+
+  @override
+  AnnotationResult annotate(value, DogEngine engine) {
+    if (value == null) return AnnotationResult.empty();
+    return AnnotationResult.combine(iterableDestructor(value)
+        .map((e) => operation.annotate(e, engine))
+        .toList());
+  }
+}
+
 /// A mixin for [DogConverter]s that handle iterable types.
 mixin IterableTreeBaseConverterMixin on DogConverter {
   /// The type tree of the items in the iterable.
@@ -128,6 +169,9 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
   OperationMode<dynamic>? resolveOperationMode(Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
       return IterableTreeNativeOperation(this);
+    }
+    if (opmodeType == ValidationMode) {
+      return IterableTreeValidationMode(converter, destruct);
     }
     return null;
   }

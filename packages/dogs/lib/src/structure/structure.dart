@@ -32,6 +32,21 @@ abstract class ConverterSupplyingVisitor extends StructureMetadata {
       DogStructure structure, DogStructureField field, DogEngine engine);
 }
 
+/// Annotation to manually set the convert used for a field to a fixed instance.
+class UseConverterInstance implements StructureMetadata, ConverterSupplyingVisitor {
+
+  /// Fixed converter instance that will be used for the annotated field.
+  final DogConverter converter;
+
+  /// Annotation to manually set the convert used for a field to a fixed instance.
+  const UseConverterInstance(this.converter);
+  
+  @override
+  DogConverter resolve(DogStructure structure, DogStructureField field, DogEngine engine) {
+    return converter;
+  }
+}
+
 /// Defines the structure of class [T] and provides methods for instance creation
 /// and data lookups. Also contains runtime instances of [RetainedAnnotation]s
 /// used in [T].
@@ -66,7 +81,7 @@ class DogStructure<T> extends RetainedAnnotationHolder
 
   @override
   String toString() {
-    return "DogStructure $typeArgument";
+    return "DogStructure '$serialName' with type '$typeArgument'";
   }
 
   /// Creates a synthetic [DogStructure]. This means that the structure is not
@@ -74,6 +89,8 @@ class DogStructure<T> extends RetainedAnnotationHolder
   /// backing class and proxy.
   factory DogStructure.synthetic(String name) => DogStructure<T>(
       name, StructureConformity.basic, [], [], const MemoryDogStructureProxy());
+
+  DogStructureCopyFrontend<T> get copy => _DogStructureCopyFrontendImpl<T>(this);
 }
 
 /// Superclass for all structure related subtypes.
@@ -131,4 +148,38 @@ abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode>
     with TypeCaptureMixin<MODE_TYPE> {
   /// Returns the operation mode for the [structure].
   MODE_TYPE resolve(DogStructure structure);
+}
+
+
+abstract interface class DogStructureCopyFrontend<T> {
+  /// Creates a copy of the structure with the given [name] and [conformity].
+  DogStructure<T> call({
+    String? serialName,
+    StructureConformity? conformity,
+    DogStructureProxy? proxy,
+    List<DogStructureField>? fields,
+    List<RetainedAnnotation>? annotations,
+  });
+}
+
+class _DogStructureCopyFrontendImpl<T> implements DogStructureCopyFrontend<T> {
+  final DogStructure<T> structure;
+  const _DogStructureCopyFrontendImpl(this.structure);
+
+  @override
+  DogStructure<T> call({
+    Object? serialName = #none,
+    Object? conformity = #none,
+    Object? proxy = #none,
+    Object? fields = #none,
+    Object? annotations = #none,
+  }) {
+    return DogStructure<T>(
+      serialName == #none ? structure.serialName : serialName as String,
+      conformity == #none ? structure.conformity : conformity as StructureConformity,
+      fields == #none ? structure.fields : fields as List<DogStructureField>,
+      annotations == #none ? structure.annotations : annotations as List<RetainedAnnotation>,
+      proxy == #none ? structure.proxy : proxy as DogStructureProxy,
+    );
+  }
 }

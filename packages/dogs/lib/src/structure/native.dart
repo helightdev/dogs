@@ -134,7 +134,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
       final fieldName = field.name;
       final isOptional = field.optional;
       final proxy = structure.proxy;
-      final fieldType = field.type;
+      final fieldType = field.type.qualifiedOrBase;
       final fieldSerializerHooks =
           field.annotationsOf<FieldSerializationHook>().toList();
       final NativeStructureFieldContext snFieldContext;

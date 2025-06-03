@@ -239,6 +239,15 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
       ],
     );
   }
+
+  @override
+  Iterable<(dynamic,int)> traverse(dynamic value, DogEngine engine) sync* {
+    if (value is Page) {
+      for (var entry in value.content) {
+        yield (entry, 0);
+      }
+    }
+  }
 }
 
 /// A [DogConverter] for [PageRequest]s.

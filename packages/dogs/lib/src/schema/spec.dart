@@ -15,11 +15,14 @@
  */
 
 import "dart:convert";
+import "dart:developer";
 
+import "package:collection/collection.dart";
+import "package:crypto/crypto.dart";
 import "package:dogs_core/dogs_core.dart";
+import "package:meta/meta.dart";
 
 extension SchemaGenerateExtension on DogEngine {
-
   /// Generates a schema for the given type [T].
   SchemaType describe<T>({SchemaConfig config = const SchemaConfig()}) {
     final converter = findAssociatedConverter(T);
@@ -30,6 +33,11 @@ extension SchemaGenerateExtension on DogEngine {
       return converter.describeOutput(this, config);
     });
   }
+  
+  MaterializedConverter materialize(SchemaType type) {
+    return DogsMaterializer.get(this).materialize(type);
+  }
+  
 }
 
 class SchemaConfig {
@@ -58,7 +66,6 @@ class SchemaField {
     });
     return field;
   }
-
 }
 
 /// A schema type.
@@ -88,12 +95,94 @@ sealed class SchemaType {
 
   static SchemaType reference(String serialName) => SchemaReference(serialName);
 
-  static SchemaType array(SchemaType items) => SchemaArray(items);
+  static SchemaType array(SchemaType items) {
+    if (items is SchemaArray || items is SchemaMap) {
+      log("Multidimensional arrays and maps are not fully supported yet. "
+          "While serialization should generally work, validation and container "
+          "specific configurations may not work as expected.", level: 500);
+    }
+
+    return SchemaArray(items);
+  }
 
   static SchemaType object({List<SchemaField> fields = const []}) =>
       SchemaObject(fields: fields);
 
-  static SchemaType map(SchemaType itemType) => SchemaMap(itemType);
+  static SchemaType map(SchemaType itemType) {
+    if (itemType is SchemaArray || itemType is SchemaMap) {
+      log("Multidimensional arrays and maps are not fully supported yet. "
+          "While serialization should generally work, validation and container "
+          "specific configurations may not work as expected.", level: 500);
+    }
+
+    return SchemaMap(itemType);
+  }
+
+  /// Reads a SchemaType from a property map.
+  static SchemaType fromProperties(Map<String, dynamic> properties) {
+    final typeValue = properties["type"];
+    final types = typeValue is List ? typeValue.cast<String>() : <String>[typeValue];
+    final (coreType, nullable) = SchemaCoreType.fromJsonSchema(types);
+
+    switch (coreType) {
+      case SchemaCoreType.string:
+        return SchemaPrimitive(SchemaCoreType.string, format: properties[SchemaProperties.format])
+          ..nullable = nullable
+          ..properties = _cleanProperties(properties);
+      case SchemaCoreType.number:
+      case SchemaCoreType.integer:
+      case SchemaCoreType.boolean:
+      case SchemaCoreType.$null:
+        return SchemaPrimitive(coreType)
+          ..nullable = nullable
+          ..properties = _cleanProperties(properties);
+      case SchemaCoreType.array:
+        final items = properties["items"] as Map<String, dynamic>;
+        return SchemaArray(fromProperties(items))
+          ..nullable = nullable
+          ..properties = _cleanProperties(properties);
+      case SchemaCoreType.object:
+        if (properties.containsKey(SchemaProperties.ref)) {
+          return SchemaReference(properties[SchemaProperties.serialName])
+            ..nullable = nullable
+            ..properties = _cleanProperties(properties);
+        } else if (properties.containsKey("additionalProperties")) {
+          final itemType = fromProperties(properties["additionalProperties"]);
+          return SchemaMap(itemType)
+            ..nullable = nullable
+            ..properties = _cleanProperties(properties);
+        } else {
+          final fields = (properties["properties"] as Map<String, dynamic>?)?.entries.map((entry) {
+            final fieldType = fromProperties(entry.value as Map<String, dynamic>);
+            return SchemaField(entry.key, fieldType);
+          }).toList() ?? [];
+          return SchemaObject(fields: fields)
+            ..nullable = nullable
+            ..properties = _cleanProperties(properties);
+        }
+      case SchemaCoreType.any:
+        return SchemaPrimitive(SchemaCoreType.any)
+          ..nullable = nullable
+          ..properties = _cleanProperties(properties);
+    }
+  }
+
+  static Map<String,dynamic> _cleanProperties(Map<String, dynamic> properties) {
+    return Map.fromEntries(properties.entries.where((e) => !_isTypeProperty(e.key)));
+  }
+
+  static bool _isTypeProperty(String key) {
+    const typeProperties = [
+      "type",
+      "items",
+      "properties",
+      "required",
+      "additionalProperties",
+      SchemaProperties.ref,
+      SchemaProperties.format,
+    ];
+    return typeProperties.contains(key);
+  }
 
   void operator []=(String key, dynamic value) {
     properties[key] = value;
@@ -110,15 +199,26 @@ sealed class SchemaType {
     }
   }
 
-  String toJson() {
+  Map<String, dynamic> toProperties() {
     final buffer = <String, dynamic>{};
     _writeToProperties(buffer);
-    return JsonEncoder.withIndent("  ").convert(buffer);
+    return buffer;
+  }
+
+  String toJson() {
+    return JsonEncoder.withIndent("  ").convert(toProperties());
+  }
+
+  String toSha256() {
+    final buffer = toProperties();
+    return sha256.convert(utf8.encode(jsonEncode(buffer))).toString();
   }
 
   /// Creates a deep copy of this schema type.
   SchemaType clone();
-
+  
+  @internal
+  SchemaType removeNullable() => clone()..nullable = false;
 }
 
 class SchemaProperties {
@@ -166,6 +266,9 @@ class SchemaProperties {
   static const String $default = "default";
 
   /// https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-validation-00#rfc.section.9.1
+  static const String title = "title";
+
+  /// https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-validation-00#rfc.section.9.1
   static const String description = "description";
 
   /// https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-00#rfc.section.8.2.3.1
@@ -189,14 +292,17 @@ class SchemaPrimitive extends SchemaType {
     if (format != null) map[SchemaProperties.format] = format;
   }
 
+  @override
   SchemaPrimitive clone() {
-    return SchemaPrimitive(type, format: format);
+    return SchemaPrimitive(type, format: format)
+      ..properties = Map.from(properties)
+      ..nullable = nullable;
   }
 }
 
 class SchemaMap extends SchemaType {
-
   SchemaType itemType;
+
   SchemaMap(this.itemType) : super(SchemaCoreType.object);
 
   @override
@@ -209,7 +315,9 @@ class SchemaMap extends SchemaType {
 
   @override
   SchemaMap clone() {
-    return SchemaMap(itemType.clone());
+    return SchemaMap(itemType.clone())
+      ..properties = Map.from(properties)
+      ..nullable = nullable;
   }
 }
 
@@ -232,16 +340,16 @@ class SchemaObject extends SchemaType {
         return MapEntry(e.name, buffer);
       }));
 
-      map["required"] = fields
-          .where((e) => !e.type.nullable)
-          .map((e) => e.name)
-          .toList();
+      map["required"] =
+          fields.where((e) => !e.type.nullable).map((e) => e.name).toList();
     }
   }
 
   @override
   SchemaObject clone() {
-    return SchemaObject(fields: fields.map((e) => e.clone()).toList());
+    return SchemaObject(fields: fields.map((e) => e.clone()).toList())
+      ..properties = Map.from(properties)
+      ..nullable = nullable;
   }
 }
 
@@ -263,7 +371,9 @@ class SchemaArray extends SchemaType {
 
   @override
   SchemaArray clone() {
-    return SchemaArray(items.clone());
+    return SchemaArray(items.clone())
+      ..properties = Map.from(properties)
+      ..nullable = nullable;
   }
 }
 
@@ -284,7 +394,9 @@ final class SchemaReference extends SchemaType {
 
   @override
   SchemaReference clone() {
-    return SchemaReference(serialName);
+    return SchemaReference(serialName)
+      ..properties = Map.from(properties)
+      ..nullable = nullable;
   }
 }
 
@@ -326,6 +438,17 @@ enum SchemaCoreType {
     }
   }
 
+  /// Converts a list of JSON schema types to a [SchemaCoreType] and a nullable flag.
+  static (SchemaCoreType type, bool nullable) fromJsonSchema(List<String> types) {
+    final nullable = types.contains("null");
+    final nonNullTypes = types.where((type) => type != "null").toList();
+    if (nonNullTypes.length == 1) {
+      return (fromString(nonNullTypes.first), nullable);
+    } else {
+      return (SchemaCoreType.any, nullable);
+    }
+  }
+
   @override
   String toString() => name;
 
@@ -343,3 +466,4 @@ enum SchemaCoreType {
     }
   }
 }
+

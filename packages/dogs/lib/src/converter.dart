@@ -61,13 +61,17 @@ class Structure extends Serializable implements StructureMetadata {
   final bool serializable;
 
   /// Configures the dogs structuration of a class or enum.
-  const Structure({this.serializable = false});
+  const Structure({this.serializable = false, super.serialName});
 }
 
 /// See @[serializable].
 class Serializable {
+
+  /// The name of the type used for serialization.
+  final String? serialName;
+
   /// See @[serializable].
-  const Serializable();
+  const Serializable({this.serialName});
 }
 
 /// Marks a library import as dogs serializable.

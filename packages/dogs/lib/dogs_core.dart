@@ -42,6 +42,7 @@ export "src/opmodes/factory.dart";
 export "src/opmodes/operation.dart";
 export "src/projections.dart";
 export "src/schema/spec.dart";
+export "src/schema/materialize.dart";
 export "src/schema/visitor.dart";
 export "src/structure/converter.dart";
 export "src/structure/field.dart";

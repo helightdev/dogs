@@ -15,6 +15,7 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
+import "package:dogs_core/validation/utils.dart";
 
 /// A [FieldValidator] that restricts the length of a [String].
 class LengthRange extends FieldValidator<bool>
@@ -37,8 +38,9 @@ class LengthRange extends FieldValidator<bool>
 
   @override
   void visitSchemaField(SchemaField object) {
-    if (min != null) object[SchemaProperties.minLength] = min;
-    if (max != null) object[SchemaProperties.maxLength] = max;
+    final target = itemSchemaTarget(object);
+    if (min != null) target[SchemaProperties.minLength] = min;
+    if (max != null) target[SchemaProperties.maxLength] = max;
   }
 
   @override

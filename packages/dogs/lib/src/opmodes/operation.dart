@@ -110,8 +110,8 @@ class OperationModeCacheEntry<T extends OperationMode> {
       throw DogException(
           "DogConverter $converter doesn't support opmode $modeType");
     }
-    resolved.initialise(engine);
     converterMapping[converter] = resolved;
+    resolved.initialise(engine);
     return resolved as T;
   }
 
@@ -123,8 +123,8 @@ class OperationModeCacheEntry<T extends OperationMode> {
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
 
     if (resolved == null) return null;
-    resolved.initialise(engine);
     converterMapping[converter] = resolved;
+    resolved.initialise(engine);
     return resolved as T;
   }
 

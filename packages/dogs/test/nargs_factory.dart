@@ -26,7 +26,7 @@ void main() {
       nargs: 3,
       consume: <A, B, C>() => MyNargContainerConverter<A, B, C>(),
     );
-    engine.registerTreeBaseFactory(MyNargContainer, treeBaseConverterFactory);
+    engine.registerTreeBaseFactory(TypeToken<MyNargContainer>(), treeBaseConverterFactory);
     final converter = treeBaseConverterFactory.getConverter(
         QualifiedTypeTreeN<MyNargContainer<String, int, bool>,
             MyNargContainer>([

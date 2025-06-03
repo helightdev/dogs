@@ -21,10 +21,9 @@ import "package:dogs_core/dogs_core.dart";
 /// the field.
 ///
 /// See also: https://dogs.helight.dev/advanced/structures
-class DogStructureField extends RetainedAnnotationHolder
-    implements StructureNode {
+class DogStructureField extends RetainedAnnotationHolder implements StructureNode {
   /// Declared type of the structure.
-  final QualifiedTypeTree type;
+  final TypeTree type;
 
   /// Optional converter type override.
   final Type? converterType;
@@ -63,11 +62,11 @@ class DogStructureField extends RetainedAnnotationHolder
   /// replaced with this getter for compatibility reasons.
   TypeCapture get serial {
     if (iterableKind == IterableKind.none) {
-      return type.qualified;
+      return type.qualifiedOrBase;
     } else {
       final arg = type.arguments[0];
       if (arg.isQualified) {
-        return arg.qualified;
+        return arg.qualifiedOrBase;
       } else {
         return arg.base;
       }
@@ -162,6 +161,45 @@ class DogStructureField extends RetainedAnnotationHolder
       type = QualifiedTypeTree.set<TYPE>();
     }
     return DogStructureField(
-        type, converterType, name, optional, false, annotations);
+        type, converterType, name, optional, true, annotations);
+  }
+
+  DogStructureFieldCopyFrontend get copy => _DogStructureFieldCopyFrontendImpl(this);
+}
+
+abstract interface class DogStructureFieldCopyFrontend {
+  DogStructureField call({
+    QualifiedTypeTree? type,
+    String? name,
+    bool? optional,
+    IterableKind? iterable,
+    Type? converterType,
+    bool? structure,
+    List<RetainedAnnotation>? annotations,
+  });
+}
+
+class _DogStructureFieldCopyFrontendImpl implements DogStructureFieldCopyFrontend {
+  final DogStructureField field;
+  const _DogStructureFieldCopyFrontendImpl(this.field);
+  
+  @override
+  DogStructureField call({
+    Object? type = #none,
+    Object? name = #none,
+    Object? optional = #none,
+    Object? iterable = #none,
+    Object? converterType = #none,
+    Object? structure = #none,
+    Object? annotations = #none,
+  }) {
+    return DogStructureField(
+      type == #none ? field.type : type as QualifiedTypeTree,
+      converterType == #none ? field.converterType : converterType as Type?,
+      name == #none ? field.name : name as String,
+      optional == #none ? field.optional : optional as bool,
+      structure == #none ? field.structure : structure as bool,
+      annotations == #none ? field.annotations : annotations as List<RetainedAnnotation>,
+    );
   }
 }
