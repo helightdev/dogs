@@ -75,12 +75,17 @@ class SerializableLibraryBuilder extends DogsAdapter<SerializableLibrary> {
     return possibleTypes;
   }
   
-  Set<Element> getClassCandidates(LibraryElement library) {
+  Set<Element> getClassCandidates(LibraryElement library, [Set<LibraryElement>? visited]) {
     var reader = LibraryReader(library);
+    visited ??= {};
+    if (visited.contains(library)) {
+      return {};
+    }
+    visited.add(library);
     var possibleTypes = [
       ...reader.classes,
       ...reader.enums,
-      ...(library.exportedLibraries.expand((e) => getClassCandidates(e)))]
+      ...(library.exportedLibraries.expand((e) => getClassCandidates(e, visited)))]
         .where((element) {
           return element.isPublic;
         })
@@ -108,6 +113,9 @@ class SerializableLibraryBuilder extends DogsAdapter<SerializableLibrary> {
   @override
   FutureOr<void> generateSubject(
       SubjectGenContext<Element> genContext, SubjectCodeContext codeContext) async {
+    codeContext.additionalImports
+        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+
     var libraries = getSerializableLibraries(genContext);
     var resolvedTypeSets = await Future.wait(libraries.map((e) => getSerializedTypes(genContext.step, e)));
     var allTypes = resolvedTypeSets.expand((e) => e).toSet();

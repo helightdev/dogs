@@ -100,6 +100,7 @@ TypeChecker propertySerializerChecker =
 TypeChecker dataclassChecker = TypeChecker.fromRuntime(Dataclass);
 TypeChecker mapChecker = TypeChecker.fromRuntime(Map);
 TypeChecker beanIgnoreChecker = TypeChecker.fromRuntime(beanIgnore.runtimeType);
+TypeChecker serializableChecker = TypeChecker.fromRuntime(Serializable);
 
 Future<StructurizeResult> structurizeConstructor(
     DartType type,
@@ -110,6 +111,15 @@ Future<StructurizeResult> structurizeConstructor(
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
+
+  // Check for Serializable annotation and override serialName if applicable
+  if (serializableChecker.hasAnnotationOf(element)) {
+    var annotation = serializableChecker.annotationsOf(element).first;
+    var overrideName = annotation.getField("serialName")?.toStringValue();
+    if (overrideName != null) {
+      serialName = overrideName;
+    }
+  }
 
   // Determine used constructor
   var constructorName = "";
@@ -135,6 +145,7 @@ Future<StructurizeResult> structurizeConstructor(
         }
         throw Exception("Can't resolve super formal field");
       }
+
       var field = resolveUntilFieldFormal(e.superConstructorParameter!).field;
       fieldName = field!.name;
       fieldType = field.type;
@@ -142,7 +153,7 @@ Future<StructurizeResult> structurizeConstructor(
     } else {
       var parameterType = e.type;
       var namedField = element.getField(e.name);
-      var namedGetter = element.lookUpGetter(e.name, element.library);
+      var namedGetter = element.augmented.lookUpGetter(name: e.name, library: element.library);
       if (namedField != null && namedGetter == null) {
         fieldName = e.name;
         fieldType = namedField.type;
@@ -163,7 +174,7 @@ Future<StructurizeResult> structurizeConstructor(
     }
     if (fieldElement == null || fieldName == null || fieldType == null) {
       throw Exception(
-        "Constructor fields must have a backing field or getter with the same name and type. Nullability may vary.");
+          "Constructor fields must have a backing field or getter with the same name and type. Nullability may vary.");
     }
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);
@@ -229,6 +240,16 @@ Future<StructurizeResult> structurizeBean(
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
+
+  // Check for Serializable annotation and override serialName if applicable
+  if (serializableChecker.hasAnnotationOf(element)) {
+    var annotation = serializableChecker.annotationsOf(element).first;
+    var overrideName = annotation.getField("serialName")?.toStringValue();
+    if (overrideName != null) {
+      serialName = overrideName;
+    }
+  }
+
   var beanFields = classElement.fields.where((element) {
     var field = classElement.getField(element.name)!;
     if (beanIgnoreChecker.hasAnnotationOf(field)) return false;
