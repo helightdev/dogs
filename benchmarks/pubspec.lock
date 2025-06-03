@@ -193,22 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-  conduit_codable:
-    dependency: transitive
-    description:
-      name: conduit_codable
-      sha256: "2530ccffacf1d3c177da68f163ca388f41cc68441d1e4ce39850559493bddf4a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.4.0"
-  conduit_open_api:
-    dependency: transitive
-    description:
-      name: conduit_open_api
-      sha256: defc948645a53a69506c902203ca1e4579461fc79b35129641a8f31e88cb213b
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.4.0"
   convert:
     dependency: transitive
     description:
@@ -263,35 +247,35 @@ packages:
       path: "../formats/dogs_cbor"
       relative: true
     source: path
-    version: "2.3.4"
+    version: "2.3.5-dev.2"
   dogs_core:
     dependency: "direct main"
     description:
       path: "../packages/dogs"
       relative: true
     source: path
-    version: "9.4.1"
+    version: "10.0.0-dev.2"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../packages/dogs_generator"
       relative: true
     source: path
-    version: "6.0.4"
+    version: "7.0.0-dev.2"
   dogs_toml:
     dependency: "direct main"
     description:
       path: "../formats/dogs_toml"
       relative: true
     source: path
-    version: "2.3.4"
+    version: "2.3.5-dev.2"
   dogs_yaml:
     dependency: "direct main"
     description:
       path: "../formats/dogs_yaml"
       relative: true
     source: path
-    version: "2.3.4"
+    version: "2.3.5-dev.2"
   duffer:
     dependency: transitive
     description:
@@ -472,10 +456,10 @@ packages:
     dependency: transitive
     description:
       name: lyell
-      sha256: b3cdb9dae685e3f21c9f3dffb08707046685792ea9382ca576956ae22a7e05ce
+      sha256: "3389cf8583586136fbc5ab5109c02142386670f249743628dc649503303fe1f5"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.4.4"
   lyell_gen:
     dependency: transitive
     description:
