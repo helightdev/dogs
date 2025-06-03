@@ -157,6 +157,9 @@ extension DogEngineShortcuts on DogEngine {
     return convertIterableFromNative(value, type ?? T, kind);
   }
 
+  /// Converts a field map to an instance of [T] using the structure
+  /// associated with [T] or [type] and the supplied [IterableKind].
+  /// If [tree] is supplied, the structure associated with the tree is used.
   T fromFieldMap<T>(Map<String,dynamic> fieldMap, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final structureType = tree?.base.typeArgument ?? type ?? T;
     final structure = findStructureByType(structureType);
@@ -166,6 +169,10 @@ extension DogEngineShortcuts on DogEngine {
     return structure.instantiateFromFieldMap(fieldMap);
   }
 
+
+  /// Converts a value of type [T] to a field map using the structure
+  /// associated with [T] or [type] and the supplied [IterableKind].
+  /// If [tree] is supplied, the structure associated with the tree is used.
   Map<String,dynamic> toFieldMap<T>(T value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final structureType = tree?.base.typeArgument ?? type ?? T;
     final structure = findStructureByType(structureType);

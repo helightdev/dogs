@@ -70,6 +70,7 @@ mixin EnumConverter<T> on DogConverter<T> {
 }
 
 
+/// A runtime string-based [EnumConverter] implementation
 class RuntimeEnumConverter extends SimpleDogConverter<String> with EnumConverter<String> {
   @override
   final List<String> values;

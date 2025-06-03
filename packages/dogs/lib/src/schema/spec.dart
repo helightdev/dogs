@@ -33,7 +33,12 @@ extension SchemaGenerateExtension on DogEngine {
       return converter.describeOutput(this, config);
     });
   }
-  
+
+  /// Materializes a [type] schema, creating a [MaterializedConverter] that
+  /// can be used to convert data to and from the schema.
+  ///
+  /// Materialization will create an engine fork with the custom types defined
+  /// in the schema.
   MaterializedConverter materialize(SchemaType type) {
     return DogsMaterializer.get(this).materialize(type);
   }
