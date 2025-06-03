@@ -174,13 +174,25 @@ class DogsMaterializer {
       isPolymorphic = true;
       return QualifiedTypeTree.terminal<dynamic>();
     });
+    final annotations = <StructureMetadata>[];
+    if (isPolymorphic) {
+      annotations.add(polymorphic);
+    }
+
+    final enumProperty = field.type[SchemaProperties.$enum] as List<String>?;
+    if (enumProperty != null) {
+      annotations.add(UseConverterInstance(
+        RuntimeEnumConverter(enumProperty, "${field.name}Enum")
+      ));
+    }
+
     final structureField = DogStructureField(
       materializedTypeTree,
       null,
       field.name,
       field.type.nullable,
       true,
-      isPolymorphic ? [polymorphic] : [],
+      annotations
     );
     return structureField;
   }

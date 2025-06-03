@@ -1,5 +1,7 @@
 library;
 
+import 'package:dogs_flutter/databinding/bindings/enum.dart';
+
 import 'dogs_flutter.dart';
 import 'dogs.g.dart';
 
@@ -44,12 +46,13 @@ export 'schema/custom_tags.dart';
 export 'schema/binding_style_contributor.dart';
 
 final defaultFactories = OperationModeFactory.compose<FlutterWidgetBinder>([
+  ListAutoFactory(),
+  EnumAutoFactory(),
+  NestedStructureAutoFactory(),
   OperationModeFactory.typeSingleton<String, FlutterWidgetBinder>(StringFlutterBinder()),
   OperationModeFactory.typeSingleton<int, FlutterWidgetBinder>(IntFlutterBinder()),
   OperationModeFactory.typeSingleton<double, FlutterWidgetBinder>(DoubleFlutterBinder()),
   OperationModeFactory.typeSingleton<bool, FlutterWidgetBinder>(BoolFlutterBinder()),
-  ListAutoFactory(),
-  NestedStructureAutoFactory()
 ]);
 
 void configureDogsFlutter({

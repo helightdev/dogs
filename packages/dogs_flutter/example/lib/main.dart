@@ -61,11 +61,11 @@ class _TestFormState extends State<TestForm> {
         "subfield1": z.string(),
         "subfield2": z.integer()
       }),
-      "array": z.string().array().min(3).max(5),
-      "objectArray": z.object({
-        "name": z.string(),
-        "value": z.integer().positive(),
-      }).array()
+      "enum": z.enumeration([
+        "option1",
+        "option2",
+        "option3",
+      ])
     }),
   );
 
@@ -110,11 +110,7 @@ class _TestFormState extends State<TestForm> {
                         "surname": "Doe",
                         "age": 21,
                         "subschema": {"subfield1": "value1", "subfield2": 42},
-                        "array": ["item1", "item2", "item3"],
-                        "objectArray": [
-                          {"name": "Item1", "value": 1},
-                          {"name": "Item2", "value": 2},
-                        ],
+                        "enum": "option2",
                       });
 
                       setState(() {

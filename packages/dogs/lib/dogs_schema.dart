@@ -28,6 +28,11 @@ SchemaType map(SchemaType itemType) {
   return SchemaType.map(itemType);
 }
 
+SchemaType enumeration(List<String> values) {
+  return SchemaType.string.property(SchemaProperties.$enum, values);
+}
+
+
 extension SchemaTypeExtension on SchemaType {
   SchemaType array() => SchemaType.array(this);
 

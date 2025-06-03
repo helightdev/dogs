@@ -63,6 +63,36 @@ void main() {
     });
   });
 
+  test("Enum Properties", () {
+    final base = z.object({
+      "first": z.enumeration(["A", "B", "C"]),
+    });
+    expect(base, doesReserialize);
+    final case0 = {
+      "first": "A",
+    };
+    final case1 = {
+      "first": "B",
+    };
+    final case2 = {
+      "first": "C",
+    };
+    final case3 = {
+      "first": "D", // Invalid case
+    };
+
+    final serializer = DogEngine().materialize(base);
+    final encoded0 = serializer.toJson(case0);
+    final decoded0 = serializer.fromJson(encoded0);
+    expect(decoded0, unorderedDeepEquals(case0));
+    final encoded1 = serializer.toJson(case1);
+    final decoded1 = serializer.fromJson(encoded1);
+    expect(decoded1, unorderedDeepEquals(case1));
+    final decoded2 = serializer.fromNative(case2);
+    expect(decoded2, unorderedDeepEquals(case2));
+    expect(() => serializer.fromNative(case3), throwsA(isA<DogException>()));
+  });
+
   test("Unroll Nested Schema", () {
     final base = z.object({
       "name": z.string(),

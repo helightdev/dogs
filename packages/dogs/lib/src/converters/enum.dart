@@ -58,7 +58,7 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
 /// Mixin that exposes a public api surface for enum converters.
 /// Primarily intended to be used by opmode factories for converter tree
 /// introspection.
-mixin EnumConverter<T extends Enum> on DogConverter<T> {
+mixin EnumConverter<T> on DogConverter<T> {
   /// All possible enum values.
   List<String> get values;
 
@@ -67,4 +67,50 @@ mixin EnumConverter<T extends Enum> on DogConverter<T> {
 
   /// Converts a enum value to a string.
   String valueToString(T? value);
+}
+
+
+class RuntimeEnumConverter extends SimpleDogConverter<String> with EnumConverter<String> {
+  @override
+  final List<String> values;
+
+  RuntimeEnumConverter(this.values, String serialName) : super(serialName: serialName);
+
+  @override
+  String deserialize(value, DogEngine engine) {
+    if (!values.contains(value)) {
+      throw DogSerializerException(
+        message: "Value '$value' is not a valid enum value. Valid values are: $values",
+        converter: this
+      );
+    }
+    return value as String;
+  }
+
+  @override
+  serialize(String value, DogEngine engine) {
+    return value;
+  }
+
+  @override
+  String? valueFromString(String value) {
+    if (value == "null") return null;
+    if (values.contains(value)) {
+      return value;
+    }
+    throw ArgumentError("Value '$value' is not a valid enum value. Valid values are: $values");
+  }
+
+  @override
+  String valueToString(String? value) {
+    if (value == null) return "null";
+    return value;
+  }
+
+  @override
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) {
+    final type = SchemaType.string;
+    type[SchemaProperties.$enum] = values;
+    return type;
+  }
 }
