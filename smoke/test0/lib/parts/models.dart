@@ -48,6 +48,13 @@ void testModels() {
     expect(customMap.containsKey("a"), true);
     expect(customMap.containsKey("b"), true);
   });
+
+  test("Custom Serial Name", () {
+    final serialName =
+        dogs.findAssociatedConverter(CustomSerialName)?.struct?.serialName;
+    expect(serialName, isNotNull);
+    expect(serialName, "MyCustomSerialName");
+  });
 }
 
 void testSingleModel<T>(T Function() a, T Function() b) => group("$T", () {
@@ -84,6 +91,7 @@ void testSingleModel<T>(T Function() a, T Function() b) => group("$T", () {
             "Deep Runtime Type Tree A", () => _testDeepRuntimeTypeTree<T>(va0));
         test(
             "Deep Runtime Type Tree B", () => _testDeepRuntimeTypeTree<T>(va1));
+        test("Synthetic Type Usage", () => _testSyntheticEntry<T>(va0));
       });
     });
 
@@ -160,4 +168,23 @@ void _testDeepRuntimeTypeTree<T>(T val) {
   expect(va0, da["a"][0], reason: "Non-pure serialization");
   expect((payload["a"][0] as Map).containsKey("_type"), false,
       reason: "Polymorphic serialization where not required");
+}
+
+void _testSyntheticEntry<T>(T val) {
+  final serialName = dogs.findStructureByType(T)!.serialName;
+  final syntheticType = SyntheticTypeCapture(serialName);
+
+  final ea = dogs.toJson(val, tree: syntheticType);
+  final da = dogs.fromJson(ea, tree: syntheticType);
+  expect(val, da, reason: "Non-pure serialization");
+
+  final mapTree = TypeTreeN<Map>([
+    TypeTree.$string,
+    TypeTreeN<List>([syntheticType])
+  ]);
+  var mapEncoded = dogs.toJson({
+    "a": [val]
+  }, tree: mapTree);
+  var mapDecoded = dogs.fromJson(mapEncoded, tree: mapTree);
+  expect(mapDecoded["a"][0], val, reason: "Non-pure serialization");
 }

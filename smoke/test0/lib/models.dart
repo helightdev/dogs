@@ -22,7 +22,6 @@ abstract class ABInterface {}
 
 @serializable
 class ModelA with Dataclass<ModelA> implements ABInterface {
-
   final String string;
   final int integer;
   @PropertyName("double")
@@ -31,7 +30,8 @@ class ModelA with Dataclass<ModelA> implements ABInterface {
   final DateTime nonStruct;
   final Note complex;
 
-  ModelA(this.string, this.integer, this.$double, this.boolean, this.nonStruct, this.complex);
+  ModelA(this.string, this.integer, this.$double, this.boolean, this.nonStruct,
+      this.complex);
 
   factory ModelA.variant0() {
     return ModelA("str", 1, 1.337, true, DateTime(1999), Note.variant0());
@@ -48,7 +48,6 @@ class ModelA with Dataclass<ModelA> implements ABInterface {
 
 @serializable
 class ModelB with Dataclass<ModelB> implements ABInterface {
-
   final List<String> stringList;
   final List<int> intList;
   final List<double> doubleList;
@@ -57,17 +56,16 @@ class ModelB with Dataclass<ModelB> implements ABInterface {
   ModelB(this.stringList, this.intList, this.doubleList, this.booleanList);
 
   factory ModelB.variant0() {
-    return ModelB(["A", "B"], [1,2], [0.01, 0.02], [true, true, false]);
+    return ModelB(["A", "B"], [1, 2], [0.01, 0.02], [true, true, false]);
   }
 
   factory ModelB.variant1() {
-    return ModelB(["C", "D"], [-1,-2], [-0.01, -0.02], [false]);
+    return ModelB(["C", "D"], [-1, -2], [-0.01, -0.02], [false]);
   }
 }
 
 @serializable
 class ModelC with Dataclass<ModelC> {
-
   String? nullablePrimitive;
   List<String>? nullableList;
   Note? nullableComplex;
@@ -81,13 +79,13 @@ class ModelC with Dataclass<ModelC> {
   }
 
   factory ModelC.variant1() {
-    return ModelC("string", ["A", "B", "C"], Note.variant0(), {Note.variant0(), Note.variant1()});
+    return ModelC("string", ["A", "B", "C"], Note.variant0(),
+        {Note.variant0(), Note.variant1()});
   }
 }
 
 @serializable
 class ModelD with Dataclass<ModelD> {
-
   final Set<String> stringList;
   final Set<int> intList;
   final Set<double> doubleList;
@@ -96,37 +94,65 @@ class ModelD with Dataclass<ModelD> {
   ModelD(this.stringList, this.intList, this.doubleList, this.booleanList);
 
   factory ModelD.variant0() {
-    return ModelD({"A", "B"}, {1,2}, {0.01, 0.02}, {true, false});
+    return ModelD({"A", "B"}, {1, 2}, {0.01, 0.02}, {true, false});
   }
 
   factory ModelD.variant1() {
-    return ModelD({"C", "D"}, {-1,-2}, {-0.01, -0.02}, {false});
+    return ModelD({"C", "D"}, {-1, -2}, {-0.01, -0.02}, {false});
   }
 }
 
 @serializable
 class ModelE with Dataclass<ModelE> {
-
   @polymorphic
   final List polymorphicList;
 
   @polymorphic
+  final List<Object> objectPolymorphicList;
+
+  @polymorphic
   final List<ABInterface> restrictedPolymorphicList;
 
-  ModelE(this.polymorphicList, this.restrictedPolymorphicList);
+  ModelE(this.polymorphicList, this.objectPolymorphicList,
+      this.restrictedPolymorphicList);
 
   factory ModelE.variant0() {
-    return ModelE([ModelA.variant0(), ModelB.variant0(), ModelC.variant0(), ModelD.variant0()], [ModelA.variant1(), ModelB.variant0()]);
+    return ModelE([
+      ModelA.variant0(),
+      ModelB.variant0(),
+      ModelC.variant0(),
+      ModelD.variant0()
+    ], [
+      ModelA.variant0(),
+      ModelB.variant0(),
+      ModelC.variant0(),
+      ModelD.variant0()
+    ], [
+      ModelA.variant1(),
+      ModelB.variant0()
+    ]);
   }
 
   factory ModelE.variant1() {
-    return ModelE([ModelA.variant1(), ModelB.variant1(), ModelC.variant1(), ModelD.variant1()], [ModelA.variant0(), ModelB.variant1()]);
+    return ModelE([
+      ModelA.variant1(),
+      ModelB.variant1(),
+      ModelC.variant1(),
+      ModelD.variant1()
+    ], [
+      ModelA.variant1(),
+      ModelB.variant1(),
+      ModelC.variant1(),
+      ModelD.variant1()
+    ], [
+      ModelA.variant0(),
+      ModelB.variant1()
+    ]);
   }
 }
 
 @serializable
 class ModelF with Dataclass<ModelF> {
-
   ConvertableA a;
   EnumA enumeration;
 
@@ -143,10 +169,9 @@ class ModelF with Dataclass<ModelF> {
 
 @serializable
 class ModelG with Dataclass<ModelG> {
-
   List<List<int>>? ints;
   Map<String, Set<double>>? m;
-  Map<int,List<String>> intMap;
+  Map<int, List<String>> intMap;
 
   @polymorphic
   Map<String, List<Object>> dyna;
@@ -156,14 +181,25 @@ class ModelG with Dataclass<ModelG> {
   @native
   Object? nativeField;
 
-  ModelG(this.ints, this.m, this.intMap, this.dyna, this.opts, this.nativeField);
+  ModelG(
+      this.ints, this.m, this.intMap, this.dyna, this.opts, this.nativeField);
 
   factory ModelG.variant0() {
-    return ModelG([[1,2,3],[4,5,6]], {"a": {1,2,3}, "b" : {1.1,2.2,3.3}},
-        {1: ["A","B","C"], 2: ["D","E","F"]},
-        {
+    return ModelG([
+      [1, 2, 3],
+      [4, 5, 6]
+    ], {
+      "a": {1, 2, 3},
+      "b": {1.1, 2.2, 3.3}
+    }, {
+      1: ["A", "B", "C"],
+      2: ["D", "E", "F"]
+    }, {
       "test": [Note.variant0(), "Hello World"]
-    }, [Optional("Yes"), Optional(null)], "a");
+    }, [
+      Optional("Yes"),
+      Optional(null)
+    ], "a");
   }
 
   factory ModelG.variant1() {
@@ -182,7 +218,8 @@ class Note with Dataclass<Note> {
   Note(this.title, this.content, this.private, this.timestamp, this.tags);
 
   factory Note.variant0() {
-    return Note("Hello World", "Lorem Ipsum", false, DateTime(2023), {"note","dart"});
+    return Note(
+        "Hello World", "Lorem Ipsum", false, DateTime(2023), {"note", "dart"});
   }
 
   factory Note.variant1() {
@@ -195,7 +232,7 @@ class DeepPolymorphic with Dataclass<DeepPolymorphic> {
   String name;
 
   @polymorphic
-  Map<String,dynamic> data;
+  Map<String, dynamic> data;
 
   DeepPolymorphic({
     required this.name,
@@ -205,7 +242,7 @@ class DeepPolymorphic with Dataclass<DeepPolymorphic> {
   factory DeepPolymorphic.variant0() {
     return DeepPolymorphic(name: "Hello World", data: {
       "love": "dart",
-      "list": [1,2,3],
+      "list": [1, 2, 3],
       "deeper": {
         "note": Note.variant0(),
         "list": [Note.variant1(), Note.variant0()],
@@ -220,7 +257,7 @@ class DeepPolymorphic with Dataclass<DeepPolymorphic> {
   factory DeepPolymorphic.variant1() {
     return DeepPolymorphic(name: "Hello World", data: {
       "love": "dart",
-      "list": [1,2,3],
+      "list": [1, 2, 3],
       "deeper": {
         "note": Note.variant0(),
         "list": [Note.variant1(), Note.variant0()],

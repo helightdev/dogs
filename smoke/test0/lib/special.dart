@@ -191,3 +191,9 @@ class DefaultValueModel with Dataclass<DefaultValueModel> {
   static ModelA cSupplier() => ModelA.variant0();
 
 }
+
+@Serializable(serialName: "MyCustomSerialName")
+class CustomSerialName {
+  String value;
+  CustomSerialName(this.value);
+}
