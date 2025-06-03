@@ -1,3 +1,10 @@
+## 10.0.0-dev.3
+
+> Note: This release has breaking changes.
+
+ - **FIX**: Make operation field nullable to handle converters without validation.
+ - **BREAKING** **FEAT**: various changes to the core system to support runtime generated structures.
+
 ## 10.0.0-dev.2
 
  - **REFACTOR**: remove the supplier argument.

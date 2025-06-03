@@ -1,3 +1,7 @@
+## 0.0.1-dev.5
+
+ - **FEAT**: add support for schemas, refactor some stuff and new bindings.
+
 ## 0.0.1-dev.4
 
  - **FEAT**: add dynamic field rebind and controller swap methods.

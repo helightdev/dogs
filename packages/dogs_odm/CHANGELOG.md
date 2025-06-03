@@ -1,3 +1,7 @@
+## 1.0.0-alpha.20
+
+ - **REFACTOR**: update built serializers to use TypeToken for collection factories.
+
 ## 1.0.0-alpha.19
 
  - Update a dependency to the latest release.

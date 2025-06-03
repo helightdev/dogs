@@ -1,3 +1,7 @@
+## 3.1.5-dev.3
+
+ - **REFACTOR**: update built serializers to use TypeToken for collection factories.
+
 ## 3.1.5-dev.2
 
  - Update a dependency to the latest release.

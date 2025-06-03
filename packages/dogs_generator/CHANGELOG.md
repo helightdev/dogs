@@ -1,3 +1,7 @@
+## 7.0.0-dev.3
+
+ - **FEAT**: add serial name override compatibility.
+
 ## 7.0.0-dev.2
 
  - Update a dependency to the latest release.

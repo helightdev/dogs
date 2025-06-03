@@ -3,6 +3,64 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-06-03
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_core` - `v10.0.0-dev.3`](#dogs_core---v1000-dev3)
+
+Packages with other changes:
+
+ - [`dogs_built` - `v3.1.5-dev.3`](#dogs_built---v315-dev3)
+ - [`dogs_flutter` - `v0.0.1-dev.5`](#dogs_flutter---v001-dev5)
+ - [`dogs_generator` - `v7.0.0-dev.3`](#dogs_generator---v700-dev3)
+ - [`dogs_odm` - `v1.0.0-alpha.20`](#dogs_odm---v100-alpha20)
+ - [`dogs_forms` - `v0.2.4-dev.3`](#dogs_forms---v024-dev3)
+ - [`dogs_firestore` - `v0.3.0-dev.3`](#dogs_firestore---v030-dev3)
+ - [`dogs_toml` - `v2.3.5-dev.3`](#dogs_toml---v235-dev3)
+ - [`dogs_mongo_driver` - `v1.0.0-alpha.20`](#dogs_mongo_driver---v100-alpha20)
+ - [`dogs_yaml` - `v2.3.5-dev.3`](#dogs_yaml---v235-dev3)
+ - [`dogs_cbor` - `v2.3.5-dev.3`](#dogs_cbor---v235-dev3)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_forms` - `v0.2.4-dev.3`
+ - `dogs_firestore` - `v0.3.0-dev.3`
+ - `dogs_toml` - `v2.3.5-dev.3`
+ - `dogs_mongo_driver` - `v1.0.0-alpha.20`
+ - `dogs_yaml` - `v2.3.5-dev.3`
+ - `dogs_cbor` - `v2.3.5-dev.3`
+
+---
+
+#### `dogs_core` - `v10.0.0-dev.3`
+
+ - **FIX**: Make operation field nullable to handle converters without validation.
+ - **BREAKING** **FEAT**: various changes to the core system to support runtime generated structures.
+
+#### `dogs_built` - `v3.1.5-dev.3`
+
+ - **REFACTOR**: update built serializers to use TypeToken for collection factories.
+
+#### `dogs_flutter` - `v0.0.1-dev.5`
+
+ - **FEAT**: add support for schemas, refactor some stuff and new bindings.
+
+#### `dogs_generator` - `v7.0.0-dev.3`
+
+ - **FEAT**: add serial name override compatibility.
+
+#### `dogs_odm` - `v1.0.0-alpha.20`
+
+ - **REFACTOR**: update built serializers to use TypeToken for collection factories.
+
+
 ## 2025-04-16
 
 ### Changes
