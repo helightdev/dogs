@@ -1,4 +1,4 @@
-# 5. Polymorphism
+# Polymorphism
 DOGs supports polymorphism on a per-field basis. This means that you can have a field with any type
 you want, as long as all leaf types are serializable. If you want to use polymorphism, you need to
 add the `@polymorphic` annotation - This is required so you don't accidentally use polymorphism
@@ -82,5 +82,3 @@ class Person {
 }
 
 ```
-
-[Continue Reading! :material-arrow-right:](/converters/){ .md-button .md-button--primary }

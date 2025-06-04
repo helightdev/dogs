@@ -1,4 +1,4 @@
-# 3. Projection
+# Projection
 
 You can project multiple objects and maps into a single object by using the `project` method.
 
@@ -31,4 +31,3 @@ var reduced = dogs.project<NameAndAge>(
     the engine can only infer the type for concrete classes. If you want to project collections or
     other non-concrete types, convert the object using `toNative()` first.
 
-[Continue Reading! :material-arrow-right:](/validation/){ .md-button .md-button--primary }

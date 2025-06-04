@@ -1,7 +1,9 @@
 site_name: Dart Object Graphs
+copyright: Released under the Apache License 2.0
 
 theme:
   name: material
+  locale: en
   palette:
     primary: indigo
     scheme: slate
@@ -25,35 +27,20 @@ nav:
   - "DOGs":
     - index.md
     - installation.md
-    - "Getting Started":
-      - serializables.md
-      - serialization.md
-      - projection.md
-      - validation.md
-      - polymorphism.md
-      - converters.md
+    - "Basics":
+      - basics/serializables.md
+      - basics/serialization.md
+      - basics/converters.md
+      - basics/polymorphism.md
+      - basics/projection.md
+      - basics/validation.md
     - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md
       - advanced/operation_modes.md
-      - advanced/tree_converters.md
-    - "Database Support (ODM)":
-      - odm/start.md
-      - odm/query_dsl.md
-  - "Forms [dogs_forms]":
-      - forms/index.md
-      - forms/start.md
-      - forms/customization.md
-      - forms/translation.md
   - "Built [dogs_built]":
       - built/index.md
       - built/start.md
-  - "Firestore [dogs_firestore]":
-      - firestore/index.md
-      - firestore/start.md
-      - firestore/queries.md
-      - firestore/subcollections.md
-      - firestore/mappings.md
 
 markdown_extensions:
   - pymdownx.highlight:

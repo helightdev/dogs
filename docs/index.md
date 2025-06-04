@@ -1,7 +1,7 @@
 <h1 align="left">
     Dart Object Graphs
     <a href="https://github.com/invertase/melos">
-        <img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg" alt="melos">
+        <img src="https://img.shields.io/badge/maintained%20with-melos-f700ff.svg" alt="melos" >
     </a>
 </h1>
 
@@ -10,7 +10,7 @@ generation to make your code more concise and fluent to write. The core package 
 to support a wide array of encodings and comes with json support out of the box.
 
 !!! note "Getting Started"
-    To get started with DOGs, you should start by reading [Serializable Classes](/serializables)
+    To get started with DOGs, you should start by reading [Serializable Classes](/docs/basics/serializables.md)
     and continue on in the order of the sidebar. If you need help, you can always join our
     [Discord](https://discord.gg/6HKuGSzYKJ).
 

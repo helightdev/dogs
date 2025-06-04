@@ -14,6 +14,8 @@
     --md-fg-elevated: hsla(var(--md-hue), 8%, 90%, 0.95);
     --md-fg-white: hsla(var(--md-hue), 8%, 100%, 1);
 
+    --md-hue-tint: hsla(var(--md-hue), 100%, 70%, 1);
+
     --md-border-radius: 16px;
 }
 
@@ -21,38 +23,47 @@
 /* Header colors for admonitions */
 .warning {
     --md-fg-elevated: #ffa733;
+    --md-hue-tint: #ffa733;
 }
 
 .abstract {
     --md-fg-elevated: #4dc6ff;
+    --md-hue-tint: #4dc6ff;
 }
 
 .tip {
     --md-fg-elevated: #3df2da;
+    --md-hue-tint: #3df2da;
 }
 
 .info {
     --md-fg-elevated: #40e6ff;
+    --md-hue-tint: #40e6ff;
 }
 
 .example {
     --md-fg-elevated: #b499ff;
+    --md-hue-tint: #b499ff;
 }
 
 .success {
     --md-fg-elevated: #39e681;
+    --md-hue-tint: #39e681;
 }
 
 .failure {
     --md-fg-elevated: #ff8080;
+    --md-hue-tint: #ff8080;
 }
 
 .note {
     --md-fg-elevated: #448aff;
+    --md-hue-tint: #448aff;
 }
 
 .question {
     --md-fg-elevated: #77e92f;
+    --md-hue-tint: #77e92f;
 }
 
 /* Admonition Tweaks */
@@ -91,13 +102,11 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600 !important;
 }
 
+
 .md-sidebar--primary a.md-nav__link--active {
-    background-color: hsla(var(--md-hue), 48%, 48%, 0.15);
-    border-radius: 8px;
-    padding: 8px 12px 8px 12px;
-    translate: -12px 0;
     font-weight: bold;
 }
+
 
 .md-nav__title, .md-nav__item--nested > label {
     margin-top: 16px;
@@ -116,17 +125,20 @@ table {
     padding-bottom: 4px !important;
 }
 
-div.highlight code {
+div.highlight code, .md-search-result pre > code {
     border-radius: var(--md-border-radius) !important;
     border-width: 1px;
     border-style: solid;
     border-color: var(--md-default-fg-color--lightest);
     --md-code-hl-name-color: var(--md-default-fg-color);
+    background: var(--md-container-bg-color);
 }
 
-p > code {
+*:not(pre) > code:not(.md-code__content) {
     padding: 2px 8px 2px 8px !important;
     border-radius: 4px !important;
+    background-color: color-mix(in srgb, var(--md-hue-tint) 8%, var(--md-container-bg-color)) !important;
+    color: color-mix(in srgb, var(--md-hue-tint) 80%, var(--md-code-fg-color)) !important;
 }
 
 .tabbed-set {
@@ -141,9 +153,6 @@ p > code {
     padding: var(--md-border-radius) !important;
 }
 
-div.highlight code {
-    background: var(--md-container-bg-color);
-}
 
 /* Search Box */
 .md-search:not(:has(.md-search-result__list[role=list])) form {
@@ -163,4 +172,18 @@ div.highlight code {
 /* Misc */
 .md-button {
     border-radius: 16px !important;
+}
+
+/* Strong handling */
+.md-content strong {
+    color: var(--md-fg-elevated) !important;
+}
+
+details a:not(.md-button), div.admonition a:not(.md-button) {
+    color: var(--md-fg-elevated) !important;
+}
+
+/* Underline links */
+.md-content p a:not(.md-button) {
+    text-decoration: underline !important;
 }

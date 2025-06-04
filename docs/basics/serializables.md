@@ -1,4 +1,4 @@
-# 1. Serializable Classes
+# Serializable Classes
 
 To create a serializable class, just annotate it with `@serializable` and mixin
 `Dataclass<T>`. The code generator will then generate the required structure definition of
@@ -42,6 +42,25 @@ Not every serializable class must be semantically equal to this dataclass exampl
 Besides the initially presented dataclass, DOGs also supports the following other
 conformities:
 
+=== "Basic"
+
+    ``` dart
+    @serializable
+    class Person {
+    
+      String name;
+      int age;
+      Set<String>? tags;
+    
+      Person(this.name, this.age, this.tags);
+    }
+    ```
+    
+    If you don't use the dataclass mixin, the generator will not generate equality and hashcode
+    implementations for this structure and you will have to implement them yourself if required.
+    Since the generator doesn't expect this class to be immutable, you can use mutable fields
+    and setters with this type of serializable class.
+
 === "Dataclass"
 
     ``` dart
@@ -81,25 +100,6 @@ conformities:
       });
     }
     ```
-
-=== "Basic"
-
-    ``` dart
-    @serializable
-    class Person {
-    
-      String name;
-      int age;
-      Set<String>? tags;
-    
-      Person(this.name, this.age, this.tags);
-    }
-    ```
-    
-    If you don't use the dataclass mixin, the generator will not generate equality and hashcode
-    implementations for this structure and you will have to implement them yourself if required.
-    Since the generator doesn't expect this class to be immutable, you can use mutable fields
-    and setters with this type of serializable class.
 
 === "Beans"
 
@@ -225,46 +225,38 @@ and will **omit the field** if it is.
 
 ## Restrictions
 To make your serializable classes work with the serialization system, you must follow a few
-restrictions (to read more about the restrictions, expand the region below).
+restrictions, some of them enforced by the code generator and some of them at runtime:
 
 ??? failure "No Class-Level Generics"
-    You cannot use generics on the class level. This is due to the fact that the generator
-    generates a structure definition for your class, which erases all generic information which
-    is not used in the fields of your class.  
-    **Generics on fields are allowed, though!**
+    You cannot use generics on the **class level**. This is because the default structure generator
+    generates a **static structure definition** for your class once, having dynamically changing field types
+    would make this definition invalid. If you require generics **for custom containers**, you can implement a
+    a **tree base converter** for this class.
 
 ??? failure "Don't use Records"
-    You cannot use records as field types. This is due to the fact that records can't be easily
-    represented by the structure format and make the overall system more unnecessarily complex and
-    possible generated model schemas obscure.
+    You cannot currently use records as field types, as the code generator does not support them.
+    I plan on adding support for them sometime in the future though.
 
 ??? failure "Types inside Field-Generics can't be nullable"
-    You cannot use generic field types with nullable type arguments, as the type tree does not
+    You **cannot use generic field types** with **nullable type arguments**, as the type tree does not
     store the nullability of the type arguments. If you require nullable items, consider using
     the `Optional<T>` type instead, which is a wrapper for nullable types.
 
     In practice, this means that you can't use `List<String?>` but you can use `List<Optional<String>>`.
   
-    **The root type of the field can be nullable!**  
-    `List<String>?` is perfectly fine without any changes.
+    However, the **root type** of the field **can be nullable**: `List<String>?` is **perfectly fine** without any changes.
 
-??? success "All leaf types must be serializable"
+??? success "All types must be serializable"
     All fields of your serializable class must be **serializable recursively** themselves.
-    For sealed classes for example, this means that all possible subclasses must be serializable. 
+    For sealed classes for example, this means that **all possible subclasses** must be serializable. 
     This also means, that they need to be marked as `@serializable` if they don't have a custom
     converter registered.  
-    See [Polymorphism](/polymorphism) for more information.
+
+    See [Polymorphism](/basics/polymorphism) for more information.
 
 ??? success "Parameters must either be formal or have a backing member with the same name"
-    All parameters of your constructor must either be formal parameters (this./super.) or have a
-    backing member with the same name. This class member can either be a field or a getter.
-
-??? abstract "Terminology: Leaf Type"
-    Objects which are possible terminal values of a type boundary are referred to as **leaf types**.
-    In practice, this refers to the `runtimeType` of the object in question.
-
-    If you have a field of type `Animal`, `Animal` is the type boundary and possible leaf types
-    would be `Dog` or `Cat`. For DOGs, this would mean `Dog` and `Cat` need to be serializable.
+    All parameters of your constructor must either be **formal parameters** (this./super.) or have a
+    **backing member with the same name**. This class member can either be a field or a getter.
 
 ## Modifications
 
@@ -280,8 +272,8 @@ Depending on your prefer code style, you can use either the imperative or lambda
     );
     ```
     
-    This method is similar to Kotlin's copy and copyWith. Parameters which
-    aren't explicitly overridden retain their original values.
+    This method is similar to Kotlin's `copy` and `copyWith`s which are common in dart libraries. Parameters which
+    aren't explicitly overridden retain their original values, allowing you to even set fields to null.
 
 === "Lambda Builder"
 
@@ -305,5 +297,3 @@ Depending on your prefer code style, you can use either the imperative or lambda
 
 !!! note "Availability"
     The builder is only available for dataclasses and basic serializable classes.
-
-[Continue Reading! :material-arrow-right:](/serialization/){ .md-button .md-button--primary }

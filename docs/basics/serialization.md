@@ -1,15 +1,15 @@
-# 2. Object Serialization
+# Encoding and Decoding
 
 You can use the global variable `dogs` to easily access any dogs related functionality.
 All default encoders, decoders and opmodes expose extension methods on the `DogEngine` class
 in the schema of `to{Format}<T>` and `to{Format}<T>`.
 
 !!! abstract "Common Method Signature"
-    `<T>` The type parameter species the type involved in the serialization.  
-    `kind:` Serialize common collections without TypeTrees.  
-    `type:` Use a basic Type instead of the generic argument.  
+    `<T>` The return type parameter, which by default is used to lookup the converter.  
+    `kind:` Serialize lists and sets without specifying a type tree.  
+    `type:` Specify a type other than the return type parameter to be used for serialization.  
     `tree:` Use a tree base converter resolution. Refer to 
-    [Tree Converters](/advanced/tree_converters) for more information.
+    [Tree Converters](/basics/converters/#tree-converters) for more information.
 
     > If the type is **overridden** by `type` or `tree`, the **type parameter** will **only** be 
     be used **for casting**.
@@ -18,13 +18,13 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
 ## JSON Serialization
 ### Encoding
 === "Single"
-    ``` { .dart title="Json Encode"}
+    ``` { .dart title="Json Encode" .focus hl_lines="2" }
     var person = Person("Alex", 22, {"developer", "dart"});
     var json = dogs.toJson<Person>(person);
     ```
 
 === "List"
-    ``` { .dart title="Encode List"}
+    ``` { .dart title="Encode List" .focus hl_lines="2-5" }
     var persons = [Person(...), Person(...)];
     var json = dogs.toJson(persons,
         type: Person,
@@ -33,7 +33,7 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
     ```
 
 === "Map"
-    ``` { .dart title="Encode Map" }
+    ``` { .dart title="Encode Map" .focus hl_lines="2-4"}
     var personMap = {"a": Person(...)};
     var json = dogs.toJson(personMap,
         tree: QualifiedTypeTree.map<String,Person>()
@@ -42,15 +42,14 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
 
     !!! example "This is a general example for TypeTrees"
         This can also be used for custom collections, wrappers, etc.  
-        For more information, refer to [Tree Converters](/advanced/tree_converters) and
-        [Structures](/advanced/structures#type-tree-resolution).
+        For more information, refer to [Tree Converters](/basics/converters/#tree-converters) and
+        [Structures](/advanced/structures/#type-tree-resolution).
 
 === "Runtime Type"
-    ``` { .dart title="Json Encode Dynamic Type"}
+    ``` { .dart title="Json Encode Dynamic Type" .focus hl_lines="2-4" }
     var person = Person("Alex", 22, {"developer", "dart"});
-    var type = PersonSupertype;
     var json = dogs.toJson(person,
-        type: type
+        type: PersonSupertype
     );
     ```
 
@@ -70,18 +69,18 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
 ### Decoding
 
 === "Single"
-    ``` { .dart title="Json Decode" }
-    var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
-    var person = dogs.fromJson<Person>(person);
+    ``` { .dart title="Json Decode" .focus hl_lines="2"  }
+    var json = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
+    var person = dogs.fromJson<Person>(json);
     ```
     !!! tip "Type Parameter required!"
         Even when the type is inferred, you should always specify the type
         to avoid unexpected behavior.
 
 === "List"
-    ``` { .dart .annotate title="Json Decode List" }
-    var encoded = """[{"name":"Alex","age":22,"tags":["developer","dart"]}]""";
-    var persons = dogs.fromJson<List>(encoded,
+    ``` { .dart .annotate title="Json Decode List" .focus hl_lines="2-5"  }
+    var json = """[{"name":"Alex","age":22,"tags":["developer","dart"]}]""";
+    var persons = dogs.fromJson<List>(json,
         type: Person,
         kind: IterableKind.list
     ).cast<Person>();
@@ -91,9 +90,9 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
         It is just specified here so you **don't have to cast** the resulting type.
 
 === "Map"
-    ``` { .dart .annotate title="Json Decode Map" }
-    var encoded = """{"a":{"name":"Alex","age":22,"tags":["developer","dart"]}}""";
-    var map = dogs.fromJson<Map<String,Person>>(encoded,
+    ``` { .dart .annotate title="Json Decode Map" .focus hl_lines="2-4"  }
+    var json = """{"a":{"name":"Alex","age":22,"tags":["developer","dart"]}}""";
+    var map = dogs.fromJson<Map<String,Person>>(json,
         tree: QualifiedTypeTree.map<String,Person>()
     );
     ```
@@ -102,11 +101,10 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
         It is just specified here so you **don't have to cast** the resulting type.
 
 === "Runtime Type"
-    ``` { .dart title="Json Decode Dynamic Type" }
-    var encoded = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
-    var type = PersonSupertype;
-    var person = dogs.fromJson(encoded,
-        type: type
+    ``` { .dart title="Json Decode Dynamic Type" .focus hl_lines="2-4"  }
+    var json = """{"name":"Alex","age":22,"tags":["developer","dart"]}""";
+    var person = dogs.fromJson(json,
+        type: PersonSupertype
     );
     ```
     !!! example "Type Parameter not required!"
@@ -114,7 +112,7 @@ in the schema of `to{Format}<T>` and `to{Format}<T>`.
         It is just specified here so you **don't have to cast** the resulting type.#
 
 === "Nullable"
-    ``` { .dart title="Json Decode Nullable" }
+    ``` { .dart title="Json Decode Nullable" .focus hl_lines="2-4"  }
     var json = """null""";
     var person = dogs.fromJson<Person?>(json,
         type: Person,
@@ -141,5 +139,3 @@ var encoded = {
 };
 var person = dogs.fromNative<Person>(encoded);
 ```
-
-[Continue Reading! :material-arrow-right:](/projection/){ .md-button .md-button--primary }

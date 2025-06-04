@@ -16,11 +16,6 @@ All annotation validators are created by making the annotation class extend `Str
 implement `FieldValidator` or `ClassValidator`. When constructing the validation mode for the
 generated structure, the field annotations are collected and the individual validators are created.
 
-## API Schema Visitor
-
-Using the `APISchemaObjectMetaVisitor` interface, you can create a visitor that will be called
-when the api schema is generated for a structure. 
-
 ## Converter Supplier
 
 Using the `ConverterSupplyingVisitor` interface, you can create a converter supplying visitor that
