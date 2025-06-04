@@ -304,6 +304,24 @@ final class Projection<T> {
     return this;
   }
 
+  /// Sets the value at the given [path] to the native map representation of [instance].
+  Projection<T> set<S>(String path, S value,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final native =
+    engine.toNative<S>(value, kind: kind, type: type, tree: tree);
+    transformers.add((v) => Projections.$set(v, path, native));
+    return this;
+  }
+
+  /// Sets the value at the given [path] to the field map representation of [value].
+  Projection<T> setFields<S>(String path, S value,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    final fieldMap =
+    engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
+    transformers.add((v) => Projections.$set(v, path, fieldMap));
+    return this;
+  }
+
   /// Sets the value at [path] to the [value].
   Projection<T> setValue(String path, dynamic value) {
     transformers.add((v) => Projections.$set(v, path, value));
@@ -322,28 +340,38 @@ final class Projection<T> {
     return this;
   }
 
-  /// Sets the value at the given [path] to the native map representation of [instance].
-  Projection<T> set<S>(String path, S value,
-      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final native =
-        engine.toNative<S>(value, kind: kind, type: type, tree: tree);
-    transformers.add((v) => Projections.$set(v, path, native));
-    return this;
-  }
-
-  Projection<T> setFields<S>(String path, S value,
-      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final fieldMap =
-        engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
-    transformers.add((v) => Projections.$set(v, path, fieldMap));
-    return this;
-  }
-
   /// Adds a transformer to the projection.
   Projection<T> addTransformer(ProjectionTransformer transformer) {
     transformers.add(transformer);
     return this;
   }
+
+  /// Unwraps the value at the given [path] and sets it to its native representation.
+  Projection<T> unwrapType<S>(String path, {
+    IterableKind kind = IterableKind.none, Type? type, TypeTree? tree,
+  }) {
+    transformers.add((v) {
+      final result = Projections.$get(v, path);
+      if (!result.exists) return v;
+      final newValue = engine.toNative(result.value, kind: kind, type: type, tree: tree);
+      return Projections.$set(v, path, newValue);
+    });
+    return this;
+  }
+
+  /// Unwraps the value at the given [path] and converts it to a field map.
+  Projection<T> unwrapFields<S>(String path, {
+    IterableKind kind = IterableKind.none, Type? type, TypeTree? tree,
+  }) {
+    transformers.add((v) {
+      final result = Projections.$get(v, path);
+      if (!result.exists) return v;
+      final newValue = engine.toFieldMap(result.value, kind: kind, type: type, tree: tree);
+      return Projections.$set(v, path, newValue);
+    });
+    return this;
+  }
+
 
   /// Applies the projection to the given optional [initial] map and returns the result.
   T perform([Map<String, dynamic>? initial]) {
