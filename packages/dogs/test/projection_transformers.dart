@@ -17,6 +17,8 @@
 import "package:dogs_core/dogs_core.dart";
 import "package:test/test.dart";
 
+import "utils/schema.dart";
+
 void main() {
   test("Transform root field", () {
     final buffer = <String, dynamic>{
@@ -75,6 +77,7 @@ void main() {
       }
     };
     final transformed = Projections.move("a.b", "d")(buffer);
+    print(transformed);
     expect(transformed["a"].containsKey("b"), false);
     expect(transformed["d"], 1);
     expect(buffer["a"]["b"], 1);
@@ -91,5 +94,60 @@ void main() {
     expect(transformed["a"].containsKey("b"), false);
     expect(transformed["a"]["d"]["e"], 1);
     expect(buffer["a"]["b"], 1);
+  });
+
+  test("Set root using set", () {
+    final buffer = <String, dynamic>{
+      "a": <String, dynamic>{
+        "b": 1,
+        "c": 2,
+      }
+    };
+    final transformed = Projections.$set(buffer, "", {"x": 42});
+    expect(transformed, unorderedDeepEquals({"x": 42}));
+  });
+
+  test("Move using trailing wildcard", () {
+    final buffer = <String, dynamic>{
+      "a": <String, dynamic>{
+        "b": 1,
+        "c": 2,
+      },
+      "d": <String, dynamic>{
+        "e": 3,
+      }
+    };
+    final transformed = Projections.$move(buffer, "a.*", "d", true);
+    expect(
+        transformed,
+        unorderedDeepEquals({
+          "d": <String, dynamic>{
+            "e": 3,
+            "b": 1,
+            "c": 2,
+          }
+        }));
+  });
+
+  test("Move using trailing wildcard to root", () {
+    final buffer = <String, dynamic>{
+      "a": <String, dynamic>{
+        "b": 1,
+        "c": 2,
+      },
+      "d": <String, dynamic>{
+        "e": 3,
+      }
+    };
+    final transformed = Projections.$move(buffer, "a.*", "", true);
+    expect(
+        transformed,
+        unorderedDeepEquals({
+          "d": <String, dynamic>{
+            "e": 3,
+          },
+          "b": 1,
+          "c": 2,
+        }));
   });
 }

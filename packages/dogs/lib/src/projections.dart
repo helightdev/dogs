@@ -329,6 +329,11 @@ final class Projection<T> {
   }
 
   /// Moves the value from [from] and writes it to [to].
+  ///
+  /// To merge all values from a map to another map, specify [from] as
+  /// `from.*` and [to] as the target path.
+  ///
+  /// To move to the root map, specify [to] as `""` or `"."`.
   Projection<T> move(String from, String to) {
     transformers.add(Projections.move(from, to));
     return this;
@@ -384,6 +389,15 @@ final class Projection<T> {
     }
     return engine.fromNative<T>(result, type: type, tree: tree);
   }
+
+  /// Applies the projection to the given optional [initial] map and returns the result as a map.
+  Map<String, dynamic> performMap([Map<String, dynamic>? initial]) {
+    var result = initial ?? <String, dynamic>{};
+    for (final transformer in transformers) {
+      result = transformer(result);
+    }
+    return result;
+  }
 }
 
 /// A result of traversing a map.
@@ -400,6 +414,7 @@ class Projections {
     final subPaths = path.split(".");
     dynamic value = map;
     for (var path in subPaths) {
+      if (path.isEmpty) continue;
       if (value is! Map) return (exists: false, value: null);
       if (!value.containsKey(path)) return (exists: false, value: null);
       value = value[path];
@@ -414,6 +429,7 @@ class Projections {
     final subPaths = path.split(".");
     final result = <String, dynamic>{};
     var current = result;
+    final isRoot = path.replaceAll(".", "").isEmpty;
     for (var i = 0; i < subPaths.length - 1; i++) {
       final path = subPaths[i];
       if (current.containsKey(path)) {
@@ -423,27 +439,65 @@ class Projections {
         current = current[path];
       }
     }
+    if (isRoot) return value;
     current[subPaths.last] = value;
     return $clone(map)..addAll(result);
+  }
+
+  static Map<String,dynamic> $move(Map<String, dynamic> map, String from, String to, bool delete) {
+    final isWildcard = from.endsWith(".*");
+    if (isWildcard) {
+      final path = from.substring(0, from.length - 2);
+      final value = $get(map, path);
+      if (!value.exists) return map;
+      if (value.value is! Map) {
+        throw ArgumentError("Source path '$from' is not a map");
+      }
+      if (delete) {
+        map = $delete(map, path);
+      }
+      final target = $get(map, to);
+      if (!target.exists) {
+        return $set(map, to, value.value);
+      }
+      if (target.value is! Map) {
+        throw ArgumentError("Target path '$to' is not a map");
+      }
+
+      final targetMap = $clone((target.value as Map<String, dynamic>?) ?? <String, dynamic>{});
+      targetMap.addAll(value.value as Map<String, dynamic>);
+      return $set(map, to, targetMap);
+    } else {
+      final value = $get(map, from);
+      if (!value.exists) return map;
+      if (delete) {
+        map = $delete(map, from);
+      }
+      return $set(map, to, value.value);
+    }
   }
 
   /// Deletes the value at [path] in the given [map]. Returns a new map
   /// with the updated values and leaves the original map untouched.
   static Map<String, dynamic> $delete(Map<String, dynamic> map, String path) {
+    if (path.replaceAll(".", "").isEmpty) return <String, dynamic>{};
     final subPaths = path.split(".");
-    final result = <String, dynamic>{};
-    var current = result;
-    for (var i = 0; i < subPaths.length - 1; i++) {
-      final path = subPaths[i];
-      if (current.containsKey(path)) {
-        current = current[path];
+
+    final Map<String, dynamic> result = $clone(map);
+    Map<String, dynamic> current = result;
+
+    for (int i = 0; i < subPaths.length - 1; i++) {
+      final key = subPaths[i];
+      if (current[key] is Map<String, dynamic>) {
+        current[key] = Map<String, dynamic>.from(current[key]);
+        current = current[key];
       } else {
-        current[path] = <String, dynamic>{};
-        current = current[path];
+        return result;
       }
     }
+
     current.remove(subPaths.last);
-    return $clone(map)..addAll(result);
+    return result;
   }
 
   /// Deep clones the given [map] and returns a new map with the same values.
@@ -498,12 +552,7 @@ class Projections {
 
   /// Applies a transformer that moves the value at [from] to [to].
   static ProjectionTransformer move(String from, String to) {
-    return (data) {
-      final result = $get(data, from);
-      if (!result.exists) return data;
-      data = $delete(data, from);
-      return $set(data, to, result.value);
-    };
+    return (data) => Projections.$move(data, from, to, true);
   }
 }
 
