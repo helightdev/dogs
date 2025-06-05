@@ -11,8 +11,10 @@ import 'package:smoke_test_1/values.dart';
 
 Future main() async {
   try {
-    await initialiseDogs();
-    installBuiltSerializers(serializers);
+    configureDogs(plugins: [
+      GeneratedModelsPlugin(),
+      BuiltInteropPlugin(serializers: serializers)
+    ]);
 
     testEncoderDecoder<SimpleValue>(SimpleValue((b) => b
       ..anInt = 0

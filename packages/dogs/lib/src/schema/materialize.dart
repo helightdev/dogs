@@ -83,8 +83,11 @@ class DogsMaterializer {
     return materializer;
   }
 
-  MaterializedConverter materialize(SchemaType type) {
-    final forked = engine.fork();
+  MaterializedConverter materialize(SchemaType type, bool useFork) {
+    final usedEngine = switch(useFork) {
+      true => engine.fork(),
+      false => engine,
+    };
     final (objects, unrolled) = SchemaObjectUnroller.unroll(type);
     if (unrolled is! SchemaReference) {
       throw DogException(
@@ -100,7 +103,7 @@ class DogsMaterializer {
           serialName,
           StructureConformity.basic,
           object.fields.map((e) {
-            var field = _materializeField(forked, e);
+            var field = _materializeField(usedEngine, e);
             for (var contributor in contributors) {
               field = contributor.transformField(field, e.type);
             }
@@ -112,14 +115,14 @@ class DogsMaterializer {
         structure = contributor.transformStructure(structure, object);
       }
       final converter = DogStructureConverterImpl(structure);
-      forked.registerAutomatic(converter);
+      usedEngine.registerAutomatic(converter);
     }
-    final converter = forked.findConverterBySerialName(rootSerialName)!;
-    final structure = forked.findStructureBySerialName(rootSerialName)!;
+    final converter = usedEngine.findConverterBySerialName(rootSerialName)!;
+    final structure = usedEngine.findStructureBySerialName(rootSerialName)!;
     final nativeMode =
-        forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
+        usedEngine.modeRegistry.nativeSerialization.forConverter(converter, usedEngine);
     final serializer =
-        MaterializedConverter(forked, converter, nativeMode, structure, type);
+        MaterializedConverter(usedEngine, converter, nativeMode, structure, type);
     return serializer;
   }
 

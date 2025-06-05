@@ -39,7 +39,7 @@ mixin OperationMapMixin<T> on DogConverter<T> {
   Map<Type, OperationMode<T> Function()> get modes;
 
   @override
-  OperationMode<T>? resolveOperationMode(Type opmodeType) =>
+  OperationMode<T>? resolveOperationMode(DogEngine engine, Type opmodeType) =>
       modes[opmodeType]?.call();
 }
 
@@ -103,7 +103,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
   T forConverter(DogConverter converter, DogEngine engine) {
     final cached = converterMapping[converter];
     if (cached != null) return cached as T;
-    var resolved = converter.resolveOperationMode(modeType);
+    var resolved = converter.resolveOperationMode(engine, modeType);
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
 
     if (resolved == null) {
@@ -119,7 +119,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
   T? forConverterNullable(DogConverter converter, DogEngine engine) {
     final cached = converterMapping[converter];
     if (cached != null) return cached as T;
-    var resolved = converter.resolveOperationMode(modeType);
+    var resolved = converter.resolveOperationMode(engine, modeType);
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
 
     if (resolved == null) return null;

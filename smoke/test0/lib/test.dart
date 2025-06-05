@@ -22,7 +22,10 @@ part "parts/trees.dart";
 part "parts/validators.dart";
 
 Future main() async {
-  await initialiseDogs();
+  configureDogs(plugins: [
+    GeneratedModelsPlugin(),
+  ]);
+
   group("Smoke Test", () {
     group("Models", testModels);
     test("Operations", testOperations);

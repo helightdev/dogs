@@ -45,7 +45,7 @@ class DogEngine with MetadataMixin {
 
   /// Read-only list of [DogConverter]s.
   final List<DogConverter> _converters = [];
-  final Map<Type, OperationModeFactory> _modeFactories = {};
+  final Map<Type, OperationModeFactory> _modeFactories = HashMap();
 
   /// Read-only mapping of [DogConverter]s.
   final Map<Type, DogConverter> _associatedConverters = HashMap();
@@ -63,17 +63,10 @@ class DogEngine with MetadataMixin {
   /// mapped under [_structures] doesn't have to be unique.
   final Map<String, DogStructure> _structuresBySerialName = HashMap();
 
-  final Map<String, String> _annotationTranslations = {};
+  final Map<String, String> _annotationTranslations = HashMap();
   final Map<Type, DogConverter> _runtimeTreeConverterCache = HashMap();
 
-  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories = {
-    TypeToken<List>(): DefaultTreeBaseFactories.list,
-    TypeToken<Iterable>(): DefaultTreeBaseFactories.iterable,
-    TypeToken<Set>(): DefaultTreeBaseFactories.set,
-    TypeToken<Map>(): DefaultTreeBaseFactories.map,
-    TypeToken<Optional>(): DefaultTreeBaseFactories.optional,
-    TypeToken<Page>(): DefaultTreeBaseFactories.page,
-  };
+  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories = HashMap();
 
   final List<WeakReference<DogEngine>> _children = [];
   final Map<Symbol, DogEngine> _identifiedChildren = HashMap();
@@ -104,6 +97,14 @@ class DogEngine with MetadataMixin {
       {bool registerBaseConverters = true,
       this.codec = const DefaultNativeCodec()}) {
     if (registerBaseConverters) {
+      // Register tree base converters
+      registerTreeBaseFactory(TypeToken<List>(), DefaultTreeBaseFactories.list);
+      registerTreeBaseFactory(TypeToken<Iterable>(), DefaultTreeBaseFactories.iterable);
+      registerTreeBaseFactory(TypeToken<Set>(), DefaultTreeBaseFactories.set);
+      registerTreeBaseFactory(TypeToken<Map>(), DefaultTreeBaseFactories.map);
+      registerTreeBaseFactory(TypeToken<Optional>(), DefaultTreeBaseFactories.optional);
+      registerTreeBaseFactory(TypeToken<Page>(), DefaultTreeBaseFactories.page);
+
       // Register polymorphic converters
       registerAutomatic(PolymorphicConverter(), false);
 
@@ -297,6 +298,11 @@ class DogEngine with MetadataMixin {
         _parent?.findAssociatedConverter(type);
   }
 
+  /// Returns the [TreeBaseConverterFactory] that is associated with [type].
+  TreeBaseConverterFactory? findTreeBaseFactory(TypeCapture type) {
+    return _treeBaseFactories[type] ?? _parent?.findTreeBaseFactory(type);
+  }
+
   /// Returns the [OperationModeFactory] that is associated with [type] or
   /// null if not present.
   OperationModeFactory? findModeFactory(Type type) {
@@ -342,10 +348,6 @@ class DogEngine with MetadataMixin {
   /// to the change stream if [emitChangeToStream] is true.
   void registerStructure(DogStructure structure,
       {bool emitChangeToStream = true, Type? type}) {
-    if (type == null &&
-        (structure.typeArgument == dynamic ||
-            structure.typeArgument == Object)) {}
-
     if (type == null) {
       if (structure.typeArgument != dynamic &&
           structure.typeArgument != Object) {
@@ -433,7 +435,7 @@ class DogEngine with MetadataMixin {
           "No type tree converter for tree $tree found. (Polymorphism disabled)");
     } else {
       // Use factory
-      final factory = _treeBaseFactories[tree.base];
+      final factory = findTreeBaseFactory(tree.base);
       if (factory == null) {
         throw DogException("No type tree converter for ${tree.base} found");
       }
@@ -461,7 +463,7 @@ class DogEngine with MetadataMixin {
       if (associated != null) return associated;
 
       // Use factory
-      final factory = _treeBaseFactories[tree.base];
+      final factory = findTreeBaseFactory(tree.base);
       if (factory == null) {
         throw DogException("No type tree converter for ${tree.base} found");
       }
@@ -552,6 +554,8 @@ class DogEngine with MetadataMixin {
     );
   }
 }
+
+typedef DogPlugin = void Function(DogEngine engine);
 
 /// Converts a [value] to the given [IterableKind]. If the value is a [Iterable]
 /// implementation, it will converted to the desired [IterableKind]. Trying to

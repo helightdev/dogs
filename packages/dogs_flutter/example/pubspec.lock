@@ -183,21 +183,21 @@ packages:
       path: "../../dogs"
       relative: true
     source: path
-    version: "10.0.0-dev.2"
+    version: "10.0.0-dev.3"
   dogs_flutter:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1-dev.4"
+    version: "0.0.1-dev.5"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../../dogs_generator"
       relative: true
     source: path
-    version: "7.0.0-dev.2"
+    version: "7.0.0-dev.3"
   duffer:
     dependency: transitive
     description:

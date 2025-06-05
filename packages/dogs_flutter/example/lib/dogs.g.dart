@@ -8,8 +8,6 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:example/models.conv.g.dart' as gen0;
 export 'package:example/models.conv.g.dart';
 
-Future initialiseDogs() async {
-  var engine = DogEngine.hasValidInstance ? DogEngine.instance : DogEngine();
+DogPlugin GeneratedModelsPlugin() => (engine) {
   engine.registerAllConverters([gen0.PersonConverter()]);
-  engine.setSingleton();
-}
+};

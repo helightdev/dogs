@@ -26,9 +26,6 @@ final dogsFlutterConverters = <DogConverter>[
   gen2.BindingStyleConverter(),
 ];
 
-void installDogsFlutterConverters() {
-  if (!DogEngine.hasValidInstance) {
-    throw Exception("No valid global DogEngine instance present");
-  }
-  DogEngine.instance.registerAllConverters(dogsFlutterConverters);
-}
+DogPlugin DogsFlutterGeneratedModelsPlugin() => (engine) {
+  engine.registerAllConverters(dogsFlutterConverters);
+};

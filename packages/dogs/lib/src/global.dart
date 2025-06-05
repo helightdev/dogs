@@ -34,25 +34,20 @@ bool kWarnPolymorphicTerminalNode = true;
 /// Static [DeepCollectionEquality] instance used by the dog library.
 const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 
-/// Creates a projection resulting in an instance of [T]. All input fields are dynamic and contain following:
-/// 1. Serializable Object (which is then converted to a field map)
-/// 2. String Keyed Maps
-/// 3. Iterables containing
-T project<T>(Object value, [Object? a, Object? b, Object? c]) =>
-    DogEngine.instance.project<T>(value, a, b, c);
-
 /// Compares two types by their hashcodes.
 @internal
 int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);
 
-/// Internal registry for [StructureOperationModeFactory]s.
-@internal
-Map<Type, StructureOperationModeFactory> structureOperationFactories = {};
-
-/// Register a [StructureOperationModeFactory] fallback for [DogStructure]s.
-/// This method exists for legacy reasons and should not be used anymore, please
-/// instead use [DogEngine.registerModeFactory] with normal
-/// [OperationModeFactory]s.
-void registerStructureOperationFactory(StructureOperationModeFactory factory) {
-  structureOperationFactories[factory.typeArgument] = factory;
+DogEngine configureDogs({
+  required List<DogPlugin> plugins,
+  bool global = true,
+}) {
+  final engine = DogEngine();
+  for (var plugin in plugins) {
+    plugin(engine);
+  }
+  if (global) {
+    engine.setSingleton();
+  }
+  return engine;
 }

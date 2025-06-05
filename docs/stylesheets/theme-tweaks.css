@@ -2,6 +2,7 @@
 [data-md-color-scheme="slate"] {
     --md-default-bg-color: hsla(var(--md-hue), 17%, 9%, 1);
     --md-container-bg-color: hsla(var(--md-hue), 17%, 8%, 1);
+    --md-footer-bg-color--dark: hsla(var(--md-hue), 17%, 8%, 1);
 
     --md-code-bg-color: rgba(255, 255, 255, 0.05);
     --md-code-fg-color: hsla(var(--md-hue), 18%, 100%, 0.95);
@@ -142,7 +143,7 @@ div.highlight code, .md-search-result pre > code {
 }
 
 .tabbed-set {
-    border-radius: 16px !important;
+    border-radius: var(--md-border-radius) !important;
     border-width: 1px;
     border-style: solid;
     border-color: var(--md-default-fg-color--lightest);
@@ -150,7 +151,7 @@ div.highlight code, .md-search-result pre > code {
 }
 
 .tabbed-block {
-    padding: var(--md-border-radius) !important;
+    padding: 16px !important;
 }
 
 
@@ -169,9 +170,13 @@ div.highlight code, .md-search-result pre > code {
     border-radius: 0 0 var(--md-border-radius) var(--md-border-radius) !important;
 }
 
+.md-search-result__meta {
+    background-color: transparent;
+}
+
 /* Misc */
 .md-button {
-    border-radius: 16px !important;
+    border-radius: var(--md-border-radius) !important;
 }
 
 /* Strong handling */
@@ -186,4 +191,12 @@ details a:not(.md-button), div.admonition a:not(.md-button) {
 /* Underline links */
 .md-content p a:not(.md-button) {
     text-decoration: underline !important;
+}
+
+.tabbed-block > :last-child {
+    margin-bottom: 0 !important;
+}
+
+.md-footer {
+    background-color: var(--md-footer-bg-color--dark) !important;
 }

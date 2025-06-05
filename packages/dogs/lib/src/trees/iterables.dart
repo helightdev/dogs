@@ -166,7 +166,7 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
       itemSubtree.qualifiedOrBase.consumeTypeArg(iterableDestructor, value);
 
   @override
-  OperationMode<dynamic>? resolveOperationMode(Type opmodeType) {
+  OperationMode<dynamic>? resolveOperationMode(DogEngine engine, Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
       return IterableTreeNativeOperation(this);
     }

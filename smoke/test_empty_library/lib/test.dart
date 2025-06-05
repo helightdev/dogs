@@ -18,6 +18,7 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:smoke_test_empty_library/dogs.g.dart';
 
 void main() {
-  DogEngine()..setSingleton();
-  installSmokeTestEmptyLibraryConverters();
+  configureDogs(plugins: [
+    SmokeTestEmptyLibraryGeneratedModelsPlugin()
+  ]);
 }

@@ -1,21 +1,26 @@
+---
+icon: octicons/download-16
+---
+
 To install the base package, modify your `pubspec.yaml` to include following packages:
 
-```yaml
+``` { .yaml .file title="pubspec.yaml" hl_lines="2 5-6" }
 dependencies:
-  dogs_core: ^7.2.2
+  dogs_core: any
 
 dev_dependencies:
   build_runner: any
-  dogs_generator: ^5.0.10
+  dogs_generator: any
 ```
 
-Following additional packages are available for your convenience:
+The following additional packages are available for your convenience:
 
-```yaml
-dogs_built: any # Support for built_value converters
-dogs_yaml: any # Support for YAML files
-dogs_toml: any # Support for TOML files
-dogs_cbor: any # Support for CBOR files
+``` { .yaml .file title="pubspec.yaml" hl_lines="2-6" }
+dependencies:
+  dogs_built: any # Support for built_value converters
+  dogs_yaml: any # Support for YAML files
+  dogs_toml: any # Support for TOML files
+  dogs_cbor: any # Support for CBOR files
 ```
 
 After adding the packages, run `pub get` to download the packages and `pub run build_runner build`
@@ -23,12 +28,14 @@ to generate the `dogs.g.dart` reactor file.
 
 After this, you just need to load the dogs engine from your entrypoint of choice:
 
-```dart
+``` { .dart .file title="main.dart" }
 import 'package:dogs_core/dogs_core.dart';
 import 'dogs.g.dart';
 
-Future main() async {
-  await initialiseDogs();
+void main() {
+  configureDogs(plugins: [
+    GeneratedModelsPlugin()
+  ]);
   // [...]
 }
 ```

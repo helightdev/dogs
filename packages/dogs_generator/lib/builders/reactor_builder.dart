@@ -25,7 +25,6 @@ class DogReactorBuilder extends SubjectReactorBuilder {
         log.info("Using dogs generator options specified in the pubspec.yaml");
         var map = dogsRegion as Map;
         isLibrary = map["library"] as bool;
-
         log.info("isLibrary: $isLibrary");
       }
     } catch (ex) {
@@ -55,25 +54,20 @@ class DogReactorBuilder extends SubjectReactorBuilder {
     var converterNameArr = "[${descriptorNames.map((e) => "$e()").join(", ")}]";
     if (!isLibrary) {
       code.codeBuffer.writeln("""
-      
-Future initialiseDogs() async {
-  var engine = DogEngine.hasValidInstance ? DogEngine.instance : DogEngine();
+       
+DogPlugin GeneratedModelsPlugin() => (engine) {
   engine.registerAllConverters($converterNameArr);
-  engine.setSingleton();
-}""");
+};""");
     } else {
       var fieldName = ReCase("$packageName converters").camelCase;
-      var funcName = ReCase("install $packageName converters").camelCase;
+      var funcName = ReCase("$packageName Generated Models Plugin").pascalCase;
       code.codeBuffer.writeln("""
       
 final $fieldName = <DogConverter>$converterNameArr;
       
-void $funcName() {
-  if (!DogEngine.hasValidInstance) {
-    throw Exception("No valid global DogEngine instance present");
-  }
-  DogEngine.instance.registerAllConverters($fieldName);
-}""");
+DogPlugin $funcName() => (engine) {
+  engine.registerAllConverters($fieldName);
+};""");
       print("Wrote: ${code.codeBuffer}");
     }
   }

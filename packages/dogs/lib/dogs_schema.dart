@@ -129,4 +129,11 @@ extension SchemaTypeExtension on SchemaType {
     return property(SchemaProperties.uniqueItems, true);
   }
 
+  SchemaType serialName(String serialName) {
+    if (this is! SchemaObject) {
+      throw ArgumentError("Serial name is only supported for objects");
+    }
+    return property(SchemaProperties.serialName, serialName);
+  }
+
 }

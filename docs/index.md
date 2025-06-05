@@ -1,3 +1,7 @@
+---
+icon: simple/dart
+---
+
 <h1 align="left">
     Dart Object Graphs
     <a href="https://github.com/invertase/melos">
@@ -14,20 +18,10 @@ to support a wide array of encodings and comes with json support out of the box.
     and continue on in the order of the sidebar. If you need help, you can always join our
     [Discord](https://discord.gg/6HKuGSzYKJ).
 
-    [Getting Started! :material-send:](/serializables/){ .md-button .md-button--primary }
-
+    [Getting Started! :material-send:](/installation/){ .md-button .md-button--primary } &nbsp;
     [Learn by Example! :material-send:](https://github.com/helightdev/dogs_examples){ .md-button .md-button--primary }
     
 
 ## Important Links
-[GitHub :simple-github:](https://github.com/DarwinFramework/dogs){ .md-button .md-button--primary }
+[GitHub :simple-github:](https://github.com/DarwinFramework/dogs){ .md-button .md-button--primary } &nbsp;
 [Discord :simple-discord:](https://discord.gg/6HKuGSzYKJ){ .md-button .md-button--primary }
-
-## Mascot
-<img src="/assets/logo.png" align="left" width="100px" alt="Frosty" onclick="alert('As you pet Frosty, he wiggles his tail happily and his eyes light up with joy 🤗✨🐾💙')">
-This is **Frosty**, our AI generated mascot!  
-You can pet him, by clicking on him. He loves it!  
-<span style="font-size: 0.8em">
-<br>
-_Though please don't feed him, he is on a diet ~ Christoph_
-</span>

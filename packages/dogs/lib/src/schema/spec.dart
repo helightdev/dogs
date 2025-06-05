@@ -40,7 +40,14 @@ extension SchemaGenerateExtension on DogEngine {
   /// Materialization will create an engine fork with the custom types defined
   /// in the schema.
   MaterializedConverter materialize(SchemaType type) {
-    return DogsMaterializer.get(this).materialize(type);
+    return DogsMaterializer.get(this).materialize(type, true);
+  }
+
+  /// Materializes a [type] schema in the current engine scope, registering
+  /// the resulting structures and converters.
+  SyntheticTypeCapture importSchema(SchemaType type) {
+    final materialized = DogsMaterializer.get(this).materialize(type, false);
+    return SyntheticTypeCapture(materialized.structure.serialName);
   }
   
 }

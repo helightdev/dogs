@@ -4,8 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 
 void main() {
-  DogEngine().setSingleton();
-  configureDogsFlutter();
+  configureDogs(plugins: [
+    DogsFlutterPlugin()
+  ]);
+
   group("Flutter Converter Tests", () {
     test("Serialize Offset", () {
       final offset = Offset(10, 20);

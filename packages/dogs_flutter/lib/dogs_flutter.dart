@@ -55,18 +55,19 @@ final defaultFactories = OperationModeFactory.compose<FlutterWidgetBinder>([
   OperationModeFactory.typeSingleton<bool, FlutterWidgetBinder>(BoolFlutterBinder()),
 ]);
 
-void configureDogsFlutter({
+// ignore: non_constant_identifier_names
+DogPlugin DogsFlutterPlugin({
   List<OperationModeFactory<FlutterWidgetBinder>>? binders,
   bool addSchemaContributors = true,
-}) {
-  installDogsFlutterConverters();
+}) => (DogEngine engine) {
+  DogsFlutterGeneratedModelsPlugin()(engine);
   final modeFactory = OperationModeFactory.compose<FlutterWidgetBinder>([
     ...?binders,
     defaultFactories
   ]);
-  dogs.registerModeFactory(modeFactory, type: FlutterWidgetBinder);
+  engine.registerModeFactory(modeFactory, type: FlutterWidgetBinder);
 
   if (addSchemaContributors) {
-    DogsMaterializer.get().contributors.add(SchemaBindingStyleContributor());
+    DogsMaterializer.get(engine).contributors.add(SchemaBindingStyleContributor());
   }
-}
+};

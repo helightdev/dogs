@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initialiseDogs();
-  configureDogsFlutter();
+  configureDogs(plugins: [
+    GeneratedModelsPlugin(),
+    DogsFlutterPlugin()
+  ]);
   runApp(const MyApp());
 }
 
@@ -18,8 +20,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    InputDecoration d;
-
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

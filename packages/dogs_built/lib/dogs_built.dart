@@ -9,27 +9,29 @@ import 'package:dogs_core/dogs_core.dart';
 class GeneratedBuiltInteropConverter<T> extends DefaultStructureConverter<T> {
   GeneratedBuiltInteropConverter({required super.struct});
 
-  Map<Type, OperationMode<T> Function()> get modes => {
-        NativeSerializerMode: () {
-          var mapper = BuiltCompatibility.serializers!;
-          var serializer = mapper.serializerForType(T)! as Serializer<T>;
-          return NativeSerializerMode.create<T>(
-            serializer: (value, engine) {
-              return mapper.serializeWith<T>(serializer, value);
-            },
-            deserializer: (value, engine) {
-              return mapper.deserializeWith<T>(serializer, value)!;
-            },
-          );
-        },
-      };
-
   @override
-  OperationMode<T>? resolveOperationMode(Type opmodeType) {
-    if (BuiltCompatibility.useStructureSerializers) {
-      return super.resolveOperationMode(opmodeType);
+  OperationMode<T>? resolveOperationMode(DogEngine engine, Type opmodeType) {
+    final compatibility = engine.getMeta<BuiltInteropCompatibility>();
+
+    // We treat built_value structures like normal structures when enabled.
+    if (compatibility.useStructureSerializers) {
+      return super.resolveOperationMode(engine, opmodeType);
     }
-    return modes[opmodeType]?.call();
+
+    // We use the built_value serializers directly for serialization by default.
+    if (opmodeType == NativeSerializerMode) {
+      var mapper = compatibility.serializers;
+      var serializer = mapper.serializerForType(T)! as Serializer<T>;
+      return NativeSerializerMode.create<T>(
+        serializer: (value, engine) {
+          return mapper.serializeWith<T>(serializer, value);
+        },
+        deserializer: (value, engine) {
+          return mapper.deserializeWith<T>(serializer, value)!;
+        },
+      );
+    }
+    return null;
   }
 
 }
@@ -56,31 +58,48 @@ class DogBuiltRuntimeConverter extends DogConverter with OperationMapMixin {
   };
 }
 
-class BuiltCompatibility {
-  static Serializers? serializers;
-  static bool useStructureSerializers = false;
+class BuiltInteropCompatibility {
+  Serializers serializers;
+  final bool useStructureSerializers;
+
+  BuiltInteropCompatibility({
+    required this.serializers,
+    this.useStructureSerializers = false,
+  });
 }
 
-void installBuiltSerializers(Serializers serializers) {
+// ignore: non_constant_identifier_names
+DogPlugin BuiltInteropPlugin({
+  required Serializers serializers,
+  bool useStructureSerializers = false,
+}) => (DogEngine engine) {
+  if (engine.getMetaOrNull<BuiltInteropCompatibility>() != null) {
+    throw ArgumentError("BuiltCompatibility is already set in the engine. "
+        "You should not register BuiltInteropPlugin multiple times.");
+  }
+
   serializers = (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
-  dogs.registerTreeBaseFactory(TypeToken<BuiltList>(), BuiltCollectionFactories.builtList);
-  dogs.registerTreeBaseFactory(TypeToken<BuiltSet>(), BuiltCollectionFactories.builtSet);
-  dogs.registerTreeBaseFactory(TypeToken<BuiltMap>(), BuiltCollectionFactories.builtMap);
-  dogs.registerTreeBaseFactory(TypeToken<BuiltListMultimap>(), BuiltCollectionFactories.builtListMultimap);
-  dogs.registerTreeBaseFactory(TypeToken<BuiltSetMultimap>(), BuiltCollectionFactories.builtSetMultimap);
+  engine.registerTreeBaseFactory(TypeToken<BuiltList>(), BuiltCollectionFactories.builtList);
+  engine.registerTreeBaseFactory(TypeToken<BuiltSet>(), BuiltCollectionFactories.builtSet);
+  engine.registerTreeBaseFactory(TypeToken<BuiltMap>(), BuiltCollectionFactories.builtMap);
+  engine.registerTreeBaseFactory(TypeToken<BuiltListMultimap>(), BuiltCollectionFactories.builtListMultimap);
+  engine.registerTreeBaseFactory(TypeToken<BuiltSetMultimap>(), BuiltCollectionFactories.builtSetMultimap);
+
+  engine.setMeta<BuiltInteropCompatibility>(BuiltInteropCompatibility(
+    serializers: serializers,
+    useStructureSerializers: useStructureSerializers,
+  ));
 
   for (var serializer in serializers.serializers) {
     for (var type in serializer.types) {
-      if (dogs.findStructureByType(type) == null) {
+      if (engine.findStructureByType(type) == null) {
         // TODO: Maybe not all built_value serializers should be registered. May lead to problems with built_collection tree types.
         DogBuiltRuntimeConverter converter = DogBuiltRuntimeConverter(serializer, serializers);
-        dogs.registerAssociatedConverter(converter, type: type);
-        dogs.registerStructure(converter.struct!, type: type);
-        dogs.registerShelvedConverter(converter);
+        engine.registerAssociatedConverter(converter, type: type);
+        engine.registerStructure(converter.struct!, type: type);
+        engine.registerShelvedConverter(converter);
       }
     }
   }
-
-  BuiltCompatibility.serializers = serializers;
-}
+};

@@ -24,9 +24,10 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
-  - "DOGs":
+  - "Core Package":
     - index.md
     - installation.md
+    - quickstart.md
     - "Basics":
       - basics/serializables.md
       - basics/serialization.md

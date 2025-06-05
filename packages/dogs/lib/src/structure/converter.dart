@@ -23,13 +23,12 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
   DefaultStructureConverter({required super.struct});
 
   @override
-  OperationMode<T>? resolveOperationMode(Type opmodeType) {
+  OperationMode<T>? resolveOperationMode(DogEngine engine, Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
       return StructureNativeSerialization<T>(struct!);
     }
     if (opmodeType == ValidationMode) return StructureValidation(struct!);
-    return structureOperationFactories[opmodeType]?.resolve(struct!)
-        as OperationMode<T>?;
+    return null;
   }
 
   @override
