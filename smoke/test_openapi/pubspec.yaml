@@ -13,15 +13,13 @@ dependencies:
   dogs_built: any
   built_collection: ^5.1.1
   built_value: ^8.8.1
-  openapi_generator_annotations: ^5.0.2
-  petstore_api:
-    path: api/petstore_api
+  openapi:
+    path: openapi
 
 dev_dependencies:
   build_runner: any
   dogs_generator: any
   built_value_generator: ^8.8.1
-  openapi_generator: ^5.0.2
 
   lints: ^2.0.1
   test: ^1.23.1

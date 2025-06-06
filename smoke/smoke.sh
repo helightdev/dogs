@@ -21,12 +21,15 @@ set -e
 # Provides test covering the core
 # library as well as the default
 # generator backend.
-cd test0; bash smoke.sh; cd ../
+(cd test0; bash smoke.sh;)
 
 # ======== Smoke Test 1 ========
 # Provides test covering the
 # built_value interop library.
-cd test1; bash smoke.sh; cd ../
+(cd test1; bash smoke.sh;)
 
 # ==== test_empty_library ======
-cd test_empty_library; bash smoke.sh; cd ../
+(cd test_empty_library; bash smoke.sh;)
+
+# ======= test_openapi =========
+(cd test_openapi; bash smoke.sh;)

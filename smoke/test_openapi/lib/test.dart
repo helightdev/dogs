@@ -8,16 +8,16 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:logging/logging.dart';
 import 'dart:io';
 
-import 'package:openapi_generator_annotations/openapi_generator_annotations.dart';
-
-@SerializableLibrary(include: ["package:petstore_api/src/model/.*"])
-import 'package:petstore_api/petstore_api.dart';
+@SerializableLibrary(include: ["package:openapi/src/model/.*"])
+import 'package:openapi/openapi.dart';
 
 import 'dogs.g.dart';
 
 Future main() async {
-  await initialiseDogs();
-  installBuiltSerializers(PetstoreApi().serializers);
+  configureDogs(plugins: [
+    GeneratedModelsPlugin(),
+    BuiltInteropPlugin(serializers: Openapi().serializers),
+  ]);
 
   // Does the generated api actually kinda work?
   Pet pet = (PetBuilder()
@@ -27,18 +27,9 @@ Future main() async {
 
   // Rebuilt using generated field maps
   var petStructure = dogs.findStructureByType(Pet);
-  var extractFields = petStructure!.getFieldMap(pet);
-  var rebuilt = dogs.project<Pet>(extractFields);
+  var encoded = dogs.toJson(pet);
+  var rebuilt = dogs.fromJson<Pet>(encoded);
 
+  print("OpenAPI test succeeded");
+  exit(0);
 }
-
-@Openapi(
-  additionalProperties:
-  DioProperties(pubName: 'petstore_api'),
-  inputSpec:
-  RemoteSpec(path: 'https://petstore.swagger.io/v2/swagger.json'),
-  generatorName: Generator.dio,
-  runSourceGenOnOutput: true,
-  outputDirectory: 'api/petstore_api',
-)
-class OpenApiGenerator {}

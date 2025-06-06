@@ -15,6 +15,19 @@
 #    limitations under the License.
 #
 
+# Setup OpenAPI Generator CLI
+pub global activate openapi_generator_cli
+
+(
+  rm -rf "openapi"
+  mkdir "openapi"
+  cd "openapi"
+  openapi-generator generate -i https://petstore.swagger.io/v2/swagger.json -g dart-dio
+  flutter pub get
+  flutter pub run build_runner build --delete-conflicting-outputs --verbose
+)
+
+# Run the test
 flutter pub get
 flutter pub upgrade
 flutter pub run build_runner build --delete-conflicting-outputs --verbose
