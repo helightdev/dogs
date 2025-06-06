@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dogs_firestore/src/engine.dart';
+import 'package:test_firestore/dogs.g.dart';
 
 import 'package:test_firestore/main.dart';
 import 'package:test_firestore/models/person.conv.g.dart';
@@ -13,9 +14,15 @@ import 'package:test_firestore/models/person.dart';
 import 'package:test_firestore/models/town.dart';
 
 Future<void> main() async {
-  await initialize();
   var fakeFirebaseFirestore = FakeFirebaseFirestore();
-  DogFirestoreEngine.install(dogs, fakeFirebaseFirestore);
+
+  configureDogs(
+      plugins: [
+        GeneratedModelsPlugin(),
+        FirebaseDogsPlugin(firestore: fakeFirebaseFirestore)
+      ]
+  );
+
   group("Basic Tests", () {
     late Town town;
     late Person person;

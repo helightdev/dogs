@@ -8,14 +8,7 @@ import 'package:test_firestore/dogs.g.dart';
 import 'models/person.dart';
 import 'models/town.dart';
 
-Future<void> initialize() async {
-  await initialiseDogs();
-  installFirebaseInterop();
-}
-
 void main() async {
-  await initialize();
-
   print("Connecting to Firestore...");
   await Firebase.initializeApp(options: FirebaseOptions(apiKey: "", appId: "test", messagingSenderId: "", projectId: "test"));
   print("Connected to Firestore");
@@ -23,6 +16,13 @@ void main() async {
     host: 'localhost:8080',
     sslEnabled: false,
     persistenceEnabled: false,
+  );
+
+  configureDogs(
+      plugins: [
+        GeneratedModelsPlugin(),
+        FirebaseDogsPlugin()
+      ]
   );
 
   // This app doesn't do anything
