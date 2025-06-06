@@ -180,7 +180,7 @@ packages:
   dogs_core:
     dependency: "direct overridden"
     description:
-      path: "../../dogs"
+      path: "../../dogs_core"
       relative: true
     source: path
     version: "10.0.0-dev.3"

@@ -1,6 +1,6 @@
 dependency_overrides:
   dogs_core:
-    path: ../packages/dogs
+    path: ../packages/dogs_core
   dogs_generator:
     path: ../packages/dogs_generator
   dogs_yaml:

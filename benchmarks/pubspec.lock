@@ -247,35 +247,35 @@ packages:
       path: "../formats/dogs_cbor"
       relative: true
     source: path
-    version: "2.3.5-dev.2"
+    version: "2.3.5-dev.3"
   dogs_core:
     dependency: "direct main"
     description:
-      path: "../packages/dogs"
+      path: "../packages/dogs_core"
       relative: true
     source: path
-    version: "10.0.0-dev.2"
+    version: "10.0.0-dev.3"
   dogs_generator:
     dependency: "direct dev"
     description:
       path: "../packages/dogs_generator"
       relative: true
     source: path
-    version: "7.0.0-dev.2"
+    version: "7.0.0-dev.3"
   dogs_toml:
     dependency: "direct main"
     description:
       path: "../formats/dogs_toml"
       relative: true
     source: path
-    version: "2.3.5-dev.2"
+    version: "2.3.5-dev.3"
   dogs_yaml:
     dependency: "direct main"
     description:
       path: "../formats/dogs_yaml"
       relative: true
     source: path
-    version: "2.3.5-dev.2"
+    version: "2.3.5-dev.3"
   duffer:
     dependency: transitive
     description:

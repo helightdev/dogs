@@ -1,7 +1,7 @@
 # melos_managed_dependency_overrides: dogs_forms
 dependency_overrides:
   dogs_core:
-    path: ../../dogs
+    path: ../../dogs_core
   dogs_flutter:
     path: ..
   dogs_generator:
