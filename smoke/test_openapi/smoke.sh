@@ -16,8 +16,10 @@
 #
 
 # Setup OpenAPI Generator CLI
-pub global activate openapi_generator_cli
+echo "Setting up OpenAPI Generator CLI..."
+flutter pub global activate openapi_generator_cli
 
+echo "Generating OpenAPI client code..."
 (
   rm -rf "openapi"
   mkdir "openapi"
@@ -28,6 +30,7 @@ pub global activate openapi_generator_cli
 )
 
 # Run the test
+echo  "Running OpenAPI client tests..."
 flutter pub get
 flutter pub upgrade
 flutter pub run build_runner build --delete-conflicting-outputs
