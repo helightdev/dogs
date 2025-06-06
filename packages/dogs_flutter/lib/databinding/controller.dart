@@ -122,6 +122,7 @@ class StructureBindingController<T> implements FieldBindingParent {
     );
   }
 
+  /// Creates a new [StructureBindingController] from a [SchemaType].
   static StructureBindingController schema({
     required SchemaType schema,
     DogEngine? engine,

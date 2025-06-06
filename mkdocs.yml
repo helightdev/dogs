@@ -39,6 +39,10 @@ nav:
       - advanced/structures.md
       - advanced/annotations.md
       - advanced/operation_modes.md
+  - "Flutter [dogs_flutter]":
+      - flutter/index.md
+      - flutter/converters.md
+      - flutter/binding.md
   - "Built [dogs_built]":
       - built/index.md
       - built/start.md

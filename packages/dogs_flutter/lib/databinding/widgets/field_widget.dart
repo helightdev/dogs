@@ -110,8 +110,6 @@ class _FieldBindingState extends State<FieldBinding> {
 
     if (widget.binder != null && structureBindingProvider != null) {
       if (currentBinder != widget.binder) {
-        print("Current binder: $currentBinder (${identityHashCode(currentBinder)}), Widget binder: ${widget.binder} (${identityHashCode(widget.binder)})");
-
         var structureBindingController = structureBindingProvider.controller;
         structureBindingController.rebindField(
           controller!.fieldName,
