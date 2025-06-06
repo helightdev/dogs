@@ -24,11 +24,11 @@ pub global activate openapi_generator_cli
   cd "openapi"
   openapi-generator generate -i https://petstore.swagger.io/v2/swagger.json -g dart-dio
   flutter pub get
-  flutter pub run build_runner build --delete-conflicting-outputs --verbose
+  flutter pub run build_runner build --delete-conflicting-outputs
 )
 
 # Run the test
 flutter pub get
 flutter pub upgrade
-flutter pub run build_runner build --delete-conflicting-outputs --verbose
+flutter pub run build_runner build --delete-conflicting-outputs
 flutter pub run lib/test.dart
