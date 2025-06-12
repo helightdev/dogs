@@ -79,3 +79,11 @@
     height: 20px;
     left: -8px;
 }
+
+.common-min-size-table th:nth-of-type(1) {
+    min-width: 200px;
+}
+
+.common-min-size-table td:nth-of-type(1) {
+    min-width: 200px;
+}

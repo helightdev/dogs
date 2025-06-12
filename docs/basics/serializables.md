@@ -198,31 +198,6 @@ have a backing field or getter with the same name. This list showcases all possi
     !!! note "Annotations go on the getter"
         Annotations for fields must be placed on the getter itself, not on the constructor parameter.
 
-## Default Values
-You can set default values for fields, which will be considered when deserializing and serializing
-the value of the field.
-
-```dart
-@DefaultValue("Alex")
-String name;
-```
-
-This will set the default value of the field to "Alex". If the **field is not present** in the serialized
-data, the **default value will be used**. If the field is present, the default value will be ignored.
-When the object is serialized, the serializer will check if the **value is equal to the default value**
-and will **omit the field** if it is. 
-
-
-!!! note "Including the default value"
-    If you want to include the field even if it is equal to the default
-    value, you can set the `keep` parameter to `true`.
-    
-    ```dart
-    @DefaultValue("Alex", keep: true)
-    String name;
-    ```
-
-
 ## Restrictions
 To make your serializable classes work with the serialization system, you must follow a few
 restrictions, some of them enforced by the code generator and some of them at runtime:
@@ -297,3 +272,20 @@ Depending on your prefer code style, you can use either the imperative or lambda
 
 !!! note "Availability"
     The builder is only available for dataclasses and basic serializable classes.
+
+## Special Annotations
+
+Dogs include several annotations that can be used to modify the behavior of serialization and deserialization.
+Here is a (non-exhaustive) list of the most common annotations and their usage:
+
+<div class="common-min-size-table" markdown="1">
+
+| Annotation                                       | Applicable To        | Description                                                                                                                                                                                                                                                                                        |
+|--------------------------------------------------|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `@PropertyName()`                                | **Field**            | Sets the name of the field when serialized. This is useful if you want to use a different name for the field in the serialized data than in the class.                                                                                                                                             |
+| `@EnumProperty()`                                | **Field**            | The name of the enum constant can be overridden using the `name` parameter. Additionally, a single constant can be marked as `fallback` to handle invalid enum values.                                                                                                                             |
+| `@DefaultValue()`                                | **Field**            | Sets a default value for the field. If the field is not present in the serialized data, the default value will be used. If the field is present, the default value will be ignored. If `keep` is set to `true`, the field will be included in the output even if it is equal to the default value. |
+| `@excludeNull`                                   | **Field**, **Class** | Excludes the field from serialization if it is null. This is useful for fields that are optional and should not be serialized if they are not set. Can also be applied to a class to exclude all null values from serialization.                                                                   |
+| `@LightweightMigration()` `@RevisionMigration()` | **Class**            | Specifies migrations that can be applied before the data is deserialized.                                                                                                                                                                                                                          |
+
+</div>
