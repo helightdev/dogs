@@ -1,3 +1,8 @@
+## 10.0.0-dev.4
+
+ - **FEAT**: enhance enum serialization with fallback and name overrides.
+ - **FEAT**: add field and class level serialization hooks to exclude null values.
+
 ## 10.0.0-dev.3
 
 > Note: This release has breaking changes.

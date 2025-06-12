@@ -3,6 +3,62 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-06-12
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_built` - `v3.1.5-dev.4`](#dogs_built---v315-dev4)
+ - [`dogs_firestore` - `v0.3.0-dev.4`](#dogs_firestore---v030-dev4)
+ - [`dogs_flutter` - `v0.0.1-dev.6`](#dogs_flutter---v001-dev6)
+ - [`dogs_generator` - `v7.0.0-dev.4`](#dogs_generator---v700-dev4)
+
+Packages with other changes:
+
+ - [`dogs_core` - `v10.0.0-dev.4`](#dogs_core---v1000-dev4)
+ - [`dogs_toml` - `v2.3.5-dev.4`](#dogs_toml---v235-dev4)
+ - [`dogs_cbor` - `v2.3.5-dev.4`](#dogs_cbor---v235-dev4)
+ - [`dogs_yaml` - `v2.3.5-dev.4`](#dogs_yaml---v235-dev4)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_toml` - `v2.3.5-dev.4`
+ - `dogs_cbor` - `v2.3.5-dev.4`
+ - `dogs_yaml` - `v2.3.5-dev.4`
+
+---
+
+#### `dogs_built` - `v3.1.5-dev.4`
+
+ - **BREAKING** **REFACTOR**: overhaul outdated core design decisions.
+
+#### `dogs_firestore` - `v0.3.0-dev.4`
+
+ - **BREAKING** **FIX**: compatibility with the latest dogs_core changes.
+
+#### `dogs_flutter` - `v0.0.1-dev.6`
+
+ - **REFACTOR**: remove dogs_odm and dogs_mongo.
+ - **FEAT**: add enumeration support and corresponding Flutter bindings.
+ - **DOCS**: initialize demo dogs_flutter project for docs with basic structure and components.
+ - **BREAKING** **REFACTOR**: overhaul outdated core design decisions.
+
+#### `dogs_generator` - `v7.0.0-dev.4`
+
+ - **FEAT**: enhance enum serialization with fallback and name overrides.
+ - **BREAKING** **REFACTOR**: overhaul outdated core design decisions.
+
+#### `dogs_core` - `v10.0.0-dev.4`
+
+ - **FEAT**: enhance enum serialization with fallback and name overrides.
+ - **FEAT**: add field and class level serialization hooks to exclude null values.
+
+
 ## 2025-06-03
 
 ### Changes

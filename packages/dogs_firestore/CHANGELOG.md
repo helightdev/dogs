@@ -1,3 +1,9 @@
+## 0.3.0-dev.4
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FIX**: compatibility with the latest dogs_core changes.
+
 ## 0.3.0-dev.3
 
  - Update a dependency to the latest release.

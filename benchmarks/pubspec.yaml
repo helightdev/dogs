@@ -8,10 +8,10 @@ environment:
 
 dependencies:
   path: ^1.8.0
-  dogs_core: ^10.0.0-dev.3
-  dogs_yaml: ^2.3.5-dev.3
-  dogs_cbor: ^2.3.5-dev.3
-  dogs_toml: ^2.3.5-dev.3
+  dogs_core: ^10.0.0-dev.4
+  dogs_yaml: ^2.3.5-dev.4
+  dogs_cbor: ^2.3.5-dev.4
+  dogs_toml: ^2.3.5-dev.4
   aqueduct_isolates: 1.0.1
   equatable: ^2.0.5
   mock_data: ^2.0.0
@@ -30,7 +30,7 @@ dev_dependencies:
   lints: ^5.1.1
   test: ^1.25.15
 
-  dogs_generator: ^7.0.0-dev.3
+  dogs_generator: ^7.0.0-dev.4
   build_web_compilers: any
   built_value_generator: ^8.9.5
   dart_mappable_builder: ^4.4.0

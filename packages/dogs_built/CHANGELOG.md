@@ -1,3 +1,9 @@
+## 3.1.5-dev.4
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **REFACTOR**: overhaul outdated core design decisions.
+
 ## 3.1.5-dev.3
 
  - **REFACTOR**: update built serializers to use TypeToken for collection factories.

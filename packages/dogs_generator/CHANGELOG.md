@@ -1,3 +1,10 @@
+## 7.0.0-dev.4
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: enhance enum serialization with fallback and name overrides.
+ - **BREAKING** **REFACTOR**: overhaul outdated core design decisions.
+
 ## 7.0.0-dev.3
 
  - **FEAT**: add serial name override compatibility.
