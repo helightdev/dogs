@@ -197,3 +197,56 @@ class CustomSerialName {
   String value;
   CustomSerialName(this.value);
 }
+
+@serializable
+class FieldExclusionModel with Dataclass<FieldExclusionModel> {
+  String? always;
+
+  @excludeNull
+  String? maybe;
+
+  FieldExclusionModel({
+    this.always,
+    this.maybe,
+  });
+
+  factory FieldExclusionModel.variant0() {
+    return FieldExclusionModel(
+      always: "always",
+      maybe: "maybe",
+    );
+  }
+
+  factory FieldExclusionModel.variant1() {
+    return FieldExclusionModel(
+      always: null,
+      maybe: null,
+    );
+  }
+}
+
+@serializable
+@excludeNull
+class ClassExclusionModel with Dataclass<ClassExclusionModel> {
+  String? a;
+  String? b;
+
+  ClassExclusionModel({
+    this.a,
+    this.b,
+  });
+
+  factory ClassExclusionModel.variant0() {
+    return ClassExclusionModel(
+      a: "always",
+      b: "maybe",
+    );
+  }
+
+  factory ClassExclusionModel.variant1() {
+    return ClassExclusionModel(
+      a: null,
+      b: null,
+    );
+  }
+}

@@ -36,6 +36,11 @@ void testModels() {
   testSingleModel<GetterModel>(GetterModel.variant0, GetterModel.variant1);
   testSingleModel<DefaultValueModel>(
       DefaultValueModel.variant0, DefaultValueModel.variant1);
+  testSingleModel<FieldExclusionModel>(
+      FieldExclusionModel.variant0, FieldExclusionModel.variant1);
+  testSingleModel<ClassExclusionModel>(
+      ClassExclusionModel.variant0, ClassExclusionModel.variant1);
+
 
   test("Default Values", () {
     var defaultValues = DefaultValueModel.variant0();
@@ -54,6 +59,17 @@ void testModels() {
         dogs.findAssociatedConverter(CustomSerialName)?.struct?.serialName;
     expect(serialName, isNotNull);
     expect(serialName, "MyCustomSerialName");
+  });
+
+  test("Exclusion Hooks", () {
+    final fieldMap = dogs.toNative(FieldExclusionModel.variant1()) as Map;
+    final classMap = dogs.toNative(ClassExclusionModel.variant1()) as Map;
+
+    expect(fieldMap.containsKey("always"), true);
+    expect(fieldMap.containsKey("maybe"), false);
+
+    expect(classMap.containsKey("a"), false);
+    expect(classMap.containsKey("b"), false);
   });
 }
 
