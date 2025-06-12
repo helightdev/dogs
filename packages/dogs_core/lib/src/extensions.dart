@@ -160,7 +160,8 @@ extension DogEngineShortcuts on DogEngine {
   /// Converts a field map to an instance of [T] using the structure
   /// associated with [T] or [type] and the supplied [IterableKind].
   /// If [tree] is supplied, the structure associated with the tree is used.
-  T fromFieldMap<T>(Map<String,dynamic> fieldMap, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+  T fromFieldMap<T>(Map<String, dynamic> fieldMap,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final structureType = tree?.base.typeArgument ?? type ?? T;
     final structure = findStructureByType(structureType);
     if (structure == null) {
@@ -169,11 +170,11 @@ extension DogEngineShortcuts on DogEngine {
     return structure.instantiateFromFieldMap(fieldMap);
   }
 
-
   /// Converts a value of type [T] to a field map using the structure
   /// associated with [T] or [type] and the supplied [IterableKind].
   /// If [tree] is supplied, the structure associated with the tree is used.
-  Map<String,dynamic> toFieldMap<T>(T value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+  Map<String, dynamic> toFieldMap<T>(T value,
+      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final structureType = tree?.base.typeArgument ?? type ?? T;
     final structure = findStructureByType(structureType);
     if (structure == null) {
@@ -240,7 +241,8 @@ extension StructureExtensions on DogStructure {
 
   /// Returns an [IsolatedClassValidator] that can be used to evaluate the
   /// [ClassValidator]s and [FieldValidator]s of this structure.
-  IsolatedClassValidator getClassValidator({DogEngine? engine, List<IsolatedFieldValidator>? fieldValidators}) {
+  IsolatedClassValidator getClassValidator(
+      {DogEngine? engine, List<IsolatedFieldValidator>? fieldValidators}) {
     engine ??= DogEngine.instance;
     final classValidators = annotationsOf<ClassValidator>().toList();
     for (var value in classValidators) {
@@ -249,9 +251,8 @@ extension StructureExtensions on DogStructure {
     final classValidatorCacheData =
         classValidators.map((e) => e.getCachedValue(this)).toList();
 
-    fieldValidators ??= fields
-          .map((e) => e.getFieldValidator(engine: engine))
-          .toList();
+    fieldValidators ??=
+        fields.map((e) => e.getFieldValidator(engine: engine)).toList();
 
     final fieldAccessors = <dynamic Function(dynamic)>[];
     for (var i = 0; i < fields.length; i++) {
@@ -288,7 +289,8 @@ extension StructureExtensions on DogStructure {
     if (fields.isNotEmpty) {
       buffer.writeln("  Fields:");
       for (var field in fields) {
-        buffer.write("    ${field.name}: ${field.type.qualifiedOrBase.typeArgument}");
+        buffer.write(
+            "    ${field.name}: ${field.type.qualifiedOrBase.typeArgument}");
         if (field.optional) {
           buffer.write("?");
         }
@@ -323,7 +325,6 @@ extension StructureExtensions on DogStructure {
 
     return buffer.toString();
   }
-
 }
 
 /// Extensions on [DogStructureField]s.

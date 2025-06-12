@@ -32,7 +32,6 @@ SchemaType enumeration(List<String> values) {
   return SchemaType.string.property(SchemaProperties.$enum, values);
 }
 
-
 extension SchemaTypeExtension on SchemaType {
   SchemaType array() => SchemaType.array(this);
 
@@ -116,7 +115,7 @@ extension SchemaTypeExtension on SchemaType {
 
     throw ArgumentError("Lte is not supported for $this");
   }
-  
+
   SchemaType positive() => gte(0);
   SchemaType negative() => lte(0);
   SchemaType nonNegative() => gte(0);
@@ -135,5 +134,4 @@ extension SchemaTypeExtension on SchemaType {
     }
     return property(SchemaProperties.serialName, serialName);
   }
-
 }

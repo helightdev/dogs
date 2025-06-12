@@ -33,16 +33,17 @@ abstract class ConverterSupplyingVisitor extends StructureMetadata {
 }
 
 /// Annotation to manually set the convert used for a field to a fixed instance.
-class UseConverterInstance implements StructureMetadata, ConverterSupplyingVisitor {
-
+class UseConverterInstance
+    implements StructureMetadata, ConverterSupplyingVisitor {
   /// Fixed converter instance that will be used for the annotated field.
   final DogConverter converter;
 
   /// Annotation to manually set the convert used for a field to a fixed instance.
   const UseConverterInstance(this.converter);
-  
+
   @override
-  DogConverter resolve(DogStructure structure, DogStructureField field, DogEngine engine) {
+  DogConverter resolve(
+      DogStructure structure, DogStructureField field, DogEngine engine) {
     return converter;
   }
 }
@@ -90,7 +91,8 @@ class DogStructure<T> extends RetainedAnnotationHolder
   factory DogStructure.synthetic(String name) => DogStructure<T>(
       name, StructureConformity.basic, [], [], const MemoryDogStructureProxy());
 
-  DogStructureCopyFrontend<T> get copy => _DogStructureCopyFrontendImpl<T>(this);
+  DogStructureCopyFrontend<T> get copy =>
+      _DogStructureCopyFrontendImpl<T>(this);
 }
 
 /// Superclass for all structure related subtypes.
@@ -150,7 +152,6 @@ abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode>
   MODE_TYPE resolve(DogStructure structure);
 }
 
-
 abstract interface class DogStructureCopyFrontend<T> {
   /// Creates a copy of the structure with the given [name] and [conformity].
   DogStructure<T> call({
@@ -176,9 +177,13 @@ class _DogStructureCopyFrontendImpl<T> implements DogStructureCopyFrontend<T> {
   }) {
     return DogStructure<T>(
       serialName == #none ? structure.serialName : serialName as String,
-      conformity == #none ? structure.conformity : conformity as StructureConformity,
+      conformity == #none
+          ? structure.conformity
+          : conformity as StructureConformity,
       fields == #none ? structure.fields : fields as List<DogStructureField>,
-      annotations == #none ? structure.annotations : annotations as List<RetainedAnnotation>,
+      annotations == #none
+          ? structure.annotations
+          : annotations as List<RetainedAnnotation>,
       proxy == #none ? structure.proxy : proxy as DogStructureProxy,
     );
   }

@@ -191,7 +191,6 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
             .trim());
       }
 
-      var referencedClassName = codeContext.className(element);
       builder.extend = Reference(
           "$genAlias.DefaultStructureConverter<${codeContext.className(element)}>");
 
@@ -390,6 +389,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         ..body = Code("""
 var instance = ${element.name}Converter._activator(\$values);
 ${!hasRebuildHook ? "" : """if (\$src != null) {
+  // ignore: invalid_use_of_internal_member
   instance.postRebuild(\$src!, instance);
 }"""}
 return instance;""")));

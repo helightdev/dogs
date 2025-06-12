@@ -31,8 +31,10 @@ class LengthRange extends FieldValidator<bool>
 
   /// The message id used for the annotation result.
   static const String messageId = "length-range";
+
   /// The message id used when only the min length is set.
   static const String messageMinId = "length-range-min";
+
   /// The message id used when only the max length is set.
   static const String messageMaxId = "length-range-max";
 
@@ -50,7 +52,10 @@ class LengthRange extends FieldValidator<bool>
 
   @override
   void verifyUsage(DogStructureField field) {
-    if (field.serial.typeArgument != String) throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @LengthRange().");
+    if (field.serial.typeArgument != String) {
+      throw DogException(
+          "Field '${field.name}' must be a String/-List/-Iterable to use @LengthRange().");
+    }
   }
 
   @override
@@ -84,16 +89,14 @@ class LengthRange extends FieldValidator<bool>
     if (max == null) {
       return AnnotationResult(messages: [
         AnnotationMessage(
-            id: messageMinId,
-            message: "Must be at least %min% characters long")
+            id: messageMinId, message: "Must be at least %min% characters long")
       ]).withVariables({
         "min": min.toString(),
       });
     } else if (min == null) {
       return AnnotationResult(messages: [
         AnnotationMessage(
-            id: messageMaxId,
-            message: "Must be at most %max% characters long")
+            id: messageMaxId, message: "Must be at most %max% characters long")
       ]).withVariables({
         "max": max.toString(),
       });

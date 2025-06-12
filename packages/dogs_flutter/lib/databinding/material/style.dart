@@ -1,8 +1,6 @@
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_flutter/databinding/field_controller.dart';
-import 'package:dogs_flutter/databinding/opmode.dart';
 import 'package:dogs_flutter/databinding/style.dart';
-import 'package:dogs_flutter/databinding/widgets/field_widget.dart';
 import 'package:flutter/material.dart';
 
 class MaterialBindingStyle extends BindingStyleExtension<MaterialBindingStyle>
@@ -31,7 +29,8 @@ class MaterialBindingStyle extends BindingStyleExtension<MaterialBindingStyle>
 
 extension BindingStyleDataMaterialExtension on BindingStyle {
   InputDecoration buildMaterialDecoration(
-    BuildContext context, FieldBindingController fbc, {
+    BuildContext context,
+    FieldBindingController fbc, {
     bool includeLabel = true,
     bool includeHelper = true,
     bool includeHint = true,
@@ -54,12 +53,13 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     return decoration;
   }
 
-  Widget? buildMaterialLabelText(BuildContext context, {
+  Widget? buildMaterialLabelText(
+    BuildContext context, {
     Object? labelOverride = #none,
   }) {
     var label = this.label;
     if (labelOverride != #none) {
-       label = labelOverride as String?;
+      label = labelOverride as String?;
     }
 
     if (label == null) return null;
@@ -72,7 +72,9 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     return Text(label, style: inputTheme.labelStyle);
   }
 
-  Widget wrapHeaderLabelSection(Widget widget, BuildContext context, {
+  Widget wrapHeaderLabelSection(
+    Widget widget,
+    BuildContext context, {
     Object? labelOverride = #none,
   }) {
     var label = buildMaterialLabelText(context, labelOverride: labelOverride);

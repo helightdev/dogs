@@ -308,7 +308,7 @@ final class Projection<T> {
   Projection<T> set<S>(String path, S value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native =
-    engine.toNative<S>(value, kind: kind, type: type, tree: tree);
+        engine.toNative<S>(value, kind: kind, type: type, tree: tree);
     transformers.add((v) => Projections.$set(v, path, native));
     return this;
   }
@@ -317,7 +317,7 @@ final class Projection<T> {
   Projection<T> setFields<S>(String path, S value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final fieldMap =
-    engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
+        engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
     transformers.add((v) => Projections.$set(v, path, fieldMap));
     return this;
   }
@@ -352,31 +352,38 @@ final class Projection<T> {
   }
 
   /// Unwraps the value at the given [path] and sets it to its native representation.
-  Projection<T> unwrapType<S>(String path, {
-    IterableKind kind = IterableKind.none, Type? type, TypeTree? tree,
+  Projection<T> unwrapType<S>(
+    String path, {
+    IterableKind kind = IterableKind.none,
+    Type? type,
+    TypeTree? tree,
   }) {
     transformers.add((v) {
       final result = Projections.$get(v, path);
       if (!result.exists) return v;
-      final newValue = engine.toNative(result.value, kind: kind, type: type, tree: tree);
+      final newValue =
+          engine.toNative(result.value, kind: kind, type: type, tree: tree);
       return Projections.$set(v, path, newValue);
     });
     return this;
   }
 
   /// Unwraps the value at the given [path] and converts it to a field map.
-  Projection<T> unwrapFields<S>(String path, {
-    IterableKind kind = IterableKind.none, Type? type, TypeTree? tree,
+  Projection<T> unwrapFields<S>(
+    String path, {
+    IterableKind kind = IterableKind.none,
+    Type? type,
+    TypeTree? tree,
   }) {
     transformers.add((v) {
       final result = Projections.$get(v, path);
       if (!result.exists) return v;
-      final newValue = engine.toFieldMap(result.value, kind: kind, type: type, tree: tree);
+      final newValue =
+          engine.toFieldMap(result.value, kind: kind, type: type, tree: tree);
       return Projections.$set(v, path, newValue);
     });
     return this;
   }
-
 
   /// Applies the projection to the given optional [initial] map and returns the result.
   T perform([Map<String, dynamic>? initial]) {
@@ -444,7 +451,8 @@ class Projections {
     return $clone(map)..addAll(result);
   }
 
-  static Map<String,dynamic> $move(Map<String, dynamic> map, String from, String to, bool delete) {
+  static Map<String, dynamic> $move(
+      Map<String, dynamic> map, String from, String to, bool delete) {
     final isWildcard = from.endsWith(".*");
     if (isWildcard) {
       final path = from.substring(0, from.length - 2);
@@ -464,7 +472,8 @@ class Projections {
         throw ArgumentError("Target path '$to' is not a map");
       }
 
-      final targetMap = $clone((target.value as Map<String, dynamic>?) ?? <String, dynamic>{});
+      final targetMap = $clone(
+          (target.value as Map<String, dynamic>?) ?? <String, dynamic>{});
       targetMap.addAll(value.value as Map<String, dynamic>);
       return $set(map, to, targetMap);
     } else {

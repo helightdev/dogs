@@ -25,16 +25,12 @@ typedef EnumToString<T> = String Function(T?);
 /// A [DogConverter] that allows for the conversion of enum values to and from strings.
 abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
     with OperationMapMixin<T>, EnumConverter<T> {
-
   GeneratedEnumDogConverter();
 
-  GeneratedEnumDogConverter.structured({
-    required String serialName
-  }) : super(
-    isAssociated: true,
-    struct: DogStructure<T>.synthetic(serialName)
-  );
-  
+  GeneratedEnumDogConverter.structured({required String serialName})
+      : super(
+            isAssociated: true, struct: DogStructure<T>.synthetic(serialName));
+
   /// Function that converts a enum value to a string.
   EnumToString<T?> get toStr;
 
@@ -88,21 +84,22 @@ mixin EnumConverter<T> on DogConverter<T> {
   String valueToString(T? value);
 }
 
-
 /// A runtime string-based [EnumConverter] implementation
-class RuntimeEnumConverter extends SimpleDogConverter<String> with EnumConverter<String> {
+class RuntimeEnumConverter extends SimpleDogConverter<String>
+    with EnumConverter<String> {
   @override
   final List<String> values;
 
-  RuntimeEnumConverter(this.values, String serialName) : super(serialName: serialName);
+  RuntimeEnumConverter(this.values, String serialName)
+      : super(serialName: serialName);
 
   @override
   String deserialize(value, DogEngine engine) {
     if (!values.contains(value)) {
       throw DogSerializerException(
-        message: "Value '$value' is not a valid enum value. Valid values are: $values",
-        converter: this
-      );
+          message:
+              "Value '$value' is not a valid enum value. Valid values are: $values",
+          converter: this);
     }
     return value as String;
   }
@@ -118,7 +115,8 @@ class RuntimeEnumConverter extends SimpleDogConverter<String> with EnumConverter
     if (values.contains(value)) {
       return value;
     }
-    throw ArgumentError("Value '$value' is not a valid enum value. Valid values are: $values");
+    throw ArgumentError(
+        "Value '$value' is not a valid enum value. Valid values are: $values");
   }
 
   @override

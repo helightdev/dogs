@@ -14,7 +14,6 @@
  *    limitations under the License.
  */
 import "package:dogs_core/dogs_core.dart";
-import "package:dogs_core/src/schema/spec.dart";
 import "package:meta/meta.dart";
 
 part "trees/defaults.dart";
@@ -32,6 +31,7 @@ abstract class TreeBaseConverterFactory {
       TypeTree tree, DogEngine engine, bool allowPolymorphic);
 
   @internal
+
   /// Cached polymorphic converter.
   static final PolymorphicConverter polymorphicConverter =
       PolymorphicConverter();
@@ -39,7 +39,9 @@ abstract class TreeBaseConverterFactory {
   /// Returns the converter for a [tree].
   static DogConverter treeConverter(
       TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    if (tree.isTerminal && tree.base.typeArgument == dynamic && !tree.isSynthetic) {
+    if (tree.isTerminal &&
+        tree.base.typeArgument == dynamic &&
+        !tree.isSynthetic) {
       return polymorphicConverter;
     }
     return engine.getTreeConverter(tree, allowPolymorphic);

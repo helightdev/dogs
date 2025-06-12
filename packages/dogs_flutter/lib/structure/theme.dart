@@ -1,8 +1,9 @@
+// ignore_for_file: unused_import
+
 import 'package:dogs_core/dogs_core.dart';
 import 'package:flutter/material.dart';
 
 mixin AutoThemeMixin<SELF> implements Mergeable<SELF> {
-
   DogStructure get _structure {
     final structure = DogEngine.instance.findStructureByType(SELF);
     if (structure == null) {

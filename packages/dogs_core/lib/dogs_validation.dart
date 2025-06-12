@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-library dogs_validation;
+library;
 
 export "validation/blank.dart";
 export "validation/description.dart";

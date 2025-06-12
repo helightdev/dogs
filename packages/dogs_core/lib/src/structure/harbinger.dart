@@ -39,7 +39,10 @@ class StructureHarbinger<T> {
 
   /// Performs the converter lookup for a single field.
   @internal
-  static DogConverter? getConverter(DogEngine engine, DogStructure? structure, DogStructureField field, {
+  static DogConverter? getConverter(
+    DogEngine engine,
+    DogStructure? structure,
+    DogStructureField field, {
     bool nativeConverters = false,
   }) {
     if (structure != null) {
@@ -56,7 +59,8 @@ class StructureHarbinger<T> {
     }
 
     // This value is native, we don't need a converter
-    if (field.type.isQualified && engine.codec.isNative(field.type.qualified.typeArgument)) {
+    if (field.type.isQualified &&
+        engine.codec.isNative(field.type.qualified.typeArgument)) {
       if (nativeConverters) {
         return engine.codec.bridgeConverters[field.type.qualified.typeArgument];
       }

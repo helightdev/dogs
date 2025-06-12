@@ -14,5 +14,4 @@ class DogsFlutterSchemaTags {
     bindingStylePrefix,
     bindingStyleSuffix,
   };
-
 }

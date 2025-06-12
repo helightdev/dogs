@@ -1,4 +1,3 @@
-import 'package:benchmarks/benchmarks.dart' as benchmarks;
 import 'package:benchmarks/dogs.g.dart';
 import 'package:benchmarks/exercises/builders.dart';
 import 'package:benchmarks/exercises/direct_equality.dart';

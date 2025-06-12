@@ -10,12 +10,11 @@ import 'package:cbor/cbor.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 extension DogCborExtension on DogEngine {
-
   /// Converts a [value] to its Cbor representation using the
   /// converter associated with [T], [type] or [tree].
   List<int> toCbor<T>(T value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final native = this.toNative<T>(value, kind: kind, type: type, tree: tree);
+    final native = toNative<T>(value, kind: kind, type: type, tree: tree);
     return cbor.cborEncode(CborValue(native));
   }
 
@@ -24,7 +23,7 @@ extension DogCborExtension on DogEngine {
   T fromCbor<T>(List<int> encoded,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native = cbor.cborDecode(encoded).toJson();
-    return this.fromNative<T>(native, kind: kind, type: type, tree: tree);
+    return fromNative<T>(native, kind: kind, type: type, tree: tree);
   }
 
   /// Converts a [value] to its Cbor representation using the

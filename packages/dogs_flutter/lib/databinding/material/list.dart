@@ -8,7 +8,12 @@ class ListBindingStyle extends BindingStyleExtension<ListBindingStyle>
   final ListBindingViewFactory? viewFactory;
   final String? itemLabel;
 
-  const ListBindingStyle({this.addButtonLabel, this.spacing, this.viewFactory, this.itemLabel});
+  const ListBindingStyle({
+    this.addButtonLabel,
+    this.spacing,
+    this.viewFactory,
+    this.itemLabel,
+  });
 
   @override
   BindingStyle createStyleOverrides() {
@@ -38,7 +43,6 @@ abstract class ListBindingViewFactory {
 }
 
 class DefaultListBindingViewFactory implements ListBindingViewFactory {
-
   const DefaultListBindingViewFactory();
 
   @override

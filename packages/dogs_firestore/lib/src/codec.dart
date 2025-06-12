@@ -53,12 +53,12 @@ class FirebaseNativeCodec extends DogNativeCodec {
 
   @override
   Map<Type, DogConverter> get bridgeConverters => const {
-    String: NativeRetentionConverter<String>(),
-    int: NativeRetentionConverter<int>(),
-    double: NativeRetentionConverter<double>(),
-    bool: NativeRetentionConverter<bool>(),
-    Timestamp: NativeRetentionConverter<Timestamp>(),
-    GeoPoint: NativeRetentionConverter<GeoPoint>(),
-    Blob: NativeRetentionConverter<Blob>(),
-  };
+        String: NativeRetentionConverter<String>(),
+        int: NativeRetentionConverter<int>(),
+        double: NativeRetentionConverter<double>(),
+        bool: NativeRetentionConverter<bool>(),
+        Timestamp: NativeRetentionConverter<Timestamp>(),
+        GeoPoint: NativeRetentionConverter<GeoPoint>(),
+        Blob: NativeRetentionConverter<Blob>(),
+      };
 }

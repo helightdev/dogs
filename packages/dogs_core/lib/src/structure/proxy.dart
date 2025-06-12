@@ -68,7 +68,6 @@ class MemoryDogStructureProxy extends DogStructureProxy {
 /// Simple class-less implementation of [DogStructureProxy], that serializes to
 /// a string keyed field map.
 class FieldMapStructureProxy extends DogStructureProxy {
-
   /// Ordered list of the field names of the structure.
   final List<String> fieldNames;
 
@@ -77,7 +76,8 @@ class FieldMapStructureProxy extends DogStructureProxy {
   const FieldMapStructureProxy(this.fieldNames);
 
   @override
-  dynamic instantiate(List args) => Map<String,dynamic>.fromIterables(fieldNames, args);
+  dynamic instantiate(List args) =>
+      Map<String, dynamic>.fromIterables(fieldNames, args);
 
   @override
   dynamic getField(obj, int index) {
@@ -95,7 +95,6 @@ class FieldMapStructureProxy extends DogStructureProxy {
   @override
   bool Function(dynamic a, dynamic b)? get equalsFunc => null;
 }
-
 
 /// [DogStructureProxy] implementation for creating universal object factories.
 class ObjectFactoryStructureProxy<T> extends DogStructureProxy {

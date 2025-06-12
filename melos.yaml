@@ -16,6 +16,9 @@ scripts:
     run: dart analyze .
     exec:
       concurrency: 1
+    packageFilters:
+      ignore:
+        - "benchmarks"
   format:
     name: format
     description: 'Runs the dart formatter'

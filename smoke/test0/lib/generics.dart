@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_core/dogs_core.dart';
+
 
 //@serializable
 class GenericModel<A>{

@@ -15,10 +15,7 @@
  */
 
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-
-import 'package:vm_service/vm_service.dart';
 
 class Benchmark {
   List<Exercise> exercises;
@@ -41,11 +38,12 @@ class Benchmark {
   }
 }
 
-abstract class Exercise<T extends Exercise<T,C>, C extends ExerciseCompetitor<T,C>>  {
+abstract class Exercise<T extends Exercise<T, C>,
+    C extends ExerciseCompetitor<T, C>> {
   String name;
   int warmupIterations;
   int iterations;
-  Map<String,Object> options;
+  Map<String, Object> options;
   List<C> competitors;
 
   Exercise({
@@ -55,17 +53,17 @@ abstract class Exercise<T extends Exercise<T,C>, C extends ExerciseCompetitor<T,
     this.iterations = 1000,
     this.options = const {},
   });
-  
+
   Map<String, Object> perform() {
     var times = runAll();
-    return <String,Object>{
+    return <String, Object>{
       "name": name,
       "iterations": iterations,
       "options": options,
       "times": times,
     };
   }
-  
+
   Map<String, int> runAll() {
     var results = <String, int>{};
     for (var competitor in competitors) {
@@ -89,7 +87,8 @@ abstract class Exercise<T extends Exercise<T,C>, C extends ExerciseCompetitor<T,
   }
 }
 
-abstract class ExerciseCompetitor<T extends Exercise<T,C>, C extends ExerciseCompetitor<T,C>> {
+abstract class ExerciseCompetitor<T extends Exercise<T, C>,
+    C extends ExerciseCompetitor<T, C>> {
   String name;
 
   ExerciseCompetitor({

@@ -162,7 +162,6 @@ class PropertySerializer {
 /// enum value. The name can be overridden by specifying a [name]. This enum
 /// value can also be marked as the fallback value.
 class EnumProperty {
-
   /// The name of the enum value used as a map key in serialization.
   final String? name;
 

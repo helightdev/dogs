@@ -16,6 +16,8 @@
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 const benchmarkData = """
 
 [{"name":"Json Serialize","iterations":1000,"options":{"count":500},"times":{"native":484319,"json_ser":479635,"freezed":478858,"dogs":556399,"built":627856,"mappable":919908}},{"name":"Json Deserialize","iterations":1000,"options":{"count":500},"times":{"native":288237,"json_ser":311281,"freezed":313311,"dogs":390838,"built":457629,"mappable":516350}},{"name":"Builders","iterations":1000,"options":{"count":500},"times":{"dogs":15634,"built":19282,"freezed":3890,"mappable":53510}},{"name":"Direct Equality","iterations":1000000,"options":{},"times":{"native":5320,"dogs":7530,"built":5552,"equatable":22825,"freezed":7335,"mappable":76747}},{"name":"Index Of","iterations":1000,"options":{"count":500},"times":{"native":656027,"dogs":580548,"built":508889,"equatable":2637151,"freezed":673228,"mappable":7619813}},{"name":"Map Key","iterations":1000,"options":{"count":500},"times":{"native":153598,"dogs":5602,"built":9389,"equatable":265269,"freezed":163469,"mappable":440505}}]
@@ -23,14 +25,15 @@ const benchmarkData = """
 
 List<BenchmarkEntry> loadBenchmarkEntries() {
   var list = jsonDecode(benchmarkData.trim()) as List;
-  return List.generate(list.length, (index) => BenchmarkEntry.fromMap(list[index]));
+  return List.generate(
+      list.length, (index) => BenchmarkEntry.fromMap(list[index]));
 }
 
 class BenchmarkEntry {
   String name;
   int iterations;
-  Map<String,Object> options;
-  Map<String,int> times;
+  Map<String, Object> options;
+  Map<String, int> times;
 
   BenchmarkEntry({
     required this.name,
@@ -49,12 +52,13 @@ class BenchmarkEntry {
   }
 
   factory BenchmarkEntry.fromMap(Map map) {
-    print(map);
+    if (kDebugMode) {
+      print(map);
+    }
     return BenchmarkEntry(
-      name: map['name'] as String,
-      iterations: map['iterations'] as int,
-      options: (map['options'] as Map).cast<String,Object>(),
-      times: (map['times'] as Map).cast<String,int>()
-    );
+        name: map['name'] as String,
+        iterations: map['iterations'] as int,
+        options: (map['options'] as Map).cast<String, Object>(),
+        times: (map['times'] as Map).cast<String, int>());
   }
 }

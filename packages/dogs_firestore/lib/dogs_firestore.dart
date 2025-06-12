@@ -1,12 +1,12 @@
-library dogs_firestore;
+library;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_firestore/src/engine.dart';
 
 export 'src/annotations.dart';
 export 'src/entity.dart' hide setInjectedSnapshot;
-export 'src/opmode.dart';
 export 'src/interop.dart';
+export 'src/opmode.dart';
 
 extension DogFirestoreExtension on FirebaseFirestore {
   /// Returns a [CollectionReference] for the specified [T] type that uses a [DogStructure] based
@@ -16,7 +16,9 @@ extension DogFirestoreExtension on FirebaseFirestore {
   }
 }
 
-extension DogCollectionReferenceExtension<T> on CollectionReference<Map<String, dynamic>> {
+extension DogCollectionReferenceExtension<T>
+    on CollectionReference<Map<String, dynamic>> {
   /// Applies a DOGs based document converter to this collection reference using [withConverter].
-  CollectionReference<R> withStructure<R>() => DogFirestoreEngine.instance.applyConverter<R>(this);
+  CollectionReference<R> withStructure<R>() =>
+      DogFirestoreEngine.instance.applyConverter<R>(this);
 }

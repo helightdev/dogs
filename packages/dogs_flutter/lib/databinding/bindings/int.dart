@@ -136,7 +136,10 @@ class IntBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
+    final inputDecoration = theme.style.buildMaterialDecoration(
+      context,
+      controller,
+    );
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     // For int fields, we default to number keyboard

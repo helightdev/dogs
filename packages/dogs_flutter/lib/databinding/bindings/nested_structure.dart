@@ -138,7 +138,8 @@ class NestedStructureBindingFieldWidget extends StatelessWidget {
       builder: (context, error, _) {
         final outerDecoration = theme.style
             .buildMaterialDecoration(
-              context, controller,
+              context,
+              controller,
               includeLabel: false,
               includeHint: false,
               includeHelper: false,
@@ -149,10 +150,13 @@ class NestedStructureBindingFieldWidget extends StatelessWidget {
             );
         return InputDecorator(
           decoration: outerDecoration,
-          child: theme.style.wrapHeaderLabelSection(StructureBinding(
-            controller: controller.controller,
-            validationTrigger: controller.validationTrigger,
-          ), context),
+          child: theme.style.wrapHeaderLabelSection(
+            StructureBinding(
+              controller: controller.controller,
+              validationTrigger: controller.validationTrigger,
+            ),
+            context,
+          ),
         );
       },
     );
@@ -167,9 +171,7 @@ class NestedStructureAutoFactory
     DogEngine engine,
   ) {
     final struct = converter.struct;
-    print("NestedStructureAutoFactory for $converter, struct: $struct");
     if (struct != null && !struct.isSynthetic) {
-      print("Creating NestedStructureFlutterBinder for $struct");
       return NestedStructureFlutterBinder(struct);
     }
     return null;

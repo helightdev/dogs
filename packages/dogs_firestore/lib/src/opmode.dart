@@ -16,24 +16,26 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_firestore/dogs_firestore.dart';
 
 import 'entity.dart';
 
-abstract class FirestoreDocumentOpmode<T> extends TypeToken<T> implements OperationMode<T>{
-  T deserialize(DocumentSnapshot<Map<String, dynamic>> snapshot, DogEngine engine);
+abstract class FirestoreDocumentOpmode<T> extends TypeToken<T>
+    implements OperationMode<T> {
+  T deserialize(
+      DocumentSnapshot<Map<String, dynamic>> snapshot, DogEngine engine);
   Map<String, dynamic> serialize(T value, DogEngine engine);
 }
 
 class DefaultFirestoreDocumentOpmode<T> extends FirestoreDocumentOpmode<T> {
-
   DogStructure<T> structure;
-  
+
   DefaultFirestoreDocumentOpmode(this.structure);
 
   @override
-  T deserialize(DocumentSnapshot<Map<String, dynamic>> snapshot, DogEngine engine) {
-    var obj = engine.convertObjectFromNative(snapshot.data() ?? <String,dynamic>{}, T);
+  T deserialize(
+      DocumentSnapshot<Map<String, dynamic>> snapshot, DogEngine engine) {
+    var obj = engine.convertObjectFromNative(
+        snapshot.data() ?? <String, dynamic>{}, T);
     if (obj is FirestoreEntity) {
       setInjectedSnapshot(obj, snapshot);
     }
@@ -46,15 +48,14 @@ class DefaultFirestoreDocumentOpmode<T> extends FirestoreDocumentOpmode<T> {
   }
 
   @override
-  void initialise(DogEngine engine) {
-
-  }
+  void initialise(DogEngine engine) {}
 }
 
-
-class FirestoreDocumentOpmodeFactory extends OperationModeFactory<FirestoreDocumentOpmode> {
+class FirestoreDocumentOpmodeFactory
+    extends OperationModeFactory<FirestoreDocumentOpmode> {
   @override
-  FirestoreDocumentOpmode? forConverter(DogConverter<dynamic> converter, DogEngine engine) {
+  FirestoreDocumentOpmode? forConverter(
+      DogConverter<dynamic> converter, DogEngine engine) {
     if (converter.struct != null) {
       var structure = converter.struct!;
       return structure.consumeTypeArg(forType, structure);

@@ -77,7 +77,6 @@ void main() {
       }
     };
     final transformed = Projections.move("a.b", "d")(buffer);
-    print(transformed);
     expect(transformed["a"].containsKey("b"), false);
     expect(transformed["d"], 1);
     expect(buffer["a"]["b"], 1);

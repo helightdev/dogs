@@ -13,11 +13,3 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
-
-import 'dart:developer';
-import 'dart:isolate' as isolate;
-
-import 'package:benchmarks/system.dart';
-import 'package:vm_service/vm_service.dart';
-import 'package:vm_service/vm_service_io.dart';

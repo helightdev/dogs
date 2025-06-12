@@ -5,8 +5,8 @@ import 'package:dogs_flutter/databinding/widgets/field_widget.dart';
 import 'package:dogs_flutter/databinding/widgets/structure_widget.dart';
 import 'package:flutter/material.dart';
 
-class ColumnAutoStructureBindingLayout extends StructureMetadata implements AutoStructureBindingLayout {
-
+class ColumnAutoStructureBindingLayout extends StructureMetadata
+    implements AutoStructureBindingLayout {
   final double spacing;
   final MainAxisSize mainAxisSize;
   final MainAxisAlignment mainAxisAlignment;
@@ -24,12 +24,14 @@ class ColumnAutoStructureBindingLayout extends StructureMetadata implements Auto
   });
 
   @override
-  Widget buildStructureWidget(BuildContext context, StructureBindingController controller) {
-    final fields = controller.fields.map((e) {
-      return FieldBinding(
-        field: e.fieldName,
-      );
-    }).toList();
+  Widget buildStructureWidget(
+    BuildContext context,
+    StructureBindingController controller,
+  ) {
+    final fields =
+        controller.fields.map((e) {
+          return FieldBinding(field: e.fieldName);
+        }).toList();
     return Column(
       spacing: spacing,
       mainAxisSize: mainAxisSize,

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -14,27 +16,20 @@
  *    limitations under the License.
  */
 
-import 'dart:convert';
-
 import 'package:benchmarks/dataclasses.dart';
-import 'package:benchmarks/serializables.dart';
 import 'package:benchmarks/system.dart';
-import 'package:dart_mappable/dart_mappable.dart';
-import 'package:dogs_core/dogs_core.dart';
 
-class DirectEqualityExercise extends Exercise<DirectEqualityExercise,DirectEqualityCompetitor> {
-  DirectEqualityExercise() : super(
-    name: "Direct Equality",
-    iterations: 1000000,
-    competitors: [
-      _NativeCompetitor(),
-      _DogsCompetitor(),
-      _BuiltCompetitor(),
-      _EquatableCompetitor(),
-      _FreezedCompetitor(),
-      _MappableCompetitor(),
-    ]
-  );
+class DirectEqualityExercise
+    extends Exercise<DirectEqualityExercise, DirectEqualityCompetitor> {
+  DirectEqualityExercise()
+      : super(name: "Direct Equality", iterations: 1000000, competitors: [
+          _NativeCompetitor(),
+          _DogsCompetitor(),
+          _BuiltCompetitor(),
+          _EquatableCompetitor(),
+          _FreezedCompetitor(),
+          _MappableCompetitor(),
+        ]);
 
   @override
   void compete(DirectEqualityCompetitor competitor, int iterations) {
@@ -48,15 +43,16 @@ class DirectEqualityExercise extends Exercise<DirectEqualityExercise,DirectEqual
   }
 }
 
-abstract class DirectEqualityCompetitor<T> extends ExerciseCompetitor<DirectEqualityExercise,DirectEqualityCompetitor> {
+abstract class DirectEqualityCompetitor<T> extends ExerciseCompetitor<
+    DirectEqualityExercise, DirectEqualityCompetitor> {
   DirectEqualityCompetitor({required super.name});
 
   late List<T> _items;
 
   @override
   void teardown(DirectEqualityExercise exercise) {}
-  
-  Map<T,int> generateItems(int count);
+
+  Map<T, int> generateItems(int count);
 
   @override
   void setup(DirectEqualityExercise exercise) {
@@ -65,55 +61,56 @@ abstract class DirectEqualityCompetitor<T> extends ExerciseCompetitor<DirectEqua
   }
 }
 
-class _DogsCompetitor extends DirectEqualityCompetitor<DogBenchmarkDataclassEntity> {
-
+class _DogsCompetitor
+    extends DirectEqualityCompetitor<DogBenchmarkDataclassEntity> {
   _DogsCompetitor() : super(name: "dogs");
 
   @override
-  Map<DogBenchmarkDataclassEntity,int> generateItems(int count) => dogMap(count);
+  Map<DogBenchmarkDataclassEntity, int> generateItems(int count) =>
+      dogMap(count);
 }
 
-class _BuiltCompetitor extends DirectEqualityCompetitor<BuiltBenchmarkDataclassEntity> {
-
+class _BuiltCompetitor
+    extends DirectEqualityCompetitor<BuiltBenchmarkDataclassEntity> {
   _BuiltCompetitor() : super(name: "built");
-  
-  @override
-  Map<BuiltBenchmarkDataclassEntity,int> generateItems(int count) => builtMap(count);
 
+  @override
+  Map<BuiltBenchmarkDataclassEntity, int> generateItems(int count) =>
+      builtMap(count);
 }
 
-class _EquatableCompetitor extends DirectEqualityCompetitor<EquatableBenchmarkDataclassEntity> {
-
+class _EquatableCompetitor
+    extends DirectEqualityCompetitor<EquatableBenchmarkDataclassEntity> {
   _EquatableCompetitor() : super(name: "equatable");
 
   @override
-  Map<EquatableBenchmarkDataclassEntity,int> generateItems(int count) => equatableMap(count);
-
+  Map<EquatableBenchmarkDataclassEntity, int> generateItems(int count) =>
+      equatableMap(count);
 }
 
-class _NativeCompetitor extends DirectEqualityCompetitor<NativeBenchmarkDataclassEntity> {
-
+class _NativeCompetitor
+    extends DirectEqualityCompetitor<NativeBenchmarkDataclassEntity> {
   _NativeCompetitor() : super(name: "native");
-  
-  @override
-  Map<NativeBenchmarkDataclassEntity,int> generateItems(int count) => nativeMap(count);
 
+  @override
+  Map<NativeBenchmarkDataclassEntity, int> generateItems(int count) =>
+      nativeMap(count);
 }
 
-class _FreezedCompetitor extends DirectEqualityCompetitor<FreezedBenchmarkDataclassEntity> {
-
+class _FreezedCompetitor
+    extends DirectEqualityCompetitor<FreezedBenchmarkDataclassEntity> {
   _FreezedCompetitor() : super(name: "freezed");
 
   @override
-  Map<FreezedBenchmarkDataclassEntity,int> generateItems(int count) => freezedMap(count);
-
+  Map<FreezedBenchmarkDataclassEntity, int> generateItems(int count) =>
+      freezedMap(count);
 }
 
-class _MappableCompetitor extends DirectEqualityCompetitor<MappableBenchmarkDataclassEntity> {
-
+class _MappableCompetitor
+    extends DirectEqualityCompetitor<MappableBenchmarkDataclassEntity> {
   _MappableCompetitor() : super(name: "mappable");
-  
+
   @override
-  Map<MappableBenchmarkDataclassEntity,int> generateItems(int count) => mappableMap(count);
-  
+  Map<MappableBenchmarkDataclassEntity, int> generateItems(int count) =>
+      mappableMap(count);
 }

@@ -10,7 +10,8 @@ class ReserializationMatcher extends Matcher {
     if (item is! SchemaType) return false;
     final properties = item.toProperties();
     final parsed = SchemaType.fromProperties(properties);
-    return DeepCollectionEquality.unordered().equals(properties, parsed.toProperties());
+    return DeepCollectionEquality.unordered()
+        .equals(properties, parsed.toProperties());
   }
 
   @override
@@ -24,10 +25,9 @@ class ReserializationMatcher extends Matcher {
     if (item is! SchemaType) return mismatchDescription.add("Not a SchemaType");
     final properties = item.toProperties();
     final parsed = SchemaType.fromProperties(properties);
-    return mismatchDescription.add("Reserialized: ${parsed.toJson()}, Original: ${item.toJson()}");
+    return mismatchDescription
+        .add("Reserialized: ${parsed.toJson()}, Original: ${item.toJson()}");
   }
-
-
 }
 
 ReserializationMatcher doesReserialize = ReserializationMatcher();
@@ -54,4 +54,5 @@ class UnorderedEqualityMatcher extends Matcher {
   }
 }
 
-UnorderedEqualityMatcher unorderedDeepEquals(dynamic expected) => UnorderedEqualityMatcher(expected);
+UnorderedEqualityMatcher unorderedDeepEquals(dynamic expected) =>
+    UnorderedEqualityMatcher(expected);

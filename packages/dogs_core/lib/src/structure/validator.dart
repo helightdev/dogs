@@ -163,7 +163,9 @@ class IsolatedFieldValidator {
       }
       results.add(result);
     }
-    return AnnotationResult.combine(results).withTarget(_field.name).translate(_engine);
+    return AnnotationResult.combine(results)
+        .withTarget(_field.name)
+        .translate(_engine);
   }
 
   /// Returns the [AnnotationResult] for each individual validator of the field.
@@ -172,12 +174,17 @@ class IsolatedFieldValidator {
   ///
   /// Null values indicate that the validator hasn't been evaluated in this call,
   /// this occurs if the guard validator fails.
-  (List<AnnotationResult?> results, bool isGuard) annotateExtended(dynamic value) {
-    final results = List<AnnotationResult?>.filled(_fieldValidators.length, null);
+  (List<AnnotationResult?> results, bool isGuard) annotateExtended(
+      dynamic value) {
+    final results =
+        List<AnnotationResult?>.filled(_fieldValidators.length, null);
     for (var i = 0; i < _fieldValidators.length; i++) {
       final validator = _fieldValidators[i];
       final cacheData = _fieldValidatorCacheData[i];
-      final result = validator.annotate(cacheData, value, _engine).withTarget(_field.name).translate(_engine);
+      final result = validator
+          .annotate(cacheData, value, _engine)
+          .withTarget(_field.name)
+          .translate(_engine);
       results[i] = result;
       if (result.hasErrors && i == 0 && _hasGuardValidator) {
         return (results, true);
@@ -199,8 +206,10 @@ class IsolatedClassValidator {
   final List<IsolatedFieldValidator> _fieldValidators;
   final List<dynamic Function(dynamic)> _fieldAccessors;
 
-  late final int toplevelValidatorCount = _classValidators.length + _contextValidators.length;
-  late final int fieldValidatorCount = _fieldValidators.map((e) => e.validatorCount).sum;
+  late final int toplevelValidatorCount =
+      _classValidators.length + _contextValidators.length;
+  late final int fieldValidatorCount =
+      _fieldValidators.map((e) => e.validatorCount).sum;
 
   /// The number of validators in this instance.
   late final int validatorCount = toplevelValidatorCount + fieldValidatorCount;
@@ -225,7 +234,6 @@ class IsolatedClassValidator {
         _fieldAccessors = fieldAccessors,
         _structure = structure,
         _engine = engine {
-
     var offset = 0;
     for (var i = 0; i < _structure.fields.length; i++) {
       fieldIndices[_structure.fields[i].name] = (i, offset);
@@ -269,12 +277,14 @@ class IsolatedClassValidator {
     for (var i = 0; i < _classValidators.length; i++) {
       final validator = _classValidators[i];
       final cacheData = _classValidatorCacheData[i];
-      results.add(validator.annotate(cacheData, value, _engine).translate(_engine));
+      results.add(
+          validator.annotate(cacheData, value, _engine).translate(_engine));
     }
     for (var i = 0; i < _contextValidators.length; i++) {
       final validator = _contextValidators[i];
       final cacheData = _contextValidatorCacheData[i];
-      results.add(validator.annotate(cacheData, value, _engine).translate(_engine));
+      results.add(
+          validator.annotate(cacheData, value, _engine).translate(_engine));
     }
     // Do not translate here since the field validators already are translated
     return AnnotationResult.combine(results);
@@ -284,16 +294,19 @@ class IsolatedClassValidator {
   /// The position of the result corresponds to the position of the validator and
   /// will remain consistent between calls.
   List<AnnotationResult?> annotateExtended(dynamic value) {
-    final results = List<AnnotationResult?>.filled(fieldValidatorCount, null, growable: true);
+    final results = List<AnnotationResult?>.filled(fieldValidatorCount, null,
+        growable: true);
     for (var i = 0; i < _classValidators.length; i++) {
       final validator = _classValidators[i];
       final cacheData = _classValidatorCacheData[i];
-      results.add(validator.annotate(cacheData, value, _engine).translate(_engine));
+      results.add(
+          validator.annotate(cacheData, value, _engine).translate(_engine));
     }
     for (var i = 0; i < _contextValidators.length; i++) {
       final validator = _contextValidators[i];
       final cacheData = _contextValidatorCacheData[i];
-      results.add(validator.annotate(cacheData, value, _engine).translate(_engine));
+      results.add(
+          validator.annotate(cacheData, value, _engine).translate(_engine));
     }
     return results;
   }
@@ -303,10 +316,12 @@ class IsolatedClassValidator {
   ///
   /// The resulting list's format is consistent with the one returned by
   /// [annotateExtended].
-  (List<AnnotationResult?>, bool isGuard) annotateFieldExtended(String fieldName, dynamic fieldValue) {
-    final (fieldIndex,fieldOffset) = fieldIndices[fieldName]!;
+  (List<AnnotationResult?>, bool isGuard) annotateFieldExtended(
+      String fieldName, dynamic fieldValue) {
+    final (fieldIndex, fieldOffset) = fieldIndices[fieldName]!;
     final buffer = List<AnnotationResult?>.filled(validatorCount, null);
-    final (annotationResults,isGuard) = _fieldValidators[fieldIndex].annotateExtended(fieldValue);
+    final (annotationResults, isGuard) =
+        _fieldValidators[fieldIndex].annotateExtended(fieldValue);
     for (var i = 0; i < annotationResults.length; i++) {
       buffer[fieldOffset + i] = annotationResults[i];
     }

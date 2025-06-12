@@ -2,14 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_firestore/dogs_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dogs_firestore/src/engine.dart';
 import 'package:test_firestore/dogs.g.dart';
-
-import 'package:test_firestore/main.dart';
-import 'package:test_firestore/models/person.conv.g.dart';
 import 'package:test_firestore/models/person.dart';
 import 'package:test_firestore/models/town.dart';
 
@@ -31,7 +25,7 @@ Future<void> main() async {
       var townInsert = await FirestoreEntity.get<Town>("amberg",
           orCreate: () => Town("Amberg", "de")
       );
-      var personInsert = Person("Christoph", 20, DateTime(11, 11, 2003), Timestamp.now(), GeoPoint(51.165691, 10.451526));
+      var personInsert = Person("Christoph", 20, DateTime(11, 11, 2003), Timestamp.now(), const GeoPoint(51.165691, 10.451526));
       town = townInsert!;
       person = (await townInsert.$store(personInsert))!;
     });
@@ -64,7 +58,7 @@ Future<void> main() async {
 
     // Save
 test("Save", () async {
-      var person2 = Person("Christoph", 20, DateTime(11, 11, 2003), Timestamp.now(), GeoPoint(51.165691, 10.451526));
+      var person2 = Person("Christoph", 20, DateTime(11, 11, 2003), Timestamp.now(), const GeoPoint(51.165691, 10.451526));
       var person2Saved = await town.$store(person2);
       expect(person2Saved!.name, "Christoph");
       expect(person2Saved.age, 20);

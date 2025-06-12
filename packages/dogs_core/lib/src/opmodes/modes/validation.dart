@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -71,7 +73,6 @@ class _InlineValidationMode<T, IR> extends ValidationMode<T>
   AnnotationResult annotate(T value, DogEngine engine) =>
       annotator(value, engine, _ir);
 }
-
 
 abstract interface class AnnotationResultLike {
   AnnotationResult asAnnotationResult();
@@ -196,12 +197,12 @@ class AnnotationMessage implements AnnotationResultLike {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AnnotationMessage &&
-              runtimeType == other.runtimeType &&
-              id == other.id &&
-              target == other.target &&
-              message == other.message &&
-              deepEquality.equals(variables, other.variables);
+      other is AnnotationMessage &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          target == other.target &&
+          message == other.message &&
+          deepEquality.equals(variables, other.variables);
 
   @override
   int get hashCode =>

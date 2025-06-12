@@ -1,5 +1,5 @@
 import "package:dogs_core/dogs_core.dart";
-import 'package:dogs_core/dogs_schema.dart' as z;
+import "package:dogs_core/dogs_schema.dart" as z;
 import "package:test/test.dart";
 
 import "utils/schema.dart";
@@ -47,6 +47,5 @@ void main() {
           .perform({"a": initialPerson});
       expect(value, unorderedDeepEquals(initialPerson));
     });
-
   });
 }

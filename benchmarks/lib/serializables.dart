@@ -20,12 +20,11 @@ import 'package:built_value/serializer.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart' as dogs;
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:mock_data/mock_data.dart';
 
+part 'serializables.freezed.dart';
 part 'serializables.g.dart';
 part 'serializables.mapper.dart';
-part 'serializables.freezed.dart';
 
 DogPerson dogPerson() {
   return DogPerson(
@@ -63,7 +62,6 @@ MappablePerson mappablePerson() {
       mockString(), mockInteger(), List.generate(5, (index) => mockString()));
 }
 
-
 @dogs.serializable
 class DogPerson {
   String name;
@@ -91,9 +89,9 @@ class NativePerson {
 
   Map<String, dynamic> toMap() {
     return {
-      'name': this.name,
-      'age': this.age,
-      'tags': this.tags,
+      'name': name,
+      'age': age,
+      'tags': tags,
     };
   }
 
@@ -128,8 +126,10 @@ class JsonSerializablePerson {
   List<String> tags;
 
   JsonSerializablePerson(this.name, this.age, this.tags);
+
   /// factory.
-  factory JsonSerializablePerson.fromJson(Map<String, dynamic> json) => _$JsonSerializablePersonFromJson(json);
+  factory JsonSerializablePerson.fromJson(Map<String, dynamic> json) =>
+      _$JsonSerializablePersonFromJson(json);
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$JsonSerializablePersonToJson(this);
@@ -138,7 +138,6 @@ class JsonSerializablePerson {
 @freezed
 @JsonSerializable()
 class FreezedPerson with _$FreezedPerson {
-
   final String name;
   final int age;
   final List<String> tags;
@@ -151,7 +150,8 @@ class FreezedPerson with _$FreezedPerson {
 
   Map<String, dynamic> toJson() => _$FreezedPersonToJson(this);
 
-  factory FreezedPerson.fromJson(Map<String, dynamic> json) => _$FreezedPersonFromJson(json);
+  factory FreezedPerson.fromJson(Map<String, dynamic> json) =>
+      _$FreezedPersonFromJson(json);
 }
 
 @SerializersFor([BuiltPerson])

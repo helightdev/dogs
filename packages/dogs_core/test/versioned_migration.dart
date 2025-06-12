@@ -20,14 +20,14 @@ import "package:test/test.dart";
 void main() {
   test("Revision Migration", () {
     final versioned = RevisionMigration([
-      (_, __, ___) {
-        _["a"] = true;
+      (m, __, ___) {
+        m["a"] = true;
       },
-      (_, __, ___) {
-        _["b"] = true;
+      (m, __, ___) {
+        m["b"] = true;
       },
-      (_, __, ___) {
-        _["c"] = true;
+      (m, __, ___) {
+        m["c"] = true;
       }
     ]);
     var data = <String, dynamic>{"_rev": 0};
@@ -63,14 +63,14 @@ void main() {
 
   test("Lightweight Migration", () {
     final versioned = LightweightMigration([
-      (_, __, ___) {
-        _["a"] = true;
+      (m, __, ___) {
+        m["a"] = true;
       },
-      (_, __, ___) {
-        _["b"] = true;
+      (m, __, ___) {
+        m["b"] = true;
       },
-      (_, __, ___) {
-        _["c"] = true;
+      (m, __, ___) {
+        m["c"] = true;
       }
     ]);
     final data = <String, dynamic>{};

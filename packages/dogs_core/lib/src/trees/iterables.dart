@@ -121,7 +121,8 @@ class IterableTreeValidationMode extends ValidationMode<dynamic>
 
   @override
   void initialise(DogEngine engine) {
-    operation = engine.modeRegistry.validation.forConverterNullable(converter, engine);
+    operation =
+        engine.modeRegistry.validation.forConverterNullable(converter, engine);
   }
 
   @override
@@ -166,7 +167,8 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
       itemSubtree.qualifiedOrBase.consumeTypeArg(iterableDestructor, value);
 
   @override
-  OperationMode<dynamic>? resolveOperationMode(DogEngine engine, Type opmodeType) {
+  OperationMode<dynamic>? resolveOperationMode(
+      DogEngine engine, Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
       return IterableTreeNativeOperation(this);
     }

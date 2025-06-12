@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-import 'package:dogs_flutter/databinding/material/style.dart';
-import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -39,17 +37,24 @@ class Person with Dataclass<Person> {
   String? tag;
 
   @LengthRange(min: 3)
-  @MaterialBindingStyle.inputTheme(InputDecorationTheme(
-    border: OutlineInputBorder(),
-  ))
+  @MaterialBindingStyle.inputTheme(
+    InputDecorationTheme(border: OutlineInputBorder()),
+  )
   String password;
 
   @MustMatch("password")
-  @BindingStyle(
-    hint: "Repeat the password",
-    label: "Confirm password",
-  )
+  @BindingStyle(hint: "Repeat the password", label: "Confirm password")
   String confirm;
 
-  Person(this.name, this.surname, this.age, this.balance, this.isActive, this.plate, this.tag, this.password, this.confirm);
+  Person(
+    this.name,
+    this.surname,
+    this.age,
+    this.balance,
+    this.isActive,
+    this.plate,
+    this.tag,
+    this.password,
+    this.confirm,
+  );
 }

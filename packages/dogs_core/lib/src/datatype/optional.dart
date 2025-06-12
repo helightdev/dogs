@@ -92,7 +92,7 @@ class OptionalNTreeArgConverter<T> extends NTreeArgConverter<Optional> {
   bool get canSerializeNull => true;
 
   @override
-  Iterable<(dynamic,int)> traverse(dynamic value, DogEngine engine) sync* {
+  Iterable<(dynamic, int)> traverse(dynamic value, DogEngine engine) sync* {
     if (value == null) return;
     if (value is Optional) {
       if (value.isPresent) {

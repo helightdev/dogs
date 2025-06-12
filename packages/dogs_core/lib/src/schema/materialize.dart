@@ -84,7 +84,7 @@ class DogsMaterializer {
   }
 
   MaterializedConverter materialize(SchemaType type, bool useFork) {
-    final usedEngine = switch(useFork) {
+    final usedEngine = switch (useFork) {
       true => engine.fork(),
       false => engine,
     };
@@ -119,10 +119,10 @@ class DogsMaterializer {
     }
     final converter = usedEngine.findConverterBySerialName(rootSerialName)!;
     final structure = usedEngine.findStructureBySerialName(rootSerialName)!;
-    final nativeMode =
-        usedEngine.modeRegistry.nativeSerialization.forConverter(converter, usedEngine);
-    final serializer =
-        MaterializedConverter(usedEngine, converter, nativeMode, structure, type);
+    final nativeMode = usedEngine.modeRegistry.nativeSerialization
+        .forConverter(converter, usedEngine);
+    final serializer = MaterializedConverter(
+        usedEngine, converter, nativeMode, structure, type);
     return serializer;
   }
 
@@ -185,18 +185,11 @@ class DogsMaterializer {
     final enumProperty = field.type[SchemaProperties.$enum] as List<String>?;
     if (enumProperty != null) {
       annotations.add(UseConverterInstance(
-        RuntimeEnumConverter(enumProperty, "${field.name}Enum")
-      ));
+          RuntimeEnumConverter(enumProperty, "${field.name}Enum")));
     }
 
-    final structureField = DogStructureField(
-      materializedTypeTree,
-      null,
-      field.name,
-      field.type.nullable,
-      true,
-      annotations
-    );
+    final structureField = DogStructureField(materializedTypeTree, null,
+        field.name, field.type.nullable, true, annotations);
     return structureField;
   }
 }

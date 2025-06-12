@@ -20,28 +20,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 /// Override the [DateTimeConverter] to use [Timestamp] instead of [String] as the native representation.
-class DateTimeToTimestampConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
-  DateTimeToTimestampConverter() : super(isAssociated: true, struct: DogStructure.synthetic("DateTime"));
+class DateTimeToTimestampConverter extends DogConverter<DateTime>
+    with OperationMapMixin<DateTime> {
+  DateTimeToTimestampConverter()
+      : super(isAssociated: true, struct: DogStructure.synthetic("DateTime"));
 
   @override
   Map<Type, OperationMode<DateTime> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => Timestamp.fromDate(value),
-        deserializer: (value, engine) => (value as Timestamp).toDate(),
-    ),
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => Timestamp.fromDate(value),
+              deserializer: (value, engine) => (value as Timestamp).toDate(),
+            ),
+      };
 }
 
 /// Override the [Uint8ListConverter] to use [Blob] instead of [String] as the native representation.
-class Uint8ListToBlobConverter extends DogConverter<Uint8List> with OperationMapMixin<Uint8List> {
-
-  Uint8ListToBlobConverter() : super(isAssociated: true, struct: DogStructure.synthetic("Uint8List"));
+class Uint8ListToBlobConverter extends DogConverter<Uint8List>
+    with OperationMapMixin<Uint8List> {
+  Uint8ListToBlobConverter()
+      : super(isAssociated: true, struct: DogStructure.synthetic("Uint8List"));
 
   @override
   Map<Type, OperationMode<Uint8List> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => Blob(value),
-        deserializer: (value, engine) => (value as Blob).bytes,
-    ),
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => Blob(value),
+              deserializer: (value, engine) => (value as Blob).bytes,
+            ),
+      };
 }

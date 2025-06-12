@@ -27,7 +27,9 @@ bool kConserveSnapshot = true;
 
 /// This drop-in replacement for [Dataclass] adds support for common Firestore operations and allows
 /// access to the Firestore document ID.
-abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> implements PostRebuildHook<T> {
+abstract class FirestoreEntity<T extends FirestoreEntity<T>>
+    with Dataclass<T>
+    implements PostRebuildHook<T> {
   /// This is the Firestore ID of the document. Will be automatically set when storing a new
   /// document, but can also be set manually.
   String? id;
@@ -48,7 +50,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
   /// Returns the document reference of this document.
   DocumentReference<T> get selfDocument {
     var reference = selfCollection.doc(id);
-    id = reference.id; // Set the auto-generated ID that is created by using a null ID
+    id = reference
+        .id; // Set the auto-generated ID that is created by using a null ID
     return reference;
   }
 
@@ -59,12 +62,18 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
   /// reduce Firestore costs.**
   Future<DocumentSnapshot> snapshot() async {
     var latestSnapshot = _latestSnapshot;
-    if (latestSnapshot != null && latestSnapshot.exists && latestSnapshot.id == id) {
+    if (latestSnapshot != null &&
+        latestSnapshot.exists &&
+        latestSnapshot.id == id) {
       // This object is injected, we need to deserialize it again to compare it
       if (latestSnapshot is DocumentSnapshot<Map<String, dynamic>>) {
         var capableEngine = DogFirestoreEngine.instance.engine;
-        var decoded = DogFirestoreEngine.instance.mode.forType(T, capableEngine).deserialize(latestSnapshot, capableEngine);
-        if (decoded == this) return latestSnapshot; // Compare if the object is the same
+        var decoded = DogFirestoreEngine.instance.mode
+            .forType(T, capableEngine)
+            .deserialize(latestSnapshot, capableEngine);
+        if (decoded == this) {
+          return latestSnapshot; // Compare if the object is the same
+        }
         // This object is not injected, we can compare it directly
       } else if (latestSnapshot.data() == this) {
         return latestSnapshot;
@@ -80,23 +89,29 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
 
   /// Returns a stream of the document changes.
   /// This stream will emit the current document immediately, and then emit any changes to the document.
-  Stream<T?> get documentChanges => selfDocument.snapshots().map((event) => event.data());
+  Stream<T?> get documentChanges =>
+      selfDocument.snapshots().map((event) => event.data());
 
   CollectionReference<R> getSubCollection<R extends FirestoreEntity<R>>() {
     assert(DogFirestoreEngine.instance.checkSubcollection<T, R>());
     var subcollectionName = DogFirestoreEngine.instance.collectionName<R>();
-    return selfCollection.doc(id).collection(subcollectionName).withStructure<R>();
+    return selfCollection
+        .doc(id)
+        .collection(subcollectionName)
+        .withStructure<R>();
   }
 
   /// Sets the parent collection of this document. This is required for subcollections.
   T withParent<R extends FirestoreEntity<R>>(R parent) {
     assert(DogFirestoreEngine.instance.checkSubcollection<R, T>());
-    _injectedPath = "${parent.selfDocument.path}/${DogFirestoreEngine.instance.collectionName<T>()}";
+    _injectedPath =
+        "${parent.selfDocument.path}/${DogFirestoreEngine.instance.collectionName<T>()}";
     return this as T;
   }
 
   // Copy internal non serialized fields over so you don't have to use withParent() again
-  @override @internal
+  @override
+  @internal
   void postRebuild(T from, T to) {
     to.id = from.id;
     to._injectedPath = from._injectedPath;
@@ -114,7 +129,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
           "collection, and no parent has been set. Use withParent() to set the parent.");
     }
     var document = selfCollection.doc(id);
-    id = document.id; // Set the auto-generated ID that is created by using a null ID
+    id = document
+        .id; // Set the auto-generated ID that is created by using a null ID
     await document.set(this as T);
     return this as T;
   }
@@ -129,7 +145,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
           "collection, and no parent has been set. Use withParent() to set the parent.");
     }
     var document = selfCollection.doc(id);
-    id = document.id; // Set the auto-generated ID that is created by using a null ID
+    id = document
+        .id; // Set the auto-generated ID that is created by using a null ID
     await document.update(data);
     return this as T;
   }
@@ -149,7 +166,12 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
 
   // <editor-fold desc="Instance DAO methods">
   /// Returns all [R] entities in the corresponding subcollection of this entity matching the [query].
-  Future<List<R>> $query<R extends FirestoreEntity<R>>({Query<R> Function(Query<R> query)? query, R? startAfter, R? endBefore, R? startAt, R? endAt}) async {
+  Future<List<R>> $query<R extends FirestoreEntity<R>>(
+      {Query<R> Function(Query<R> query)? query,
+      R? startAfter,
+      R? endBefore,
+      R? startAt,
+      R? endAt}) async {
     var subCollection = getSubCollection<R>();
     Query<R> q = subCollection;
     if (query != null) {
@@ -175,7 +197,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
 
   /// Finds the first [R] entity in the corresponding subcollection of this entity matching the [query].
   /// Returns null if no entity was found.
-  Future<R?> $find<R extends FirestoreEntity<R>>({Query<R> Function(Query<R> query)? query}) async {
+  Future<R?> $find<R extends FirestoreEntity<R>>(
+      {Query<R> Function(Query<R> query)? query}) async {
     var subCollection = getSubCollection<R>();
     Query<R> q = subCollection;
     if (query != null) {
@@ -186,7 +209,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
     return snapshot.docs.first.data();
   }
 
-  Future<R?> $get<R extends FirestoreEntity<R>>(String id, {R Function()? orCreate}) async {
+  Future<R?> $get<R extends FirestoreEntity<R>>(String id,
+      {R Function()? orCreate}) async {
     assert(DogFirestoreEngine.instance.checkSubcollection<T, R>());
     var documentReference = getSubCollection<R>().doc(id);
     var snapshot = await documentReference.get();
@@ -211,7 +235,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
 
   // <editor-fold desc="Static DAO methods">
   /// Gets the document from Firestore. If the document does not exist, this method returns null.
-  static Future<T?> get<T extends FirestoreEntity<T>>(String id, {T Function()? orCreate}) async {
+  static Future<T?> get<T extends FirestoreEntity<T>>(String id,
+      {T Function()? orCreate}) async {
     assert(DogFirestoreEngine.instance.checkRootCollection<T>());
     var documentReference = DogFirestoreEngine.instance.collection<T>().doc(id);
     var snapshot = await documentReference.get();
@@ -227,7 +252,12 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
     }
   }
 
-  static Future<List<T>> query<T extends FirestoreEntity<T>>({Query<T> Function(Query<T> query)? query, T? startAfter, T? endBefore, T? startAt, T? endAt}) async {
+  static Future<List<T>> query<T extends FirestoreEntity<T>>(
+      {Query<T> Function(Query<T> query)? query,
+      T? startAfter,
+      T? endBefore,
+      T? startAt,
+      T? endAt}) async {
     var collection = DogFirestoreEngine.instance.collection<T>();
     Query<T> q = collection;
     if (query != null) {
@@ -252,7 +282,8 @@ abstract class FirestoreEntity<T extends FirestoreEntity<T>> with Dataclass<T> i
     return snapshot.docs.map((e) => e.data()).toList();
   }
 
-  static Future<T?> find<T extends FirestoreEntity<T>>({Query<T> Function(Query<T> query)? query}) async {
+  static Future<T?> find<T extends FirestoreEntity<T>>(
+      {Query<T> Function(Query<T> query)? query}) async {
     var collection = DogFirestoreEngine.instance.collection<T>();
     Query<T> q = collection;
     if (query != null) {

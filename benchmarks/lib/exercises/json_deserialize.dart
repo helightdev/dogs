@@ -21,22 +21,20 @@ import 'package:benchmarks/system.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dogs_core/dogs_core.dart';
 
-class JsonDeserializeExercise extends Exercise<JsonDeserializeExercise,JsonDeserializeCompetitor> {
-  JsonDeserializeExercise() : super(
-      name: "Json Deserialize",
-      options: {
-        "count": 500,
-      },
-      competitors: [
-        _NativeCompetitor(),
-        _JsonSerializableCompetitor(),
-        //_DartJsonMapperCompetitor(),
-        _FreezedCompetitor(),
-        _DogsCompetitor(),
-        _BuiltCompetitor(),
-        _MappableCompetitor(),
-      ]
-  );
+class JsonDeserializeExercise
+    extends Exercise<JsonDeserializeExercise, JsonDeserializeCompetitor> {
+  JsonDeserializeExercise()
+      : super(name: "Json Deserialize", options: {
+          "count": 500,
+        }, competitors: [
+          _NativeCompetitor(),
+          _JsonSerializableCompetitor(),
+          //_DartJsonMapperCompetitor(),
+          _FreezedCompetitor(),
+          _DogsCompetitor(),
+          _BuiltCompetitor(),
+          _MappableCompetitor(),
+        ]);
 
   @override
   void compete(JsonDeserializeCompetitor competitor, int iterations) {
@@ -50,7 +48,8 @@ class JsonDeserializeExercise extends Exercise<JsonDeserializeExercise,JsonDeser
   }
 }
 
-abstract class JsonDeserializeCompetitor<T> extends ExerciseCompetitor<JsonDeserializeExercise,JsonDeserializeCompetitor> {
+abstract class JsonDeserializeCompetitor<T> extends ExerciseCompetitor<
+    JsonDeserializeExercise, JsonDeserializeCompetitor> {
   JsonDeserializeCompetitor({required super.name});
 
   late List<T> _items;
@@ -66,13 +65,13 @@ abstract class JsonDeserializeCompetitor<T> extends ExerciseCompetitor<JsonDeser
 
   @override
   void setup(JsonDeserializeExercise exercise) {
-    _items = List.generate(exercise.options["count"] as int, (index) => generateItem(index));
+    _items = List.generate(
+        exercise.options["count"] as int, (index) => generateItem(index));
     _serialized = _items.map((e) => serialize(e)).toList();
   }
 }
 
 class _DogsCompetitor extends JsonDeserializeCompetitor<DogPerson> {
-
   _DogsCompetitor() : super(name: "dogs");
 
   @override
@@ -89,8 +88,8 @@ class _DogsCompetitor extends JsonDeserializeCompetitor<DogPerson> {
   }
 }
 
-class _JsonSerializableCompetitor extends JsonDeserializeCompetitor<JsonSerializablePerson> {
-
+class _JsonSerializableCompetitor
+    extends JsonDeserializeCompetitor<JsonSerializablePerson> {
   _JsonSerializableCompetitor() : super(name: "json_ser");
 
   @override
@@ -108,7 +107,6 @@ class _JsonSerializableCompetitor extends JsonDeserializeCompetitor<JsonSerializ
 }
 
 class _BuiltCompetitor extends JsonDeserializeCompetitor<BuiltPerson> {
-
   _BuiltCompetitor() : super(name: "built");
 
   @override
@@ -123,11 +121,9 @@ class _BuiltCompetitor extends JsonDeserializeCompetitor<BuiltPerson> {
   BuiltPerson deserialize(String json) {
     return serializers.deserialize(jsonDecode(json)) as BuiltPerson;
   }
-
 }
 
 class _NativeCompetitor extends JsonDeserializeCompetitor<NativePerson> {
-
   _NativeCompetitor() : super(name: "native");
 
   @override
@@ -145,7 +141,6 @@ class _NativeCompetitor extends JsonDeserializeCompetitor<NativePerson> {
 }
 
 class _FreezedCompetitor extends JsonDeserializeCompetitor<FreezedPerson> {
-
   _FreezedCompetitor() : super(name: "freezed");
 
   @override
@@ -163,7 +158,6 @@ class _FreezedCompetitor extends JsonDeserializeCompetitor<FreezedPerson> {
 }
 
 class _MappableCompetitor extends JsonDeserializeCompetitor<MappablePerson> {
-
   _MappableCompetitor() : super(name: "mappable");
 
   @override

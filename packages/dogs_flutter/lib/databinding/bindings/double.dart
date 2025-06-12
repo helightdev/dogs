@@ -140,7 +140,10 @@ class DoubleBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
+    final inputDecoration = theme.style.buildMaterialDecoration(
+      context,
+      controller,
+    );
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     // For double fields, we default to number keyboard with decimal

@@ -1,8 +1,9 @@
+// ignore_for_file: unused_import
+
 import "package:collection/collection.dart";
 import "package:dogs_core/dogs_core.dart";
 import "package:dogs_core/dogs_schema.dart" as z;
 import "package:dogs_core/dogs_validation.dart";
-import "package:dogs_core/validation/length.dart";
 import "package:test/expect.dart";
 import "package:test/scaffolding.dart";
 
@@ -29,16 +30,18 @@ void main() {
       "tags": ["tag1", "tag2", "tag3", "tag4"]
     };
 
-    expect(converter.structure.getFieldByName("name")!
+    expect(
+        converter.structure
+            .getFieldByName("name")!
             .annotationsOf<LengthRange>(),
         isNotEmpty);
-    expect(converter.structure.getFieldByName("age")!
-        .annotationsOf<Range>(), isNotEmpty);
-    expect(converter.structure.getFieldByName("tags")!
-        .annotationsOf<SizeRange>(), isNotEmpty);
+    expect(converter.structure.getFieldByName("age")!.annotationsOf<Range>(),
+        isNotEmpty);
+    expect(
+        converter.structure.getFieldByName("tags")!.annotationsOf<SizeRange>(),
+        isNotEmpty);
     expect(converter.isValid(example1), true);
     expect(converter.isValid(example2), false);
     expect(converter.annotate(example2).messages, hasLength(3));
   });
-
 }

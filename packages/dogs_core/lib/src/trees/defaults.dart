@@ -59,9 +59,9 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
     if (value == null) return <K, V>{}; // Similar to primitive coercion
     if (value is Map) {
       return value.map<K, V>((key, value) => MapEntry<K, V>(
-        deserializeArg(key, 0, engine),
-        deserializeArg(value, 1, engine),
-      ));
+            deserializeArg(key, 0, engine),
+            deserializeArg(value, 1, engine),
+          ));
     } else if (value is List) {
       final Map<K, V> map = {};
       for (var entry in value) {
@@ -106,12 +106,10 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
     if (keyOutput.type == SchemaCoreType.string) {
       return SchemaType.map(valueOutput);
     } else {
-      return SchemaArray(SchemaObject(
-          fields: [
-            SchemaField("key", keyOutput),
-            SchemaField("value", valueOutput),
-          ]
-      ));
+      return SchemaArray(SchemaObject(fields: [
+        SchemaField("key", keyOutput),
+        SchemaField("value", valueOutput),
+      ]));
     }
   }
 

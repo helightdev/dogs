@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -25,10 +27,30 @@ import "utils/schema.dart";
 void main() {
   group("Schema Type Serialization", () {
     test("Simple Primitives", () {
-      expect(z.string().optional().property(SchemaProperties.description, "My description"), doesReserialize);
-      expect(z.integer().optional().property(SchemaProperties.description, "My description"), doesReserialize);
-      expect(z.number().optional().property(SchemaProperties.description, "My description"), doesReserialize);
-      expect(z.boolean().optional().property(SchemaProperties.description, "My description"), doesReserialize);
+      expect(
+          z
+              .string()
+              .optional()
+              .property(SchemaProperties.description, "My description"),
+          doesReserialize);
+      expect(
+          z
+              .integer()
+              .optional()
+              .property(SchemaProperties.description, "My description"),
+          doesReserialize);
+      expect(
+          z
+              .number()
+              .optional()
+              .property(SchemaProperties.description, "My description"),
+          doesReserialize);
+      expect(
+          z
+              .boolean()
+              .optional()
+              .property(SchemaProperties.description, "My description"),
+          doesReserialize);
     });
 
     test("Object", () {
@@ -40,22 +62,29 @@ void main() {
     });
 
     test("Array", () {
-      final actual = z.array(z.string()).property(SchemaProperties.description, "My description");
+      final actual = z
+          .array(z.string())
+          .property(SchemaProperties.description, "My description");
       expect(actual, doesReserialize);
     });
 
     test("Map", () {
-      final actual = z.map(z.string()).property(SchemaProperties.description, "My description");
+      final actual = z
+          .map(z.string())
+          .property(SchemaProperties.description, "My description");
       expect(actual, doesReserialize);
     });
 
     test("Reference", () {
-      final actual = z.ref("MyRef").property(SchemaProperties.description, "My description");
+      final actual = z
+          .ref("MyRef")
+          .property(SchemaProperties.description, "My description");
       expect(actual, doesReserialize);
     });
 
     test("Does not reserialize (Sanity Check)", () {
-      final actual = z.string().property(SchemaProperties.description, "My description");
+      final actual =
+          z.string().property(SchemaProperties.description, "My description");
       final properties = actual.toProperties();
       properties[SchemaProperties.description] = "My description 2";
       final parsed = SchemaType.fromProperties(properties);
@@ -278,10 +307,13 @@ void main() {
       "integers": z.integer().array().optional(),
       "booleans": z.boolean().array().optional(),
       "anys": z.any().array().optional(),
-      "objects": z.object({
-        "name": z.string().optional(),
-        "age": z.integer().optional(),
-      }).array().optional(),
+      "objects": z
+          .object({
+            "name": z.string().optional(),
+            "age": z.integer().optional(),
+          })
+          .array()
+          .optional(),
     });
     expect(base, doesReserialize);
     final serializer = DogEngine().materialize(base);

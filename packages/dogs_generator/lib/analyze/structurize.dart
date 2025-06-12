@@ -19,10 +19,9 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
-
-import 'package:dogs_generator/dogs_generator.dart';
 
 class IRStructure {
   String type;
@@ -154,7 +153,8 @@ Future<StructurizeResult> structurizeConstructor(
     } else {
       var parameterType = e.type;
       var namedField = element.getField(e.name);
-      var namedGetter = element.augmented.lookUpGetter(name: e.name, library: element.library);
+      var namedGetter = element.augmented
+          .lookUpGetter(name: e.name, library: element.library);
       if (namedField != null && namedGetter == null) {
         fieldName = e.name;
         fieldType = namedField.type;
@@ -215,7 +215,6 @@ Future<StructurizeResult> structurizeConstructor(
   var getters = fields.map((e) => e.accessor).toList();
   var activator =
       "return ${counter.get(element.thisType)}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
-    var y = fields[i];
     if (e.isNamed) {
       return "${e.name}: list[$i]";
     } else {

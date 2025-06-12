@@ -24,7 +24,8 @@ import "package:dogs_core/dogs_core.dart";
 const validated = Validated();
 
 /// A [FieldValidator] that requires a field to be deeply validated.
-class Validated extends FieldValidator<ValidatedCacheEntry> implements StructureMetadata {
+class Validated extends FieldValidator<ValidatedCacheEntry>
+    implements StructureMetadata {
   /// Requires a field to be deeply validated.
   /// Example: You have a class Group with a field `List<Person> members` as well as
   /// a type Person which is validatable. You can then annotate your field
@@ -43,7 +44,10 @@ class Validated extends FieldValidator<ValidatedCacheEntry> implements Structure
 
   @override
   void verifyUsage(DogStructureField field) {
-    if (!field.structure) throw DogException("Field '${field.name}' must not be primitive in order to use @validated.");
+    if (!field.structure) {
+      throw DogException(
+          "Field '${field.name}' must not be primitive in order to use @validated.");
+    }
   }
 
   @override
@@ -66,12 +70,12 @@ class Validated extends FieldValidator<ValidatedCacheEntry> implements Structure
   }
 
   @override
-  AnnotationResult annotate(ValidatedCacheEntry cached, value, DogEngine engine) {
+  AnnotationResult annotate(
+      ValidatedCacheEntry cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
-    return AnnotationResult(messages: [
-      AnnotationMessage(id: messageId, message: "Invalid value")
-    ]);
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Invalid value")]);
   }
 }
 

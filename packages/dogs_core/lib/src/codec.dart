@@ -15,7 +15,6 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
-import "package:dogs_core/src/schema/spec.dart";
 
 /// Defines the native object types for a [DogEngine] and
 /// provides converters for them.
@@ -139,9 +138,11 @@ class DefaultNativeCodec extends DogNativeCodec {
 
   @override
   Map<Type, DogConverter> get bridgeConverters => {
-        String: NativeRetentionConverter<String>(schema: () => SchemaType.string),
+        String:
+            NativeRetentionConverter<String>(schema: () => SchemaType.string),
         int: NativeRetentionConverter<int>(schema: () => SchemaType.integer),
-        double: NativeRetentionConverter<double>(schema: () => SchemaType.number),
+        double:
+            NativeRetentionConverter<double>(schema: () => SchemaType.number),
         bool: NativeRetentionConverter<bool>(schema: () => SchemaType.boolean),
       };
 }

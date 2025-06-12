@@ -15,11 +15,9 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
-import "package:dogs_core/src/schema/spec.dart";
 
 /// A [SchemaFieldVisitor] that adds a description to an [APISchemaObject].
-class Description extends StructureMetadata
-    implements SchemaFieldVisitor {
+class Description extends StructureMetadata implements SchemaFieldVisitor {
   /// The description which will be added to the [APISchemaObject].
   final String description;
 

@@ -10,10 +10,12 @@ class YamlCoercion implements CodecPrimitiveCoercion {
   @override
   dynamic coerce(TypeCapture expected, value, String? fieldName) {
     if (expected.typeArgument == String && value == null) return "";
-    if (expected.typeArgument == double && value is int)
+    if (expected.typeArgument == double && value is int) {
       return value.toDouble();
+    }
 
-    throw ArgumentError.value(value, fieldName, "Can't coerce $value to expected $expected");
+    throw ArgumentError.value(
+        value, fieldName, "Can't coerce $value to expected $expected");
   }
 }
 

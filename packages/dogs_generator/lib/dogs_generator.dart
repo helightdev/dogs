@@ -1,4 +1,4 @@
-library dogs_generator;
+library;
 
 export 'adapters/dog_adapter.dart';
 export 'analyze/introspect.dart';

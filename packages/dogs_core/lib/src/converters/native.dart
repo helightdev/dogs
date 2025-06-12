@@ -19,7 +19,6 @@ import "package:dogs_core/dogs_core.dart";
 /// Converter that just keeps the value as is.
 class NativeRetentionConverter<T> extends DogConverter<T>
     with OperationMapMixin<T> {
-
   /// The schema type of the value.
   final SchemaType Function()? schema;
 
@@ -45,13 +44,14 @@ class NativeRetentionConverter<T> extends DogConverter<T>
 }
 
 /// Metadata that marks a property as native.
-class NativeProperty extends StructureMetadata implements ConverterSupplyingVisitor {
-
+class NativeProperty extends StructureMetadata
+    implements ConverterSupplyingVisitor {
   /// Metadata that marks a property as native.
   const NativeProperty();
 
   @override
-  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field, DogEngine engine) {
+  DogConverter resolve(DogStructure<dynamic> structure, DogStructureField field,
+      DogEngine engine) {
     return NativeRetentionConverter();
   }
 }

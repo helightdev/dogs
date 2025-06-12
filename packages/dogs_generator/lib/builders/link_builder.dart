@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dogs_core/dogs_core.dart';
-
 import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 

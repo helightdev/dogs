@@ -66,7 +66,8 @@ class DogEngine with MetadataMixin {
   final Map<String, String> _annotationTranslations = HashMap();
   final Map<Type, DogConverter> _runtimeTreeConverterCache = HashMap();
 
-  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories = HashMap();
+  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories =
+      HashMap();
 
   final List<WeakReference<DogEngine>> _children = [];
   final Map<Symbol, DogEngine> _identifiedChildren = HashMap();
@@ -99,10 +100,12 @@ class DogEngine with MetadataMixin {
     if (registerBaseConverters) {
       // Register tree base converters
       registerTreeBaseFactory(TypeToken<List>(), DefaultTreeBaseFactories.list);
-      registerTreeBaseFactory(TypeToken<Iterable>(), DefaultTreeBaseFactories.iterable);
+      registerTreeBaseFactory(
+          TypeToken<Iterable>(), DefaultTreeBaseFactories.iterable);
       registerTreeBaseFactory(TypeToken<Set>(), DefaultTreeBaseFactories.set);
       registerTreeBaseFactory(TypeToken<Map>(), DefaultTreeBaseFactories.map);
-      registerTreeBaseFactory(TypeToken<Optional>(), DefaultTreeBaseFactories.optional);
+      registerTreeBaseFactory(
+          TypeToken<Optional>(), DefaultTreeBaseFactories.optional);
       registerTreeBaseFactory(TypeToken<Page>(), DefaultTreeBaseFactories.page);
 
       // Register polymorphic converters
@@ -173,7 +176,8 @@ class DogEngine with MetadataMixin {
   /// cached converters in the child will therefore persist, otherwise,
   /// the child will have its caches cleared so future calls access the parents
   /// updated state.
-  DogEngine fork({DogNativeCodec? codec, Symbol? identity, bool listen = true}) {
+  DogEngine fork(
+      {DogNativeCodec? codec, Symbol? identity, bool listen = true}) {
     final DogEngine forked =
         DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked.rebuildFrom(this);
@@ -355,7 +359,7 @@ class DogEngine with MetadataMixin {
       } else {
         log(
           "Structure '$structure' has dynamic or Object as the type argument "
-              "and will therefore not be associated with the type.",
+          "and will therefore not be associated with the type.",
           level: 500,
         );
       }
@@ -385,7 +389,8 @@ class DogEngine with MetadataMixin {
   }
 
   /// Registers and associates a single [TreeBaseConverterFactory] with [Type].
-  void registerTreeBaseFactory(TypeCapture type, TreeBaseConverterFactory factory) {
+  void registerTreeBaseFactory(
+      TypeCapture type, TreeBaseConverterFactory factory) {
     _treeBaseFactories[type] = factory;
   }
 
@@ -419,7 +424,8 @@ class DogEngine with MetadataMixin {
         if (syntheticConverter != null) {
           return syntheticConverter;
         }
-        throw DogException("No converter found for synthetic type ${tree.identity} in tree");
+        throw DogException(
+            "No converter found for synthetic type ${tree.identity} in tree");
       }
 
       if (codec.isNative(tree.base.typeArgument)) {

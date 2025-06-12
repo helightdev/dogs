@@ -101,7 +101,8 @@ class BoolBindingFieldWidget extends StatelessWidget {
       builder: (context, error, _) {
         final outerDecoration = theme.style
             .buildMaterialDecoration(
-              context, controller,
+              context,
+              controller,
               includeLabel: false,
               includeHint: false,
               includeHelper: false,

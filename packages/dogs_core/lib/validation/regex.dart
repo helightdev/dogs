@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -51,7 +53,10 @@ class Regex extends FieldValidator<RegexCacheEntry>
 
   @override
   void verifyUsage(DogStructureField field) {
-    if (field.serial.typeArgument != String) throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @Regex().");
+    if (field.serial.typeArgument != String) {
+      throw DogException(
+          "Field '${field.name}' must be a String/-List/-Iterable to use @Regex().");
+    }
   }
 
   @override

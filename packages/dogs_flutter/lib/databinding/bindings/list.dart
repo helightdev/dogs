@@ -256,7 +256,8 @@ class ListBindingFieldWidget extends StatelessWidget {
           builder: (context, error, _) {
             final outerDecoration = theme.style
                 .buildMaterialDecoration(
-                  context, controller,
+                  context,
+                  controller,
                   includeLabel: false,
                   includeHint: false,
                   includeHelper: false,
@@ -267,14 +268,17 @@ class ListBindingFieldWidget extends StatelessWidget {
                   isDense: true,
                 );
 
-            return theme.style.wrapHeaderLabelSection(InputDecorator(
-              decoration: outerDecoration,
-              child: viewFactory.buildListView(
-                context,
-                listStyle,
-                controller,
+            return theme.style.wrapHeaderLabelSection(
+              InputDecorator(
+                decoration: outerDecoration,
+                child: viewFactory.buildListView(
+                  context,
+                  listStyle,
+                  controller,
+                ),
               ),
-            ), context);
+              context,
+            );
           },
         );
       },

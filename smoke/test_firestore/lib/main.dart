@@ -2,17 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_firestore/dogs_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:test_firestore/dogs.g.dart';
 
-import 'models/person.dart';
-import 'models/town.dart';
-
 void main() async {
-  print("Connecting to Firestore...");
-  await Firebase.initializeApp(options: FirebaseOptions(apiKey: "", appId: "test", messagingSenderId: "", projectId: "test"));
-  print("Connected to Firestore");
-  FirebaseFirestore.instance.settings = Settings(
+  if (kDebugMode) {
+    print("Connecting to Firestore...");
+  }
+  await Firebase.initializeApp(options: const FirebaseOptions(apiKey: "", appId: "test", messagingSenderId: "", projectId: "test"));
+  if (kDebugMode) {
+    print("Connected to Firestore");
+  }
+  FirebaseFirestore.instance.settings = const Settings(
     host: 'localhost:8080',
     sslEnabled: false,
     persistenceEnabled: false,

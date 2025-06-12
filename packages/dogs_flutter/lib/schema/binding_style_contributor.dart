@@ -3,18 +3,22 @@ import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/schema/custom_tags.dart';
 import 'package:flutter/widgets.dart';
 
-class SchemaBindingStyleContributor implements SchemaStructureMaterializationContributor {
-
+class SchemaBindingStyleContributor
+    implements SchemaStructureMaterializationContributor {
   @override
   DogStructureField transformField(DogStructureField field, SchemaType schema) {
     if (DogsFlutterSchemaTags.bindingStyleTags.any((e) => schema[e] != null)) {
       Widget? prefix;
       if (schema[DogsFlutterSchemaTags.bindingStylePrefix] != null) {
-        prefix = Text(schema[DogsFlutterSchemaTags.bindingStylePrefix] as String);
+        prefix = Text(
+          schema[DogsFlutterSchemaTags.bindingStylePrefix] as String,
+        );
       }
       Widget? suffix;
       if (schema[DogsFlutterSchemaTags.bindingStyleSuffix] != null) {
-        suffix = Text(schema[DogsFlutterSchemaTags.bindingStyleSuffix] as String);
+        suffix = Text(
+          schema[DogsFlutterSchemaTags.bindingStyleSuffix] as String,
+        );
       }
 
       final style = BindingStyle(
@@ -24,24 +28,21 @@ class SchemaBindingStyleContributor implements SchemaStructureMaterializationCon
         prefix: prefix,
         suffix: suffix,
       );
-      field = field.copy(
-        annotations: [
-          ...field.annotations,
-          style,
-        ],
-      );
+      field = field.copy(annotations: [...field.annotations, style]);
     }
     return field;
   }
 
   @override
-  DogStructure<Object> transformStructure(DogStructure<Object> structure, SchemaType schema) {
+  DogStructure<Object> transformStructure(
+    DogStructure<Object> structure,
+    SchemaType schema,
+  ) {
     return structure;
   }
 }
 
 extension BindingStyleSchemaBuilderExtension on SchemaType {
-
   SchemaType formLabel(String label) {
     this[DogsFlutterSchemaTags.bindingStyleLabel] = label;
     return this;
@@ -61,5 +62,4 @@ extension BindingStyleSchemaBuilderExtension on SchemaType {
     this[DogsFlutterSchemaTags.bindingStylePrefix] = prefix;
     return this;
   }
-
 }

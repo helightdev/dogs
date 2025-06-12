@@ -1,17 +1,11 @@
 import 'package:dogs_core/dogs_schema.dart' as z;
-import 'package:dogs_flutter/databinding/bindings/list.dart';
-import 'package:dogs_flutter/databinding/style.dart';
-import 'package:dogs_flutter/databinding/validation.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:example/dogs.g.dart';
 import 'package:flutter/material.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  configureDogs(plugins: [
-    GeneratedModelsPlugin(),
-    DogsFlutterPlugin()
-  ]);
+  configureDogs(plugins: [GeneratedModelsPlugin(), DogsFlutterPlugin()]);
   runApp(const MyApp());
 }
 
@@ -57,15 +51,11 @@ class _TestFormState extends State<TestForm> {
       "name": z.string(),
       "surname": z.string(),
       "age": z.integer(),
-      "subschema":  z.object({
+      "subschema": z.object({
         "subfield1": z.string(),
-        "subfield2": z.integer()
+        "subfield2": z.integer(),
       }),
-      "enum": z.enumeration([
-        "option1",
-        "option2",
-        "option3",
-      ])
+      "enum": z.enumeration(["option1", "option2", "option3"]),
     }),
   );
 
@@ -128,6 +118,7 @@ class _TestFormState extends State<TestForm> {
     );
   }
 
+  // ignore: unused_element
   Column _buildForm() {
     return Column(
       spacing: 12,
@@ -145,8 +136,9 @@ class _TestFormState extends State<TestForm> {
           field: "subschema",
           //binder: NestedStructureFlutterBinder(subSchema.structure),
         ),
-        FieldBinding(field: "array",
-            //binder: ListFlutterBinder(StringFlutterBinder(), QualifiedTypeTree.terminal<String>())
+        FieldBinding(
+          field: "array",
+          //binder: ListFlutterBinder(StringFlutterBinder(), QualifiedTypeTree.terminal<String>())
         ),
       ],
     );

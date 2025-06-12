@@ -1,1 +1,4 @@
 !*.g.dart
+
+example/**
+demo/**

@@ -160,9 +160,7 @@ class StructureBindingController<T> implements FieldBindingParent {
     for (var i = 0; i < fields.length; i++) {
       final field = fields[i];
       field.reset();
-      _fieldValueChangeController.add(
-        (field.fieldName, field.getValue()),
-      );
+      _fieldValueChangeController.add((field.fieldName, field.getValue()));
     }
   }
 
@@ -334,9 +332,7 @@ class StructureBindingController<T> implements FieldBindingParent {
       final field = fields[i];
       final fieldValue = fieldValues[field.fieldName];
       field.setValue(fieldValue);
-      _fieldValueChangeController.add(
-        (field.fieldName, fieldValue),
-      );
+      _fieldValueChangeController.add((field.fieldName, fieldValue));
     }
     _errorBuffer.clearCustom();
     _errorBuffer.recalculateFieldErrors();
@@ -499,7 +495,6 @@ class StructureViewer<T> {
 }
 
 abstract interface class FieldBindingParent {
-
   /// The dogs engine instance associated with this binding parent.
   DogEngine get engine;
 

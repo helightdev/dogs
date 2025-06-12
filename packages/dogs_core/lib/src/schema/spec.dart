@@ -17,6 +17,7 @@
 import "dart:convert";
 import "dart:developer";
 
+// ignore: unused_import
 import "package:collection/collection.dart";
 import "package:crypto/crypto.dart";
 import "package:dogs_core/dogs_core.dart";
@@ -49,7 +50,6 @@ extension SchemaGenerateExtension on DogEngine {
     final materialized = DogsMaterializer.get(this).materialize(type, false);
     return SyntheticTypeCapture(materialized.structure.serialName);
   }
-  
 }
 
 class SchemaConfig {
@@ -109,9 +109,11 @@ sealed class SchemaType {
 
   static SchemaType array(SchemaType items) {
     if (items is SchemaArray || items is SchemaMap) {
-      log("Multidimensional arrays and maps are not fully supported yet. "
+      log(
+          "Multidimensional arrays and maps are not fully supported yet. "
           "While serialization should generally work, validation and container "
-          "specific configurations may not work as expected.", level: 500);
+          "specific configurations may not work as expected.",
+          level: 500);
     }
 
     return SchemaArray(items);
@@ -122,9 +124,11 @@ sealed class SchemaType {
 
   static SchemaType map(SchemaType itemType) {
     if (itemType is SchemaArray || itemType is SchemaMap) {
-      log("Multidimensional arrays and maps are not fully supported yet. "
+      log(
+          "Multidimensional arrays and maps are not fully supported yet. "
           "While serialization should generally work, validation and container "
-          "specific configurations may not work as expected.", level: 500);
+          "specific configurations may not work as expected.",
+          level: 500);
     }
 
     return SchemaMap(itemType);
@@ -133,12 +137,14 @@ sealed class SchemaType {
   /// Reads a SchemaType from a property map.
   static SchemaType fromProperties(Map<String, dynamic> properties) {
     final typeValue = properties["type"];
-    final types = typeValue is List ? typeValue.cast<String>() : <String>[typeValue];
+    final types =
+        typeValue is List ? typeValue.cast<String>() : <String>[typeValue];
     final (coreType, nullable) = SchemaCoreType.fromJsonSchema(types);
 
     switch (coreType) {
       case SchemaCoreType.string:
-        return SchemaPrimitive(SchemaCoreType.string, format: properties[SchemaProperties.format])
+        return SchemaPrimitive(SchemaCoreType.string,
+            format: properties[SchemaProperties.format])
           ..nullable = nullable
           ..properties = _cleanProperties(properties);
       case SchemaCoreType.number:
@@ -164,10 +170,14 @@ sealed class SchemaType {
             ..nullable = nullable
             ..properties = _cleanProperties(properties);
         } else {
-          final fields = (properties["properties"] as Map<String, dynamic>?)?.entries.map((entry) {
-            final fieldType = fromProperties(entry.value as Map<String, dynamic>);
-            return SchemaField(entry.key, fieldType);
-          }).toList() ?? [];
+          final fields = (properties["properties"] as Map<String, dynamic>?)
+                  ?.entries
+                  .map((entry) {
+                final fieldType =
+                    fromProperties(entry.value as Map<String, dynamic>);
+                return SchemaField(entry.key, fieldType);
+              }).toList() ??
+              [];
           return SchemaObject(fields: fields)
             ..nullable = nullable
             ..properties = _cleanProperties(properties);
@@ -179,8 +189,10 @@ sealed class SchemaType {
     }
   }
 
-  static Map<String,dynamic> _cleanProperties(Map<String, dynamic> properties) {
-    return Map.fromEntries(properties.entries.where((e) => !_isTypeProperty(e.key)));
+  static Map<String, dynamic> _cleanProperties(
+      Map<String, dynamic> properties) {
+    return Map.fromEntries(
+        properties.entries.where((e) => !_isTypeProperty(e.key)));
   }
 
   static bool _isTypeProperty(String key) {
@@ -228,7 +240,7 @@ sealed class SchemaType {
 
   /// Creates a deep copy of this schema type.
   SchemaType clone();
-  
+
   @internal
   SchemaType removeNullable() => clone()..nullable = false;
 }
@@ -451,7 +463,8 @@ enum SchemaCoreType {
   }
 
   /// Converts a list of JSON schema types to a [SchemaCoreType] and a nullable flag.
-  static (SchemaCoreType type, bool nullable) fromJsonSchema(List<String> types) {
+  static (SchemaCoreType type, bool nullable) fromJsonSchema(
+      List<String> types) {
     final nullable = types.contains("null");
     final nonNullTypes = types.where((type) => type != "null").toList();
     if (nonNullTypes.length == 1) {
@@ -478,4 +491,3 @@ enum SchemaCoreType {
     }
   }
 }
-

@@ -6,11 +6,18 @@ class CodeExportDialog extends StatelessWidget {
   final String code;
   final String language;
 
-  const CodeExportDialog({super.key, required this.code, this.language = "json"});
+  const CodeExportDialog({
+    super.key,
+    required this.code,
+    this.language = "json",
+  });
 
   @override
   Widget build(BuildContext context) {
-    final rich = Highlighter(language: "json", theme: highlighterTheme).highlight(code);
+    final rich = Highlighter(
+      language: "json",
+      theme: highlighterTheme,
+    ).highlight(code);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -23,9 +30,12 @@ class CodeExportDialog extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.small(onPressed: () {
-        Navigator.of(context).pop();
-      }, child: const Icon(Icons.close)),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Icon(Icons.close),
+      ),
     );
   }
 }

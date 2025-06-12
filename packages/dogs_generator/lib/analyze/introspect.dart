@@ -17,10 +17,9 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
-
-import 'package:dogs_generator/dogs_generator.dart';
 
 final _iterableChecker = TypeChecker.fromRuntime(Iterable);
 final _listChecker = TypeChecker.fromRuntime(List);
@@ -45,13 +44,15 @@ Future<DartType> getSerialType(
 Future<IterableKind> getIterableType(
     DartType target, SubjectGenContext<Element> context) async {
   var typeTree = getTypeTree(target);
-  if (_listChecker.isAssignableFromType(target) && typeTree.base.isDartCoreList) {
+  if (_listChecker.isAssignableFromType(target) &&
+      typeTree.base.isDartCoreList) {
     return IterableKind.list;
   }
   if (_setChecker.isAssignableFromType(target) && typeTree.base.isDartCoreSet) {
     return IterableKind.set;
   }
-  if (_iterableChecker.isAssignableFromType(target) && typeTree.base.isDartCoreIterable) {
+  if (_iterableChecker.isAssignableFromType(target) &&
+      typeTree.base.isDartCoreIterable) {
     return IterableKind.list;
   }
   return IterableKind.none;

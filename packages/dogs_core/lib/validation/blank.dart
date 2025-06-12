@@ -34,7 +34,10 @@ class NotBlank extends FieldValidator<bool> implements StructureMetadata {
 
   @override
   void verifyUsage(DogStructureField field) {
-    if (field.serial.typeArgument != String) throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @notBlank.");
+    if (field.serial.typeArgument != String) {
+      throw DogException(
+          "Field '${field.name}' must be a String/-List/-Iterable to use @notBlank.");
+    }
   }
 
   @override

@@ -14,29 +14,22 @@
  *    limitations under the License.
  */
 
-import 'dart:convert';
-
 import 'package:benchmarks/dogs.g.dart';
 import 'package:benchmarks/serializables.dart';
 import 'package:benchmarks/system.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:dart_mappable/dart_mappable.dart';
-import 'package:dogs_core/dogs_core.dart';
 
-class BuildersExercise extends Exercise<BuildersExercise,BuildersCompetitor> {
-  BuildersExercise() : super(
-      name: "Builders",
-      options: {
-        "count": 500,
-      },
-      competitors: [
-        _DogsCompetitor(),
-        _BuiltCompetitor(),
-        _FreezedCompetitor(),
-        //_DartJsonMapperCompetitor(),
-        _MappableCompetitor(),
-      ]
-  );
+class BuildersExercise extends Exercise<BuildersExercise, BuildersCompetitor> {
+  BuildersExercise()
+      : super(name: "Builders", options: {
+          "count": 500,
+        }, competitors: [
+          _DogsCompetitor(),
+          _BuiltCompetitor(),
+          _FreezedCompetitor(),
+          //_DartJsonMapperCompetitor(),
+          _MappableCompetitor(),
+        ]);
 
   @override
   void compete(BuildersCompetitor competitor, int iterations) {
@@ -50,7 +43,8 @@ class BuildersExercise extends Exercise<BuildersExercise,BuildersCompetitor> {
   }
 }
 
-abstract class BuildersCompetitor<T> extends ExerciseCompetitor<BuildersExercise,BuildersCompetitor> {
+abstract class BuildersCompetitor<T>
+    extends ExerciseCompetitor<BuildersExercise, BuildersCompetitor> {
   BuildersCompetitor({required super.name});
 
   late List<T> _items;
@@ -64,12 +58,12 @@ abstract class BuildersCompetitor<T> extends ExerciseCompetitor<BuildersExercise
 
   @override
   void setup(BuildersExercise exercise) {
-    _items = List.generate(exercise.options["count"] as int, (index) => generateItem(index));
+    _items = List.generate(
+        exercise.options["count"] as int, (index) => generateItem(index));
   }
 }
 
 class _DogsCompetitor extends BuildersCompetitor<DogPerson> {
-
   _DogsCompetitor() : super(name: "dogs");
 
   @override
@@ -84,7 +78,6 @@ class _DogsCompetitor extends BuildersCompetitor<DogPerson> {
 }
 
 class _BuiltCompetitor extends BuildersCompetitor<BuiltPerson> {
-
   _BuiltCompetitor() : super(name: "built");
 
   @override
@@ -99,7 +92,6 @@ class _BuiltCompetitor extends BuildersCompetitor<BuiltPerson> {
 }
 
 class _FreezedCompetitor extends BuildersCompetitor<FreezedPerson> {
-
   _FreezedCompetitor() : super(name: "freezed");
 
   @override
@@ -112,7 +104,6 @@ class _FreezedCompetitor extends BuildersCompetitor<FreezedPerson> {
 }
 
 class _MappableCompetitor extends BuildersCompetitor<MappablePerson> {
-
   _MappableCompetitor() : super(name: "mappable");
 
   @override

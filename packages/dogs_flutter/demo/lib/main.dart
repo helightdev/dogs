@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 
 import 'package:demo/dogs.g.dart';
@@ -34,45 +36,52 @@ final router = GoRouter(
     GoRoute(
       path: "/binder/string",
       builder: (context, state) {
-        return BinderPreview(z.object({"stringField": z.string().formLabel("String Field")}), exampleValue: {
-          "stringField": "Hello, World!",
-        },);
+        return BinderPreview(
+          z.object({"stringField": z.string().formLabel("String Field")}),
+          exampleValue: {"stringField": "Hello, World!"},
+        );
       },
     ),
 
     GoRoute(
       path: "/binder/int",
       builder: (context, state) {
-        return BinderPreview(z.object({"intField": z.integer().formLabel("Integer Field")}), exampleValue: {
-          "intField": 42,
-        },);
+        return BinderPreview(
+          z.object({"intField": z.integer().formLabel("Integer Field")}),
+          exampleValue: {"intField": 42},
+        );
       },
     ),
 
     GoRoute(
       path: "/binder/double",
       builder: (context, state) {
-        return BinderPreview(z.object({"doubleField": z.number().formLabel("Double Field")}), exampleValue: {
-          "doubleField": 3.141592654,
-        },);
+        return BinderPreview(
+          z.object({"doubleField": z.number().formLabel("Double Field")}),
+          exampleValue: {"doubleField": 3.141592654},
+        );
       },
     ),
 
     GoRoute(
       path: "/binder/bool",
       builder: (context, state) {
-        return BinderPreview(z.object({"boolField": z.boolean().formLabel("Bool Field")}), exampleValue: {
-          "boolField": true,
-        },);
+        return BinderPreview(
+          z.object({"boolField": z.boolean().formLabel("Bool Field")}),
+          exampleValue: {"boolField": true},
+        );
       },
     ),
 
     GoRoute(
       path: "/binder/enum",
       builder: (context, state) {
-        return BinderPreview(z.object({"enumField": z.enumeration(["a", "b", "c"]).formLabel("Enum Field")}), exampleValue: {
-          "enumField": "b",
-        },);
+        return BinderPreview(
+          z.object({
+            "enumField": z.enumeration(["a", "b", "c"]).formLabel("Enum Field"),
+          }),
+          exampleValue: {"enumField": "b"},
+        );
       },
     ),
   ],

@@ -75,7 +75,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       final simpleValue = value[codec.valueDiscriminator]!;
       return operation.deserialize(simpleValue, engine);
     } else {
-      final clone = Map<String,dynamic>.from(value);
+      final clone = Map<String, dynamic>.from(value);
       clone.remove(codec.typeDiscriminator);
       return operation.deserialize(clone, engine);
     }

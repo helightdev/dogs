@@ -1,13 +1,14 @@
 // Openapi Generator last run: : 2024-02-01T14:48:50.967742
+// ignore_for_file: unused_import
+
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/standard_json_plugin.dart';
 import 'package:dogs_built/dogs_built.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:logging/logging.dart';
-import 'dart:io';
-
 @SerializableLibrary(include: ["package:openapi/src/model/.*"])
 import 'package:openapi/openapi.dart';
 

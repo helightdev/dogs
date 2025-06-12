@@ -21,7 +21,8 @@ import "package:dogs_core/dogs_core.dart";
 /// the field.
 ///
 /// See also: https://dogs.helight.dev/advanced/structures
-class DogStructureField extends RetainedAnnotationHolder implements StructureNode {
+class DogStructureField extends RetainedAnnotationHolder
+    implements StructureNode {
   /// Declared type of the structure.
   final TypeTree type;
 
@@ -87,9 +88,9 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
   /// Creates a synthetic [String] field.
   factory DogStructureField.string(String name,
       {bool optional = false,
-        IterableKind iterable = IterableKind.none,
-        Type? converterType,
-        List<RetainedAnnotation> annotations = const []}) {
+      IterableKind iterable = IterableKind.none,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<String>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<String>();
@@ -103,9 +104,9 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
   /// Creates a synthetic [int] field.
   factory DogStructureField.int(String name,
       {bool optional = false,
-        IterableKind iterable = IterableKind.none,
-        Type? converterType,
-        List<RetainedAnnotation> annotations = const []}) {
+      IterableKind iterable = IterableKind.none,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<int>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<int>();
@@ -119,9 +120,9 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
   /// Creates a synthetic [double] field.
   factory DogStructureField.double(String name,
       {bool optional = false,
-        IterableKind iterable = IterableKind.none,
-        Type? converterType,
-        List<RetainedAnnotation> annotations = const []}) {
+      IterableKind iterable = IterableKind.none,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<double>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<double>();
@@ -135,9 +136,9 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
   /// Creates a synthetic [bool] field.
   factory DogStructureField.bool(String name,
       {bool optional = false,
-        IterableKind iterable = IterableKind.none,
-        Type? converterType,
-        List<RetainedAnnotation> annotations = const []}) {
+      IterableKind iterable = IterableKind.none,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<bool>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<bool>();
@@ -151,9 +152,9 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
   /// Creates a synthetic field for a terminal serial type.
   static DogStructureField create<TYPE>(String name,
       {bool optional = false,
-        IterableKind iterable = IterableKind.none,
-        Type? converterType,
-        List<RetainedAnnotation> annotations = const []}) {
+      IterableKind iterable = IterableKind.none,
+      Type? converterType,
+      List<RetainedAnnotation> annotations = const []}) {
     var type = QualifiedTypeTree.terminal<TYPE>();
     if (iterable == IterableKind.list) {
       type = QualifiedTypeTree.list<TYPE>();
@@ -164,7 +165,8 @@ class DogStructureField extends RetainedAnnotationHolder implements StructureNod
         type, converterType, name, optional, true, annotations);
   }
 
-  DogStructureFieldCopyFrontend get copy => _DogStructureFieldCopyFrontendImpl(this);
+  DogStructureFieldCopyFrontend get copy =>
+      _DogStructureFieldCopyFrontendImpl(this);
 }
 
 abstract interface class DogStructureFieldCopyFrontend {
@@ -179,10 +181,11 @@ abstract interface class DogStructureFieldCopyFrontend {
   });
 }
 
-class _DogStructureFieldCopyFrontendImpl implements DogStructureFieldCopyFrontend {
+class _DogStructureFieldCopyFrontendImpl
+    implements DogStructureFieldCopyFrontend {
   final DogStructureField field;
   const _DogStructureFieldCopyFrontendImpl(this.field);
-  
+
   @override
   DogStructureField call({
     Object? type = #none,
@@ -199,7 +202,9 @@ class _DogStructureFieldCopyFrontendImpl implements DogStructureFieldCopyFronten
       name == #none ? field.name : name as String,
       optional == #none ? field.optional : optional as bool,
       structure == #none ? field.structure : structure as bool,
-      annotations == #none ? field.annotations : annotations as List<RetainedAnnotation>,
+      annotations == #none
+          ? field.annotations
+          : annotations as List<RetainedAnnotation>,
     );
   }
 }

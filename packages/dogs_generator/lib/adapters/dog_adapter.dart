@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -16,8 +18,8 @@
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
-import 'package:lyell_gen/lyell_gen.dart';
 import 'package:collection/collection.dart';
+import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/builder.dart';
 
 abstract class DogsAdapter<TAnnotation>

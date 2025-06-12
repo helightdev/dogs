@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
  *    Copyright 2022, the DOGs authors
  *
@@ -107,9 +109,9 @@ void main() {
 
   test("Primitive Coerce", () {
     final coercion = NumberPrimitiveCoercion();
-    final e1 =  QualifiedTypeTree.terminal<int>();
-    final e2 =  QualifiedTypeTree.terminal<double>();
-    final e3 =  QualifiedTypeTree.terminal<String>();
+    final e1 = QualifiedTypeTree.terminal<int>();
+    final e2 = QualifiedTypeTree.terminal<double>();
+    final e3 = QualifiedTypeTree.terminal<String>();
     expect(coercion.coerce(e1, 1.0, "a"), 1);
     expect(coercion.coerce(e2, 1, "a"), 1.0);
     expect(() {

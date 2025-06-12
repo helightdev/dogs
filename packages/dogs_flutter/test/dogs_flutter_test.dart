@@ -1,12 +1,9 @@
+import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dogs_flutter/dogs_flutter.dart';
-
 void main() {
-  configureDogs(plugins: [
-    DogsFlutterPlugin()
-  ]);
+  configureDogs(plugins: [DogsFlutterPlugin()]);
 
   group("Flutter Converter Tests", () {
     test("Serialize Offset", () {
