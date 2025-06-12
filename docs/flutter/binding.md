@@ -26,3 +26,16 @@ by manually setting it using the `binder` property of the `FieldBinding` widget 
 A field binding widget automatically creates a `Widget` from the field definition and binds it to the `FieldBindingController`
 contained in the `StructureBindingController`. If the customizability of the field is not enough, you can always
 create a custom binder or just consume the state of the `FieldBindingController` directly in your widget tree.
+
+
+## Examples
+
+<iframe src="/assets/dogs_flutter/demo/index.html#/binder/string" width="100%" height="150"></iframe>
+
+<iframe src="/assets/dogs_flutter/demo/index.html#/binder/int" width="100%" height="150"></iframe>
+
+<iframe src="/assets/dogs_flutter/demo/index.html#/binder/double" width="100%" height="150"></iframe>
+
+<iframe src="/assets/dogs_flutter/demo/index.html#/binder/bool" width="100%" height="150"></iframe>
+
+<iframe src="/assets/dogs_flutter/demo/index.html#/binder/enum" width="100%" height="200"></iframe>

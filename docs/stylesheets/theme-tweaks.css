@@ -200,3 +200,11 @@ details a:not(.md-button), div.admonition a:not(.md-button) {
 .md-footer {
     background-color: var(--md-footer-bg-color--dark) !important;
 }
+
+iframe {
+    border-radius: var(--md-border-radius) !important;
+    border: 1px solid #25272d !important;
+    overflow: hidden !important;
+    padding: 0;
+    background-color: black;
+}

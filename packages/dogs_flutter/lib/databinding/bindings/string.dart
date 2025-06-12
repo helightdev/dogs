@@ -134,7 +134,7 @@ class StringBindingFieldWidget extends StatelessWidget {
           // Apply all the text field properties directly from the TextFieldStyle
           obscureText: textFieldStyle.obscureText ?? false,
           keyboardType: textFieldStyle.keyboardType,
-          maxLines: textFieldStyle.maxLines,
+          maxLines: textFieldStyle.maxLines ?? 1,
           minLines: textFieldStyle.minLines,
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,

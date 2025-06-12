@@ -36,6 +36,9 @@ scripts:
     packageFilters:
       fileExists:
         - page-deploy.sh
+  preview-docs:
+    description: 'Runs the preview docs script'
+    run: "bash .github/workflows/scripts/prepare-demo-build.sh && mkdocs serve"
   test:
     description: Runs all tests in the project.
     run: melos test-dart && melos test-flutter
