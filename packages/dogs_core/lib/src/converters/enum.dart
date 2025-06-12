@@ -25,6 +25,16 @@ typedef EnumToString<T> = String Function(T?);
 /// A [DogConverter] that allows for the conversion of enum values to and from strings.
 abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
     with OperationMapMixin<T>, EnumConverter<T> {
+
+  GeneratedEnumDogConverter();
+
+  GeneratedEnumDogConverter.structured({
+    required String serialName
+  }) : super(
+    isAssociated: true,
+    struct: DogStructure<T>.synthetic(serialName)
+  );
+  
   /// Function that converts a enum value to a string.
   EnumToString<T?> get toStr;
 
@@ -38,7 +48,16 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
   Map<Type, OperationMode<T> Function()> get modes => {
         NativeSerializerMode: () => NativeSerializerMode.create(
             serializer: (value, engine) => toStr(value),
-            deserializer: (value, engine) => fromStr(value)!),
+            deserializer: (value, engine) {
+              final v = fromStr(value);
+              if (v == null) {
+                throw DogSerializerException(
+                  message: "Value '$value' is not a valid enum value.",
+                  converter: this,
+                );
+              }
+              return v;
+            }),
       };
 
   @override

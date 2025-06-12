@@ -1,12 +1,10 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
-
 import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
@@ -29,11 +27,40 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
+
+    String? fallbackFieldName;
+    final fieldValueMap =
+        Map.fromEntries(element.fields.where((e) => e.isEnumConstant).map((e) {
+      final actual = e.name;
+      var serializedName = e.name;
+
+      final propertyName = propertyNameChecker.firstAnnotationOf(e);
+      if (propertyName != null) {
+        serializedName =
+            propertyName.getField("name")?.toStringValue() ?? serializedName;
+      }
+
+      final enumProperty = enumPropertyChecker.firstAnnotationOf(e);
+      if (enumProperty != null) {
+        serializedName =
+            enumProperty.getField("name")?.toStringValue() ?? serializedName;
+        if (enumProperty.getField("fallback")?.toBoolValue() ?? false) {
+          fallbackFieldName = actual;
+        }
+      }
+
+      return MapEntry(actual, serializedName);
+    }));
+
     var clazz = Class((builder) {
       builder.name = converterName;
 
       builder.extend = Reference(
           "$genAlias.GeneratedEnumDogConverter<${codeContext.typeName(element.thisType)}>");
+
+      builder.constructors.add(Constructor((builder) => builder
+        ..initializers.add(Code(
+            "super.structured(serialName: '${codeContext.typeName(element.thisType)}')"))));
 
       builder.methods.add(Method((builder) => builder
         ..name = "values"
@@ -42,7 +69,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code(
-            "${codeContext.typeName(element.thisType)}.values.map((e) => e.name).toList()")));
+            "[${fieldValueMap.values.map((e) => "'${sqsLiteralEscape(e)}'").join(",")}]")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toStr"
@@ -51,7 +78,12 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
             "$genAlias.EnumToString<${codeContext.typeName(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body = Code("(e) => e!.name")));
+        ..body = Code("""
+(e) => switch(e) {
+  ${fieldValueMap.entries.map((e) => "${codeContext.typeName(element.thisType)}.${e.key} => '${sqsLiteralEscape(e.value)}',").join("\n")}
+  null => throw ArgumentError('Enum value cannot be null'),
+}
+""")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "fromStr"
@@ -60,8 +92,15 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
             "$genAlias.EnumFromString<${codeContext.typeName(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body = Code(
-            "(e) => ${codeContext.typeName(element.thisType)}.values.firstWhereOrNullDogs((element) => element.name == e)")));
+        ..body = Code("""
+(e) => switch(e) {
+  ${fieldValueMap.entries.map((e) => "'${sqsLiteralEscape(e.value)}' => ${codeContext.typeName(element.thisType)}.${e.key},").join("\n")}
+  _ => ${switch (fallbackFieldName) {
+          null => "null",
+          _ => "${codeContext.typeName(element.thisType)}.$fallbackFieldName"
+        }}
+}
+""")));
     });
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
@@ -148,7 +187,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         log.severe("""
 Generic type variables for models are not supported.
 If you wish to use class-level generics, please implement a TreeBaseConverterFactory for your base type.
-        """.trim());
+        """
+            .trim());
       }
 
       var referencedClassName = codeContext.className(element);
@@ -341,7 +381,8 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         builder.body = Code(bodyBuilder.toString());
       }));
 
-      var hasRebuildHook = TypeChecker.fromRuntime(PostRebuildHook).isAssignableFromType(element.thisType);
+      var hasRebuildHook = TypeChecker.fromRuntime(PostRebuildHook)
+          .isAssignableFromType(element.thisType);
 
       builder.methods.add(Method((builder) => builder
         ..name = "build"
@@ -389,8 +430,7 @@ return instance;""")));
         ..type = MethodType.getter
         ..returns = Reference("${element.name}\$Copy")
         ..body = Code("toBuilder()")
-        ..lambda = true
-      ));
+        ..lambda = true));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toBuilder"

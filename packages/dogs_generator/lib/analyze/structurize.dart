@@ -101,6 +101,7 @@ TypeChecker dataclassChecker = TypeChecker.fromRuntime(Dataclass);
 TypeChecker mapChecker = TypeChecker.fromRuntime(Map);
 TypeChecker beanIgnoreChecker = TypeChecker.fromRuntime(beanIgnore.runtimeType);
 TypeChecker serializableChecker = TypeChecker.fromRuntime(Serializable);
+TypeChecker enumPropertyChecker = TypeChecker.fromRuntime(EnumProperty);
 
 Future<StructurizeResult> structurizeConstructor(
     DartType type,

@@ -250,3 +250,33 @@ class ClassExclusionModel with Dataclass<ClassExclusionModel> {
     );
   }
 }
+
+@serializable
+enum EnumB {
+  @EnumProperty(fallback: true)
+  a,
+  @PropertyName("second")
+  b,
+  @EnumProperty(name: "third")
+  c;
+}
+
+
+@serializable
+class CombinedEnumTestModel with Dataclass<CombinedEnumTestModel> {
+  EnumA enumA;
+  EnumB enumB;
+
+  CombinedEnumTestModel({
+    required this.enumA,
+    required this.enumB,
+  });
+
+  factory CombinedEnumTestModel.variant0() {
+    return CombinedEnumTestModel(enumA: EnumA.a, enumB: EnumB.a);
+  }
+
+  factory CombinedEnumTestModel.variant1() {
+    return CombinedEnumTestModel(enumA: EnumA.c, enumB: EnumB.c);
+  }
+}

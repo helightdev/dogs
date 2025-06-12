@@ -40,7 +40,33 @@ void testModels() {
       FieldExclusionModel.variant0, FieldExclusionModel.variant1);
   testSingleModel<ClassExclusionModel>(
       ClassExclusionModel.variant0, ClassExclusionModel.variant1);
+  testSingleModel<CombinedEnumTestModel>(CombinedEnumTestModel.variant0, CombinedEnumTestModel.variant1);
 
+  test("Enum Properties", () {
+    expect(() {
+      dogs.fromNative<EnumA>("invalid", type: EnumA);
+    }, throwsException);
+
+    final bFallback = dogs.fromNative<EnumB>("invalid");
+    expect(bFallback, EnumB.a);
+
+    final aName = dogs.toNative(EnumA.c);
+    expect(aName, "c");
+    expect(EnumA.c, dogs.fromNative<EnumA>(aName));
+
+    final enumPropertyNameOverride = dogs.toNative(EnumB.c);
+    expect(enumPropertyNameOverride, "third");
+    expect(EnumB.c, dogs.fromNative<EnumB>(enumPropertyNameOverride));
+
+    final propertyNameOverride = dogs.toNative(EnumB.b);
+    expect(propertyNameOverride, "second");
+    expect(EnumB.b, dogs.fromNative<EnumB>(propertyNameOverride));
+
+    final noPropertyNameOverride = dogs.toNative(EnumB.a);
+    expect(noPropertyNameOverride, "a");
+    expect(EnumB.a, dogs.fromNative<EnumB>(noPropertyNameOverride));
+
+  });
 
   test("Default Values", () {
     var defaultValues = DefaultValueModel.variant0();
