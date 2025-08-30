@@ -32,6 +32,63 @@ class ListBindingStyle extends BindingStyleExtension<ListBindingStyle>
   }
 }
 
+class ListBindingStyleContributor
+    implements SchemaStructureMaterializationContributor {
+  @override
+  DogStructureField transformField(DogStructureField field, SchemaType schema) {
+    String? itemLabel;
+    String? addButtonLabel;
+    bool isModified = false;
+
+    if (schema.properties.containsKey(
+      DogsFlutterSchemaTags.listBindingItemLabel,
+    )) {
+      var value = schema[DogsFlutterSchemaTags.listBindingItemLabel] as String?;
+      itemLabel = value;
+      isModified = true;
+    }
+
+    if (schema.properties.containsKey(
+      DogsFlutterSchemaTags.listBindingAddButtonLabel,
+    )) {
+      var value = schema[DogsFlutterSchemaTags.listBindingAddButtonLabel] as String?;
+      addButtonLabel = value;
+      isModified = true;
+    }
+
+    if (schema.type == SchemaCoreType.array && isModified) {
+      field = field.copy(
+        annotations:
+            field.annotations + [ListBindingStyle(itemLabel: itemLabel, addButtonLabel: addButtonLabel)],
+      );
+      print("Applied ListBindingStyle to field ${field.name} (itemLabel: $itemLabel, addButtonLabel: $addButtonLabel)");
+    }
+
+    return field;
+  }
+
+  @override
+  DogStructure<Object> transformStructure(
+    DogStructure<Object> structure,
+    SchemaType schema,
+  ) {
+    return structure;
+  }
+}
+
+extension BindingStyleSchemaBuilderExtension on SchemaType {
+  SchemaType itemLabel(String label) {
+    this[DogsFlutterSchemaTags.listBindingItemLabel] = label;
+    return this;
+  }
+
+  SchemaType addButtonLabel(String label) {
+    this[DogsFlutterSchemaTags.listBindingAddButtonLabel] = label;
+    return this;
+  }
+}
+
+
 abstract class ListBindingViewFactory {
   const ListBindingViewFactory();
 
@@ -51,10 +108,10 @@ class DefaultListBindingViewFactory implements ListBindingViewFactory {
     ListBindingStyle style,
     ListBindingFieldController controller,
   ) {
+    var verticalGap = style.spacing ?? 8.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      spacing: style.spacing ?? 8.0,
       children: [
         ReorderableListView.builder(
           itemCount: controller.fieldOrder.length,
@@ -73,13 +130,14 @@ class DefaultListBindingViewFactory implements ListBindingViewFactory {
               padding:
                   index == 0
                       ? EdgeInsets.zero
-                      : EdgeInsets.only(top: style.spacing ?? 8.0),
+                      : EdgeInsets.only(top: verticalGap),
               child: Row(
                 children: [
                   Expanded(
                     child: FieldBinding(
                       field: fieldName,
                       controller: fieldController,
+                      style: BindingStyle(label: style.itemLabel),
                     ),
                   ),
                   IconButton(
@@ -98,6 +156,7 @@ class DefaultListBindingViewFactory implements ListBindingViewFactory {
           },
           shrinkWrap: true,
         ),
+        if (controller.fieldOrder.isNotEmpty) SizedBox(height: verticalGap),
         FilledButton(
           onPressed: () {
             controller.addField();

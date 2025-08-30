@@ -22,7 +22,10 @@ import 'package:dogs_flutter/databinding/field_controller.dart';
 import 'package:dogs_flutter/databinding/material/list.dart';
 import 'package:dogs_flutter/databinding/material/style.dart';
 import 'package:dogs_flutter/databinding/opmode.dart';
+import 'package:dogs_flutter/databinding/style.conv.g.dart';
 import 'package:dogs_flutter/databinding/validation.dart';
+import 'package:dogs_flutter/databinding/validators/format.dart';
+import 'package:dogs_flutter/databinding/validators/required.dart';
 import 'package:dogs_flutter/databinding/widgets/field_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -31,8 +34,9 @@ class ListFlutterBinder extends FlutterWidgetBinder<dynamic>
     implements StructureMetadata {
   final TypeTree childType;
   final FlutterWidgetBinder childBinder;
+  final DogConverter converter;
 
-  const ListFlutterBinder(this.childBinder, this.childType);
+  const ListFlutterBinder(this.childBinder, this.childType, this.converter);
 
   @override
   Widget buildBindingField(
@@ -56,6 +60,7 @@ class ListFlutterBinder extends FlutterWidgetBinder<dynamic>
       context,
       childBinder,
       childType,
+      converter,
     );
   }
 
@@ -78,6 +83,7 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
     implements FieldBindingParent {
   final FlutterWidgetBinder childBinder;
   final TypeTree typeTree;
+  final DogConverter converter;
 
   Map<String, FieldBindingController> fields = {};
   List<String> fieldOrder = [];
@@ -90,6 +96,7 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
     super.bindingContext,
     this.childBinder,
     this.typeTree,
+    this.converter,
   );
 
   int _nextId = 0;
@@ -97,8 +104,6 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
   String _createNewField() {
     final id = (_nextId++).toString();
     final field = DogStructureField(typeTree, null, id, false, true, []);
-    final converter =
-        field.findConverter(null, engine: engine, nativeConverters: true)!;
     final serializerMode = engine.modeRegistry.nativeSerialization.forConverter(
       converter,
       engine,
@@ -111,13 +116,32 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
       serializerMode: serializerMode,
       fieldValidator: validator,
     );
-
     final context = field.type.qualifiedOrBase.consumeType(creator);
     final controller = childBinder.createBindingController(this, context);
     fields[id] = controller;
     fieldOrder.add(id);
     return id;
   }
+
+  bool validate(String id, ValidationTrigger? trigger) {
+    var field = fields[id];
+    if (field == null) return false;
+    field.performValidation(trigger);
+    var value = field.getValue();
+    AnnotationResult errors;
+    if (value == null) {
+      errors = DatabindRequiredGuard.sharedMessage.asAnnotationResult();
+    } else {
+      errors = field.bindingContext.fieldValidator.annotate(value);
+    }
+    field.handleErrors(errors);
+    errors = field.errorListenable.value;
+
+    return errors.hasErrors;
+  }
+
+  @override
+  bool get hasStateError => fields.values.any((x) => x.errorListenable.value.hasErrors);
 
   void _removeField(String id) {
     if (fields.containsKey(id)) {
@@ -189,7 +213,7 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
           continue;
         }
       }
-      result.add(null);
+      return null;
     }
     return result;
   }
@@ -212,8 +236,26 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
   @override
   void performValidation([ValidationTrigger? trigger]) {
     for (final field in fields.values) {
-      field.performValidation(trigger);
+      var result = validate(field.fieldName, trigger);
+      print('Field ${field.fieldName} validation result: $result');
     }
+    super.performValidation(trigger);
+  }
+
+  @override
+  void handleErrors(AnnotationResult result) {
+    var hasErroredField = fields.values.any(
+      (x) => x.errorListenable.value.hasErrors,
+    );
+    if (hasErroredField) {
+      result =
+          result.remove(DatabindRequiredGuard.messageId) +
+          FormatMessages.fieldHasError;
+    } else {
+      print('No field errors in list');
+    }
+
+    super.handleErrors(result);
   }
 
   @override
@@ -268,16 +310,19 @@ class ListBindingFieldWidget extends StatelessWidget {
                   isDense: true,
                 );
 
-            return theme.style.wrapHeaderLabelSection(
-              InputDecorator(
-                decoration: outerDecoration,
-                child: viewFactory.buildListView(
-                  context,
-                  listStyle,
-                  controller,
-                ),
+            return BindingTheme(
+              style: theme.style.copy(
+                hint: null,
+                helper: null,
+                label: null,
+                prefix: null,
+                suffix: null,
               ),
-              context,
+              child: theme.style.wrapHeader(
+                viewFactory.buildListView(context, listStyle, controller),
+                context,
+                errorText: error.errorText,
+              ),
             );
           },
         );
@@ -297,7 +342,7 @@ class ListAutoFactory extends OperationModeFactory<FlutterWidgetBinder> {
         converter.converter,
         engine,
       );
-      return ListFlutterBinder(itemBinder, converter.itemSubtree);
+      return ListFlutterBinder(itemBinder, converter.itemSubtree, converter);
     }
     return null;
   }

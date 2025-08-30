@@ -39,7 +39,9 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     final theme =
         getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
     final inputTheme =
-        theme.inputTheme?.merge(currentTheme.inputDecorationTheme) ??
+        theme.inputTheme?.merge(
+          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
+        ) ??
         currentTheme.inputDecorationTheme;
     final decoration = InputDecoration()
         .applyDefaults(inputTheme)
@@ -56,6 +58,7 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
   Widget? buildMaterialLabelText(
     BuildContext context, {
     Object? labelOverride = #none,
+    bool isError = false,
   }) {
     var label = this.label;
     if (labelOverride != #none) {
@@ -67,26 +70,65 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     final theme =
         getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
     final inputTheme =
-        theme.inputTheme?.merge(currentTheme.inputDecorationTheme) ??
-        currentTheme.inputDecorationTheme;
-    return Text(label, style: inputTheme.labelStyle);
+        theme.inputTheme?.merge(
+          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
+        ) ??
+        InputDecorationTheme(data: currentTheme.inputDecorationTheme);
+    var style = inputTheme.labelStyle;
+
+    if (isError) {
+      style =
+          inputTheme.errorStyle ??
+          TextStyle(color: currentTheme.colorScheme.error);
+    }
+
+    return Text(label, style: style);
+  }
+
+  Widget wrapHeader(
+    Widget widget,
+    BuildContext context, {
+    Object? labelOverride = #none,
+    String? errorText,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: labelOverride == #none ? label : labelOverride.toString(),
+          errorText: errorText,
+          helperText: helper
+        ),
+        child: widget,
+      ),
+    );
   }
 
   Widget wrapHeaderLabelSection(
     Widget widget,
     BuildContext context, {
     Object? labelOverride = #none,
+    bool isError = false,
   }) {
-    var label = buildMaterialLabelText(context, labelOverride: labelOverride);
+    var label = buildMaterialLabelText(
+      context,
+      labelOverride: labelOverride,
+      isError: isError,
+    );
     if (label == null) return widget;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
-          child: label,
+        //Padding(padding: const EdgeInsets.only(top: 8.0, bottom: 2.0), child: label,),
+        InputDecorator(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            error: isError ? SizedBox(width: 0, height: 0) : null,
+            labelText: this.label,
+          ),
+          child: widget,
         ),
-        widget,
       ],
     );
   }
@@ -104,8 +146,10 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     final theme =
         getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
     final inputTheme =
-        theme.inputTheme?.merge(currentTheme.inputDecorationTheme) ??
-        currentTheme.inputDecorationTheme;
+        theme.inputTheme?.merge(
+          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
+        ) ??
+        InputDecorationTheme(data: currentTheme.inputDecorationTheme);
     return Text(helper!, style: inputTheme.helperStyle);
   }
 
@@ -115,8 +159,10 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     final theme =
         getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
     final inputTheme =
-        theme.inputTheme?.merge(currentTheme.inputDecorationTheme) ??
-        currentTheme.inputDecorationTheme;
+        theme.inputTheme?.merge(
+          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
+        ) ??
+        InputDecorationTheme(data: currentTheme.inputDecorationTheme);
 
     return DefaultTextStyle(
       style:

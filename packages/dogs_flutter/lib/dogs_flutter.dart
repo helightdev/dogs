@@ -1,6 +1,7 @@
 library;
 
 import 'package:dogs_flutter/databinding/bindings/enum.dart';
+import 'package:dogs_flutter/databinding/material/list.dart';
 import 'package:dogs_flutter/dogs.g.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 
@@ -73,6 +74,9 @@ DogPlugin DogsFlutterPlugin({
   if (addSchemaContributors) {
     DogsMaterializer.get(
       engine,
-    ).contributors.add(SchemaBindingStyleContributor());
+    ).contributors.addAll([
+      SchemaBindingStyleContributor(),
+      ListBindingStyleContributor()
+    ]);
   }
 };

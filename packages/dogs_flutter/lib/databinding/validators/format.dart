@@ -6,4 +6,10 @@ class FormatMessages {
     message: "Invalid number format",
     variables: {},
   );
+  
+  static final AnnotationMessage fieldHasError = AnnotationMessage(
+    id: "invalid-field-format",
+    message: "A field has an invalid state",
+    variables: {},
+  );
 }

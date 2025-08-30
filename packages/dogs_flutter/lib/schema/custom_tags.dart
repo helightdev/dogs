@@ -7,11 +7,16 @@ class DogsFlutterSchemaTags {
   static const String bindingStylePrefix = "x-bs-prefix";
   static const String bindingStyleSuffix = "x-bs-suffix";
 
+  static const String listBindingItemLabel = "x-li-label";
+  static const String listBindingAddButtonLabel = "x-li-add-label";
+
   static const Set<String> bindingStyleTags = {
     bindingStyleLabel,
     bindingStyleHint,
     bindingStyleHelper,
     bindingStylePrefix,
     bindingStyleSuffix,
+    listBindingItemLabel,
+    listBindingAddButtonLabel,
   };
 }

@@ -148,15 +148,13 @@ class NestedStructureBindingFieldWidget extends StatelessWidget {
               errorText: theme.toErrorText(error),
               border: InputBorder.none,
             );
-        return InputDecorator(
-          decoration: outerDecoration,
-          child: theme.style.wrapHeaderLabelSection(
+        return theme.style.wrapHeader(
             StructureBinding(
               controller: controller.controller,
               validationTrigger: controller.validationTrigger,
             ),
             context,
-          ),
+            errorText: error.errorText
         );
       },
     );

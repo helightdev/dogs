@@ -1,4 +1,5 @@
 import 'package:dogs_core/dogs_schema.dart' as z;
+import 'package:dogs_flutter/databinding/material/list.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:example/dogs.g.dart';
 import 'package:flutter/material.dart';
@@ -46,22 +47,26 @@ class _TestFormState extends State<TestForm> {
   //   // ),
   // );
 
-  final mainSchema = dogs.materialize(
-    z.object({
-      "name": z.string(),
-      "surname": z.string(),
-      "age": z.integer(),
-      "subschema": z.object({
-        "subfield1": z.string(),
-        "subfield2": z.integer(),
-      }),
-      "enum": z.enumeration(["option1", "option2", "option3"]),
-    }),
-  );
+  final mainSchema = z.object({
+    "name": z.string(),
+    "surname": z.string(),
+    "age": z.integer(),
+    "subschema": z.object({"subfield1": z.string(), "subfield2": z.integer()}).serialName("SubSchema").formHelper("Helper").formLabel("My Label"),
+    "list": z.array(
+        z.integer(),
+    ).formLabel("My List").formHelper("Hello World!").itemLabel("Item").addButtonLabel("Add Item").optional(),
 
-  late final controller = StructureBindingController.schema(
-    schema: mainSchema.originalSchema,
-  );
+    "complexList": z.array(
+      z.object({
+        "field1": z.string(),
+        "field2": z.integer(),
+      })
+    ).itemLabel("Complex Item"),
+
+    "enum": z.enumeration(["option1", "option2", "option3"]),
+  });
+
+  late final controller = StructureBindingController.schema(schema: mainSchema);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +74,9 @@ class _TestFormState extends State<TestForm> {
       body: Theme(
         data: Theme.of(
           context,
-        ).copyWith(inputDecorationTheme: InputDecorationTheme()),
+        ).copyWith(inputDecorationTheme: InputDecorationTheme(
+          // border: OutlineInputBorder(),
+        )),
         child: Center(
           child: SizedBox(
             width: 600,
