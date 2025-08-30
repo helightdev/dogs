@@ -5,6 +5,11 @@ class DatabindRequiredGuard extends FieldValidator
   const DatabindRequiredGuard();
 
   static const String messageId = "databind-required";
+  static final AnnotationMessage sharedMessage = AnnotationMessage(
+    id: messageId,
+    message: "Field is required",
+    variables: {},
+  );
 
   @override
   bool validate(cached, value, DogEngine engine) {
