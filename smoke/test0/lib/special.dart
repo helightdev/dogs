@@ -56,7 +56,7 @@ class ConvertableAConverter extends DogConverter<ConvertableA> with OperationMap
 
 @serializable
 enum EnumA {
-  a,b,c;
+  a,b,c,longNameValue;
 }
 
 abstract class CustomBase {

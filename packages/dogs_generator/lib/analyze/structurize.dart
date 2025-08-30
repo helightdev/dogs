@@ -23,6 +23,8 @@ import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
+import '../settings.dart';
+
 class IRStructure {
   String type;
   StructureConformity conformity;
@@ -104,6 +106,7 @@ TypeChecker enumPropertyChecker = TypeChecker.fromRuntime(EnumProperty);
 
 Future<StructurizeResult> structurizeConstructor(
     DartType type,
+    DogsGeneratorSettings settings,
     ConstructorElement constructorElement,
     SubjectGenContext<Element> context,
     CachedAliasCounter counter) async {
@@ -111,6 +114,7 @@ Future<StructurizeResult> structurizeConstructor(
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
+  serialName = settings.nameCase.recase(serialName);
 
   // Check for Serializable annotation and override serialName if applicable
   if (serializableChecker.hasAnnotationOf(element)) {
@@ -184,6 +188,8 @@ Future<StructurizeResult> structurizeConstructor(
     if (fieldType is DynamicType) optional = true;
 
     var propertyName = fieldName;
+    propertyName = settings.propertyCase.recase(propertyName);
+
     if (propertyNameChecker.hasAnnotationOf(fieldElement)) {
       var annotation = propertyNameChecker.annotationsOf(fieldElement).first;
       propertyName = annotation.getField("name")!.toStringValue()!;
@@ -233,6 +239,7 @@ Future<StructurizeResult> structurizeConstructor(
 
 Future<StructurizeResult> structurizeBean(
     DartType type,
+    DogsGeneratorSettings settings,
     ClassElement classElement,
     SubjectGenContext<Element> context,
     CachedAliasCounter counter) async {
@@ -240,6 +247,7 @@ Future<StructurizeResult> structurizeBean(
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
   var serialName = element.name;
+  serialName = settings.nameCase.recase(serialName);
 
   // Check for Serializable annotation and override serialName if applicable
   if (serializableChecker.hasAnnotationOf(element)) {
@@ -266,6 +274,8 @@ Future<StructurizeResult> structurizeBean(
     if (field.isLate) optional = false;
 
     var propertyName = fieldName;
+    propertyName = settings.propertyCase.recase(propertyName);
+
     if (propertyNameChecker.hasAnnotationOf(field)) {
       var annotation = propertyNameChecker.annotationsOf(field).first;
       propertyName = annotation.getField("name")!.toStringValue()!;

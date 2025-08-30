@@ -5,6 +5,7 @@ import 'package:build/build.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_generator/analyze/built_interop.dart';
 import 'package:dogs_generator/dogs_generator.dart';
+import 'package:dogs_generator/settings.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -140,6 +141,7 @@ class SerializableLibraryBuilder extends DogsAdapter<SerializableLibrary> {
       SubjectCodeContext codeContext) async {
     codeContext.additionalImports
         .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+    var settings = await DogsGeneratorSettings.load(genContext.step);
 
     var libraries = getSerializableLibraries(genContext);
     var resolvedTypeSets = await Future.wait(
@@ -168,10 +170,10 @@ class SerializableLibraryBuilder extends DogsAdapter<SerializableLibrary> {
       try {
         if (element is ClassElement) {
           await ConverterBuilder.generateForClass(
-              element, genContext, codeContext);
+              element, settings, genContext, codeContext);
         } else if (element is EnumElement) {
           await ConverterBuilder.generateForEnum(
-              element, genContext, codeContext);
+              element, settings, genContext, codeContext);
         }
       } catch (ex) {
         log.severe(

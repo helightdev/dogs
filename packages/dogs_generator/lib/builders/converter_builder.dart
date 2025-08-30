@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
@@ -6,6 +7,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_generator/dogs_generator.dart';
+import 'package:dogs_generator/settings.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -23,16 +25,27 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
   static Future generateForEnum(
       EnumElement element,
+      DogsGeneratorSettings settings,
       SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
+
+    String serialName = element.name;
+    serialName = settings.nameCase.recase(serialName);
+
+    var serializableValue = serializableChecker.firstAnnotationOf(element);
+    if (serializableValue != null) {
+      var serialNameOverride = serializableValue.getField("serialName")?.toStringValue();
+      if (serialNameOverride != null) serialName = serialNameOverride;
+    }
 
     String? fallbackFieldName;
     final fieldValueMap =
         Map.fromEntries(element.fields.where((e) => e.isEnumConstant).map((e) {
       final actual = e.name;
       var serializedName = e.name;
+      serializedName = settings.enumCase.recase(serializedName);
 
       final propertyName = propertyNameChecker.firstAnnotationOf(e);
       if (propertyName != null) {
@@ -60,7 +73,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
       builder.constructors.add(Constructor((builder) => builder
         ..initializers.add(Code(
-            "super.structured(serialName: '${codeContext.typeName(element.thisType)}')"))));
+            "super.structured(serialName: '$serialName')"))));
 
       builder.methods.add(Method((builder) => builder
         ..name = "values"
@@ -107,6 +120,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
   static Future generateForClass(
       ClassElement element,
+      DogsGeneratorSettings settings,
       SubjectGenContext<Element> genContext,
       SubjectCodeContext codeContext) async {
     codeContext.additionalImports
@@ -122,12 +136,12 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     if (constructor != null && constructor.parameters.isNotEmpty) {
       // Create constructor based serializable
       structurized = await structurizeConstructor(
-          element.thisType, constructor, genContext, codeContext.cachedCounter);
+          element.thisType, settings, constructor, genContext, codeContext.cachedCounter);
       codeContext.additionalImports.addAll(structurized.imports);
     } else if (constructor != null) {
       // Create bean like property based serializable
       structurized = await structurizeBean(
-          element.thisType, element, genContext, codeContext.cachedCounter);
+          element.thisType, settings, element, genContext, codeContext.cachedCounter);
       codeContext.additionalImports.addAll(structurized.imports);
       writeBeanFactory(element, structurized, codeContext);
     } else {
@@ -455,12 +469,13 @@ return instance;""")));
     codeContext.additionalImports
         .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
 
+    var settings = await DogsGeneratorSettings.load(genContext.step);
     try {
       for (var element in genContext.matches) {
         if (element is ClassElement) {
-          await generateForClass(element, genContext, codeContext);
+          await generateForClass(element, settings, genContext, codeContext);
         } else if (element is EnumElement) {
-          await generateForEnum(element, genContext, codeContext);
+          await generateForEnum(element, settings, genContext, codeContext);
         }
       }
     } catch (e, s) {

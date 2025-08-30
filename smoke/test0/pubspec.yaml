@@ -23,3 +23,8 @@ dev_dependencies:
   dogs_generator: any
 
   lints: ^3.0.0
+
+dogs:
+  property_case: snake
+  name_case: constant
+  enum_case: keep

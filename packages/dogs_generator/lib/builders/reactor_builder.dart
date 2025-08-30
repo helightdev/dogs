@@ -5,6 +5,8 @@ import 'package:lyell_gen/lyell_gen.dart';
 import 'package:pubspec/pubspec.dart';
 import 'package:recase/recase.dart';
 
+import '../settings.dart';
+
 class DogReactorBuilder extends SubjectReactorBuilder {
   DogReactorBuilder() : super('dogs', 'dogs.g.dart');
 
@@ -16,22 +18,8 @@ class DogReactorBuilder extends SubjectReactorBuilder {
   Future build(BuildStep buildStep) async {
     step = buildStep;
     packageName = buildStep.inputId.package;
-    try {
-      var pubspecString = await buildStep
-          .readAsString(AssetId(buildStep.inputId.package, "pubspec.yaml"));
-      var pubspec = PubSpec.fromYamlString(pubspecString);
-      var dogsRegion = pubspec.unParsedYaml?["dogs"];
-      if (dogsRegion != null) {
-        log.info("Using dogs generator options specified in the pubspec.yaml");
-        var map = dogsRegion as Map;
-        isLibrary = map["library"] as bool;
-        log.info("isLibrary: $isLibrary");
-      }
-    } catch (ex) {
-      log.warning(
-          "Can't resolve package pubspec.yaml with error: $ex. Using default values.");
-    }
-
+    var settings = await DogsGeneratorSettings.load(buildStep);
+    isLibrary = settings.isLibrary;
     await super.build(buildStep);
   }
 
