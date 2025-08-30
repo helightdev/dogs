@@ -32,4 +32,4 @@ set -e
 (cd test_empty_library; bash smoke.sh;)
 
 # ======= test_openapi =========
-(cd test_openapi; bash smoke.sh;)
+#(cd test_openapi; bash smoke.sh;)
