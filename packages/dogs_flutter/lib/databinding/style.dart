@@ -28,6 +28,8 @@ class BindingStyle
     return extensions.firstWhereOrNullDogs((e) => e is T) as T?;
   }
 
+  BindingStyle asAncestor() => BindingStyle(extensions: extensions);
+
   static List<BindingStyleExtension> mergeExtensions(dynamic a, dynamic b) {
     final merged = List<BindingStyleExtension>.from(
       a as List<BindingStyleExtension>,

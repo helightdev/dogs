@@ -93,7 +93,7 @@ class _FieldBindingState extends State<FieldBinding> {
   Widget build(BuildContext context) {
     var parentBindingTheme = BindingTheme.maybeOf(context);
     var structureBindingProvider = StructureBindingProvider.maybeOf(context);
-    var currentStyle = parentBindingTheme?.style ?? BindingStyle();
+    var currentStyle = parentBindingTheme?.style.asAncestor() ?? BindingStyle();
     currentStyle = generatedStyle.merge(currentStyle);
     for (var e in fieldStyleData) {
       currentStyle = e.merge(currentStyle);
