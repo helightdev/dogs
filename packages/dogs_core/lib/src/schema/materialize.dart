@@ -2,6 +2,7 @@ import "dart:convert";
 import "dart:math";
 
 import "package:dogs_core/dogs_core.dart";
+import "package:dogs_core/dogs_schema.dart";
 import "package:dogs_core/src/schema/contributors.dart";
 
 class SchemaObjectUnroller {
@@ -30,6 +31,14 @@ class SchemaObjectUnroller {
           }
           return cloned;
         }
+
+        cloned.properties = <String, dynamic>{};
+        for (var inheritedProperty in SchemaProperties.$inheritedProperties) {
+          if (type.properties.containsKey(inheritedProperty)) {
+            cloned.properties[inheritedProperty] = type.properties[inheritedProperty];
+          }
+        }
+
         final String hashName =
             cloned.properties[SchemaProperties.serialName] ??
                 "*${cloned.toSha256()}";
@@ -37,7 +46,10 @@ class SchemaObjectUnroller {
           cloned.properties[SchemaProperties.serialName] = hashName;
           objects[hashName] = visit(cloned, true) as SchemaObject;
         }
-        return SchemaReference(hashName)..nullable = type.nullable;
+
+        return SchemaReference(hashName)
+          ..nullable = type.nullable
+          ..properties = Map.from(type.properties);
       case SchemaArray():
         return type.clone()..items = visit(type.items, false);
       case SchemaReference():

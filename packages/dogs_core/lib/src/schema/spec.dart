@@ -300,6 +300,8 @@ class SchemaProperties {
 
   /// Dogs serial name
   static const String serialName = "x-serialName";
+
+  static const List<String> $inheritedProperties = [serialName];
 }
 
 /// A primitive schema type.
