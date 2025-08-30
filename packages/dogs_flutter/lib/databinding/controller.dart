@@ -265,10 +265,6 @@ class StructureBindingController<T> implements FieldBindingParent {
     bool hasStateError = false;
     for (var i = 0; i < fields.length; i++) {
       final field = fields[i];
-      if (field.hasStateError) {
-        hasStateError = true;
-      }
-
       // Forward validation trigger to nested fields
       field.performValidation(ValidationTrigger.onSubmitGuard);
 
@@ -280,6 +276,10 @@ class StructureBindingController<T> implements FieldBindingParent {
       );
 
       _errorBuffer.putAll(results);
+      if (field.hasStateError) {
+        hasStateError = true;
+      }
+
       if (isGuard) {
         hasGuardMatched = true;
       }
