@@ -10,6 +10,7 @@ on:
       - 'packages/dogs/**'
       - 'packages/dogs_generator/**'
       - 'packages/dogs_firestore/**'
+      - 'pubspec.yaml'
 
 jobs:
   firestore:
