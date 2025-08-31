@@ -41,6 +41,15 @@ class StringValidationContributor
         )
       ]);
     }
+
+    final pattern = target[SchemaProperties.pattern];
+    if (pattern != null && pattern is String) {
+      field = field.copy(annotations: [
+        ...field.annotations,
+        Regex(pattern),
+      ]);
+    }
+
     return field;
   }
 }
