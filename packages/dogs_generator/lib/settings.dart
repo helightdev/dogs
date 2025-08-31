@@ -51,6 +51,7 @@ class DogsGeneratorSettings {
 enum CasingType {
   keep,
   snake,
+  kebab,
   camel,
   pascal,
   constant;
@@ -61,6 +62,8 @@ enum CasingType {
         return CasingType.keep;
       case "snake":
         return CasingType.snake;
+      case "kebab":
+        return CasingType.kebab;
       case "camel":
         return CasingType.camel;
       case "pascal":
@@ -84,6 +87,8 @@ enum CasingType {
         return ReCase(input).pascalCase;
       case CasingType.constant:
         return ReCase(input).constantCase;
+      case CasingType.kebab:
+        return ReCase(input).paramCase;
     }
   }
 }
