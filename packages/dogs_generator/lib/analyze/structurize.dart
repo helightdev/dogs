@@ -15,6 +15,7 @@
  */
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
@@ -107,13 +108,13 @@ TypeChecker enumPropertyChecker = TypeChecker.typeNamed(EnumProperty);
 Future<StructurizeResult> structurizeConstructor(
     DartType type,
     DogsGeneratorSettings settings,
-    ConstructorElement constructorElement,
-    SubjectGenContext<Element> context,
+    ConstructorElement2 constructorElement,
+    SubjectGenContext<Element2> context,
     CachedAliasCounter counter) async {
   List<AliasImport> imports = [];
   List<IRStructureField> fields = [];
-  var element = type.element! as ClassElement;
-  var serialName = element.name!;
+  var element = type.element3! as ClassElement2;
+  var serialName = element.displayName;
   serialName = settings.nameCase.recase(serialName);
 
   // Check for Serializable annotation and override serialName if applicable
@@ -127,39 +128,39 @@ Future<StructurizeResult> structurizeConstructor(
 
   // Determine used constructor
   var constructorName = "";
-  if (element.getNamedConstructor("dog") != null) {
-    constructorElement = element.getNamedConstructor("dog")!;
+  if (element.getNamedConstructor2("dog") != null) {
+    constructorElement = element.getNamedConstructor2("dog")!;
     constructorName = ".dog";
   }
 
   for (var e in constructorElement.formalParameters) {
     String? fieldName;
     DartType? fieldType;
-    Element? fieldElement;
+    Element2? fieldElement;
 
-    if (e is FieldFormalParameterElement) {
-      fieldName = e.name;
+    if (e is FieldFormalParameterElement2) {
+      fieldName = e.displayName;
       fieldType = e.type;
-      fieldElement = e.field;
-    } else if (e is SuperFormalParameterElement) {
-      FieldFormalParameterElement resolveUntilFieldFormal(FormalParameterElement e) {
-        if (e is FieldFormalParameterElement) return e;
-        if (e is SuperFormalParameterElement) {
-          return resolveUntilFieldFormal(e.superConstructorParameter!);
+      fieldElement = e.field2;
+    } else if (e is SuperFormalParameterElement2) {
+      FieldFormalParameterElement2 resolveUntilFieldFormal(FormalParameterElement e) {
+        if (e is FieldFormalParameterElement2) return e;
+        if (e is SuperFormalParameterElement2) {
+          return resolveUntilFieldFormal(e.superConstructorParameter2!);
         }
         throw Exception("Can't resolve super formal field");
       }
 
-      var field = resolveUntilFieldFormal(e.superConstructorParameter!).field;
-      fieldName = field!.name;
+      var field = resolveUntilFieldFormal(e.superConstructorParameter2!).field2;
+      fieldName = field!.displayName;
       fieldType = field.type;
       fieldElement = field;
     } else {
       var parameterType = e.type;
-      var namedField = element.getField(e.name!);
-      var namedGetter = element.lookUpGetter(name: e.name!, library: element.library);
+      var namedField = element.getField2(e.displayName);
+      var namedGetter = element.lookUpGetter2(name: e.displayName, library: element.library2);
       if (namedField != null && namedGetter == null) {
-        fieldName = e.name;
+        fieldName = e.displayName;
         fieldType = namedField.type;
         fieldElement = namedField;
         if (parameterType.nullabilitySuffix == NullabilitySuffix.question) {
@@ -167,7 +168,7 @@ Future<StructurizeResult> structurizeConstructor(
         }
       } else {
         if (namedGetter != null) {
-          fieldName = e.name;
+          fieldName = e.displayName;
           fieldType = namedGetter.returnType;
           fieldElement = namedGetter;
           if (parameterType.nullabilitySuffix == NullabilitySuffix.question) {
@@ -213,7 +214,7 @@ Future<StructurizeResult> structurizeConstructor(
         optional,
         !isDogPrimitiveType(serialType),
         getRetainedAnnotationSourceArray(fieldElement, counter),
-        mapChecker.isAssignableFrom(fieldType.element!)));
+        mapChecker.isAssignableFrom(fieldType.element3!)));
   }
 
   // Create proxy arguments
@@ -221,7 +222,7 @@ Future<StructurizeResult> structurizeConstructor(
   var activator =
       "return ${counter.get(element.thisType)}$constructorName(${constructorElement.formalParameters.mapIndexed((i, e) {
     if (e.isNamed) {
-      return "${e.name}: list[$i]";
+      return "${e.displayName}: list[$i]";
     } else {
       return "list[$i]";
     }
@@ -239,13 +240,13 @@ Future<StructurizeResult> structurizeConstructor(
 Future<StructurizeResult> structurizeBean(
     DartType type,
     DogsGeneratorSettings settings,
-    ClassElement classElement,
-    SubjectGenContext<Element> context,
+    ClassElement2 classElement,
+    SubjectGenContext<Element2> context,
     CachedAliasCounter counter) async {
   List<AliasImport> imports = [];
   List<IRStructureField> fields = [];
-  var element = type.element! as ClassElement;
-  var serialName = element.name!;
+  var element = type.element3! as ClassElement2;
+  var serialName = element.displayName;
   serialName = settings.nameCase.recase(serialName);
 
   // Check for Serializable annotation and override serialName if applicable
@@ -257,13 +258,13 @@ Future<StructurizeResult> structurizeBean(
     }
   }
 
-  var beanFields = classElement.fields.where((element) {
-    var field = classElement.getField(element.name!)!;
+  var beanFields = classElement.fields2.where((element) {
+    var field = classElement.getField2(element.displayName)!;
     if (beanIgnoreChecker.hasAnnotationOf(field)) return false;
-    return field.getter != null && field.setter != null;
+    return field.getter2 != null && field.setter2 != null;
   }).toList();
   for (var field in beanFields) {
-    var fieldName = field.name!;
+    var fieldName = field.displayName;
     var fieldType = field.type;
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);
@@ -306,8 +307,8 @@ Future<StructurizeResult> structurizeBean(
   var getters = fields.map((e) => e.accessor).toList();
   var activator =
       "var obj = ${counter.get(element.thisType)}();${fields.where((element) {
-    var field = classElement.getField(element.name)!;
-    return field.getter != null && field.setter != null;
+    var field = classElement.getField2(element.name)!;
+    return field.getter2 != null && field.setter2 != null;
   }).mapIndexed((i, e) {
     if (e.iterableKind == IterableKind.none) {
       return "obj.${e.name} = list[$i];";

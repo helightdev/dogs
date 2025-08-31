@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
@@ -11,16 +12,16 @@ class LinkBuilder extends DogsAdapter<LinkSerializer> {
 
   @override
   Future<SubjectDescriptor> generateDescriptor(
-      SubjectGenContext<Element> context) async {
+      SubjectGenContext<Element2> context) async {
     var binding = SubjectDescriptor(uri: context.step.inputId.uri.toString());
     binding.meta["converterNames"] =
-        context.matches.map((e) => e.name).toList();
+        context.matches.map((e) => e.displayName).toList();
     return binding;
   }
 
   @override
   FutureOr<void> generateSubject(
-      SubjectGenContext<Element> genContext, SubjectCodeContext codeContext) {
+      SubjectGenContext<Element2> genContext, SubjectCodeContext codeContext) {
     bool didGenerate = false;
     // Reserved
     codeContext.noGenerate = !didGenerate;

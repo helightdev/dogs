@@ -1,3 +1,0 @@
-dependency_overrides:
-  dogs_core:
-    path: ../../packages/dogs_core

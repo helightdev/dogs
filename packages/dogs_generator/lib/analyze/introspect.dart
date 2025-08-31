@@ -15,6 +15,7 @@
  */
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_generator/dogs_generator.dart';
@@ -38,12 +39,12 @@ bool isDogPrimitiveType(DartType type) {
 }
 
 Future<DartType> getSerialType(
-    DartType target, SubjectGenContext<Element> context) async {
+    DartType target, SubjectGenContext<Element2> context) async {
   return await getItemType(target, context.step);
 }
 
 Future<IterableKind> getIterableType(
-    DartType target, SubjectGenContext<Element> context) async {
+    DartType target, SubjectGenContext<Element2> context) async {
   var typeTree = getTypeTree(target);
   if (_listChecker.isAssignableFromType(target) &&
       typeTree.base.isDartCoreList) {
@@ -59,23 +60,34 @@ Future<IterableKind> getIterableType(
   return IterableKind.none;
 }
 
-String getStructureMetadataSourceArray(Element element) {
+String getStructureMetadataSourceArray(Element2 element) {
   var conditionChecker = TypeChecker.typeNamed(StructureMetadata);
   var annotations = <String>[];
-  for (var value in element.metadata.annotations.whereTypeChecker(conditionChecker)) {
+
+  if (element is! Annotatable) {
+    throw ArgumentError.value(element, "element", "Element is not Annotatable");
+  }
+  var annotatable = element as Annotatable;
+  for (var value in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
     annotations.add(value.toSource().substring(1));
   }
   return "[${annotations.join(", ")}]";
 }
 
 String getStructureMetadataSourceArrayAliased(
-    Element element, List<AliasImport> imports, StructurizeCounter counter) {
+    Element2 element, List<AliasImport> imports, StructurizeCounter counter) {
   var conditionChecker = TypeChecker.typeNamed(StructureMetadata);
+
+  if (element is! Annotatable) {
+    throw ArgumentError.value(element, "element", "Element is not Annotatable");
+  }
+  var annotatable = element as Annotatable;
+
   var annotations = <String>[];
-  for (var value in element.metadata.annotations.whereTypeChecker(conditionChecker)) {
+  for (var value in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
     var cszp = "$szPrefix${counter.getAndIncrement()}";
     var import = AliasImport.library(
-        (value.element as ConstructorElement).library, cszp);
+        (value.element2 as ConstructorElement2).library2, cszp);
     imports.add(import);
     annotations.add("$cszp.${value.toSource().substring(1)}");
   }

@@ -1,5 +1,0 @@
-dependency_overrides:
-  dogs_core:
-    path: ../dogs_core
-  dogs_generator:
-    path: ../dogs_generator

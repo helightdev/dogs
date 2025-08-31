@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
@@ -16,22 +17,22 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
   @override
   Future<SubjectDescriptor> generateDescriptor(
-      SubjectGenContext<Element> context) async {
+      SubjectGenContext<Element2> context) async {
     var binding = context.defaultDescriptor();
     binding.meta["converterNames"] =
-        context.matches.map((e) => "${e.name}Converter").toList();
+        context.matches.map((e) => "${e.displayName}Converter").toList();
     return binding;
   }
 
   static Future generateForEnum(
-      EnumElement element,
+      EnumElement2 element,
       DogsGeneratorSettings settings,
-      SubjectGenContext<Element> genContext,
+      SubjectGenContext<Element2> genContext,
       SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
-    var converterName = "${element.name}Converter";
+    var converterName = "${element.displayName}Converter";
 
-    String serialName = element.name!;
+    String serialName = element.displayName!;
     serialName = settings.nameCase.recase(serialName);
 
     var serializableValue = serializableChecker.firstAnnotationOf(element);
@@ -42,9 +43,9 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
     String? fallbackFieldName;
     final fieldValueMap =
-        Map.fromEntries(element.fields.where((e) => e.isEnumConstant).map((e) {
-      final actual = e.name;
-      var serializedName = e.name!;
+        Map.fromEntries(element.fields2.where((e) => e.isEnumConstant).map((e) {
+      final actual = e.displayName;
+      var serializedName = e.displayName;
       serializedName = settings.enumCase.recase(serializedName);
 
       final propertyName = propertyNameChecker.firstAnnotationOf(e);
@@ -119,18 +120,18 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
   }
 
   static Future generateForClass(
-      ClassElement element,
+      ClassElement2 element,
       DogsGeneratorSettings settings,
-      SubjectGenContext<Element> genContext,
+      SubjectGenContext<Element2> genContext,
       SubjectCodeContext codeContext) async {
     codeContext.additionalImports
         .add(AliasImport.gen("package:lyell/lyell.dart"));
 
     var constructorName = "";
-    var constructor = element.unnamedConstructor;
-    if (element.getNamedConstructor("dog") != null) {
+    var constructor = element.unnamedConstructor2;
+    if (element.getNamedConstructor2("dog") != null) {
       constructorName = ".dog";
-      constructor = element.getNamedConstructor("dog");
+      constructor = element.getNamedConstructor2("dog");
     }
     StructurizeResult structurized;
     if (constructor != null && constructor.formalParameters.isNotEmpty) {
@@ -159,10 +160,10 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     }
   }
 
-  static void writeBeanFactory(ClassElement element,
+  static void writeBeanFactory(ClassElement2 element,
       StructurizeResult structurized, SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
-    var factoryName = "${element.name}Factory";
+    var factoryName = "${element.displayName}Factory";
     var clazz = Class((builder) {
       builder.name = factoryName;
       builder.methods.add(Method((builder) {
@@ -187,12 +188,12 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
   }
 
   static void writeGeneratedConverter(
-      ClassElement element,
+      ClassElement2 element,
       StructurizeResult structurized,
       String constructorName,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
-    var converterName = "${element.name}Converter";
+    var converterName = "${element.displayName}Converter";
     var clazz = Class((builder) {
       builder.name = converterName;
 
@@ -225,7 +226,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
       StructurizeResult structurized,
       ClassBuilder builder,
       SubjectCodeContext codeContext,
-      ClassElement element) {
+      ClassElement2 element) {
     for (var value in structurized.fieldNames) {
       builder.methods.add(Method((builder) => builder
         ..name = "_\$$value"
@@ -263,7 +264,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
   static void _dataclassProxyMethods(
       ClassBuilder builder,
       SubjectCodeContext codeContext,
-      ClassElement element,
+      ClassElement2 element,
       StructurizeResult structurized) {
     builder.methods.add(Method((builder) => builder
       ..name = "_hash"
@@ -306,12 +307,12 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
   }
 
   static void writeGeneratedBuilder(
-      ClassElement element,
+      ClassElement2 element,
       StructurizeResult structurized,
       String constructorName,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
-    var copyWithFrontendName = "${element.name}\$Copy";
+    var copyWithFrontendName = "${element.displayName}\$Copy";
     var copyClazz = Class((builder) {
       builder.name = copyWithFrontendName;
       builder.abstract = true;
@@ -331,7 +332,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
       }));
     });
 
-    var builderName = "${element.name}Builder";
+    var builderName = "${element.displayName}Builder";
     var clazz = Class((builder) {
       builder.name = builderName;
       builder.implements.add(Reference(copyWithFrontendName));
@@ -349,7 +350,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
           ..type = Reference("${codeContext.className(element)}?")
           ..name = "\$src"))
         ..body = Code(
-            "if (\$src == null) {\$values = List.filled(${structurized.fieldNames.length},null);} else {\$values = ${element.name}Converter._values(\$src);this.\$src=\$src;}")));
+            "if (\$src == null) {\$values = List.filled(${structurized.fieldNames.length},null);} else {\$values = ${element.displayName}Converter._values(\$src);this.\$src=\$src;}")));
 
       for (var element in structurized.structure.fields) {
         var index = structurized.structure.fields.indexOf(element);
@@ -401,7 +402,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         ..name = "build"
         ..returns = Reference(codeContext.className(element))
         ..body = Code("""
-var instance = ${element.name}Converter._activator(\$values);
+var instance = ${element.displayName}Converter._activator(\$values);
 ${!hasRebuildHook ? "" : """if (\$src != null) {
   // ignore: invalid_use_of_internal_member
   instance.postRebuild(\$src!, instance);
@@ -414,13 +415,13 @@ return instance;""")));
   }
 
   static void writeGeneratedExtension(
-      ClassElement element,
+      ClassElement2 element,
       StructurizeResult structurized,
       String constructorName,
       SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
-    var extensionName = "${element.name}DogsExtension";
-    var builderName = "${element.name}Builder";
+    var extensionName = "${element.displayName}DogsExtension";
+    var builderName = "${element.displayName}Builder";
     var clazz = Extension((builder) {
       builder.name = extensionName;
       var structureType =
@@ -442,7 +443,7 @@ return instance;""")));
       builder.methods.add(Method((builder) => builder
         ..name = "copy"
         ..type = MethodType.getter
-        ..returns = Reference("${element.name}\$Copy")
+        ..returns = Reference("${element.displayName}\$Copy")
         ..body = Code("toBuilder()")
         ..lambda = true));
 
@@ -464,7 +465,7 @@ return instance;""")));
   }
 
   @override
-  FutureOr<void> generateSubject(SubjectGenContext<Element> genContext,
+  FutureOr<void> generateSubject(SubjectGenContext<Element2> genContext,
       SubjectCodeContext codeContext) async {
     codeContext.additionalImports
         .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
@@ -472,9 +473,9 @@ return instance;""")));
     var settings = await DogsGeneratorSettings.load(genContext.step);
     try {
       for (var element in genContext.matches) {
-        if (element is ClassElement) {
+        if (element is ClassElement2) {
           await generateForClass(element, settings, genContext, codeContext);
-        } else if (element is EnumElement) {
+        } else if (element is EnumElement2) {
           await generateForEnum(element, settings, genContext, codeContext);
         }
       }

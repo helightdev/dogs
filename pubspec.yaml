@@ -1,7 +1,17 @@
 name: dogs_project
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.9.0 <4.0.0'
 
 dev_dependencies:
-  melos: ^4.0.0
+  melos: ^7.0.0
+
+workspace:
+  - packages/dogs_core
+  - packages/dogs_generator
+  - packages/dogs_flutter
+  - packages/dogs_built
+  - packages/dogs_firestore
+  - formats/dogs_cbor
+  - formats/dogs_toml
+  - formats/dogs_yaml
