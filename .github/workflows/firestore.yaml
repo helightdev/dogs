@@ -5,6 +5,8 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/firestore.yaml'
+      - '.github/workflows/scripts/**'
       - 'smoke/test_firestore/**'
       - 'packages/dogs_odm/**'
       - 'packages/dogs/**'

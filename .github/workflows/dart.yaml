@@ -8,6 +8,7 @@ on:
       - 'formats/**'
       - 'smoke/**'
       - '.github/workflows/dart.yaml'
+      - '.github/workflows/scripts/**'
       - 'pubspec.yaml'
 
 jobs:
