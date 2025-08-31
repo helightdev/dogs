@@ -1,5 +1,7 @@
 import 'package:dogs_flutter/dogs_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -65,6 +67,26 @@ void main() {
       final encoded = dogs.toJson<Color>(color);
       final decoded = dogs.fromJson<Color>(encoded);
       expect(decoded, color);
+    });
+
+    test("Serialize Logical Key", () {
+      final key = LogicalKeyboardKey.keyA;
+      final encoded = dogs.toJson<LogicalKeyboardKey>(key);
+      final decoded = dogs.fromJson<LogicalKeyboardKey>(encoded);
+      expect(decoded, key);
+    });
+
+    test("Serialize Single Activator", () {
+      var activator = SingleActivator(LogicalKeyboardKey.keyA, control: true, shift: true);
+      final encoded = dogs.toJson<SingleActivator>(activator);
+      final decoded = dogs.fromJson<SingleActivator>(encoded);
+      expect(decoded.trigger, activator.trigger);
+      expect(decoded.control, activator.control);
+      expect(decoded.shift, activator.shift);
+      expect(decoded.alt, activator.alt);
+      expect(decoded.meta, activator.meta);
+      expect(decoded.includeRepeats, activator.includeRepeats);
+      expect(decoded.numLock, activator.numLock);
     });
   });
 }
