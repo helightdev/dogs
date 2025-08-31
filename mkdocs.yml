@@ -35,6 +35,7 @@ nav:
       - basics/polymorphism.md
       - basics/projection.md
       - basics/validation.md
+      - basics/options.md
     - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md
