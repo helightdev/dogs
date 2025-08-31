@@ -9,7 +9,6 @@ import 'package:built_value/standard_json_plugin.dart';
 import 'package:dogs_built/dogs_built.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:logging/logging.dart';
-@SerializableLibrary(include: ["package:openapi/src/model/.*"])
 import 'package:openapi/openapi.dart';
 
 import 'dogs.g.dart';

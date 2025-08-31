@@ -12,12 +12,12 @@ dependencies:
   dogs_core: any
   dogs_built: any
   built_collection: ^5.1.1
-  built_value: ^8.8.1
+  built_value: ^8.11.1
 
 dev_dependencies:
   build_runner: any
   dogs_generator: any
-  built_value_generator: ^8.8.1
+  built_value_generator: ^8.11.1
 
   lints: ^2.0.1
   test: ^1.23.1

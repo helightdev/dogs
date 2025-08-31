@@ -21,15 +21,16 @@ import 'package:dogs_generator/dogs_generator.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
-final _iterableChecker = TypeChecker.fromRuntime(Iterable);
-final _listChecker = TypeChecker.fromRuntime(List);
-final _setChecker = TypeChecker.fromRuntime(Set);
-final _stringChecker = TypeChecker.fromRuntime(String);
-final _intChecker = TypeChecker.fromRuntime(int);
-final _doubleChecker = TypeChecker.fromRuntime(double);
-final _boolChecker = TypeChecker.fromRuntime(bool);
+final _iterableChecker = TypeChecker.typeNamed(Iterable, inSdk: true);
+final _listChecker = TypeChecker.typeNamed(List, inSdk: true);
+final _setChecker = TypeChecker.typeNamed(Set, inSdk: true);
+final _stringChecker = TypeChecker.typeNamed(String, inSdk: true);
+final _intChecker = TypeChecker.typeNamed(int, inSdk: true);
+final _doubleChecker = TypeChecker.typeNamed(double, inSdk: true);
+final _boolChecker = TypeChecker.typeNamed(bool, inSdk: true);
 
 bool isDogPrimitiveType(DartType type) {
+  if (type is DynamicType || type is VoidType) return true;
   return _stringChecker.isExactlyType(type) ||
       _intChecker.isExactlyType(type) ||
       _doubleChecker.isExactlyType(type) ||
@@ -59,9 +60,9 @@ Future<IterableKind> getIterableType(
 }
 
 String getStructureMetadataSourceArray(Element element) {
-  var conditionChecker = TypeChecker.fromRuntime(StructureMetadata);
+  var conditionChecker = TypeChecker.typeNamed(StructureMetadata);
   var annotations = <String>[];
-  for (var value in element.metadata.whereTypeChecker(conditionChecker)) {
+  for (var value in element.metadata.annotations.whereTypeChecker(conditionChecker)) {
     annotations.add(value.toSource().substring(1));
   }
   return "[${annotations.join(", ")}]";
@@ -69,9 +70,9 @@ String getStructureMetadataSourceArray(Element element) {
 
 String getStructureMetadataSourceArrayAliased(
     Element element, List<AliasImport> imports, StructurizeCounter counter) {
-  var conditionChecker = TypeChecker.fromRuntime(StructureMetadata);
+  var conditionChecker = TypeChecker.typeNamed(StructureMetadata);
   var annotations = <String>[];
-  for (var value in element.metadata.whereTypeChecker(conditionChecker)) {
+  for (var value in element.metadata.annotations.whereTypeChecker(conditionChecker)) {
     var cszp = "$szPrefix${counter.getAndIncrement()}";
     var import = AliasImport.library(
         (value.element as ConstructorElement).library, cszp);

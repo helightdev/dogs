@@ -95,14 +95,14 @@ class StructurizeCounter {
 }
 
 String szPrefix = "sz";
-TypeChecker propertyNameChecker = TypeChecker.fromRuntime(PropertyName);
+TypeChecker propertyNameChecker = TypeChecker.typeNamed(PropertyName);
 TypeChecker propertySerializerChecker =
-    TypeChecker.fromRuntime(PropertySerializer);
-TypeChecker dataclassChecker = TypeChecker.fromRuntime(Dataclass);
-TypeChecker mapChecker = TypeChecker.fromRuntime(Map);
-TypeChecker beanIgnoreChecker = TypeChecker.fromRuntime(beanIgnore.runtimeType);
-TypeChecker serializableChecker = TypeChecker.fromRuntime(Serializable);
-TypeChecker enumPropertyChecker = TypeChecker.fromRuntime(EnumProperty);
+    TypeChecker.typeNamed(PropertySerializer);
+TypeChecker dataclassChecker = TypeChecker.typeNamed(Dataclass);
+TypeChecker mapChecker = TypeChecker.typeNamed(Map);
+TypeChecker beanIgnoreChecker = TypeChecker.typeNamed(beanIgnore.runtimeType);
+TypeChecker serializableChecker = TypeChecker.typeNamed(Serializable);
+TypeChecker enumPropertyChecker = TypeChecker.typeNamed(EnumProperty);
 
 Future<StructurizeResult> structurizeConstructor(
     DartType type,
@@ -113,7 +113,7 @@ Future<StructurizeResult> structurizeConstructor(
   List<AliasImport> imports = [];
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
-  var serialName = element.name;
+  var serialName = element.name!;
   serialName = settings.nameCase.recase(serialName);
 
   // Check for Serializable annotation and override serialName if applicable
@@ -132,7 +132,7 @@ Future<StructurizeResult> structurizeConstructor(
     constructorName = ".dog";
   }
 
-  for (var e in constructorElement.parameters) {
+  for (var e in constructorElement.formalParameters) {
     String? fieldName;
     DartType? fieldType;
     Element? fieldElement;
@@ -142,7 +142,7 @@ Future<StructurizeResult> structurizeConstructor(
       fieldType = e.type;
       fieldElement = e.field;
     } else if (e is SuperFormalParameterElement) {
-      FieldFormalParameterElement resolveUntilFieldFormal(ParameterElement e) {
+      FieldFormalParameterElement resolveUntilFieldFormal(FormalParameterElement e) {
         if (e is FieldFormalParameterElement) return e;
         if (e is SuperFormalParameterElement) {
           return resolveUntilFieldFormal(e.superConstructorParameter!);
@@ -156,9 +156,8 @@ Future<StructurizeResult> structurizeConstructor(
       fieldElement = field;
     } else {
       var parameterType = e.type;
-      var namedField = element.getField(e.name);
-      var namedGetter = element.augmented
-          .lookUpGetter(name: e.name, library: element.library);
+      var namedField = element.getField(e.name!);
+      var namedGetter = element.lookUpGetter(name: e.name!, library: element.library);
       if (namedField != null && namedGetter == null) {
         fieldName = e.name;
         fieldType = namedField.type;
@@ -220,7 +219,7 @@ Future<StructurizeResult> structurizeConstructor(
   // Create proxy arguments
   var getters = fields.map((e) => e.accessor).toList();
   var activator =
-      "return ${counter.get(element.thisType)}$constructorName(${constructorElement.parameters.mapIndexed((i, e) {
+      "return ${counter.get(element.thisType)}$constructorName(${constructorElement.formalParameters.mapIndexed((i, e) {
     if (e.isNamed) {
       return "${e.name}: list[$i]";
     } else {
@@ -246,7 +245,7 @@ Future<StructurizeResult> structurizeBean(
   List<AliasImport> imports = [];
   List<IRStructureField> fields = [];
   var element = type.element! as ClassElement;
-  var serialName = element.name;
+  var serialName = element.name!;
   serialName = settings.nameCase.recase(serialName);
 
   // Check for Serializable annotation and override serialName if applicable
@@ -259,12 +258,12 @@ Future<StructurizeResult> structurizeBean(
   }
 
   var beanFields = classElement.fields.where((element) {
-    var field = classElement.getField(element.name)!;
+    var field = classElement.getField(element.name!)!;
     if (beanIgnoreChecker.hasAnnotationOf(field)) return false;
     return field.getter != null && field.setter != null;
   }).toList();
   for (var field in beanFields) {
-    var fieldName = field.name;
+    var fieldName = field.name!;
     var fieldType = field.type;
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);

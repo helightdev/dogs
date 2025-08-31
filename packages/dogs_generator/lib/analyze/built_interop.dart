@@ -95,15 +95,14 @@ Future<IRStructure> structurizeBuilt(SubjectCodeContext codeContext,
   var builderElement =
       builtInterfaceImpl.typeArguments[1].element! as ClassElement;
 
-  var getters = builderElement.accessors
-      .where((element) =>
-          element.isGetter && element.isPublic && !element.isStatic)
+  var getters = builderElement.getters
+      .where((element) => element.isPublic && !element.isStatic)
       .toList();
 
   var fields = <IRStructureField>[];
   for (var builderGetter in getters) {
-    var fieldGetter = element.getGetter(builderGetter.name)!;
-    var fieldName = fieldGetter.name;
+    var fieldGetter = element.getGetter(builderGetter.name!)!;
+    var fieldName = fieldGetter.name!;
     var fieldType = fieldGetter.returnType;
     var serialType = await getSerialType(fieldType, context);
     var iterableType = await getIterableType(fieldType, context);
@@ -111,7 +110,7 @@ Future<IRStructure> structurizeBuilt(SubjectCodeContext codeContext,
     var optional = fieldType.nullabilitySuffix == NullabilitySuffix.question;
     if (fieldType is DynamicType) optional = true;
 
-    var builtValueFieldAnnotation = fieldGetter.metadata
+    var builtValueFieldAnnotation = fieldGetter.metadata.annotations
         .whereTypeChecker(builtValueFieldChecker)
         .firstOrNull
         ?.computeConstantValue();
@@ -140,7 +139,7 @@ Future<IRStructure> structurizeBuilt(SubjectCodeContext codeContext,
   return IRStructure(
     codeContext.className(element),
     StructureConformity.basic,
-    element.name,
+    element.name!,
     fields,
     getRetainedAnnotationSourceArray(element, counter),
   );
@@ -203,7 +202,7 @@ Future<void> writeBuiltInteropConverter(ClassElement element,
       ..static = true
       ..lambda = false
       ..body = Code(
-          "return (${typeRef}Builder()\n${builderElement.accessors.where((element) => element.isGetter && element.isPublic && !element.isStatic).mapIndexed((i, e) {
+          "return (${typeRef}Builder()\n${builderElement.getters.where((element) => element.isPublic && !element.isStatic).mapIndexed((i, e) {
         if (listBuilderChecker.isAssignableFromType(e.returnType)) {
           var innerType =
               e.returnType.asInstanceOf(listBuilderInterface)!.typeArguments[0];

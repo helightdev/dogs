@@ -31,7 +31,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var emitter = DartEmitter();
     var converterName = "${element.name}Converter";
 
-    String serialName = element.name;
+    String serialName = element.name!;
     serialName = settings.nameCase.recase(serialName);
 
     var serializableValue = serializableChecker.firstAnnotationOf(element);
@@ -44,7 +44,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     final fieldValueMap =
         Map.fromEntries(element.fields.where((e) => e.isEnumConstant).map((e) {
       final actual = e.name;
-      var serializedName = e.name;
+      var serializedName = e.name!;
       serializedName = settings.enumCase.recase(serializedName);
 
       final propertyName = propertyNameChecker.firstAnnotationOf(e);
@@ -133,7 +133,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       constructor = element.getNamedConstructor("dog");
     }
     StructurizeResult structurized;
-    if (constructor != null && constructor.parameters.isNotEmpty) {
+    if (constructor != null && constructor.formalParameters.isNotEmpty) {
       // Create constructor based serializable
       structurized = await structurizeConstructor(
           element.thisType, settings, constructor, genContext, codeContext.cachedCounter);
@@ -394,7 +394,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         builder.body = Code(bodyBuilder.toString());
       }));
 
-      var hasRebuildHook = TypeChecker.fromRuntime(PostRebuildHook)
+      var hasRebuildHook = TypeChecker.typeNamed(PostRebuildHook)
           .isAssignableFromType(element.thisType);
 
       builder.methods.add(Method((builder) => builder

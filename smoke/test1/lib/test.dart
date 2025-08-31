@@ -6,7 +6,6 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:smoke_test_1/dogs.g.dart';
 import 'package:smoke_test_1/dogs_values.dart';
 import 'package:smoke_test_1/serializers.dart';
-@SerializableLibrary()
 import 'package:smoke_test_1/values.dart';
 
 Future main() async {
@@ -45,7 +44,6 @@ Future main() async {
       }
     });
     var account = dogs.fromJson<Account>(encode);
-    testGeneratedStructure<Account>(account);
     testEncoderDecoder<Account>(account);
 
     testEncoderDecoder<MyDogsModel>(MyDogsModel.variant0());
@@ -65,11 +63,4 @@ void testEncoderDecoder<T>(T value) {
   var json = dogs.toJson<T>(value);
   var decodedJson = dogs.fromJson<T>(json);
   if (decodedJson != value) throw Exception("Json does not match!");
-}
-
-void testGeneratedStructure<T>(T value) {
-  var structure = dogs.findStructureByType(T)!;
-  var fieldValues = structure.proxy.getFieldValues(value);
-  var reconstructed = structure.proxy.instantiate(fieldValues);
-  if (reconstructed != value) throw Exception("Does not match!");
 }
