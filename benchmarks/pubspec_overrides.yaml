@@ -10,3 +10,4 @@ dependency_overrides:
   dogs_toml:
     path: ../formats/dogs_toml
   analyzer: ^7.0.0
+  source_gen: ^3.0.0
