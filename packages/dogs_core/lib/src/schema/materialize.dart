@@ -8,26 +8,28 @@ import "package:dogs_core/src/schema/contributors.dart";
 class SchemaObjectUnroller {
   SchemaObjectUnroller._();
 
+  /// Unrolls the given [type], returning a list of all encountered [SchemaObject]s
+  /// and the unrolled root [SchemaType], which will be a [SchemaReference].
   static (List<SchemaObject> objects, SchemaType unrolled) unroll(
       SchemaType type) {
     final unroller = SchemaObjectUnroller._();
-    final unrolled = unroller.visit(type, false);
-    return (unroller.objects.values.toList(), unrolled);
+    final unrolled = unroller._visit(type, false);
+    return (unroller._objects.values.toList(), unrolled);
   }
 
-  final Map<String, SchemaObject> objects = {};
+  final Map<String, SchemaObject> _objects = {};
 
-  SchemaType visit(SchemaType type, bool isRoot) {
+  SchemaType _visit(SchemaType type, bool isRoot) {
     switch (type) {
       case SchemaPrimitive():
         return type.clone();
       case SchemaMap():
-        return type.clone()..itemType = visit(type.itemType, false);
+        return type.clone()..itemType = _visit(type.itemType, false);
       case SchemaObject():
         final cloned = type.clone();
         if (isRoot) {
           for (var e in cloned.fields) {
-            e.type = visit(e.type, false);
+            e.type = _visit(e.type, false);
           }
           return cloned;
         }
@@ -42,16 +44,16 @@ class SchemaObjectUnroller {
         final String hashName =
             cloned.properties[SchemaProperties.serialName] ??
                 "*${cloned.toSha256()}";
-        if (!objects.containsKey(hashName)) {
+        if (!_objects.containsKey(hashName)) {
           cloned.properties[SchemaProperties.serialName] = hashName;
-          objects[hashName] = visit(cloned, true) as SchemaObject;
+          _objects[hashName] = _visit(cloned, true) as SchemaObject;
         }
 
         return SchemaReference(hashName)
           ..nullable = type.nullable
           ..properties = Map.from(type.properties);
       case SchemaArray():
-        return type.clone()..items = visit(type.items, false);
+        return type.clone()..items = _visit(type.items, false);
       case SchemaReference():
         return type.clone();
     }
@@ -81,6 +83,10 @@ class DogsMaterializer {
     NumberValidationContributor(),
   ];
 
+  /// Returns or creates a [DogsMaterializer] associated with the given [engine],
+  /// or the default [DogEngine.instance] if no engine is provided. If the
+  /// materializer does not exist yet, it will be created and configured with
+  /// the default contributors.
   static DogsMaterializer get([DogEngine? engine]) {
     engine ??= DogEngine.instance;
     final instance = engine.getMetaOrNull<DogsMaterializer>();
@@ -88,6 +94,8 @@ class DogsMaterializer {
     return configure(engine: engine);
   }
 
+  /// Creates a new [DogsMaterializer] associated with the given [engine],
+  /// or the default [DogEngine.instance] if no engine is provided.
   static DogsMaterializer configure({DogEngine? engine}) {
     engine ??= DogEngine.instance;
     final materializer = DogsMaterializer(engine);
@@ -95,6 +103,14 @@ class DogsMaterializer {
     return materializer;
   }
 
+  /// Materializes the given [type] into a [MaterializedConverter], which can be
+  /// used like most other statically defined converters.
+  ///
+  /// If [useFork] is true, a fork of the current engine will be used to register
+  /// the generated structures and converters, otherwise the current engine will be used.
+  /// Usually, using a fork is preferred to avoid polluting the main engine with
+  /// dynamically generated structures. This wil also prevent the schema from
+  /// possibly overriding existing structures in the original engine.
   MaterializedConverter materialize(SchemaType type, bool useFork) {
     final usedEngine = switch (useFork) {
       true => engine.fork(),
