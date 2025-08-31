@@ -84,6 +84,34 @@ final router = GoRouter(
         );
       },
     ),
+
+    GoRoute(
+      path: "/binder/nested",
+      builder: (context, state) {
+        return BinderPreview(
+          z.object({
+            "name": z.string().formLabel("Name"),
+            "age": z.integer().formLabel("Age"),
+            "isActive": z.boolean().formLabel("Is Active"),
+            "address": z.object({
+              "street": z.string().formLabel("Street"),
+              "city": z.string().formLabel("City"),
+              "zipCode": z.string().formLabel("Zip Code"),
+            }).formLabel("Address"),
+          }),
+          exampleValue: {
+            "name": "John Doe",
+            "age": 30,
+            "isActive": true,
+            "address": {
+              "street": "123 Main St",
+              "city": "Anytown",
+              "zipCode": "12345",
+            },
+          },
+        );
+      },
+    ),
   ],
 );
 
@@ -122,7 +150,7 @@ class _BinderPreviewState extends State<BinderPreview> {
               top: 8,
               left: 0,
               right: 0,
-              child: StructureBinding(controller: controller),
+              child: StructureBinding(controller: controller, validationTrigger: ValidationTrigger.onInteraction,),
             ),
             Positioned(
               bottom: 0,
@@ -207,3 +235,13 @@ class DogsDemoApp extends StatelessWidget {
     );
   }
 }
+
+class EmptyPage extends StatelessWidget {
+  const EmptyPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+}
+

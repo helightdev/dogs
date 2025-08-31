@@ -116,10 +116,12 @@ class NestedStructureBindingFieldController
 
   @override
   void performValidation([ValidationTrigger? trigger]) {
-    if (trigger != null && trigger == ValidationTrigger.onSubmitGuard) {
+    if (trigger != null && trigger == ValidationTrigger.onSubmit) {
       controller.read(false);
     }
   }
+
+
 }
 
 class NestedStructureBindingFieldWidget extends StatelessWidget {
@@ -136,19 +138,7 @@ class NestedStructureBindingFieldWidget extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller.errorListenable,
       builder: (context, error, _) {
-        final outerDecoration = theme.style
-            .buildMaterialDecoration(
-              context,
-              controller,
-              includeLabel: false,
-              includeHint: false,
-              includeHelper: false,
-            )
-            .copyWith(
-              errorText: theme.toErrorText(error),
-              border: InputBorder.none,
-            );
-        return theme.style.wrapHeader(
+        return theme.style.buildInputSection(
             StructureBinding(
               controller: controller.controller,
               validationTrigger: controller.validationTrigger,

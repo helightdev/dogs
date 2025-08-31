@@ -47,6 +47,13 @@ class BindingsErrorBuffer {
     _customErrors.clear();
   }
 
+  void clearAll() {
+    for (var i = 0; i < _results.length; i++) {
+      _results[i] = AnnotationResult.empty();
+    }
+    _customErrors.clear();
+  }
+
   void recalculateFieldErrors() {
     final fieldErrorAcc = <String, List<AnnotationMessage>>{};
     for (var field in _structure.fields) {
@@ -89,7 +96,6 @@ extension type ValidationTrigger(int value) {
   static final onInteraction = ValidationTrigger(1);
   static final onUnfocus = ValidationTrigger(2);
   static final onSubmit = ValidationTrigger(4);
-  static final onSubmitGuard = ValidationTrigger(8);
 
   static final ValidationTrigger always = onInteraction | onUnfocus | onSubmit;
 

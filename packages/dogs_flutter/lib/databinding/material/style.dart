@@ -55,6 +55,26 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     return decoration;
   }
 
+  Widget buildInputSection(
+    Widget widget,
+    BuildContext context, {
+    Object? labelOverride = #none,
+    String? errorText,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: labelOverride == #none ? label : labelOverride.toString(),
+          errorText: errorText,
+          helperText: helper
+        ),
+        child: widget,
+      ),
+    );
+  }
+
   Widget? buildMaterialLabelText(
     BuildContext context, {
     Object? labelOverride = #none,
@@ -83,54 +103,6 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     }
 
     return Text(label, style: style);
-  }
-
-  Widget wrapHeader(
-    Widget widget,
-    BuildContext context, {
-    Object? labelOverride = #none,
-    String? errorText,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: labelOverride == #none ? label : labelOverride.toString(),
-          errorText: errorText,
-          helperText: helper
-        ),
-        child: widget,
-      ),
-    );
-  }
-
-  Widget wrapHeaderLabelSection(
-    Widget widget,
-    BuildContext context, {
-    Object? labelOverride = #none,
-    bool isError = false,
-  }) {
-    var label = buildMaterialLabelText(
-      context,
-      labelOverride: labelOverride,
-      isError: isError,
-    );
-    if (label == null) return widget;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //Padding(padding: const EdgeInsets.only(top: 8.0, bottom: 2.0), child: label,),
-        InputDecorator(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            error: isError ? SizedBox(width: 0, height: 0) : null,
-            labelText: this.label,
-          ),
-          child: widget,
-        ),
-      ],
-    );
   }
 
   Widget? buildMaterialHelperOrErrorText(BuildContext context, String? error) {

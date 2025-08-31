@@ -1,4 +1,4 @@
-import 'package:dogs_core/dogs_schema.dart' as z;
+import 'package:dogs_core/dogs_schema.dart';
 import 'package:dogs_flutter/databinding/material/list.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:example/dogs.g.dart';
@@ -47,36 +47,56 @@ class _TestFormState extends State<TestForm> {
   //   // ),
   // );
 
-  final mainSchema = z.object({
-    "name": z.string(),
-    "surname": z.string(),
-    "age": z.integer(),
-    "subschema": z.object({"subfield1": z.string(), "subfield2": z.integer()}).serialName("SubSchema").formHelper("Helper").formLabel("My Label"),
-    "list": z.array(
-        z.integer(),
-    ).formLabel("My List").formHelper("Hello World!").itemLabel("Item").addButtonLabel("Add Item").optional(),
+  final mainSchema = object({
+    "name": string(),
+    "surname": string(),
+    "age": integer(),
+    "subschema": object({
+      "subfield1": string(),
+      "subfield2": integer(),
+      "address": object({"street": string(), "city": string()}),
+    }).serialName("SubSchema").formHelper("Helper").formLabel("My Label"),
+    "list":
+        array(integer())
+            .formLabel("My List")
+            .formHelper("Hello World!")
+            .itemLabel("Item")
+            .addButtonLabel("Add Item")
+            .optional(),
 
-    "complexList": z.array(
-      z.object({
-        "field1": z.string(),
-        "field2": z.integer(),
-      })
-    ).itemLabel("Complex Item"),
+    "complexList": object({"field1": string(), "field2": integer()}).array().itemLabel("Complex Item"),
 
-    "enum": z.enumeration(["option1", "option2", "option3"]),
+    "enum": enumeration(["option1", "option2", "option3"]),
   });
 
-  late final controller = StructureBindingController.schema(schema: mainSchema);
+  late final controller = StructureBindingController.schema(
+    schema: mainSchema,
+    initialValue: {
+      "name": "Alex",
+      "surname": "Boe",
+      "age": 99,
+      "subschema": {
+        "subfield1": "initial",
+        "subfield2": 123,
+        "address": {"street": "123 Other St", "city": "New York"},
+      },
+      "list": [],
+      "complexList": [
+        {"field1": "value1", "field2": 1},
+      ],
+      "enum": "option1",
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Theme(
-        data: Theme.of(
-          context,
-        ).copyWith(inputDecorationTheme: InputDecorationTheme(
-          // border: OutlineInputBorder(),
-        )),
+        data: Theme.of(context).copyWith(
+          inputDecorationTheme: InputDecorationTheme(
+            // border: OutlineInputBorder(),
+          ),
+        ),
         child: Center(
           child: SizedBox(
             width: 600,
@@ -106,7 +126,14 @@ class _TestFormState extends State<TestForm> {
                         "name": "John",
                         "surname": "Doe",
                         "age": 21,
-                        "subschema": {"subfield1": "value1", "subfield2": 42},
+                        "subschema": {
+                          "subfield1": "value1",
+                          "subfield2": 42,
+                          "address": {
+                            "street": "123 Main St",
+                            "city": "Metropolis",
+                          },
+                        },
                         "enum": "option2",
                       });
 
@@ -115,6 +142,16 @@ class _TestFormState extends State<TestForm> {
                       });
                     },
                     child: const Text("Load"),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.reset();
+                      setState(() {
+                        // Update the state to trigger a rebuild
+                      });
+                    },
+                    child: const Text("Reset"),
                   ),
                 ],
               ),

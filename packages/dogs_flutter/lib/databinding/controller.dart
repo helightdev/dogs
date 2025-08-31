@@ -56,7 +56,7 @@ class StructureBindingController<T> implements FieldBindingParent {
   );
 
   final StreamController<(String, dynamic)> _fieldValueChangeController =
-      StreamController.broadcast();
+      StreamController.broadcast(sync: true);
 
   Stream<(String, dynamic)> get fieldValueChangeStream =>
       _fieldValueChangeController.stream;
@@ -76,7 +76,7 @@ class StructureBindingController<T> implements FieldBindingParent {
   }) {
     for (var e in structure.fields) {
       final (binder, context) = FlutterWidgetBinder.resolveBinder(
-        this.engine,
+        engine,
         structure,
         e,
       );
@@ -161,7 +161,10 @@ class StructureBindingController<T> implements FieldBindingParent {
       final field = fields[i];
       field.reset();
       _fieldValueChangeController.add((field.fieldName, field.getValue()));
+      field.handleErrors(AnnotationResult.empty());
     }
+    _errorBuffer.clearAll();
+    _errorBuffer.recalculateFieldErrors();
   }
 
   /// Notifies the controller of a field value change.
@@ -170,6 +173,11 @@ class StructureBindingController<T> implements FieldBindingParent {
   /// with the new [fieldValue].
   @override
   void notifyFieldValue(String fieldName, dynamic fieldValue) {
+    _fieldValueChangeController.add((fieldName, fieldValue));
+  }
+
+  @override
+  void requestFieldValidation(String fieldName, dynamic fieldValue) {
     final (results, isGuard) = _classValidator.annotateFieldExtended(
       fieldName,
       fieldValue,
@@ -177,7 +185,6 @@ class StructureBindingController<T> implements FieldBindingParent {
     _errorBuffer.putAll(results);
     _errorBuffer.recalculateFieldErrors();
     field(fieldName).handleErrors(_errorBuffer.fieldErrors[fieldName]!);
-    _fieldValueChangeController.add((fieldName, fieldValue));
   }
 
   /// Gets the binding controller for a specific field.
@@ -260,48 +267,9 @@ class StructureBindingController<T> implements FieldBindingParent {
   /// Returns the instantiated object of type [T] if all validations pass, or null
   /// if any validation fails or if there are state errors.
   T? _readSound() {
-    final fieldValues = <String, dynamic>{};
-    bool hasGuardMatched = false;
-    bool hasStateError = false;
-    for (var i = 0; i < fields.length; i++) {
-      final field = fields[i];
-      // Forward validation trigger to nested fields
-      field.performValidation(ValidationTrigger.onSubmitGuard);
-
-      // Silent because we annotate later
-      final fieldValue = field.getValue();
-      final (results, isGuard) = _classValidator.annotateFieldExtended(
-        field.fieldName,
-        fieldValue,
-      );
-
-      _errorBuffer.putAll(results);
-      if (field.hasStateError) {
-        hasStateError = true;
-      }
-
-      if (isGuard) {
-        hasGuardMatched = true;
-      }
-      fieldValues[field.fieldName] = fieldValue;
-    }
-    if (hasGuardMatched) {
-      _errorBuffer.recalculateFieldErrors();
-      for (var value in fields) {
-        value.handleErrors(_errorBuffer.fieldErrors[value.fieldName]!);
-      }
-      return null;
-    }
-    final instantiated = structure.instantiateFromFieldMap(fieldValues);
-    _errorBuffer.putAll(_classValidator.annotateExtended(instantiated));
-    _errorBuffer.recalculateFieldErrors();
-    // Propagate errors to fields
-    for (var value in fields) {
-      value.handleErrors(_errorBuffer.fieldErrors[value.fieldName]!);
-    }
-    if (_errorBuffer.hasErrors) return null;
-    if (checkErrorStates && hasStateError) return null;
-    return instantiated;
+    final (result,current) = runValidation(ValidationTrigger.onSubmit);
+    if (!result) return null;
+    return current;
   }
 
   /// Reads the current state of all fields.
@@ -318,12 +286,45 @@ class StructureBindingController<T> implements FieldBindingParent {
 
   T? submit() => read(false);
 
-  void runValidation(ValidationTrigger trigger) {
+  (bool result, T? current) runValidation(ValidationTrigger? trigger) {
+    bool hasGuardMatched = false;
+    bool hasStateError = false;
+    T? current;
     for (var i = 0; i < fields.length; i++) {
       final field = fields[i];
       field.performValidation(trigger);
+
+      final fieldValue = field.getValue();
+      final (results, isGuard) = _classValidator.annotateFieldExtended(
+        field.fieldName,
+        fieldValue,
+      );
+      _errorBuffer.putAll(results);
+
+      if (field.hasStateError) {
+        hasStateError = true;
+      }
+      if (isGuard) {
+        hasGuardMatched = true;
+      }
     }
+
+    if (!hasGuardMatched) {
+      current = _readSilent();
+      if (current != null) {
+        final results = _classValidator.annotateExtended(current);
+        _errorBuffer.putAll(results);
+      }
+    }
+
     _errorBuffer.recalculateFieldErrors();
+
+    for (var value in fields) {
+      value.handleErrors(_errorBuffer.fieldErrors[value.fieldName]!);
+    }
+
+    if (checkErrorStates && hasStateError) return (false, current);
+    return (!_errorBuffer.hasErrors, current);
   }
 
   void load(T value) {
@@ -336,6 +337,8 @@ class StructureBindingController<T> implements FieldBindingParent {
     }
     _errorBuffer.clearCustom();
     _errorBuffer.recalculateFieldErrors();
+
+    runValidation(ValidationTrigger.onInteraction); // Loading counts as an interaction
   }
 
   /// Adds a custom runtime error to the error buffer and recalculates field errors.
@@ -499,11 +502,12 @@ abstract interface class FieldBindingParent {
   DogEngine get engine;
 
   /// Notifies the controller of a field value change.
-  ///
-  /// This method updates the validation state and error handling for the field named [fieldName]
-  /// with the new [fieldValue].
   void notifyFieldValue(String fieldName, dynamic fieldValue) {}
 
+  /// Requests validation for a specific field.
+  /// The result of the validation will be pushed to the field's [ValueNotifier].
+  void requestFieldValidation(String fieldName, dynamic fieldValue) {}
+  
   /// Gets the binding controller for a specific field.
   ///
   /// Returns the [FieldBindingController] for the specified [name]. Throws an

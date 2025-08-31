@@ -66,7 +66,13 @@ abstract class FieldBindingController<T> extends ChangeNotifier {
       return;
     }
     final value = getValue();
-    parent.notifyFieldValue(fieldName, value);
+    parent.requestFieldValidation(fieldName, value);
+  }
+
+  @override
+  void notifyListeners() {
+    super.notifyListeners();
+    parent.notifyFieldValue(fieldName, getValue());
   }
 }
 

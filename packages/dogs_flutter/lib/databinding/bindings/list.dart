@@ -101,6 +101,13 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
 
   int _nextId = 0;
 
+  @override
+  bool get hasStateError =>
+      fields.values.any((x) => x.errorListenable.value.hasErrors);
+
+  @override
+  DogEngine get engine => parent.engine;
+
   String _createNewField() {
     final id = (_nextId++).toString();
     final field = DogStructureField(typeTree, null, id, false, true, []);
@@ -122,26 +129,6 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
     fieldOrder.add(id);
     return id;
   }
-
-  bool validate(String id, ValidationTrigger? trigger) {
-    var field = fields[id];
-    if (field == null) return false;
-    field.performValidation(trigger);
-    var value = field.getValue();
-    AnnotationResult errors;
-    if (value == null) {
-      errors = DatabindRequiredGuard.sharedMessage.asAnnotationResult();
-    } else {
-      errors = field.bindingContext.fieldValidator.annotate(value);
-    }
-    field.handleErrors(errors);
-    errors = field.errorListenable.value;
-
-    return errors.hasErrors;
-  }
-
-  @override
-  bool get hasStateError => fields.values.any((x) => x.errorListenable.value.hasErrors);
 
   void _removeField(String id) {
     if (fields.containsKey(id)) {
@@ -192,7 +179,6 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
     final id = fieldOrder[index];
     _removeField(id);
     notifyListeners();
-    parent.notifyFieldValue(fieldName, getValue());
   }
 
   @override
@@ -221,6 +207,7 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
   @override
   void setValue(dynamic value) {
     if (value == null) {
+      _changeToSize(0);
       return;
     }
     if (value is List) {
@@ -236,10 +223,26 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
   @override
   void performValidation([ValidationTrigger? trigger]) {
     for (final field in fields.values) {
-      var result = validate(field.fieldName, trigger);
-      print('Field ${field.fieldName} validation result: $result');
+      _validate(field.fieldName, trigger);
     }
     super.performValidation(trigger);
+  }
+
+  bool _validate(String id, ValidationTrigger? trigger) {
+    var field = fields[id];
+    if (field == null) return false;
+    field.performValidation(trigger);
+    var value = field.getValue();
+    AnnotationResult errors;
+    if (value == null) {
+      errors = DatabindRequiredGuard.sharedMessage.asAnnotationResult();
+    } else {
+      errors = field.bindingContext.fieldValidator.annotate(value);
+    }
+    field.handleErrors(errors);
+    errors = field.errorListenable.value;
+
+    return errors.hasErrors;
   }
 
   @override
@@ -251,15 +254,9 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
       result =
           result.remove(DatabindRequiredGuard.messageId) +
           FormatMessages.fieldHasError;
-    } else {
-      print('No field errors in list');
     }
-
     super.handleErrors(result);
   }
-
-  @override
-  DogEngine get engine => parent.engine;
 
   @override
   FieldBindingController field(String name) {
@@ -272,8 +269,20 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
 
   @override
   void notifyFieldValue(String fieldName, dynamic fieldValue) {
-    // Notify listeners about the field value change
     notifyListeners();
+  }
+
+  @override
+  void requestFieldValidation(String fieldName, dynamic fieldValue) {
+    var controller = fields[fieldName];
+    if (controller != null) {
+      var fieldValidator = controller.bindingContext.fieldValidator;
+      var errors = fieldValidator.annotate(fieldValue);
+      if (!errors.hasErrors && fieldValue == null) {
+        errors = DatabindRequiredGuard.sharedMessage.asAnnotationResult();
+      }
+      controller.handleErrors(errors);
+    }
   }
 }
 
@@ -296,20 +305,6 @@ class ListBindingFieldWidget extends StatelessWidget {
         return ValueListenableBuilder(
           valueListenable: controller.errorListenable,
           builder: (context, error, _) {
-            final outerDecoration = theme.style
-                .buildMaterialDecoration(
-                  context,
-                  controller,
-                  includeLabel: false,
-                  includeHint: false,
-                  includeHelper: false,
-                )
-                .copyWith(
-                  errorText: theme.toErrorText(error),
-                  border: InputBorder.none,
-                  isDense: true,
-                );
-
             return BindingTheme(
               style: theme.style.copy(
                 hint: null,
@@ -318,7 +313,7 @@ class ListBindingFieldWidget extends StatelessWidget {
                 prefix: null,
                 suffix: null,
               ),
-              child: theme.style.wrapHeader(
+              child: theme.style.buildInputSection(
                 viewFactory.buildListView(context, listStyle, controller),
                 context,
                 errorText: error.errorText,

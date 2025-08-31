@@ -61,7 +61,6 @@ class ListBindingStyleContributor
         annotations:
             field.annotations + [ListBindingStyle(itemLabel: itemLabel, addButtonLabel: addButtonLabel)],
       );
-      print("Applied ListBindingStyle to field ${field.name} (itemLabel: $itemLabel, addButtonLabel: $addButtonLabel)");
     }
 
     return field;
