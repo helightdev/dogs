@@ -92,6 +92,7 @@ dogs.registerTreeBaseFactory(
 
 You can register a custom tree base factory using the `registerTreeBaseFactory` method of the `DogEngine`.
 
+
 ```{ .dart title="Map Converter using NTreeArgConverter" }
 final mapFactory = TreeBaseConverterFactory.createNargsFactory<Map>(
   nargs: 2, consume: <K, V>() => MapNTreeArgConverter<K, V>()
@@ -115,6 +116,13 @@ class MapNTreeArgConverter<K,V> extends NTreeArgConverter<Map> {
   }
 }
 ```
+
+!!! warning "Don't use Type Constraints"
+    Since tree converters are dynamic in nature, they cannot statically enforce type constraints on their type arguments,
+    as this would require down-casting type constraints at runtime, which is not possible in Dart.
+
+    If type constraints are required, consider performing runtime checks inside the converter methods.
+
 `NTreeArgConverters` are used to convert complex types that have a fixed number of type arguments.
 The consume method is used to expand the stored type arguments to usable generic type arguments
 which then need to be used to create a NTreeArgConverter. The `NTreeArgConverter` class provides
