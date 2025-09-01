@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:build/build.dart';
 import 'package:lyell_gen/lyell_gen.dart';
-import 'package:pubspec/pubspec.dart';
 import 'package:recase/recase.dart';
 
 import '../settings.dart';

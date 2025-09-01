@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_generator/dogs_generator.dart';
