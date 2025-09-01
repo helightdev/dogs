@@ -204,8 +204,9 @@ Future<void> writeBuiltInteropConverter(ClassElement2 element,
       ..body = Code(
           "return (${typeRef}Builder()\n${builderElement.getters2.where((element) => element.isPublic && !element.isStatic).mapIndexed((i, e) {
         if (listBuilderChecker.isAssignableFromType(e.returnType)) {
-          var innerType =
-              e.returnType.asInstanceOf2(listBuilderInterface)!.typeArguments[0];
+          var innerType = e.returnType
+              .asInstanceOf2(listBuilderInterface)!
+              .typeArguments[0];
           return "..${e.displayName} = list[$i] == null ? null : gen.ListBuilder<${codeContext.typeName(innerType)}>(list[$i])";
         } else if (setBuilderChecker.isAssignableFromType(e.returnType)) {
           var innerType =

@@ -30,12 +30,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     var emitter = DartEmitter();
     var converterName = "${element.displayName}Converter";
 
-    String serialName = element.displayName!;
+    String serialName = element.displayName;
     serialName = settings.nameCase.recase(serialName);
 
     var serializableValue = serializableChecker.firstAnnotationOf(element);
     if (serializableValue != null) {
-      var serialNameOverride = serializableValue.getField("serialName")?.toStringValue();
+      var serialNameOverride =
+          serializableValue.getField("serialName")?.toStringValue();
       if (serialNameOverride != null) serialName = serialNameOverride;
     }
 
@@ -71,8 +72,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
           "$genAlias.GeneratedEnumDogConverter<${codeContext.typeName(element.thisType)}>");
 
       builder.constructors.add(Constructor((builder) => builder
-        ..initializers.add(Code(
-            "super.structured(serialName: '$serialName')"))));
+        ..initializers
+            .add(Code("super.structured(serialName: '$serialName')"))));
 
       builder.methods.add(Method((builder) => builder
         ..name = "values"
@@ -134,13 +135,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     StructurizeResult structurized;
     if (constructor != null && constructor.formalParameters.isNotEmpty) {
       // Create constructor based serializable
-      structurized = await structurizeConstructor(
-          element.thisType, settings, constructor, genContext, codeContext.cachedCounter);
+      structurized = await structurizeConstructor(element.thisType, settings,
+          constructor, genContext, codeContext.cachedCounter);
       codeContext.additionalImports.addAll(structurized.imports);
     } else if (constructor != null) {
       // Create bean like property based serializable
-      structurized = await structurizeBean(
-          element.thisType, settings, element, genContext, codeContext.cachedCounter);
+      structurized = await structurizeBean(element.thisType, settings, element,
+          genContext, codeContext.cachedCounter);
       codeContext.additionalImports.addAll(structurized.imports);
       writeBeanFactory(element, structurized, codeContext);
     } else {

@@ -67,7 +67,8 @@ String getStructureMetadataSourceArray(Element2 element) {
     throw ArgumentError.value(element, "element", "Element is not Annotatable");
   }
   var annotatable = element as Annotatable;
-  for (var value in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
+  for (var value
+      in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
     annotations.add(value.toSource().substring(1));
   }
   return "[${annotations.join(", ")}]";
@@ -83,7 +84,8 @@ String getStructureMetadataSourceArrayAliased(
   var annotatable = element as Annotatable;
 
   var annotations = <String>[];
-  for (var value in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
+  for (var value
+      in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
     var cszp = "$szPrefix${counter.getAndIncrement()}";
     var import = AliasImport.library(
         (value.element2 as ConstructorElement2).library2, cszp);

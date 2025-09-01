@@ -142,7 +142,8 @@ Future<StructurizeResult> structurizeConstructor(
       fieldType = e.type;
       fieldElement = e.field2;
     } else if (e is SuperFormalParameterElement2) {
-      FieldFormalParameterElement2 resolveUntilFieldFormal(FormalParameterElement e) {
+      FieldFormalParameterElement2 resolveUntilFieldFormal(
+          FormalParameterElement e) {
         if (e is FieldFormalParameterElement2) return e;
         if (e is SuperFormalParameterElement2) {
           return resolveUntilFieldFormal(e.superConstructorParameter2!);
@@ -157,7 +158,8 @@ Future<StructurizeResult> structurizeConstructor(
     } else {
       var parameterType = e.type;
       var namedField = element.getField2(e.displayName);
-      var namedGetter = element.lookUpGetter2(name: e.displayName, library: element.library2);
+      var namedGetter =
+          element.lookUpGetter2(name: e.displayName, library: element.library2);
       if (namedField != null && namedGetter == null) {
         fieldName = e.displayName;
         fieldType = namedField.type;
