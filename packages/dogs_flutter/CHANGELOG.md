@@ -1,3 +1,14 @@
+## 0.0.1-dev.7
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+ - **FIX**: move state error check to the end of validation process.
+ - **FEAT**: add insertModeFactory.
+ - **FEAT**: add converters for LogicalKeyboardKey and SingleActivator serialization.
+ - **FEAT**(wip): cleanup material style, enhance validation handling and error management in controllers.
+ - **FEAT**(wip): enhance list and nested structure binding.
+ - **FEAT**: add sharedMessage for required field validation.
+ - **FEAT**: add asAncestor method to BindingStyle for improved style handling.
+
 ## 0.0.1-dev.6
 
 > Note: This release has breaking changes.

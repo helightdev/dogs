@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`dogs_core` - `v10.0.0-dev.5`](#dogs_core---v1000-dev5)
+ - [`dogs_generator` - `v7.0.0-dev.5`](#dogs_generator---v700-dev5)
+
+Packages with other changes:
+
+ - [`dogs_built` - `v3.1.5-dev.5`](#dogs_built---v315-dev5)
+ - [`dogs_cbor` - `v2.3.5-dev.5`](#dogs_cbor---v235-dev5)
+ - [`dogs_firestore` - `v0.3.0-dev.5`](#dogs_firestore---v030-dev5)
+ - [`dogs_flutter` - `v0.0.1-dev.7`](#dogs_flutter---v001-dev7)
+ - [`dogs_toml` - `v2.3.5-dev.5`](#dogs_toml---v235-dev5)
+ - [`dogs_yaml` - `v2.3.5-dev.5`](#dogs_yaml---v235-dev5)
+
+---
+
+#### `dogs_core` - `v10.0.0-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+ - **REFACTOR**: make internal methods private and add missing docs.
+ - **FIX**: remove ref-related property from the unrolled object and only keep the inherited properties.
+ - **FEAT**: add insertModeFactory.
+ - **FEAT**: add regex annotation support for schema properties.
+ - **BREAKING** **FEAT**: migrate to the new element model and remove SerializableLibrary.
+
+#### `dogs_generator` - `v7.0.0-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+ - **FEAT**: add kebab casing option to CasingType.
+ - **FEAT**: add case modifiers to the generator settings.
+ - **BREAKING** **FEAT**: migrate to the new element model and remove SerializableLibrary.
+
+#### `dogs_built` - `v3.1.5-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+
+#### `dogs_cbor` - `v2.3.5-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+
+#### `dogs_firestore` - `v0.3.0-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+
+#### `dogs_flutter` - `v0.0.1-dev.7`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+ - **FIX**: move state error check to the end of validation process.
+ - **FEAT**: add insertModeFactory.
+ - **FEAT**: add converters for LogicalKeyboardKey and SingleActivator serialization.
+ - **FEAT**(wip): cleanup material style, enhance validation handling and error management in controllers.
+ - **FEAT**(wip): enhance list and nested structure binding.
+ - **FEAT**: add sharedMessage for required field validation.
+ - **FEAT**: add asAncestor method to BindingStyle for improved style handling.
+
+#### `dogs_toml` - `v2.3.5-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+
+#### `dogs_yaml` - `v2.3.5-dev.5`
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+
+
 ## 2025-06-12
 
 ### Changes

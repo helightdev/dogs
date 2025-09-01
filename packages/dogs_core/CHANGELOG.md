@@ -1,3 +1,14 @@
+## 10.0.0-dev.5
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+ - **REFACTOR**: make internal methods private and add missing docs.
+ - **FIX**: remove ref-related property from the unrolled object and only keep the inherited properties.
+ - **FEAT**: add insertModeFactory.
+ - **FEAT**: add regex annotation support for schema properties.
+ - **BREAKING** **FEAT**: migrate to the new element model and remove SerializableLibrary.
+
 ## 10.0.0-dev.4
 
  - **FEAT**: enhance enum serialization with fallback and name overrides.

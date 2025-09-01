@@ -1,3 +1,12 @@
+## 7.0.0-dev.5
+
+> Note: This release has breaking changes.
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+ - **FEAT**: add kebab casing option to CasingType.
+ - **FEAT**: add case modifiers to the generator settings.
+ - **BREAKING** **FEAT**: migrate to the new element model and remove SerializableLibrary.
+
 ## 7.0.0-dev.4
 
 > Note: This release has breaking changes.

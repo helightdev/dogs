@@ -1,3 +1,7 @@
+## 2.3.5-dev.5
+
+ - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
+
 ## 2.3.5-dev.4
 
  - Update a dependency to the latest release.
