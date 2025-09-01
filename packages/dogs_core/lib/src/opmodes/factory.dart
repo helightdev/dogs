@@ -39,8 +39,28 @@ abstract class OperationModeFactory<T extends OperationMode>
 
   /// A [OperationModeFactory] that composes multiple other factories.
   static OperationModeFactory<T> compose<T extends OperationMode>(
-          List<OperationModeFactory> factories) =>
-      ComposableOperationModeFactory<T>(factories);
+      List<OperationModeFactory> factories) {
+    final flattened = <OperationModeFactory>[];
+    for (var factory in factories) {
+      if (factory is ComposableOperationModeFactory<T>) {
+        flattened.addAll(factory._factories);
+      } else {
+        flattened.add(factory);
+      }
+    }
+    return ComposableOperationModeFactory<T>(flattened);
+  }
+
+  /// Composes this factory with another [insertion] factory, placing [insertion] in the specified [slot].
+  OperationModeFactory<T> insert(
+    OperationModeFactory<T> insertion,
+    ModeFactoryInsertionSlot slot,
+  ) =>
+      compose<T>([
+        if (slot == ModeFactoryInsertionSlot.first) insertion,
+        this,
+        if (slot == ModeFactoryInsertionSlot.last) insertion,
+      ]);
 }
 
 /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [schema].
@@ -101,4 +121,13 @@ class ComposableOperationModeFactory<T extends OperationMode>
     }
     return null;
   }
+}
+
+/// Specifies where to insert a [OperationModeFactory] when composing with another factory.
+enum ModeFactoryInsertionSlot {
+  /// Insert the factory at the beginning of the composition.
+  first,
+
+  /// Insert the factory at the end of the composition.
+  last
 }

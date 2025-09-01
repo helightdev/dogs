@@ -372,10 +372,34 @@ class DogEngine with MetadataMixin {
   }
 
   /// Registers a [OperationModeFactory] in this [DogEngine] instance and emits
-  /// a event to the change stream if [emitChangeToStream] is true.
+  /// a event to the change stream if [emitChangeToStream] is true. This
+  /// will override any previously registered factory for the given
+  /// [type] or the [factory]'s type argument.
   void registerModeFactory(OperationModeFactory factory,
       {bool emitChangeToStream = true, Type? type}) {
     _modeFactories[type ?? factory.typeArgument] = factory;
+    if (emitChangeToStream) populateChange();
+  }
+
+  /// Modifies the associated [OperationModeFactory] to insert the given
+  /// [factory] at the given [slot]. If no factory is registered for the given
+  /// [type] or the [factory]'s type argument, the [factory] will be registered
+  /// as new factory. If [emitChangeToStream] is true, a change event will be
+  /// emitted to the change stream.
+  void insertModeFactory(OperationModeFactory factory,
+      {bool emitChangeToStream = true,
+      Type? type,
+      ModeFactoryInsertionSlot slot = ModeFactoryInsertionSlot.first}) {
+    final arg = type ?? factory.typeArgument;
+    final currentFactory = _modeFactories[arg];
+    if (currentFactory == null) {
+      _modeFactories[arg] = factory;
+      if (emitChangeToStream) populateChange();
+      return;
+    }
+
+    final modified = currentFactory.insert(factory, slot);
+    _modeFactories[arg] = modified;
     if (emitChangeToStream) populateChange();
   }
 

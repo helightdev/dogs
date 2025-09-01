@@ -69,7 +69,7 @@ DogPlugin DogsFlutterPlugin({
     ...?binders,
     defaultFactories,
   ]);
-  engine.registerModeFactory(modeFactory, type: FlutterWidgetBinder);
+  engine.insertModeFactory(modeFactory, type: FlutterWidgetBinder, slot: ModeFactoryInsertionSlot.last);
 
   if (addSchemaContributors) {
     DogsMaterializer.get(
