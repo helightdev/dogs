@@ -39,6 +39,7 @@ nav:
     - "Advanced Concepts":
       - advanced/structures.md
       - advanced/annotations.md
+      - advanced/hooks.md
       - advanced/operation_modes.md
   - "Flutter [dogs_flutter]":
       - flutter/index.md
