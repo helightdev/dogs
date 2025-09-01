@@ -237,6 +237,7 @@ extension ProjectionExtension on DogEngine {
   }
 }
 
+// ignore: public_member_api_docs
 typedef Supplier<T> = T Function();
 
 /// Creates a reusable list of projections that can be applied to a document.
@@ -259,6 +260,7 @@ final class Projection<T> {
       {DogEngine? engine, this.tree, this.type, this.useFieldMap = false})
       : engine = engine ?? dogs;
 
+  /// Creates a new projection that uses field maps for instantiating the final object.
   Projection.fieldMap({DogEngine? engine, this.tree, this.type})
       : engine = engine ?? dogs,
         useFieldMap = true;
@@ -451,6 +453,9 @@ class Projections {
     return $clone(map)..addAll(result);
   }
 
+  /// Moves the value at [from] to [to] in the given [map]. If [delete] is true,
+  /// the value at [from] is deleted after being moved. Returns a new map with
+  /// the updated values and leaves the original map untouched.
   static Map<String, dynamic> $move(
       Map<String, dynamic> map, String from, String to, bool delete) {
     final isWildcard = from.endsWith(".*");

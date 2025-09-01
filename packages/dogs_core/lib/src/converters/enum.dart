@@ -25,8 +25,11 @@ typedef EnumToString<T> = String Function(T?);
 /// A [DogConverter] that allows for the conversion of enum values to and from strings.
 abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
     with OperationMapMixin<T>, EnumConverter<T> {
+
+  /// Creates a new [GeneratedEnumDogConverter].
   GeneratedEnumDogConverter();
 
+  /// Creates a new associated [GeneratedEnumDogConverter] with the given [serialName].
   GeneratedEnumDogConverter.structured({required String serialName})
       : super(
             isAssociated: true, struct: DogStructure<T>.synthetic(serialName));
@@ -90,6 +93,7 @@ class RuntimeEnumConverter extends SimpleDogConverter<String>
   @override
   final List<String> values;
 
+  /// Creates a new [RuntimeEnumConverter] with the given [values] and [serialName].
   RuntimeEnumConverter(this.values, String serialName)
       : super(serialName: serialName);
 

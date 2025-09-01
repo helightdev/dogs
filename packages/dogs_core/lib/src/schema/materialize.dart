@@ -5,6 +5,7 @@ import "package:dogs_core/dogs_core.dart";
 import "package:dogs_core/dogs_schema.dart";
 import "package:dogs_core/src/schema/contributors.dart";
 
+/// Unrolls schema objects, extracting all nested objects into separate definitions.
 class SchemaObjectUnroller {
   SchemaObjectUnroller._();
 
@@ -60,6 +61,7 @@ class SchemaObjectUnroller {
   }
 }
 
+/// Allows customization of the materialization process by transforming fields
 abstract class SchemaStructureMaterializationContributor {
   /// May be used to transform the generated [DogStructureField] before it is added to the [DogStructure].
   DogStructureField transformField(
@@ -72,11 +74,16 @@ abstract class SchemaStructureMaterializationContributor {
       structure;
 }
 
+/// Materializes [SchemaType]s into [MaterializedConverter]s, which can be used
+/// like most other statically defined converters.
 class DogsMaterializer {
+  /// The [DogEngine] instance associated with this materializer.
   final DogEngine engine;
 
+  /// Creates a new [DogsMaterializer] associated with the given [engine].
   DogsMaterializer(this.engine);
 
+  /// List of contributors used with this materializer.
   List<SchemaStructureMaterializationContributor> contributors = [
     CollectionValidationContributor(),
     StringValidationContributor(),
@@ -222,13 +229,24 @@ class DogsMaterializer {
   }
 }
 
+/// A [DogsMaterializer] generated proxy around a [DogConverter].
 class MaterializedConverter {
+  /// [DogEngine] fork used to register the generated structures and converters.
   final DogEngine engineFork;
+
+  /// Underlying [DogConverter] used for serialization and deserialization.
   final DogConverter converter;
+
+  /// Resolved native serialization mode for the underlying converter.
   final NativeSerializerMode nativeMode;
+
+  /// Underlying [DogStructure] used by the converter.
   final DogStructure structure;
+
+  /// Original [SchemaType] used to generate this materialized converter.
   final SchemaType originalSchema;
 
+  /// A [DogsMaterializer] generated proxy around a [DogConverter].
   MaterializedConverter(
     this.engineFork,
     this.converter,
@@ -237,24 +255,30 @@ class MaterializedConverter {
     this.originalSchema,
   );
 
+  /// Proxy around [DogEngine.toNative]
   dynamic toNative(dynamic value) {
     return nativeMode.serialize(value, engineFork);
   }
 
+  /// Proxy around [DogEngine.fromNative]
   dynamic fromNative(dynamic value) {
     return nativeMode.deserialize(value, engineFork);
   }
 
+  /// Proxy around [jsonEncode] after [toNative]
   String toJson(dynamic value) => jsonEncode(toNative(value));
 
+  /// Proxy around [jsonDecode] before [fromNative]
   dynamic fromJson(String value) => fromNative(jsonDecode(value));
 
+  /// Proxy around [ValidationMode.validate].
   bool isValid(dynamic value) {
     return engineFork.modeRegistry.validation
         .forConverter(converter, engineFork)
         .validate(value, engineFork);
   }
 
+  /// Proxy around [ValidationMode.annotate].
   AnnotationResult annotate(dynamic value) {
     return engineFork.modeRegistry.validation
         .forConverter(converter, engineFork)

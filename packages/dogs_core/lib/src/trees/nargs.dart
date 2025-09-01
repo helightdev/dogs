@@ -158,6 +158,7 @@ abstract class NTreeArgConverter<BASE> {
     return SchemaType.any;
   }
 
+  /// Traverses the [value] and yields all values of the type arguments
   Iterable<(dynamic value, int argIndex)> traverse(
       dynamic value, DogEngine engine) sync* {}
 

@@ -63,6 +63,8 @@ abstract class ClassValidator<T> {
 
 /// Field level validator that has access to the whole class instance.
 abstract class ContextFieldValidator<T> {
+
+  /// Field level validator that has access to the whole class instance.
   const ContextFieldValidator();
 
   /// Field level validator that has access to the whole class instance.
@@ -126,6 +128,7 @@ class IsolatedFieldValidator {
   late final int validatorCount = _fieldValidators.length;
 
   @internal
+  // ignore: public_member_api_docs
   IsolatedFieldValidator({
     required DogEngine engine,
     required DogStructureField field,
@@ -206,17 +209,22 @@ class IsolatedClassValidator {
   final List<IsolatedFieldValidator> _fieldValidators;
   final List<dynamic Function(dynamic)> _fieldAccessors;
 
+  /// The number of top-level validators in this instance.
   late final int toplevelValidatorCount =
       _classValidators.length + _contextValidators.length;
+
+  /// The number of field-level validators in this instance.
   late final int fieldValidatorCount =
       _fieldValidators.map((e) => e.validatorCount).sum;
 
   /// The number of validators in this instance.
   late final int validatorCount = toplevelValidatorCount + fieldValidatorCount;
 
+  /// Maps field names to their index in [_fieldValidators] and the offset
   final Map<String, (int index, int offset)> fieldIndices = {};
 
   @internal
+  // ignore: public_member_api_docs
   IsolatedClassValidator({
     required DogEngine engine,
     required DogStructure<dynamic> structure,

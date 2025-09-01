@@ -19,9 +19,13 @@ import "package:dogs_core/dogs_core.dart";
 /// Requires a field to match another field.
 class MustMatch extends ContextFieldValidator<MustMatchCacheEntry>
     implements StructureMetadata {
+  /// The name of the other field to match.
   final String otherFieldName;
+
+  /// Requires a field to match another field.
   const MustMatch(this.otherFieldName);
 
+  /// The message id used for the annotation result.
   static const String messageId = "must-match";
 
   @override
@@ -60,13 +64,24 @@ class MustMatch extends ContextFieldValidator<MustMatchCacheEntry>
   }
 }
 
+// ignore: public_member_api_docs
 class MustMatchCacheEntry {
+  // ignore: public_member_api_docs
   final String fieldName;
+
+  // ignore: public_member_api_docs
   final String otherFieldName;
+
+  // ignore: public_member_api_docs
   final int selfIndex;
+
+  // ignore: public_member_api_docs
   final int otherIndex;
+
+  // ignore: public_member_api_docs
   final DogStructureProxy proxy;
 
+  // ignore: public_member_api_docs
   MustMatchCacheEntry(this.fieldName, this.otherFieldName, this.selfIndex,
       this.otherIndex, this.proxy);
 }

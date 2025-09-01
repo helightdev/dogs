@@ -38,6 +38,11 @@ const DeepCollectionEquality deepEquality = DeepCollectionEquality();
 @internal
 int compareTypeHashcodes(Type a, Type b) => a.hashCode.compareTo(b.hashCode);
 
+/// Entrypoint for enabling and configuring a [DogEngine].
+///
+/// You can provide a list of [DogPlugin]s, which will be applied in the given order.
+/// If [global] is true (default), the configured engine will be set as the global
+/// singleton and can be accessed via [dogs].
 DogEngine configureDogs({
   required List<DogPlugin> plugins,
   bool global = true,

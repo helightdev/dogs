@@ -193,6 +193,9 @@ const ExcludeNull excludeNull = ExcludeNull();
 /// A **field** and **class** level serialization hook that excludes fields
 /// with a `null` value from the serialized map.
 class ExcludeNull extends SerializationHook with FieldSerializationHook {
+
+  /// A **field** and **class** level serialization hook that excludes fields
+  /// with a `null` value from the serialized map.
   const ExcludeNull();
 
   @override

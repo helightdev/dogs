@@ -28,12 +28,17 @@ abstract class SchemaFieldVisitor {
   void visitSchemaField(SchemaField field);
 }
 
+/// Internal class to track schema passes and avoid recursion.
 class SchemaPass {
+
+  /// The current schema pass, or null if none is active.
   static SchemaPass? current;
 
+  /// The current depth of the schema pass.
   int depth = 0;
 
   @internal
+  // ignore: public_member_api_docs
   static T run<T>(T Function(SchemaPass) block) {
     if (current != null) {
       throw Exception("Already in a schema pass, this should not happen.");

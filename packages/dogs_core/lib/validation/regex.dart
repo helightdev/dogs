@@ -102,9 +102,14 @@ class Regex extends FieldValidator<RegexCacheEntry>
   }
 }
 
+// ignore: public_member_api_docs
 class RegexCacheEntry {
+  // ignore: public_member_api_docs
   RegExp matcher;
+
+  // ignore: public_member_api_docs
   bool isIterable;
 
+  // ignore: public_member_api_docs
   RegexCacheEntry(this.matcher, this.isIterable);
 }

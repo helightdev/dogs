@@ -79,9 +79,14 @@ class Validated extends FieldValidator<ValidatedCacheEntry>
   }
 }
 
+// ignore: public_member_api_docs
 class ValidatedCacheEntry {
+  // ignore: public_member_api_docs
   Type serial;
+
+  // ignore: public_member_api_docs
   bool iterable;
 
+  // ignore: public_member_api_docs
   ValidatedCacheEntry(this.serial, this.iterable);
 }

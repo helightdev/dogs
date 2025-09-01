@@ -585,6 +585,7 @@ class DogEngine with MetadataMixin {
   }
 }
 
+/// A plugin 'middleware' function that can be used to modify a [DogEngine] instance.
 typedef DogPlugin = void Function(DogEngine engine);
 
 /// Converts a [value] to the given [IterableKind]. If the value is a [Iterable]

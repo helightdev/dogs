@@ -23,6 +23,7 @@ import "package:crypto/crypto.dart";
 import "package:dogs_core/dogs_core.dart";
 import "package:meta/meta.dart";
 
+/// Extension methods for schema generation on [DogEngine].
 extension SchemaGenerateExtension on DogEngine {
   /// Generates a schema for the given type [T].
   SchemaType describe<T>({SchemaConfig config = const SchemaConfig()}) {
@@ -52,25 +53,36 @@ extension SchemaGenerateExtension on DogEngine {
   }
 }
 
+/// Configuration options for schema generation.
 class SchemaConfig {
+  /// Whether to use references for object types.
   final bool useReferences;
 
+  /// Configuration options for schema generation.
   const SchemaConfig({this.useReferences = true});
 }
 
+/// A field in a schema object.
 class SchemaField {
+  /// The name/key of the field.
   String name;
+  /// The type of the field.
   SchemaType type;
+  /// Additional properties of the field.
   Map<String, dynamic> properties = {};
 
+  /// A field in a schema object.
   SchemaField(this.name, this.type);
 
+  /// Adds a custom property to the field.
   void operator []=(String key, dynamic value) {
     properties[key] = value;
   }
 
+  /// Gets a custom property from the field.
   dynamic operator [](String key) => properties[key];
 
+  /// Creates a deep copy of this field.
   SchemaField clone() {
     final field = SchemaField(name, type.clone());
     properties.forEach((key, value) {
@@ -93,20 +105,28 @@ sealed class SchemaType {
 
   SchemaType(this.type);
 
+  /// Creates a schema type representing an integer.
   static SchemaType get integer => SchemaPrimitive(SchemaCoreType.integer);
 
+  /// Creates a schema type representing a number.
   static SchemaType get number => SchemaPrimitive(SchemaCoreType.number);
 
+  /// Creates a schema type representing a string.
   static SchemaType get string => SchemaPrimitive(SchemaCoreType.string);
 
+  /// Creates a schema type representing a boolean.
   static SchemaType get boolean => SchemaPrimitive(SchemaCoreType.boolean);
 
+  /// Creates a schema type representing any value.
   static SchemaType get any => SchemaPrimitive(SchemaCoreType.any);
 
+  /// Creates a schema type representing a null value.
   static SchemaType get none => SchemaPrimitive(SchemaCoreType.$null);
 
+  /// Creates a schema type representing a reference to another schema by its serial name.
   static SchemaType reference(String serialName) => SchemaReference(serialName);
 
+  /// Creates a schema type representing an array of the given item type.
   static SchemaType array(SchemaType items) {
     if (items is SchemaArray || items is SchemaMap) {
       log(
@@ -119,9 +139,11 @@ sealed class SchemaType {
     return SchemaArray(items);
   }
 
+  /// Creates a schema type representing an object with the given fields.
   static SchemaType object({List<SchemaField> fields = const []}) =>
       SchemaObject(fields: fields);
 
+  /// Creates a schema type representing a string-keyed map with values of the given item type.
   static SchemaType map(SchemaType itemType) {
     if (itemType is SchemaArray || itemType is SchemaMap) {
       log(
@@ -208,10 +230,12 @@ sealed class SchemaType {
     return typeProperties.contains(key);
   }
 
+  /// Adds a custom property to the schema.
   void operator []=(String key, dynamic value) {
     properties[key] = value;
   }
 
+  /// Gets a custom property from the schema.
   dynamic operator [](String key) => properties[key];
 
   void _writeToProperties(Map<String, dynamic> map) {
@@ -223,16 +247,19 @@ sealed class SchemaType {
     }
   }
 
+  /// Converts this schema type to a map of json-schema-like properties.
   Map<String, dynamic> toProperties() {
     final buffer = <String, dynamic>{};
     _writeToProperties(buffer);
     return buffer;
   }
 
+  /// Converts this schema type to a formatted JSON string.
   String toJson() {
     return JsonEncoder.withIndent("  ").convert(toProperties());
   }
 
+  /// Converts this schema type to a SHA-256 hash of its properties.
   String toSha256() {
     final buffer = toProperties();
     return sha256.convert(utf8.encode(jsonEncode(buffer))).toString();
@@ -241,10 +268,12 @@ sealed class SchemaType {
   /// Creates a deep copy of this schema type.
   SchemaType clone();
 
+  /// Removes the nullable flag from this schema type.
   @internal
   SchemaType removeNullable() => clone()..nullable = false;
 }
 
+/// Commonly used JSON Schema property keys.
 class SchemaProperties {
   // List
   /// https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-validation-00#rfc.section.6.4.2
@@ -301,6 +330,7 @@ class SchemaProperties {
   /// Dogs serial name
   static const String serialName = "x-serialName";
 
+  /// List of properties that should be inherited by reference types.
   static const List<String> $inheritedProperties = [serialName];
 }
 
@@ -326,9 +356,12 @@ class SchemaPrimitive extends SchemaType {
   }
 }
 
+/// A string-keyed map with values of a specific type.
 class SchemaMap extends SchemaType {
+  /// The type of the items in the map.
   SchemaType itemType;
 
+  /// A string-keyed map with values of a specific type.
   SchemaMap(this.itemType) : super(SchemaCoreType.object);
 
   @override
@@ -428,19 +461,28 @@ final class SchemaReference extends SchemaType {
 
 /// Json Schema core types
 enum SchemaCoreType {
+  /// Represents any JSON value.
   any(["string", "number", "integer", "boolean", "object", "array"]),
+  /// Represents a string value.
   string(["string"]),
+  /// Represents a numeric value.
   number(["number"]),
+  /// Represents an integer value.
   integer(["integer"]),
+  /// Represents a boolean value.
   boolean(["boolean"]),
+  /// Represents an object value.
   object(["object"]),
+  /// Represents an array value.
   array(["array"]),
+  /// Represents a null value.
   $null(["null"]);
 
   final List<String> _jsonSchemaTypes;
 
   const SchemaCoreType([this._jsonSchemaTypes = const []]);
 
+  /// Converts a string to a [SchemaCoreType].
   static SchemaCoreType fromString(String value) {
     switch (value) {
       case "any":

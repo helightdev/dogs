@@ -17,8 +17,11 @@
 import "package:collection/collection.dart";
 import "package:dogs_core/dogs_core.dart";
 
+// ignore: public_member_api_docs
 typedef StructureFieldNativeSerializerFunc = void Function(
     dynamic v, Map<String, dynamic> map, DogEngine engine);
+
+// ignore: public_member_api_docs
 typedef StructureFieldNativeDeserializerFunc = void Function(
     dynamic v, List<dynamic> args, DogEngine engine);
 

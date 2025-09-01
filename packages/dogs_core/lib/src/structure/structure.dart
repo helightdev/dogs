@@ -91,6 +91,7 @@ class DogStructure<T> extends RetainedAnnotationHolder
   factory DogStructure.synthetic(String name) => DogStructure<T>(
       name, StructureConformity.basic, [], [], const MemoryDogStructureProxy());
 
+  /// Create a copy of this structure with optional modifications.
   DogStructureCopyFrontend<T> get copy =>
       _DogStructureCopyFrontendImpl<T>(this);
 }
@@ -152,6 +153,7 @@ abstract class StructureOperationModeFactory<MODE_TYPE extends OperationMode>
   MODE_TYPE resolve(DogStructure structure);
 }
 
+/// Frontend for copying a [DogStructure] with optional modifications.
 abstract interface class DogStructureCopyFrontend<T> {
   /// Creates a copy of the structure with the given [name] and [conformity].
   DogStructure<T> call({

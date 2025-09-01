@@ -280,6 +280,7 @@ extension StructureExtensions on DogStructure {
         structure: this);
   }
 
+  /// Returns a debug string representation of this structure.
   String toDebugString(DogEngine? engine) {
     final buffer = StringBuffer();
     buffer.writeln("Structure: $serialName");

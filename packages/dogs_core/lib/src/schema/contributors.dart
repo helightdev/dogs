@@ -6,6 +6,7 @@ SchemaType _extractItemSchemaType(SchemaType type) => switch (type) {
       _ => type,
     };
 
+/// A contributor that adds standard collection validation annotations
 class CollectionValidationContributor
     extends SchemaStructureMaterializationContributor {
   @override
@@ -25,6 +26,7 @@ class CollectionValidationContributor
   }
 }
 
+/// A contributor that adds standard string validation annotations
 class StringValidationContributor
     extends SchemaStructureMaterializationContributor {
   @override
@@ -54,6 +56,7 @@ class StringValidationContributor
   }
 }
 
+/// A contributor that adds standard number validation annotations
 class NumberValidationContributor
     extends SchemaStructureMaterializationContributor {
   @override

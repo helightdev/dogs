@@ -165,11 +165,15 @@ class DogStructureField extends RetainedAnnotationHolder
         type, converterType, name, optional, true, annotations);
   }
 
+  /// Provides a fluent API to create modified copies of this field.
   DogStructureFieldCopyFrontend get copy =>
       _DogStructureFieldCopyFrontendImpl(this);
 }
 
+/// Fluent API to create modified copies of a [DogStructureField].
 abstract interface class DogStructureFieldCopyFrontend {
+
+  /// Creates a copy of the field with the given modifications.
   DogStructureField call({
     QualifiedTypeTree? type,
     String? name,

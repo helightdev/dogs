@@ -74,8 +74,12 @@ class _InlineValidationMode<T, IR> extends ValidationMode<T>
       annotator(value, engine, _ir);
 }
 
+/// An interface for things that can be converted to an [AnnotationResult]
 abstract interface class AnnotationResultLike {
+  /// Converts this to an [AnnotationResult].
   AnnotationResult asAnnotationResult();
+
+  /// Combines this with another [AnnotationResultLike].
   AnnotationResult operator +(AnnotationResultLike? other);
 }
 
@@ -89,6 +93,7 @@ class AnnotationResult implements AnnotationResultLike {
     required this.messages,
   });
 
+  /// Returns true if this result contains any error messages.
   bool get hasErrors => messages.isNotEmpty;
 
   /// Translates all messages in this result using [engine].

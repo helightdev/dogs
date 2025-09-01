@@ -105,6 +105,7 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
   bool get canSerializeNull => true;
 }
 
+/// The validation operation implementation for [IterableTreeBaseConverterMixin].
 class IterableTreeValidationMode extends ValidationMode<dynamic>
     with TypeCaptureMixin<dynamic> {
   /// The converter used to validate instances of this iterable type.
