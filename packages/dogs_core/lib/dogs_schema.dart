@@ -16,6 +16,8 @@
 
 library;
 
+import "dart:convert";
+
 import "dogs_core.dart";
 
 /// Creates a schema type representing a string.
@@ -57,6 +59,15 @@ SchemaType map(SchemaType itemType) {
 /// Creates a schema type representing an enumeration of the given string values.
 SchemaType enumeration(List<String> values) {
   return SchemaType.string.property(SchemaProperties.$enum, values);
+}
+
+/// Parses a JSON string into a [SchemaType].
+SchemaType parseSchema(String json) {
+  final map = jsonDecode(json);
+  if (map is! Map<String, dynamic>) {
+    throw ArgumentError("Invalid schema JSON: $json");
+  }
+  return SchemaType.fromProperties(map);
 }
 
 /// Extension methods for SchemaType to provide a fluent API for schema definitions.
