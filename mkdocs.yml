@@ -41,6 +41,7 @@ nav:
       - advanced/annotations.md
       - advanced/hooks.md
       - advanced/operation_modes.md
+      - advanced/schema.md
   - "Flutter [dogs_flutter]":
       - flutter/index.md
       - flutter/converters.md
