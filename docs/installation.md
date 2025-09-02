@@ -23,6 +23,8 @@ dependencies:
   dogs_cbor: any # Support for CBOR files
 ```
 
+Also replace the `any` values with the desired/latest version constraints.
+
 After adding the packages, run `pub get` to download the packages and `pub run build_runner build`
 to generate the `dogs.g.dart` reactor file.
 
