@@ -10,7 +10,6 @@ export 'package:dogs_core/dogs_core.dart' hide DogLinked, isPolymorphicField, co
 export 'package:dogs_core/dogs_validation.dart';
 
 // Flutter-specific converters
-export 'converters/auto.dart';
 export 'converters/geometric.dart';
 export 'converters/various.dart';
 // Databinding exports

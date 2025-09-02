@@ -1,3 +1,4 @@
+import 'package:dogs_core/dogs_converter_utils.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,13 +54,13 @@ class FlutterLogicalKeyConverter extends SimpleDogConverter<LogicalKeyboardKey> 
 
   @override
   LogicalKeyboardKey deserialize(value, DogEngine engine) {
-    if (value is Map) {
-      var keyId = value["id"];
-      var keyLabel = value["label"];
-      var resolved = LogicalKeyboardKey.findKeyByKeyId(keyId);
-      if (resolved != null && resolved.keyLabel == keyLabel) {
-        return resolved;
-      }
+    var map = readAsMap(value, engine);
+    var keyId = map.read<int>("id");
+    var keyLabel = map.read<String>("label");
+
+    var resolved = LogicalKeyboardKey.findKeyByKeyId(keyId);
+    if (resolved != null && resolved.keyLabel == keyLabel) {
+      return resolved;
     }
     throw DogSerializerException(message: "Invalid logical key value", converter: this);
   }
@@ -76,28 +77,16 @@ class FlutterSingleActivatorConverter extends SimpleDogConverter<SingleActivator
 
   @override
   SingleActivator deserialize(value, DogEngine engine) {
-    if (value is Map) {
-      var key = value["k"];
-      var control = value["c"] ?? false;
-      var shift = value["s"] ?? false;
-      var alt = value["a"] ?? false;
-      var meta = value["m"] ?? false;
-      var repeats = value["r"] ?? false;
-      var numLock = value["n"] ?? 0;
-
-      if (key is Map) {
-        return SingleActivator(
-          dogs.fromNative<LogicalKeyboardKey>(key),
-          control: control == true,
-          shift: shift == true,
-          alt: alt == true,
-          meta: meta == true,
-          numLock: LockState.values[numLock as int],
-          includeRepeats: repeats == true,
-        );
-      }
-    }
-    throw DogSerializerException(message: "Invalid single activator value", converter: this);
+    var map = readAsMap(value, engine);
+    return SingleActivator(
+      map.read<LogicalKeyboardKey>("k"),
+      control: map.read<bool>("c", false),
+      shift: map.read<bool>("s", false),
+      alt: map.read<bool>("a", false),
+      meta: map.read<bool>("m", false),
+      numLock: LockState.values[map.read<int>("n", 0)],
+      includeRepeats: map.read<bool>("r", false),
+    );
   }
 
   @override

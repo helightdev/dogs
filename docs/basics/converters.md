@@ -17,7 +17,7 @@ class LatLng {
   String toString() => "LatLng($lat, $lng)";
 }
 
-@linkSerializer/*(1)!*/
+@dogsLinked/*(1)!*/
 class LatLngConverter extends SimpleDogConverter<LatLng>/*(2)!*/ {
   LatLngConverter() : super(serialName: "LatLng");
 
@@ -34,13 +34,13 @@ class LatLngConverter extends SimpleDogConverter<LatLng>/*(2)!*/ {
 }
 ```
 
-1. The `@linkSerializer` annotation is used to automatically register the converter in the `DogEngine`.
+1. The `@linkSerializer` annotation is used to automatically register compatible extensions in the `DogEngine`.
 2. The `SimpleDogConverter` class is a convenience class that implements `DogConverter` and provides
    both the NativeSerializerMode and the GraphSerializerMode. It also creates a synthetic structure for
    the converter type that uses the `serialName`.
 
 In this example, we created a converter for the `LatLng` class. The converter is registered in the
-`DogEngine` using the `@linkSerializer` annotation. The 'SimpleDogConverter' base class is the easiest
+`DogEngine` using the `@dogsLinked` annotation. The 'SimpleDogConverter' base class is the easiest
 way to create a converter – it implements the `DogConverter` interface and automatically creates a native
 serialization mode and a synthetic structure.
 
@@ -74,6 +74,7 @@ first base type. If the type tree has type arguments, the base converter will mo
 recursively**.
 
 ``` { .dart title="List Converter using createIterableFactory" } 
+@dogsLinked
 final myListFactory = TreeBaseConverterFactory.createIterableFactory<MyList>(
   wrap: <T>(Iterable<T> entries) => MyList(entries.toList()),
   unwrap: <T>(MyList value) => value,
@@ -83,17 +84,19 @@ Iterable converters are the most basic and also the most common type of tree con
 easy to create and can be used to convert any type of iterable. The `wrap` and `unwrap` functions
 are used to convert the iterable to and from the tree's base type.
 
-``` { .dart title="Registering a custom tree base factory"  }
-dogs.registerTreeBaseFactory(
-  TypeToken<MyConverterBaseType>(),
-  myCustomConverterFactory
-);
-```
+??? note "Manual Registration"
+    You can register a custom tree base factory using the `registerTreeBaseFactory` method of the `DogEngine`.
 
-You can register a custom tree base factory using the `registerTreeBaseFactory` method of the `DogEngine`.
+    ```{ .dart title="Registering a custom tree base factory" }
+    dogs.registerTreeBaseFactory(
+      TypeToken<MyConverterBaseType>(),
+      myCustomConverterFactory
+    );
+    ```
 
 
 ```{ .dart title="Map Converter using NTreeArgConverter" }
+@dogsLinked
 final mapFactory = TreeBaseConverterFactory.createNargsFactory<Map>(
   nargs: 2, consume: <K, V>() => MapNTreeArgConverter<K, V>()
 );

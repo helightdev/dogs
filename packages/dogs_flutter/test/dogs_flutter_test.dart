@@ -26,6 +26,10 @@ void main() {
       final encoded = dogs.toJson<Rect>(rect);
       final decoded = dogs.fromJson<Rect>(encoded);
       expect(decoded, rect);
+
+      final authored = [0,10,20,25.5];
+      final decodedAuthored = dogs.fromNative<Rect>(authored);
+      expect(decodedAuthored, Rect.fromLTRB(0,10,20,25.5));
     });
 
     test("Serialize EdgeInsets", () {
@@ -33,6 +37,10 @@ void main() {
       final encoded = dogs.toJson<EdgeInsets>(edgeInsets);
       final decoded = dogs.fromJson<EdgeInsets>(encoded);
       expect(decoded, edgeInsets);
+
+      final authored = [10,20,30,40.5];
+      final decodedAuthored = dogs.fromNative<EdgeInsets>(authored);
+      expect(decodedAuthored, EdgeInsets.fromLTRB(10,20,30,40.5));
     });
 
     test("Serialize RRect", () {
