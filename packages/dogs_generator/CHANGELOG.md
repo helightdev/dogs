@@ -1,3 +1,8 @@
+## 7.0.0-dev.6
+
+ - **REFACTOR**: improve code formatting and readability.
+ - **FEAT**: add DogLinkable.
+
 ## 7.0.0-dev.5
 
 > Note: This release has breaking changes.

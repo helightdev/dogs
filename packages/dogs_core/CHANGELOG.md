@@ -1,3 +1,13 @@
+## 10.0.0-dev.6
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+ - **FIX**: enhance describe method to support TypeTree for converter retrieval, reformat.
+ - **FIX**: make describe usable in schema passes.
+ - **FEAT**: add a parseSchema function to convert a JSON string to SchemaType.
+ - **FEAT**: add DogNativeMapReader and ConverterHelperExtensions for improved deserialization.
+ - **FEAT**: add DogLinkable.
+ - **DOCS**: add missing documentation comments for public members.
+
 ## 10.0.0-dev.5
 
 > Note: This release has breaking changes.

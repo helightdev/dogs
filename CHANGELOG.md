@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-03
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_built` - `v3.1.5-dev.6`](#dogs_built---v315-dev6)
+ - [`dogs_cbor` - `v2.3.5-dev.6`](#dogs_cbor---v235-dev6)
+ - [`dogs_core` - `v10.0.0-dev.6`](#dogs_core---v1000-dev6)
+ - [`dogs_flutter` - `v0.0.1-dev.8`](#dogs_flutter---v001-dev8)
+ - [`dogs_generator` - `v7.0.0-dev.6`](#dogs_generator---v700-dev6)
+ - [`dogs_toml` - `v2.3.5-dev.6`](#dogs_toml---v235-dev6)
+ - [`dogs_yaml` - `v2.3.5-dev.6`](#dogs_yaml---v235-dev6)
+ - [`dogs_firestore` - `v0.3.0-dev.6`](#dogs_firestore---v030-dev6)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.3.0-dev.6`
+
+---
+
+#### `dogs_built` - `v3.1.5-dev.6`
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+
+#### `dogs_cbor` - `v2.3.5-dev.6`
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+
+#### `dogs_core` - `v10.0.0-dev.6`
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+ - **FIX**: enhance describe method to support TypeTree for converter retrieval, reformat.
+ - **FIX**: make describe usable in schema passes.
+ - **FEAT**: add a parseSchema function to convert a JSON string to SchemaType.
+ - **FEAT**: add DogNativeMapReader and ConverterHelperExtensions for improved deserialization.
+ - **FEAT**: add DogLinkable.
+ - **DOCS**: add missing documentation comments for public members.
+
+#### `dogs_flutter` - `v0.0.1-dev.8`
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+ - **FIX**: enhance describe method to support TypeTree for converter retrieval, reformat.
+ - **FEAT**: add new converters for BoxConstraints, Alignment, and Matrix4.
+ - **FEAT**: add DogNativeMapReader and ConverterHelperExtensions for improved deserialization.
+ - **FEAT**: add MetadataMixin to improve auto layout state capabilities.
+ - **FEAT**: make the section theme configurable and simplify theme resolution.
+
+#### `dogs_generator` - `v7.0.0-dev.6`
+
+ - **REFACTOR**: improve code formatting and readability.
+ - **FEAT**: add DogLinkable.
+
+#### `dogs_toml` - `v2.3.5-dev.6`
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+
+#### `dogs_yaml` - `v2.3.5-dev.6`
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+
+
 ## 2025-09-01
 
 ### Changes

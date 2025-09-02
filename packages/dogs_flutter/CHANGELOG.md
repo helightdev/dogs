@@ -1,3 +1,12 @@
+## 0.0.1-dev.8
+
+ - **REFACTOR**: remove library names for consistency across files and reformat the workspace.
+ - **FIX**: enhance describe method to support TypeTree for converter retrieval, reformat.
+ - **FEAT**: add new converters for BoxConstraints, Alignment, and Matrix4.
+ - **FEAT**: add DogNativeMapReader and ConverterHelperExtensions for improved deserialization.
+ - **FEAT**: add MetadataMixin to improve auto layout state capabilities.
+ - **FEAT**: make the section theme configurable and simplify theme resolution.
+
 ## 0.0.1-dev.7
 
  - **REFACTOR**: backport the new element model to the aliased version and update to melos 7.0.0.
