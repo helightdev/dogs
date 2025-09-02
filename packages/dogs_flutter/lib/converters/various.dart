@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:dogs_core/dogs_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +54,8 @@ class FlutterColorConverter extends SimpleDogConverter<Color> {
 }
 
 @linkSerializer
-class FlutterLogicalKeyConverter extends SimpleDogConverter<LogicalKeyboardKey> {
+class FlutterLogicalKeyConverter
+    extends SimpleDogConverter<LogicalKeyboardKey> {
   FlutterLogicalKeyConverter() : super(serialName: "FLLogicalKey");
 
   @override
@@ -77,10 +76,7 @@ class FlutterLogicalKeyConverter extends SimpleDogConverter<LogicalKeyboardKey> 
 
   @override
   serialize(LogicalKeyboardKey value, DogEngine engine) {
-    return {
-      "id": value.keyId,
-      "label": value.keyLabel,
-    };
+    return {"id": value.keyId, "label": value.keyLabel};
   }
 }
 
@@ -127,7 +123,7 @@ class FlutterSingleActivatorConverter
       "a": value.alt,
       "m": value.meta,
       "r": value.includeRepeats,
-      "n": value.numLock.index
+      "n": value.numLock.index,
     };
   }
 }

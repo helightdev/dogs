@@ -28,10 +28,9 @@ class ColumnAutoStructureBindingLayout extends StructureMetadata
     BuildContext context,
     StructureBindingController controller,
   ) {
-    final fields =
-        controller.fields.map((e) {
-          return FieldBinding(field: e.fieldName);
-        }).toList();
+    final fields = controller.fields.map((e) {
+      return FieldBinding(field: e.fieldName);
+    }).toList();
     return Column(
       spacing: spacing,
       mainAxisSize: mainAxisSize,

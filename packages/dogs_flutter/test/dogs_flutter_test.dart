@@ -1,6 +1,5 @@
 import 'package:dogs_flutter/dogs_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -77,7 +76,11 @@ void main() {
     });
 
     test("Serialize Single Activator", () {
-      var activator = SingleActivator(LogicalKeyboardKey.keyA, control: true, shift: true);
+      var activator = SingleActivator(
+        LogicalKeyboardKey.keyA,
+        control: true,
+        shift: true,
+      );
       final encoded = dogs.toJson<SingleActivator>(activator);
       final decoded = dogs.fromJson<SingleActivator>(encoded);
       expect(decoded.trigger, activator.trigger);

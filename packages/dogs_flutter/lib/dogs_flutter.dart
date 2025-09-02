@@ -7,7 +7,7 @@ import 'package:dogs_flutter/dogs_flutter.dart';
 
 // Export dogs_core and dogs_validation
 export 'package:dogs_core/dogs_core.dart'
-    hide LinkSerializer, isPolymorphicField, compareTypeHashcodes;
+    hide DogLinked, isPolymorphicField, compareTypeHashcodes;
 export 'package:dogs_core/dogs_validation.dart';
 
 // Flutter-specific converters
@@ -69,14 +69,16 @@ DogPlugin DogsFlutterPlugin({
     ...?binders,
     defaultFactories,
   ]);
-  engine.insertModeFactory(modeFactory, type: FlutterWidgetBinder, slot: ModeFactoryInsertionSlot.last);
+  engine.insertModeFactory(
+    modeFactory,
+    type: FlutterWidgetBinder,
+    slot: ModeFactoryInsertionSlot.last,
+  );
 
   if (addSchemaContributors) {
-    DogsMaterializer.get(
-      engine,
-    ).contributors.addAll([
+    DogsMaterializer.get(engine).contributors.addAll([
       SchemaBindingStyleContributor(),
-      ListBindingStyleContributor()
+      ListBindingStyleContributor(),
     ]);
   }
 };

@@ -25,7 +25,6 @@ typedef EnumToString<T> = String Function(T?);
 /// A [DogConverter] that allows for the conversion of enum values to and from strings.
 abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
     with OperationMapMixin<T>, EnumConverter<T> {
-
   /// Creates a new [GeneratedEnumDogConverter].
   GeneratedEnumDogConverter();
 

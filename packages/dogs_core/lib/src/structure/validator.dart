@@ -63,7 +63,6 @@ abstract class ClassValidator<T> {
 
 /// Field level validator that has access to the whole class instance.
 abstract class ContextFieldValidator<T> {
-
   /// Field level validator that has access to the whole class instance.
   const ContextFieldValidator();
 

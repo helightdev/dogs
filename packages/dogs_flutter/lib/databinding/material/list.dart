@@ -51,7 +51,8 @@ class ListBindingStyleContributor
     if (schema.properties.containsKey(
       DogsFlutterSchemaTags.listBindingAddButtonLabel,
     )) {
-      var value = schema[DogsFlutterSchemaTags.listBindingAddButtonLabel] as String?;
+      var value =
+          schema[DogsFlutterSchemaTags.listBindingAddButtonLabel] as String?;
       addButtonLabel = value;
       isModified = true;
     }
@@ -59,7 +60,13 @@ class ListBindingStyleContributor
     if (schema.type == SchemaCoreType.array && isModified) {
       field = field.copy(
         annotations:
-            field.annotations + [ListBindingStyle(itemLabel: itemLabel, addButtonLabel: addButtonLabel)],
+            field.annotations +
+            [
+              ListBindingStyle(
+                itemLabel: itemLabel,
+                addButtonLabel: addButtonLabel,
+              ),
+            ],
       );
     }
 
@@ -87,7 +94,6 @@ extension BindingStyleSchemaBuilderExtension on SchemaType {
   }
 }
 
-
 abstract class ListBindingViewFactory {
   const ListBindingViewFactory();
 
@@ -114,22 +120,18 @@ class DefaultListBindingViewFactory implements ListBindingViewFactory {
       children: [
         ReorderableListView.builder(
           itemCount: controller.fieldOrder.length,
-          proxyDecorator: (
-            Widget child,
-            int index,
-            Animation<double> animation,
-          ) {
-            return Material(color: Colors.transparent, child: child);
-          },
+          proxyDecorator:
+              (Widget child, int index, Animation<double> animation) {
+                return Material(color: Colors.transparent, child: child);
+              },
           itemBuilder: (context, index) {
             final fieldName = controller.fieldOrder[index];
             final fieldController = controller.field(fieldName);
             return Padding(
               key: Key(fieldName),
-              padding:
-                  index == 0
-                      ? EdgeInsets.zero
-                      : EdgeInsets.only(top: verticalGap),
+              padding: index == 0
+                  ? EdgeInsets.zero
+                  : EdgeInsets.only(top: verticalGap),
               child: Row(
                 children: [
                   Expanded(

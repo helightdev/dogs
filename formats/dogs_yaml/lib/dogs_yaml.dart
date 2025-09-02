@@ -1,4 +1,4 @@
-library dogs_yaml;
+library;
 
 import 'dart:collection';
 

@@ -27,7 +27,9 @@ import 'package:flutter/widgets.dart';
 /// This controller handles field validation, error states, and value management for
 /// a structured data type [T]. It provides a way to bind form fields to a data structure
 /// while maintaining validation and error handling.
-class StructureBindingController<T> with MetadataMixin implements FieldBindingParent {
+class StructureBindingController<T>
+    with MetadataMixin
+    implements FieldBindingParent {
   /// The underlying data structure definition that describes the shape of the data.
   final DogStructure structure;
 
@@ -87,8 +89,9 @@ class StructureBindingController<T> with MetadataMixin implements FieldBindingPa
     }
     _classValidator = structure.getClassValidator(
       engine: engine,
-      fieldValidators:
-          fields.map((e) => e.bindingContext.fieldValidator).toList(),
+      fieldValidators: fields
+          .map((e) => e.bindingContext.fieldValidator)
+          .toList(),
     );
     _errorBuffer = BindingsErrorBuffer(structure, _classValidator, () {
       classErrorListenable.value = _errorBuffer.classErrors;
@@ -267,7 +270,7 @@ class StructureBindingController<T> with MetadataMixin implements FieldBindingPa
   /// Returns the instantiated object of type [T] if all validations pass, or null
   /// if any validation fails or if there are state errors.
   T? _readSound() {
-    final (result,current) = runValidation(ValidationTrigger.onSubmit);
+    final (result, current) = runValidation(ValidationTrigger.onSubmit);
     if (!result) return null;
     return current;
   }
@@ -338,7 +341,9 @@ class StructureBindingController<T> with MetadataMixin implements FieldBindingPa
     _errorBuffer.clearCustom();
     _errorBuffer.recalculateFieldErrors();
 
-    runValidation(ValidationTrigger.onInteraction); // Loading counts as an interaction
+    runValidation(
+      ValidationTrigger.onInteraction,
+    ); // Loading counts as an interaction
   }
 
   /// Adds a custom runtime error to the error buffer and recalculates field errors.
@@ -368,17 +373,16 @@ extension AnnotationResultExtensions on AnnotationResult {
     MessageTransformer? func,
     String? message,
   }) {
-    final newMessages =
-        messages.map((e) {
-          if (e.id == id) {
-            if (func != null) {
-              return func(e);
-            } else if (message != null) {
-              return e.withMessage(message);
-            }
-          }
-          return e;
-        }).toList();
+    final newMessages = messages.map((e) {
+      if (e.id == id) {
+        if (func != null) {
+          return func(e);
+        } else if (message != null) {
+          return e.withMessage(message);
+        }
+      }
+      return e;
+    }).toList();
     return AnnotationResult(messages: newMessages);
   }
 
@@ -411,15 +415,15 @@ class StructureBindingProvider extends InheritedWidget {
   ///
   /// Throws an assertion error if no provider is found in the [context].
   static StructureBindingProvider of(BuildContext context) {
-    final StructureBindingProvider? result =
-        context.dependOnInheritedWidgetOfExactType<StructureBindingProvider>();
+    final StructureBindingProvider? result = context
+        .dependOnInheritedWidgetOfExactType<StructureBindingProvider>();
     assert(result != null, 'No StructureBindingProvider found in context');
     return result!;
   }
 
   static StructureBindingProvider? maybeOf(BuildContext context) {
-    final StructureBindingProvider? result =
-        context.dependOnInheritedWidgetOfExactType<StructureBindingProvider>();
+    final StructureBindingProvider? result = context
+        .dependOnInheritedWidgetOfExactType<StructureBindingProvider>();
     return result;
   }
 
@@ -436,15 +440,14 @@ class StructureViewer<T> {
   late List<FlutterWidgetBinder> factories;
 
   StructureViewer(this.engine, this.structure) {
-    factories =
-        structure.fields.map((e) {
-          final (binder, context) = FlutterWidgetBinder.resolveBinder(
-            engine,
-            structure,
-            e,
-          );
-          return binder;
-        }).toList();
+    factories = structure.fields.map((e) {
+      final (binder, context) = FlutterWidgetBinder.resolveBinder(
+        engine,
+        structure,
+        e,
+      );
+      return binder;
+    }).toList();
   }
 
   static StructureViewer<T> create<T>({DogEngine? engine}) {
@@ -507,7 +510,7 @@ abstract interface class FieldBindingParent {
   /// Requests validation for a specific field.
   /// The result of the validation will be pushed to the field's [ValueNotifier].
   void requestFieldValidation(String fieldName, dynamic fieldValue) {}
-  
+
   /// Gets the binding controller for a specific field.
   ///
   /// Returns the [FieldBindingController] for the specified [name]. Throws an

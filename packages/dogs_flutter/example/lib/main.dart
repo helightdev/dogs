@@ -64,7 +64,10 @@ class _TestFormState extends State<TestForm> {
             .addButtonLabel("Add Item")
             .optional(),
 
-    "complexList": object({"field1": string(), "field2": integer()}).array().itemLabel("Complex Item"),
+    "complexList": object({
+      "field1": string(),
+      "field2": integer(),
+    }).array().itemLabel("Complex Item"),
 
     "enum": enumeration(["option1", "option2", "option3"]),
   });

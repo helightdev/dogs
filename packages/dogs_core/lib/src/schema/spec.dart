@@ -66,8 +66,10 @@ class SchemaConfig {
 class SchemaField {
   /// The name/key of the field.
   String name;
+
   /// The type of the field.
   SchemaType type;
+
   /// Additional properties of the field.
   Map<String, dynamic> properties = {};
 
@@ -463,18 +465,25 @@ final class SchemaReference extends SchemaType {
 enum SchemaCoreType {
   /// Represents any JSON value.
   any(["string", "number", "integer", "boolean", "object", "array"]),
+
   /// Represents a string value.
   string(["string"]),
+
   /// Represents a numeric value.
   number(["number"]),
+
   /// Represents an integer value.
   integer(["integer"]),
+
   /// Represents a boolean value.
   boolean(["boolean"]),
+
   /// Represents an object value.
   object(["object"]),
+
   /// Represents an array value.
   array(["array"]),
+
   /// Represents a null value.
   $null(["null"]);
 

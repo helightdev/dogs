@@ -93,11 +93,13 @@ final router = GoRouter(
             "name": z.string().formLabel("Name"),
             "age": z.integer().formLabel("Age"),
             "isActive": z.boolean().formLabel("Is Active"),
-            "address": z.object({
-              "street": z.string().formLabel("Street"),
-              "city": z.string().formLabel("City"),
-              "zipCode": z.string().formLabel("Zip Code"),
-            }).formLabel("Address"),
+            "address": z
+                .object({
+                  "street": z.string().formLabel("Street"),
+                  "city": z.string().formLabel("City"),
+                  "zipCode": z.string().formLabel("Zip Code"),
+                })
+                .formLabel("Address"),
           }),
           exampleValue: {
             "name": "John Doe",
@@ -150,7 +152,10 @@ class _BinderPreviewState extends State<BinderPreview> {
               top: 8,
               left: 0,
               right: 0,
-              child: StructureBinding(controller: controller, validationTrigger: ValidationTrigger.onInteraction,),
+              child: StructureBinding(
+                controller: controller,
+                validationTrigger: ValidationTrigger.onInteraction,
+              ),
             ),
             Positioned(
               bottom: 0,
@@ -244,4 +249,3 @@ class EmptyPage extends StatelessWidget {
     return Scaffold();
   }
 }
-

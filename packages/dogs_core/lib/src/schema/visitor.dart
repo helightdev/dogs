@@ -30,7 +30,6 @@ abstract class SchemaFieldVisitor {
 
 /// Internal class to track schema passes and avoid recursion.
 class SchemaPass {
-
   /// The current schema pass, or null if none is active.
   static SchemaPass? current;
 

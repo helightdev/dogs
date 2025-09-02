@@ -172,7 +172,6 @@ class DogStructureField extends RetainedAnnotationHolder
 
 /// Fluent API to create modified copies of a [DogStructureField].
 abstract interface class DogStructureFieldCopyFrontend {
-
   /// Creates a copy of the field with the given modifications.
   DogStructureField call({
     QualifiedTypeTree? type,

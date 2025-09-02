@@ -107,21 +107,17 @@ class EnumBindingFieldWidget extends StatelessWidget {
           decoration: outerDecoration,
           child: ListenableBuilder(
             listenable: controller,
-            builder:
-                (context, child) => DropdownButton<String>(
-                  value: controller.value,
-                  items:
-                      controller.converter.values
-                          .map(
-                            (e) => DropdownMenuItem(value: e, child: Text(e)),
-                          )
-                          .toList(),
-                  isExpanded: true,
-                  hint: theme.style.buildMaterialLabelText(context),
-                  onChanged: (String? value) {
-                    controller.setValue(value);
-                  },
-                ),
+            builder: (context, child) => DropdownButton<String>(
+              value: controller.value,
+              items: controller.converter.values
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+              isExpanded: true,
+              hint: theme.style.buildMaterialLabelText(context),
+              onChanged: (String? value) {
+                controller.setValue(value);
+              },
+            ),
           ),
         );
       },

@@ -38,7 +38,8 @@ class SchemaObjectUnroller {
         cloned.properties = <String, dynamic>{};
         for (var inheritedProperty in SchemaProperties.$inheritedProperties) {
           if (type.properties.containsKey(inheritedProperty)) {
-            cloned.properties[inheritedProperty] = type.properties[inheritedProperty];
+            cloned.properties[inheritedProperty] =
+                type.properties[inheritedProperty];
           }
         }
 

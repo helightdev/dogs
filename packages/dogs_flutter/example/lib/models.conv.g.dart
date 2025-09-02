@@ -25,24 +25,110 @@ class PersonConverter extends gen.DefaultStructureConverter<gen8.Person> {
           'Person',
           gen.StructureConformity.dataclass,
           [
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'name', false, false, [gen1.LengthRange(min: 3, max: 10)]),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'surname', false, false, [gen1.LengthRange(min: 3)]),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.int>(), null, 'age', false, false, [gen2.Range(min: 18, max: 99)]),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.double>(), null, 'balance', false, false, []),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.bool>(), null, 'isActive', false, false, []),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'plate', false, false, []),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'tag', true, false, []),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'password', false, false, [
-              gen1.LengthRange(min: 3),
-              gen3.MaterialBindingStyle.inputTheme(gen4.InputDecorationThemeData(border: gen5.OutlineInputBorder())),
-            ]),
-            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'confirm', false, false, [
-              gen6.MustMatch('password'),
-              gen7.BindingStyle(hint: 'Repeat the password', label: 'Confirm password'),
-            ]),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.String>(),
+              null,
+              'name',
+              false,
+              false,
+              [gen1.LengthRange(min: 3, max: 10)],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.String>(),
+              null,
+              'surname',
+              false,
+              false,
+              [gen1.LengthRange(min: 3)],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.int>(),
+              null,
+              'age',
+              false,
+              false,
+              [gen2.Range(min: 18, max: 99)],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.double>(),
+              null,
+              'balance',
+              false,
+              false,
+              [],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.bool>(),
+              null,
+              'isActive',
+              false,
+              false,
+              [],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.String>(),
+              null,
+              'plate',
+              false,
+              false,
+              [],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.String>(),
+              null,
+              'tag',
+              true,
+              false,
+              [],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.String>(),
+              null,
+              'password',
+              false,
+              false,
+              [
+                gen1.LengthRange(min: 3),
+                gen3.MaterialBindingStyle.inputTheme(
+                  gen4.InputDecorationThemeData(
+                    border: gen5.OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            gen.DogStructureField(
+              gen.QualifiedTerminal<gen0.String>(),
+              null,
+              'confirm',
+              false,
+              false,
+              [
+                gen6.MustMatch('password'),
+                gen7.BindingStyle(
+                  hint: 'Repeat the password',
+                  label: 'Confirm password',
+                ),
+              ],
+            ),
           ],
           [gen9.serializable],
-          gen.ObjectFactoryStructureProxy<gen8.Person>(_activator, [_$name, _$surname, _$age, _$balance, _$isActive, _$plate, _$tag, _$password, _$confirm], _values, _hash, _equals),
+          gen.ObjectFactoryStructureProxy<gen8.Person>(
+            _activator,
+            [
+              _$name,
+              _$surname,
+              _$age,
+              _$balance,
+              _$isActive,
+              _$plate,
+              _$tag,
+              _$password,
+              _$confirm,
+            ],
+            _values,
+            _hash,
+            _equals,
+          ),
         ),
       );
 
@@ -64,25 +150,53 @@ class PersonConverter extends gen.DefaultStructureConverter<gen8.Person> {
 
   static dynamic _$confirm(gen8.Person obj) => obj.confirm;
 
-  static List<dynamic> _values(gen8.Person obj) => [obj.name, obj.surname, obj.age, obj.balance, obj.isActive, obj.plate, obj.tag, obj.password, obj.confirm];
+  static List<dynamic> _values(gen8.Person obj) => [
+    obj.name,
+    obj.surname,
+    obj.age,
+    obj.balance,
+    obj.isActive,
+    obj.plate,
+    obj.tag,
+    obj.password,
+    obj.confirm,
+  ];
 
   static gen8.Person _activator(List list) {
-    return gen8.Person(list[0], list[1], list[2], list[3], list[4], list[5], list[6], list[7], list[8]);
+    return gen8.Person(
+      list[0],
+      list[1],
+      list[2],
+      list[3],
+      list[4],
+      list[5],
+      list[6],
+      list[7],
+      list[8],
+    );
   }
 
   static int _hash(gen8.Person obj) =>
-      obj.name.hashCode ^ obj.surname.hashCode ^ obj.age.hashCode ^ obj.balance.hashCode ^ obj.isActive.hashCode ^ obj.plate.hashCode ^ obj.tag.hashCode ^ obj.password.hashCode ^ obj.confirm.hashCode;
+      obj.name.hashCode ^
+      obj.surname.hashCode ^
+      obj.age.hashCode ^
+      obj.balance.hashCode ^
+      obj.isActive.hashCode ^
+      obj.plate.hashCode ^
+      obj.tag.hashCode ^
+      obj.password.hashCode ^
+      obj.confirm.hashCode;
 
   static bool _equals(gen8.Person a, gen8.Person b) =>
       (a.name == b.name &&
-      a.surname == b.surname &&
-      a.age == b.age &&
-      a.balance == b.balance &&
-      a.isActive == b.isActive &&
-      a.plate == b.plate &&
-      a.tag == b.tag &&
-      a.password == b.password &&
-      a.confirm == b.confirm);
+          a.surname == b.surname &&
+          a.age == b.age &&
+          a.balance == b.balance &&
+          a.isActive == b.isActive &&
+          a.plate == b.plate &&
+          a.tag == b.tag &&
+          a.password == b.password &&
+          a.confirm == b.confirm);
 }
 
 abstract class Person$Copy {

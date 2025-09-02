@@ -30,8 +30,11 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
     DogStructureField field,
   ) {
     var binder = field.firstAnnotationOf<FlutterWidgetBinder>();
-    final converter =
-        field.findConverter(structure, engine: engine, nativeConverters: true)!;
+    final converter = field.findConverter(
+      structure,
+      engine: engine,
+      nativeConverters: true,
+    )!;
     binder ??= engine.modeRegistry
         .entry<FlutterWidgetBinder>()
         .forConverterNullable(converter, engine);

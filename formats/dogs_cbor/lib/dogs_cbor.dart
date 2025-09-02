@@ -1,7 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library dogs_cbor;
+library;
 
 import 'dart:convert';
 

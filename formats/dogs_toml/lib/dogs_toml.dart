@@ -1,4 +1,4 @@
-library dogs_toml;
+library;
 
 import 'package:dogs_core/dogs_core.dart';
 import 'package:toml/toml.dart';

@@ -120,8 +120,6 @@ class NestedStructureBindingFieldController
       controller.read(false);
     }
   }
-
-
 }
 
 class NestedStructureBindingFieldWidget extends StatelessWidget {
@@ -139,12 +137,12 @@ class NestedStructureBindingFieldWidget extends StatelessWidget {
       valueListenable: controller.errorListenable,
       builder: (context, error, _) {
         return theme.style.buildInputSection(
-            StructureBinding(
-              controller: controller.controller,
-              validationTrigger: controller.validationTrigger,
-            ),
-            context,
-            errorText: error.errorText
+          StructureBinding(
+            controller: controller.controller,
+            validationTrigger: controller.validationTrigger,
+          ),
+          context,
+          errorText: error.errorText,
         );
       },
     );
