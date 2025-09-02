@@ -11,19 +11,13 @@ class FlutterColorConverter extends SimpleDogConverter<Color> {
     if (value is String) {
       final v = fromHex(value);
       if (v == null) {
-        throw DogSerializerException(
-          message: "Invalid color value",
-          converter: this,
-        );
+        throw DogSerializerException(message: "Invalid color value", converter: this);
       }
       return v;
     } else if (value is int) {
       return Color(value);
     }
-    throw DogSerializerException(
-      message: "Invalid color value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid color value", converter: this);
   }
 
   @override
@@ -54,8 +48,7 @@ class FlutterColorConverter extends SimpleDogConverter<Color> {
 }
 
 @linkSerializer
-class FlutterLogicalKeyConverter
-    extends SimpleDogConverter<LogicalKeyboardKey> {
+class FlutterLogicalKeyConverter extends SimpleDogConverter<LogicalKeyboardKey> {
   FlutterLogicalKeyConverter() : super(serialName: "FLLogicalKey");
 
   @override
@@ -68,10 +61,7 @@ class FlutterLogicalKeyConverter
         return resolved;
       }
     }
-    throw DogSerializerException(
-      message: "Invalid logical key value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid logical key value", converter: this);
   }
 
   @override
@@ -81,8 +71,7 @@ class FlutterLogicalKeyConverter
 }
 
 @linkSerializer
-class FlutterSingleActivatorConverter
-    extends SimpleDogConverter<SingleActivator> {
+class FlutterSingleActivatorConverter extends SimpleDogConverter<SingleActivator> {
   FlutterSingleActivatorConverter() : super(serialName: "FLSingleActivator");
 
   @override
@@ -108,10 +97,7 @@ class FlutterSingleActivatorConverter
         );
       }
     }
-    throw DogSerializerException(
-      message: "Invalid single activator value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid single activator value", converter: this);
   }
 
   @override

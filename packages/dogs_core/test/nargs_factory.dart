@@ -21,16 +21,13 @@ void main() {
   test("NArgs Factory", () {
     final DogEngine engine = DogEngine();
     engine.setSingleton();
-    final treeBaseConverterFactory =
-        TreeBaseConverterFactory.createNargsFactory<MyNargContainer>(
+    final treeBaseConverterFactory = TreeBaseConverterFactory.createNargsFactory<MyNargContainer>(
       nargs: 3,
       consume: <A, B, C>() => MyNargContainerConverter<A, B, C>(),
     );
-    engine.registerTreeBaseFactory(
-        TypeToken<MyNargContainer>(), treeBaseConverterFactory);
+    engine.registerTreeBaseFactory(TypeToken<MyNargContainer>(), treeBaseConverterFactory);
     final converter = treeBaseConverterFactory.getConverter(
-        QualifiedTypeTreeN<MyNargContainer<String, int, bool>,
-            MyNargContainer>([
+        QualifiedTypeTreeN<MyNargContainer<String, int, bool>, MyNargContainer>([
           QualifiedTerminal<String>(),
           QualifiedTerminal<int>(),
           QualifiedTerminal<bool>(),
@@ -73,8 +70,7 @@ class MyNargContainer<A, B, C> {
   int get hashCode => a.hashCode ^ b.hashCode ^ c.hashCode;
 }
 
-class MyNargContainerConverter<A, B, C>
-    extends NTreeArgConverter<MyNargContainer> {
+class MyNargContainerConverter<A, B, C> extends NTreeArgConverter<MyNargContainer> {
   @override
   MyNargContainer deserialize(value, DogEngine engine) {
     return MyNargContainer<A, B, C>(

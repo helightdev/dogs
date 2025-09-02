@@ -42,8 +42,8 @@ DogPlugin FirebaseDogsPlugin({
         engine.registerAutomatic(FirebaseBlobConverter());
       }
 
-      var forked = engine.getChildOrFork(#Firebase,
-          codec: FirebaseNativeCodec(), callback: (engine) {
+      var forked =
+          engine.getChildOrFork(#Firebase, codec: FirebaseNativeCodec(), callback: (engine) {
         engine.registerAutomatic(DateTimeToTimestampConverter());
         engine.registerAutomatic(Uint8ListToBlobConverter());
         engine.registerModeFactory(FirestoreDocumentOpmodeFactory());
@@ -53,30 +53,23 @@ DogPlugin FirebaseDogsPlugin({
       engine.setMeta<DogFirestoreEngine>(firestoreEngine);
     };
 
-class FirebaseTimestampConverter extends DogConverter<Timestamp>
-    with OperationMapMixin<Timestamp> {
+class FirebaseTimestampConverter extends DogConverter<Timestamp> with OperationMapMixin<Timestamp> {
   FirebaseTimestampConverter()
-      : super(
-            isAssociated: true,
-            struct: DogStructure<Timestamp>.synthetic("Timestamp"));
+      : super(isAssociated: true, struct: DogStructure<Timestamp>.synthetic("Timestamp"));
 
   @override
   Map<Type, OperationMode<Timestamp> Function()> get modes => {
         NativeSerializerMode: () => NativeSerializerMode.create(
-              serializer: (value, engine) =>
-                  engine.convertObjectToNative(value.toDate(), DateTime),
-              deserializer: (value, engine) => Timestamp.fromDate(
-                  engine.convertObjectFromNative(value, DateTime)),
+              serializer: (value, engine) => engine.convertObjectToNative(value.toDate(), DateTime),
+              deserializer: (value, engine) =>
+                  Timestamp.fromDate(engine.convertObjectFromNative(value, DateTime)),
             ),
       };
 }
 
-class FirebaseGeoPointConverter extends DogConverter<GeoPoint>
-    with OperationMapMixin<GeoPoint> {
+class FirebaseGeoPointConverter extends DogConverter<GeoPoint> with OperationMapMixin<GeoPoint> {
   FirebaseGeoPointConverter()
-      : super(
-            isAssociated: true,
-            struct: DogStructure<GeoPoint>.synthetic("GeoPoint"));
+      : super(isAssociated: true, struct: DogStructure<GeoPoint>.synthetic("GeoPoint"));
 
   @override
   Map<Type, OperationMode<GeoPoint> Function()> get modes => {
@@ -86,20 +79,16 @@ class FirebaseGeoPointConverter extends DogConverter<GeoPoint>
             ),
       };
 
-  static String encode(GeoPoint value) =>
-      "${value.latitude},${value.longitude}";
+  static String encode(GeoPoint value) => "${value.latitude},${value.longitude}";
 
   static GeoPoint decode(String value) {
     var parts = value.split(", ");
-    return GeoPoint(
-        double.parse(parts[0].trim()), double.parse(parts[1].trim()));
+    return GeoPoint(double.parse(parts[0].trim()), double.parse(parts[1].trim()));
   }
 }
 
-class FirebaseBlobConverter extends DogConverter<Blob>
-    with OperationMapMixin<Blob> {
-  FirebaseBlobConverter()
-      : super(isAssociated: true, struct: DogStructure<Blob>.synthetic("Blob"));
+class FirebaseBlobConverter extends DogConverter<Blob> with OperationMapMixin<Blob> {
+  FirebaseBlobConverter() : super(isAssociated: true, struct: DogStructure<Blob>.synthetic("Blob"));
 
   @override
   Map<Type, OperationMode<Blob> Function()> get modes => {

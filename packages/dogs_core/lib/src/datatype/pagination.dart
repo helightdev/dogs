@@ -208,8 +208,7 @@ class PageNTreeArgConverter<T> extends NTreeArgConverter<Page> {
     );
     final content = value["content"];
     if (content is! List) throw ArgumentError("Expected List");
-    final result =
-        content.map((e) => deserializeArg(e, 0, engine) as T).toList();
+    final result = content.map((e) => deserializeArg(e, 0, engine) as T).toList();
     return Page<T>(meta, result);
   }
 

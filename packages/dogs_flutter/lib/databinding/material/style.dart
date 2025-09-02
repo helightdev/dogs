@@ -9,19 +9,11 @@ class MaterialBindingStyle extends BindingStyleExtension<MaterialBindingStyle>
   final InputDecorationThemeData? sectionTheme;
   final ButtonStyle? buttonStyle;
 
-  const MaterialBindingStyle({
-    this.inputTheme,
-    this.buttonStyle,
-    this.sectionTheme,
-  });
+  const MaterialBindingStyle({this.inputTheme, this.buttonStyle, this.sectionTheme});
 
-  const MaterialBindingStyle.inputTheme(this.inputTheme)
-    : buttonStyle = null,
-      sectionTheme = null;
+  const MaterialBindingStyle.inputTheme(this.inputTheme) : buttonStyle = null, sectionTheme = null;
 
-  const MaterialBindingStyle.buttonStyle(this.buttonStyle)
-    : inputTheme = null,
-      sectionTheme = null;
+  const MaterialBindingStyle.buttonStyle(this.buttonStyle) : inputTheme = null, sectionTheme = null;
 
   const MaterialBindingStyle.sectionTheme(this.sectionTheme)
     : inputTheme = null,
@@ -33,8 +25,7 @@ class MaterialBindingStyle extends BindingStyleExtension<MaterialBindingStyle>
     return MaterialBindingStyle(
       inputTheme: inputTheme?.merge(other.inputTheme) ?? other.inputTheme,
       buttonStyle: buttonStyle?.merge(other.buttonStyle) ?? other.buttonStyle,
-      sectionTheme:
-          sectionTheme?.merge(other.sectionTheme) ?? other.sectionTheme,
+      sectionTheme: sectionTheme?.merge(other.sectionTheme) ?? other.sectionTheme,
     );
   }
 
@@ -105,8 +96,7 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     final (inputTheme, bindingStyle, theme) = resolveTheme(context);
     var style = inputTheme.labelStyle;
     if (isError) {
-      style =
-          inputTheme.errorStyle ?? TextStyle(color: theme.colorScheme.error);
+      style = inputTheme.errorStyle ?? TextStyle(color: theme.colorScheme.error);
     }
     return Text(label, style: style);
   }
@@ -137,12 +127,9 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     return getExtension<MaterialBindingStyle>()?.buttonStyle;
   }
 
-  (InputDecorationThemeData, MaterialBindingStyle, ThemeData) resolveTheme(
-    BuildContext context,
-  ) {
+  (InputDecorationThemeData, MaterialBindingStyle, ThemeData) resolveTheme(BuildContext context) {
     final currentTheme = Theme.of(context);
-    final style =
-        getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
+    final style = getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
     var inputTheme = currentTheme.inputDecorationTheme;
     if (style.inputTheme != null) {
       inputTheme = style.inputTheme!.merge(inputTheme);

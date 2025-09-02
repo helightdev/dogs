@@ -120,29 +120,22 @@ class DefaultNativeCodec extends DogNativeCodec {
       return DogList(value.map((e) => fromNative(e)).toList());
     }
     if (value is Map) {
-      return DogMap(value
-          .map((key, value) => MapEntry(fromNative(key), fromNative(value))));
+      return DogMap(value.map((key, value) => MapEntry(fromNative(key), fromNative(value))));
     }
 
-    throw ArgumentError.value(
-        value, null, "Can't coerce native value to dart object graph");
+    throw ArgumentError.value(value, null, "Can't coerce native value to dart object graph");
   }
 
   @override
   bool isNative(Type serial) {
-    return serial == String ||
-        serial == int ||
-        serial == double ||
-        serial == bool;
+    return serial == String || serial == int || serial == double || serial == bool;
   }
 
   @override
   Map<Type, DogConverter> get bridgeConverters => {
-        String:
-            NativeRetentionConverter<String>(schema: () => SchemaType.string),
+        String: NativeRetentionConverter<String>(schema: () => SchemaType.string),
         int: NativeRetentionConverter<int>(schema: () => SchemaType.integer),
-        double:
-            NativeRetentionConverter<double>(schema: () => SchemaType.number),
+        double: NativeRetentionConverter<double>(schema: () => SchemaType.number),
         bool: NativeRetentionConverter<bool>(schema: () => SchemaType.boolean),
       };
 }

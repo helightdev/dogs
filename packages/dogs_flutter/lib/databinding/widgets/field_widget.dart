@@ -25,8 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 typedef StyleBuilder = BindingStyle Function(BindingStyle);
-typedef FieldBindingWrapper =
-    Widget Function(BuildContext context, Widget inner);
+typedef FieldBindingWrapper = Widget Function(BuildContext context, Widget inner);
 
 class FieldBinding extends StatefulWidget {
   final FieldBindingController? controller;
@@ -68,9 +67,7 @@ class _FieldBindingState extends State<FieldBinding> {
       final structureController = rootProvider.controller;
       final fieldName = widget.field;
       if (fieldName == null) {
-        throw ArgumentError(
-          'Field name cannot be null when controller is not provided',
-        );
+        throw ArgumentError('Field name cannot be null when controller is not provided');
       }
       controller = structureController.field(fieldName);
     } else {
@@ -79,8 +76,7 @@ class _FieldBindingState extends State<FieldBinding> {
 
     // Apply validation trigger if provided
     final triggerOverride =
-        widget.validationTrigger ??
-        StructureBindingProvider.maybeOf(context)?.validationTrigger;
+        widget.validationTrigger ?? StructureBindingProvider.maybeOf(context)?.validationTrigger;
     if (triggerOverride != null) {
       controller!.validationTrigger = triggerOverride;
     }
@@ -90,8 +86,7 @@ class _FieldBindingState extends State<FieldBinding> {
         .annotationsOf<BindingStyleModifier>()
         .map((e) => e.createStyleOverrides())
         .toList();
-    styleBuilder =
-        widget.styleBuilder ?? (style) => widget.style?.merge(style) ?? style;
+    styleBuilder = widget.styleBuilder ?? (style) => widget.style?.merge(style) ?? style;
   }
 
   @override
@@ -116,15 +111,10 @@ class _FieldBindingState extends State<FieldBinding> {
     if (widget.binder != null && structureBindingProvider != null) {
       if (currentBinder != widget.binder) {
         var structureBindingController = structureBindingProvider.controller;
-        structureBindingController.rebindField(
-          controller!.fieldName,
-          widget.binder!,
-        );
+        structureBindingController.rebindField(controller!.fieldName, widget.binder!);
 
         currentBinder = widget.binder!;
-        currentController = structureBindingController.field(
-          controller!.fieldName,
-        );
+        currentController = structureBindingController.field(controller!.fieldName);
         controller = currentController;
         if (kDebugMode) {
           print("Forcing widget rebind for ${controller!.fieldName}");
@@ -137,10 +127,7 @@ class _FieldBindingState extends State<FieldBinding> {
       annotationTransformer: annotationTransformer,
       child: Builder(
         builder: (context) {
-          var child = currentBinder.buildBindingField(
-            context,
-            currentController,
-          );
+          var child = currentBinder.buildBindingField(context, currentController);
           if (widget.wrapper != null) child = widget.wrapper!(context, child);
           return child;
         },
@@ -161,8 +148,7 @@ class BindingTheme extends InheritedWidget {
   });
 
   static BindingTheme of(BuildContext context) {
-    final BindingTheme? result = context
-        .dependOnInheritedWidgetOfExactType<BindingTheme>();
+    final BindingTheme? result = context.dependOnInheritedWidgetOfExactType<BindingTheme>();
     assert(result != null, 'No BindingContext found in context');
     return result!;
   }

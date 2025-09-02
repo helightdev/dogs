@@ -66,8 +66,7 @@ class DogEngine with MetadataMixin {
   final Map<String, String> _annotationTranslations = HashMap();
   final Map<Type, DogConverter> _runtimeTreeConverterCache = HashMap();
 
-  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories =
-      HashMap();
+  final Map<TypeCapture, TreeBaseConverterFactory> _treeBaseFactories = HashMap();
 
   final List<WeakReference<DogEngine>> _children = [];
   final Map<Symbol, DogEngine> _identifiedChildren = HashMap();
@@ -94,18 +93,14 @@ class DogEngine with MetadataMixin {
   /// - [Uint8ListConverter]
   ///
   /// If [codec] is not specified, [DefaultNativeCodec] will be used.
-  DogEngine(
-      {bool registerBaseConverters = true,
-      this.codec = const DefaultNativeCodec()}) {
+  DogEngine({bool registerBaseConverters = true, this.codec = const DefaultNativeCodec()}) {
     if (registerBaseConverters) {
       // Register tree base converters
       registerTreeBaseFactory(TypeToken<List>(), DefaultTreeBaseFactories.list);
-      registerTreeBaseFactory(
-          TypeToken<Iterable>(), DefaultTreeBaseFactories.iterable);
+      registerTreeBaseFactory(TypeToken<Iterable>(), DefaultTreeBaseFactories.iterable);
       registerTreeBaseFactory(TypeToken<Set>(), DefaultTreeBaseFactories.set);
       registerTreeBaseFactory(TypeToken<Map>(), DefaultTreeBaseFactories.map);
-      registerTreeBaseFactory(
-          TypeToken<Optional>(), DefaultTreeBaseFactories.optional);
+      registerTreeBaseFactory(TypeToken<Optional>(), DefaultTreeBaseFactories.optional);
       registerTreeBaseFactory(TypeToken<Page>(), DefaultTreeBaseFactories.page);
 
       // Register polymorphic converters
@@ -176,10 +171,8 @@ class DogEngine with MetadataMixin {
   /// cached converters in the child will therefore persist, otherwise,
   /// the child will have its caches cleared so future calls access the parents
   /// updated state.
-  DogEngine fork(
-      {DogNativeCodec? codec, Symbol? identity, bool listen = true}) {
-    final DogEngine forked =
-        DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
+  DogEngine fork({DogNativeCodec? codec, Symbol? identity, bool listen = true}) {
+    final DogEngine forked = DogEngine(registerBaseConverters: false, codec: codec ?? this.codec);
     forked.rebuildFrom(this);
     if (listen) {
       if (identity != null) {
@@ -220,8 +213,7 @@ class DogEngine with MetadataMixin {
       try {
         child.target?.rebuildFrom(this); // Also rebuild children
       } on Exception catch (e, trace) {
-        log("Error while populating change to child",
-            error: e, stackTrace: trace);
+        log("Error while populating change to child", error: e, stackTrace: trace);
         _children.remove(child);
       }
     }
@@ -265,8 +257,7 @@ class DogEngine with MetadataMixin {
 
   /// Returns the annotation override for the given [id] or null if not present.
   String? findAnnotationTranslation(String id) {
-    return _annotationTranslations[id] ??
-        _parent?.findAnnotationTranslation(id);
+    return _annotationTranslations[id] ?? _parent?.findAnnotationTranslation(id);
   }
 
   /// Returns the [DogStructure] associated with [type].
@@ -291,15 +282,13 @@ class DogEngine with MetadataMixin {
 
   /// Returns the first registered [DogConverter] of the given [type].
   DogConverter? findConverter(Type type) =>
-      _converters
-          .firstWhereOrNullDogs((element) => element.runtimeType == type) ??
+      _converters.firstWhereOrNullDogs((element) => element.runtimeType == type) ??
       _parent?.findConverter(type);
 
   /// Returns the [DogConverter] that is associated with [type] or
   /// null if not present.
   DogConverter? findAssociatedConverter(Type type) {
-    return _associatedConverters[type] ??
-        _parent?.findAssociatedConverter(type);
+    return _associatedConverters[type] ?? _parent?.findAssociatedConverter(type);
   }
 
   /// Returns the [TreeBaseConverterFactory] that is associated with [type].
@@ -315,8 +304,7 @@ class DogEngine with MetadataMixin {
 
   /// Registers a [converter] in this [DogEngine] instance and emits a event to
   /// the change stream if [emitChangeToStream] is true.
-  Future<void> registerAutomatic(DogConverter converter,
-      [bool emitChangeToStream = true]) async {
+  Future<void> registerAutomatic(DogConverter converter, [bool emitChangeToStream = true]) async {
     if (converter.isAssociated) {
       final struct = converter.struct;
       if (struct != null) {
@@ -333,8 +321,7 @@ class DogEngine with MetadataMixin {
   /// the change stream if [emitChangeToStream] is true. Shelved converters are
   /// converters that are not associated with a type, but can be used by querying
   /// the explicit type of the converter.
-  void registerShelvedConverter(DogConverter converter,
-      {bool emitChangeToStream = true}) {
+  void registerShelvedConverter(DogConverter converter, {bool emitChangeToStream = true}) {
     _converters.add(converter);
     if (emitChangeToStream) populateChange();
   }
@@ -350,11 +337,9 @@ class DogEngine with MetadataMixin {
 
   /// Registers a [DogStructure] in this [DogEngine] instance and emits a event
   /// to the change stream if [emitChangeToStream] is true.
-  void registerStructure(DogStructure structure,
-      {bool emitChangeToStream = true, Type? type}) {
+  void registerStructure(DogStructure structure, {bool emitChangeToStream = true, Type? type}) {
     if (type == null) {
-      if (structure.typeArgument != dynamic &&
-          structure.typeArgument != Object) {
+      if (structure.typeArgument != dynamic && structure.typeArgument != Object) {
         _structures[type ?? structure.typeArgument] = structure;
       } else {
         log(
@@ -421,8 +406,7 @@ class DogEngine with MetadataMixin {
   }
 
   /// Registers and associates a single [TreeBaseConverterFactory] with [Type].
-  void registerTreeBaseFactory(
-      TypeCapture type, TreeBaseConverterFactory factory) {
+  void registerTreeBaseFactory(TypeCapture type, TreeBaseConverterFactory factory) {
     _treeBaseFactories[type] = factory;
   }
 
@@ -440,8 +424,7 @@ class DogEngine with MetadataMixin {
       return _getAnonymousTreeConverter(tree, allowPolymorphic);
     }
 
-    final cachedConverter =
-        _runtimeTreeConverterCache[tree.qualified.typeArgument];
+    final cachedConverter = _runtimeTreeConverterCache[tree.qualified.typeArgument];
     if (cachedConverter != null) return cachedConverter;
     final created = _getTreeConverterUncached(tree, allowPolymorphic);
     _runtimeTreeConverterCache[tree.qualified.typeArgument] = created;
@@ -456,8 +439,7 @@ class DogEngine with MetadataMixin {
         if (syntheticConverter != null) {
           return syntheticConverter;
         }
-        throw DogException(
-            "No converter found for synthetic type ${tree.identity} in tree");
+        throw DogException("No converter found for synthetic type ${tree.identity} in tree");
       }
 
       if (codec.isNative(tree.base.typeArgument)) {
@@ -469,8 +451,7 @@ class DogEngine with MetadataMixin {
       if (allowPolymorphic) {
         return TreeBaseConverterFactory.polymorphicConverter;
       }
-      throw DogException(
-          "No type tree converter for tree $tree found. (Polymorphism disabled)");
+      throw DogException("No type tree converter for tree $tree found. (Polymorphism disabled)");
     } else {
       // Use factory
       final factory = findTreeBaseFactory(tree.base);
@@ -528,9 +509,9 @@ class DogEngine with MetadataMixin {
     if (operation.validate(value, this)) return AnnotationResult.empty();
     final result = operation.annotate(value, this).translate(this);
     if (result.messages.isEmpty) {
-      return AnnotationResult(messages: [
-        AnnotationMessage(id: "no-message", message: "Validation failed")
-      ]).translate(this);
+      return AnnotationResult(
+              messages: [AnnotationMessage(id: "no-message", message: "Validation failed")])
+          .translate(this);
     }
     return result;
   }
@@ -538,30 +519,24 @@ class DogEngine with MetadataMixin {
   /// Converts a [value] to its native representation using the
   /// converter associated with [serialType].
   dynamic convertObjectToNative(dynamic value, Type serialType) {
-    return _nativeSerialization
-        .forType(serialType, this)
-        .serialize(value, this);
+    return _nativeSerialization.forType(serialType, this).serialize(value, this);
   }
 
   /// Converts a [value] to its native representation using the
   /// converter associated with [serialType].
   dynamic convertObjectFromNative(dynamic value, Type serialType) {
-    return _nativeSerialization
-        .forType(serialType, this)
-        .deserialize(value, this);
+    return _nativeSerialization.forType(serialType, this).deserialize(value, this);
   }
 
   /// Converts the [value], which can be either a [Iterable] or instance of
   /// the type associated with [serialType], depending on the [IterableKind],
   /// to its native representation using the converter associated with
   /// [serialType].
-  dynamic convertIterableToNative(
-      dynamic value, Type serialType, IterableKind kind) {
+  dynamic convertIterableToNative(dynamic value, Type serialType, IterableKind kind) {
     if (kind == IterableKind.none) {
       return convertObjectToNative(value, serialType);
     } else if (value is! Iterable) {
-      throw DogException(
-          "Cannot convert non-iterable value to iterable of type $serialType");
+      throw DogException("Cannot convert non-iterable value to iterable of type $serialType");
     }
     return value.map((e) {
       return convertObjectToNative(e, serialType);
@@ -576,13 +551,11 @@ class DogEngine with MetadataMixin {
   /// If the value is a [Iterable] implementation, it will converted to the
   /// desired [IterableKind]. Trying to convert singular values to an [Iterable]
   /// will result in an exception.
-  dynamic convertIterableFromNative(
-      dynamic value, Type serialType, IterableKind kind) {
+  dynamic convertIterableFromNative(dynamic value, Type serialType, IterableKind kind) {
     if (kind == IterableKind.none) {
       return convertObjectFromNative(value, serialType);
     } else if (value is! Iterable) {
-      throw DogException(
-          "Cannot convert non-iterable value to iterable of type $serialType");
+      throw DogException("Cannot convert non-iterable value to iterable of type $serialType");
     }
     return adjustIterable(
       value.map((e) {

@@ -34,10 +34,7 @@ class NestedStructureFlutterBinder extends FlutterWidgetBinder<dynamic>
   const NestedStructureFlutterBinder(this.structure);
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<dynamic> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<dynamic> controller) {
     return NestedStructureBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as NestedStructureBindingFieldController,
@@ -49,12 +46,7 @@ class NestedStructureFlutterBinder extends FlutterWidgetBinder<dynamic>
     FieldBindingParent parent,
     FieldBindingContext<dynamic> context,
   ) {
-    return NestedStructureBindingFieldController(
-      parent,
-      this,
-      context,
-      structure,
-    );
+    return NestedStructureBindingFieldController(parent, this, context, structure);
   }
 
   @override
@@ -71,8 +63,7 @@ class NestedStructureFlutterBinder extends FlutterWidgetBinder<dynamic>
   int get hashCode => structure.hashCode;
 }
 
-class NestedStructureBindingFieldController
-    extends FieldBindingController<dynamic> {
+class NestedStructureBindingFieldController extends FieldBindingController<dynamic> {
   late final StructureBindingController controller;
 
   StreamSubscription? _fieldValueChangeSubscription;
@@ -84,9 +75,7 @@ class NestedStructureBindingFieldController
     DogStructure structure,
   ) {
     controller = StructureBindingController(structure, parent.engine);
-    _fieldValueChangeSubscription = controller.fieldValueChangeStream.listen(
-      _handleChange,
-    );
+    _fieldValueChangeSubscription = controller.fieldValueChangeStream.listen(_handleChange);
   }
 
   void _handleChange(_) {
@@ -125,10 +114,7 @@ class NestedStructureBindingFieldController
 class NestedStructureBindingFieldWidget extends StatelessWidget {
   final NestedStructureBindingFieldController controller;
 
-  const NestedStructureBindingFieldWidget({
-    super.key,
-    required this.controller,
-  });
+  const NestedStructureBindingFieldWidget({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -149,13 +135,9 @@ class NestedStructureBindingFieldWidget extends StatelessWidget {
   }
 }
 
-class NestedStructureAutoFactory
-    extends OperationModeFactory<FlutterWidgetBinder> {
+class NestedStructureAutoFactory extends OperationModeFactory<FlutterWidgetBinder> {
   @override
-  FlutterWidgetBinder? forConverter(
-    DogConverter<dynamic> converter,
-    DogEngine engine,
-  ) {
+  FlutterWidgetBinder? forConverter(DogConverter<dynamic> converter, DogEngine engine) {
     final struct = converter.struct;
     if (struct != null && !struct.isSynthetic) {
       return NestedStructureFlutterBinder(struct);

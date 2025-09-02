@@ -8,12 +8,7 @@ class ListBindingStyle extends BindingStyleExtension<ListBindingStyle>
   final ListBindingViewFactory? viewFactory;
   final String? itemLabel;
 
-  const ListBindingStyle({
-    this.addButtonLabel,
-    this.spacing,
-    this.viewFactory,
-    this.itemLabel,
-  });
+  const ListBindingStyle({this.addButtonLabel, this.spacing, this.viewFactory, this.itemLabel});
 
   @override
   BindingStyle createStyleOverrides() {
@@ -32,27 +27,21 @@ class ListBindingStyle extends BindingStyleExtension<ListBindingStyle>
   }
 }
 
-class ListBindingStyleContributor
-    implements SchemaStructureMaterializationContributor {
+class ListBindingStyleContributor implements SchemaStructureMaterializationContributor {
   @override
   DogStructureField transformField(DogStructureField field, SchemaType schema) {
     String? itemLabel;
     String? addButtonLabel;
     bool isModified = false;
 
-    if (schema.properties.containsKey(
-      DogsFlutterSchemaTags.listBindingItemLabel,
-    )) {
+    if (schema.properties.containsKey(DogsFlutterSchemaTags.listBindingItemLabel)) {
       var value = schema[DogsFlutterSchemaTags.listBindingItemLabel] as String?;
       itemLabel = value;
       isModified = true;
     }
 
-    if (schema.properties.containsKey(
-      DogsFlutterSchemaTags.listBindingAddButtonLabel,
-    )) {
-      var value =
-          schema[DogsFlutterSchemaTags.listBindingAddButtonLabel] as String?;
+    if (schema.properties.containsKey(DogsFlutterSchemaTags.listBindingAddButtonLabel)) {
+      var value = schema[DogsFlutterSchemaTags.listBindingAddButtonLabel] as String?;
       addButtonLabel = value;
       isModified = true;
     }
@@ -61,12 +50,7 @@ class ListBindingStyleContributor
       field = field.copy(
         annotations:
             field.annotations +
-            [
-              ListBindingStyle(
-                itemLabel: itemLabel,
-                addButtonLabel: addButtonLabel,
-              ),
-            ],
+            [ListBindingStyle(itemLabel: itemLabel, addButtonLabel: addButtonLabel)],
       );
     }
 
@@ -74,10 +58,7 @@ class ListBindingStyleContributor
   }
 
   @override
-  DogStructure<Object> transformStructure(
-    DogStructure<Object> structure,
-    SchemaType schema,
-  ) {
+  DogStructure<Object> transformStructure(DogStructure<Object> structure, SchemaType schema) {
     return structure;
   }
 }
@@ -120,18 +101,15 @@ class DefaultListBindingViewFactory implements ListBindingViewFactory {
       children: [
         ReorderableListView.builder(
           itemCount: controller.fieldOrder.length,
-          proxyDecorator:
-              (Widget child, int index, Animation<double> animation) {
-                return Material(color: Colors.transparent, child: child);
-              },
+          proxyDecorator: (Widget child, int index, Animation<double> animation) {
+            return Material(color: Colors.transparent, child: child);
+          },
           itemBuilder: (context, index) {
             final fieldName = controller.fieldOrder[index];
             final fieldController = controller.field(fieldName);
             return Padding(
               key: Key(fieldName),
-              padding: index == 0
-                  ? EdgeInsets.zero
-                  : EdgeInsets.only(top: verticalGap),
+              padding: index == 0 ? EdgeInsets.zero : EdgeInsets.only(top: verticalGap),
               child: Row(
                 children: [
                   Expanded(

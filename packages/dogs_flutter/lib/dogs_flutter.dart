@@ -6,8 +6,7 @@ import 'package:dogs_flutter/dogs.g.dart';
 import 'package:dogs_flutter/dogs_flutter.dart';
 
 // Export dogs_core and dogs_validation
-export 'package:dogs_core/dogs_core.dart'
-    hide DogLinked, isPolymorphicField, compareTypeHashcodes;
+export 'package:dogs_core/dogs_core.dart' hide DogLinked, isPolymorphicField, compareTypeHashcodes;
 export 'package:dogs_core/dogs_validation.dart';
 
 // Flutter-specific converters
@@ -45,18 +44,10 @@ final defaultFactories = OperationModeFactory.compose<FlutterWidgetBinder>([
   ListAutoFactory(),
   EnumAutoFactory(),
   NestedStructureAutoFactory(),
-  OperationModeFactory.typeSingleton<String, FlutterWidgetBinder>(
-    StringFlutterBinder(),
-  ),
-  OperationModeFactory.typeSingleton<int, FlutterWidgetBinder>(
-    IntFlutterBinder(),
-  ),
-  OperationModeFactory.typeSingleton<double, FlutterWidgetBinder>(
-    DoubleFlutterBinder(),
-  ),
-  OperationModeFactory.typeSingleton<bool, FlutterWidgetBinder>(
-    BoolFlutterBinder(),
-  ),
+  OperationModeFactory.typeSingleton<String, FlutterWidgetBinder>(StringFlutterBinder()),
+  OperationModeFactory.typeSingleton<int, FlutterWidgetBinder>(IntFlutterBinder()),
+  OperationModeFactory.typeSingleton<double, FlutterWidgetBinder>(DoubleFlutterBinder()),
+  OperationModeFactory.typeSingleton<bool, FlutterWidgetBinder>(BoolFlutterBinder()),
 ]);
 
 // ignore: non_constant_identifier_names
@@ -76,9 +67,8 @@ DogPlugin DogsFlutterPlugin({
   );
 
   if (addSchemaContributors) {
-    DogsMaterializer.get(engine).contributors.addAll([
-      SchemaBindingStyleContributor(),
-      ListBindingStyleContributor(),
-    ]);
+    DogsMaterializer.get(
+      engine,
+    ).contributors.addAll([SchemaBindingStyleContributor(), ListBindingStyleContributor()]);
   }
 };

@@ -25,16 +25,14 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   }
 
   @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
     if (tree.arguments.length != nargs) {
       throw ArgumentError("Expected $nargs type arguments");
     }
-    final argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
+    final argumentConverters =
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
     final factory = switch (tree.arguments.length) {
-      1 => tree.arguments.first.qualifiedOrBase
-          .consumeType(captureFactory as Function<_>()),
+      1 => tree.arguments.first.qualifiedOrBase.consumeType(captureFactory as Function<_>()),
       2 => TypeContainers.arg2(
           tree.arguments[0].qualifiedOrBase,
           tree.arguments[1].qualifiedOrBase,
@@ -72,9 +70,8 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
     final validationModeCacheEntry = engine.modeRegistry.validation;
     castedFactory.tree = tree;
     castedFactory.itemConverters = argumentConverters;
-    castedFactory.nativeModes = argumentConverters
-        .map((e) => modeCacheEntry.forConverter(e, engine))
-        .toList();
+    castedFactory.nativeModes =
+        argumentConverters.map((e) => modeCacheEntry.forConverter(e, engine)).toList();
     castedFactory.validationModes = argumentConverters
         .map((e) => validationModeCacheEntry.forConverterNullable(e, engine))
         .toList();
@@ -82,8 +79,7 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   }
 }
 
-class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
-    with OperationMapMixin<BASE> {
+class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE> with OperationMapMixin<BASE> {
   NTreeArgConverter<BASE> delegate;
 
   _NTreeArgConverterImpl(this.delegate);
@@ -94,8 +90,7 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
             serializer: delegate.serialize,
             deserializer: delegate.deserialize,
             canSerializeNull: delegate.canSerializeNull),
-        ValidationMode: () =>
-            ValidationMode.create(validator: (value, engine, _) {
+        ValidationMode: () => ValidationMode.create(validator: (value, engine, _) {
               if (value == null) return true;
               return delegate.traverse(value, engine).map((e) {
                 final (value, argIndex) = e;
@@ -106,8 +101,7 @@ class _NTreeArgConverterImpl<BASE> extends DogConverter<BASE>
               }).every((e) => e);
             }, annotator: (value, engine, _) {
               if (value == null) return AnnotationResult.empty();
-              return AnnotationResult.combine(
-                  delegate.traverse(value, engine).map((e) {
+              return AnnotationResult.combine(delegate.traverse(value, engine).map((e) {
                 final (value, argIndex) = e;
                 if (value == null) return AnnotationResult.empty();
                 final mode = delegate.validationModes[argIndex];
@@ -161,8 +155,7 @@ abstract class NTreeArgConverter<BASE> {
   }
 
   /// Traverses the [value] and yields all values of the type arguments
-  Iterable<(dynamic value, int argIndex)> traverse(
-      dynamic value, DogEngine engine) sync* {}
+  Iterable<(dynamic value, int argIndex)> traverse(dynamic value, DogEngine engine) sync* {}
 
   /// Whether this converter can serialize null values.
   bool get canSerializeNull => false;

@@ -30,8 +30,7 @@ const negative = Range(max: 0, maxExclusive: true);
 const negativeOrZero = Range(max: 0, maxExclusive: false);
 
 /// A [FieldValidator] that restricts a numeric type to a minimum and maximum value.
-class Range extends FieldValidator<bool>
-    implements SchemaFieldVisitor, StructureMetadata {
+class Range extends FieldValidator<bool> implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
 
@@ -128,16 +127,15 @@ class Range extends FieldValidator<bool>
     if (isValid) return AnnotationResult.empty();
     AnnotationMessage result;
     if (min != null && max == null) {
-      result = AnnotationMessage(
-          id: messageId, message: "Must be more than %min% (%minExclusive%).");
+      result =
+          AnnotationMessage(id: messageId, message: "Must be more than %min% (%minExclusive%).");
     } else if (min == null && max != null) {
-      result = AnnotationMessage(
-          id: messageId, message: "Must be less than %max% (%maxExclusive%)");
+      result =
+          AnnotationMessage(id: messageId, message: "Must be less than %max% (%maxExclusive%)");
     } else {
       result = AnnotationMessage(
           id: messageId,
-          message:
-              "Must be between %min%(%minExclusive%) and %max%(%maxExclusive%).");
+          message: "Must be between %min%(%minExclusive%) and %max%(%maxExclusive%).");
     }
 
     return AnnotationResult(messages: [result]).withVariables({
@@ -150,8 +148,7 @@ class Range extends FieldValidator<bool>
 }
 
 /// A [FieldValidator] that restricts a numeric type to a minimum value.
-class Minimum extends FieldValidator<bool>
-    implements SchemaFieldVisitor, StructureMetadata {
+class Minimum extends FieldValidator<bool> implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum number of items. (exclusivity depends on [minExclusive])
   final num? min;
 
@@ -219,8 +216,7 @@ class Minimum extends FieldValidator<bool>
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
-      AnnotationMessage(
-          id: messageId, message: "Must be more than %min% (%minExclusive%).")
+      AnnotationMessage(id: messageId, message: "Must be more than %min% (%minExclusive%).")
     ]).withVariables({
       "min": min.toString(),
       "minExclusive": minExclusive ? "exclusive" : "inclusive",
@@ -229,8 +225,7 @@ class Minimum extends FieldValidator<bool>
 }
 
 /// A [FieldValidator] that restricts a numeric type to a maximum value.
-class Maximum extends FieldValidator<bool>
-    implements SchemaFieldVisitor, StructureMetadata {
+class Maximum extends FieldValidator<bool> implements SchemaFieldVisitor, StructureMetadata {
   /// The maximum number of items. (exclusivity depends on [maxExclusive])
   final num? max;
 
@@ -298,8 +293,7 @@ class Maximum extends FieldValidator<bool>
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
-      AnnotationMessage(
-          id: messageId, message: "Must be less than %max% (%maxExclusive%)")
+      AnnotationMessage(id: messageId, message: "Must be less than %max% (%maxExclusive%)")
     ]).withVariables({
       "max": max.toString(),
       "maxExclusive": maxExclusive ? "exclusive" : "inclusive",

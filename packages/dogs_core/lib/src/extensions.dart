@@ -124,9 +124,8 @@ extension DogEngineShortcuts on DogEngine {
 
     if (tree != null) {
       final converter = getTreeConverter(tree);
-      result = modeRegistry.nativeSerialization
-          .forConverter(converter, this)
-          .serialize(value, this);
+      result =
+          modeRegistry.nativeSerialization.forConverter(converter, this).serialize(value, this);
     } else {
       result = convertIterableToNative(value, type ?? T, kind);
     }
@@ -187,13 +186,13 @@ extension DogEngineShortcuts on DogEngine {
 /// Extensions on [DogStructure]s.
 extension StructureExtensions on DogStructure {
   /// Returns all field getters for this structure.
-  List<dynamic Function(dynamic)> get getters => List.generate(
-      fields.length, (index) => (obj) => proxy.getField(obj, index));
+  List<dynamic Function(dynamic)> get getters =>
+      List.generate(fields.length, (index) => (obj) => proxy.getField(obj, index));
 
   /// Returns all field values of the supplied [obj] as a field name keyed map.
   /// If a field defines a custom serial name, that name is used instead.
-  Map<String, dynamic> getFieldMap(dynamic obj) => Map.fromEntries(
-      fields.mapIndexed((i, e) => MapEntry(e.name, proxy.getField(obj, i))));
+  Map<String, dynamic> getFieldMap(dynamic obj) =>
+      Map.fromEntries(fields.mapIndexed((i, e) => MapEntry(e.name, proxy.getField(obj, i))));
 
   /// Reconstructs a new instance of [T] using the supplied [map] as field values.
   /// For more details on the map format, see [getFieldMap].
@@ -248,11 +247,9 @@ extension StructureExtensions on DogStructure {
     for (var value in classValidators) {
       value.verifyUsage(this);
     }
-    final classValidatorCacheData =
-        classValidators.map((e) => e.getCachedValue(this)).toList();
+    final classValidatorCacheData = classValidators.map((e) => e.getCachedValue(this)).toList();
 
-    fieldValidators ??=
-        fields.map((e) => e.getFieldValidator(engine: engine)).toList();
+    fieldValidators ??= fields.map((e) => e.getFieldValidator(engine: engine)).toList();
 
     final fieldAccessors = <dynamic Function(dynamic)>[];
     for (var i = 0; i < fields.length; i++) {
@@ -264,8 +261,7 @@ extension StructureExtensions on DogStructure {
       for (var contextValidator in field.metadataOf<ContextFieldValidator>()) {
         contextValidator.verifyUsage(this, field);
         contextValidators.add(contextValidator);
-        contextValidatorCacheData
-            .add(contextValidator.getCachedValue(this, field));
+        contextValidatorCacheData.add(contextValidator.getCachedValue(this, field));
       }
     }
 
@@ -290,8 +286,7 @@ extension StructureExtensions on DogStructure {
     if (fields.isNotEmpty) {
       buffer.writeln("  Fields:");
       for (var field in fields) {
-        buffer.write(
-            "    ${field.name}: ${field.type.qualifiedOrBase.typeArgument}");
+        buffer.write("    ${field.name}: ${field.type.qualifiedOrBase.typeArgument}");
         if (field.optional) {
           buffer.write("?");
         }
@@ -357,8 +352,7 @@ extension FieldExtension on DogStructureField {
     for (var value in fieldValidators) {
       value.verifyUsage(this);
     }
-    final cacheData =
-        fieldValidators.map((e) => e.getCachedValue(this)).toList();
+    final cacheData = fieldValidators.map((e) => e.getCachedValue(this)).toList();
     return IsolatedFieldValidator(
       hasGuardValidator: guardValidator != null,
       engine: engine,

@@ -76,8 +76,7 @@ class FieldMapStructureProxy extends DogStructureProxy {
   const FieldMapStructureProxy(this.fieldNames);
 
   @override
-  dynamic instantiate(List args) =>
-      Map<String, dynamic>.fromIterables(fieldNames, args);
+  dynamic instantiate(List args) => Map<String, dynamic>.fromIterables(fieldNames, args);
 
   @override
   dynamic getField(obj, int index) {
@@ -114,8 +113,7 @@ class ObjectFactoryStructureProxy<T> extends DogStructureProxy {
   final bool Function(T a, T b)? $equalsFunc;
 
   @override
-  bool Function(dynamic a, dynamic b)? get equalsFunc =>
-      (a, b) => $equalsFunc!(a, b);
+  bool Function(dynamic a, dynamic b)? get equalsFunc => (a, b) => $equalsFunc!(a, b);
 
   @override
   int Function(dynamic obj)? get hashFunc => (obj) => $hashFunc!(obj);

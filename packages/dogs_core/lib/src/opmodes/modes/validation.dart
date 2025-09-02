@@ -33,24 +33,19 @@ abstract class ValidationMode<T> implements OperationMode<T> {
   /// and [annotator].
   static ValidationMode<T> create<T, IR>(
       {IR? Function(DogEngine engine)? initializer,
-      AnnotationResult Function(T value, DogEngine engine, IR? cached)?
-          annotator,
-      required bool Function(T value, DogEngine engine, IR? cached)
-          validator}) {
-    final IR? Function(DogEngine) initializerFunc =
-        initializer ?? _InlineValidationMode._noInit;
+      AnnotationResult Function(T value, DogEngine engine, IR? cached)? annotator,
+      required bool Function(T value, DogEngine engine, IR? cached) validator}) {
+    final IR? Function(DogEngine) initializerFunc = initializer ?? _InlineValidationMode._noInit;
     final AnnotationResult Function(T, DogEngine, IR?) annotatorFunc =
         annotator ?? _InlineValidationMode._noAnnotate;
     return _InlineValidationMode(initializerFunc, validator, annotatorFunc);
   }
 }
 
-class _InlineValidationMode<T, IR> extends ValidationMode<T>
-    with TypeCaptureMixin<T> {
+class _InlineValidationMode<T, IR> extends ValidationMode<T> with TypeCaptureMixin<T> {
   static IR? _noInit<IR>(DogEngine engine) => null;
 
-  static AnnotationResult _noAnnotate<T, IR>(
-          T value, DogEngine engine, IR? cached) =>
+  static AnnotationResult _noAnnotate<T, IR>(T value, DogEngine engine, IR? cached) =>
       AnnotationResult.empty();
 
   IR? Function(DogEngine engine) initializer;
@@ -70,8 +65,7 @@ class _InlineValidationMode<T, IR> extends ValidationMode<T>
   bool validate(T value, DogEngine engine) => validator(value, engine, _ir);
 
   @override
-  AnnotationResult annotate(T value, DogEngine engine) =>
-      annotator(value, engine, _ir);
+  AnnotationResult annotate(T value, DogEngine engine) => annotator(value, engine, _ir);
 }
 
 /// An interface for things that can be converted to an [AnnotationResult]
@@ -98,20 +92,17 @@ class AnnotationResult implements AnnotationResultLike {
 
   /// Translates all messages in this result using [engine].
   AnnotationResult translate(DogEngine engine) {
-    return AnnotationResult(
-        messages: messages.map((e) => e.translate(engine)).toList());
+    return AnnotationResult(messages: messages.map((e) => e.translate(engine)).toList());
   }
 
   /// Replaces all variables in this result with [variables].
   AnnotationResult withVariables(Map<String, String> variables) {
-    return AnnotationResult(
-        messages: messages.map((e) => e.withVariables(variables)).toList());
+    return AnnotationResult(messages: messages.map((e) => e.withVariables(variables)).toList());
   }
 
   /// Replaces the target of all messages in this result with [target].
   AnnotationResult withTarget(String target) {
-    return AnnotationResult(
-        messages: messages.map((e) => e.withTarget(target)).toList());
+    return AnnotationResult(messages: messages.map((e) => e.withTarget(target)).toList());
   }
 
   /// Resolves all message into a list of strings.
@@ -131,8 +122,7 @@ class AnnotationResult implements AnnotationResultLike {
 
   @override
   AnnotationResult operator +(AnnotationResultLike? other) {
-    return AnnotationResult(
-        messages: [...messages, ...?other?.asAnnotationResult().messages]);
+    return AnnotationResult(messages: [...messages, ...?other?.asAnnotationResult().messages]);
   }
 }
 
@@ -168,26 +158,22 @@ class AnnotationMessage implements AnnotationResultLike {
   AnnotationMessage translate(DogEngine engine) {
     var translation = engine.findAnnotationTranslation(id);
     translation ??= message;
-    return AnnotationMessage(
-        id: id, message: translation, variables: variables, target: target);
+    return AnnotationMessage(id: id, message: translation, variables: variables, target: target);
   }
 
   /// Replaces all variables in this message with [variables].
   AnnotationMessage withVariables(Map<String, String> variables) {
-    return AnnotationMessage(
-        id: id, message: message, variables: variables, target: target);
+    return AnnotationMessage(id: id, message: message, variables: variables, target: target);
   }
 
   /// Replaces the string message with [message].
   AnnotationMessage withMessage(String message) {
-    return AnnotationMessage(
-        id: id, message: message, variables: variables, target: target);
+    return AnnotationMessage(id: id, message: message, variables: variables, target: target);
   }
 
   /// Replaces the target of this message with [target].
   AnnotationMessage withTarget(String target) {
-    return AnnotationMessage(
-        id: id, message: message, variables: variables, target: target);
+    return AnnotationMessage(id: id, message: message, variables: variables, target: target);
   }
 
   /// Builds the message.
@@ -211,15 +197,11 @@ class AnnotationMessage implements AnnotationResultLike {
 
   @override
   int get hashCode =>
-      id.hashCode ^
-      target.hashCode ^
-      message.hashCode ^
-      deepEquality.hash(variables);
+      id.hashCode ^ target.hashCode ^ message.hashCode ^ deepEquality.hash(variables);
 
   @override
   AnnotationResult operator +(AnnotationResultLike? other) {
-    return AnnotationResult(
-        messages: [this, ...?other?.asAnnotationResult().messages]);
+    return AnnotationResult(messages: [this, ...?other?.asAnnotationResult().messages]);
   }
 
   @override

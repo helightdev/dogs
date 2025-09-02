@@ -31,30 +31,24 @@ void main() {
       }
     ]);
     var data = <String, dynamic>{"_rev": 0};
-    versioned.beforeDeserialization(
-        data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(
-        null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["_rev"], 3);
     expect(data["a"], true);
     expect(data["b"], true);
     expect(data["c"], true);
 
     data = <String, dynamic>{"_rev": 1};
-    versioned.beforeDeserialization(
-        data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(
-        null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["_rev"], 3);
     expect(data["a"], null);
     expect(data["b"], true);
     expect(data["c"], true);
 
     data = <String, dynamic>{"_rev": 3};
-    versioned.beforeDeserialization(
-        data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(
-        null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["_rev"], 3);
     expect(data["a"], null);
     expect(data["b"], null);
@@ -74,10 +68,8 @@ void main() {
       }
     ]);
     final data = <String, dynamic>{};
-    versioned.beforeDeserialization(
-        data, DogStructure.synthetic(""), DogEngine());
-    versioned.postSerialization(
-        null, data, DogStructure.synthetic(""), DogEngine());
+    versioned.beforeDeserialization(data, DogStructure.synthetic(""), DogEngine());
+    versioned.postSerialization(null, data, DogStructure.synthetic(""), DogEngine());
     expect(data["a"], true);
     expect(data["b"], true);
     expect(data["c"], true);

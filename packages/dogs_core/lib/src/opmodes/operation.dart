@@ -79,8 +79,7 @@ class OperationModeRegistry {
       entry<T>().forType(type, engine);
 
   /// Returns the [OperationMode] for the given [converter] and [engine].
-  T getConverter<T extends OperationMode>(
-          DogConverter converter, DogEngine engine) =>
+  T getConverter<T extends OperationMode>(DogConverter converter, DogEngine engine) =>
       entry<T>().forConverter(converter, engine);
 }
 
@@ -107,8 +106,7 @@ class OperationModeCacheEntry<T extends OperationMode> {
     resolved ??= engine.findModeFactory(T)?.forConverter(converter, engine);
 
     if (resolved == null) {
-      throw DogException(
-          "DogConverter $converter doesn't support opmode $modeType");
+      throw DogException("DogConverter $converter doesn't support opmode $modeType");
     }
     converterMapping[converter] = resolved;
     resolved.initialise(engine);

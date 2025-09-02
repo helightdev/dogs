@@ -27,30 +27,25 @@ class TomlCodec extends DefaultNativeCodec {
   dynamic _baselineEncodeRec(dynamic obj) => switch (obj) {
         null => r"$null$",
         Iterable() => obj.map((e) => _baselineEncodeRec(e)).toList(),
-        Map() => obj.map<String, dynamic>(
-            (k, v) => MapEntry(k.toString(), _baselineEncodeRec(v))),
+        Map() => obj.map<String, dynamic>((k, v) => MapEntry(k.toString(), _baselineEncodeRec(v))),
         _ => obj
       };
 
   dynamic _baselineDecodeRec(dynamic obj) => switch (obj) {
         r"$null$" => null,
         Iterable() => obj.map((e) => _baselineDecodeRec(e)).toList(),
-        Map() => obj
-            .map<String, dynamic>((k, v) => MapEntry(k, _baselineDecodeRec(v))),
+        Map() => obj.map<String, dynamic>((k, v) => MapEntry(k, _baselineDecodeRec(v))),
         _ => obj
       };
 }
 
 extension DogTomlExtension on DogEngine {
-  DogEngine get tomlEngine =>
-      codec is TomlCodec ? this : getChildOrFork(#toml, codec: TomlCodec());
+  DogEngine get tomlEngine => codec is TomlCodec ? this : getChildOrFork(#toml, codec: TomlCodec());
 
   /// Converts a [value] to its YAML representation using the
   /// converter associated with [T], [type] or [tree].
-  String toToml<T>(T value,
-      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    var native =
-        tomlEngine.toNative<T>(value, kind: kind, type: type, tree: tree);
+  String toToml<T>(T value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+    var native = tomlEngine.toNative<T>(value, kind: kind, type: type, tree: tree);
     return TomlDocument.fromMap(native).toString();
   }
 

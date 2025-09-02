@@ -17,11 +17,9 @@ void main() {
         [],
         MemoryDogStructureProxy());
     final converter = DogStructureConverterImpl(structure);
-    final operation = engine.modeRegistry
-        .entry<NativeSerializerMode>()
-        .forConverter(converter, engine);
+    final operation =
+        engine.modeRegistry.entry<NativeSerializerMode>().forConverter(converter, engine);
     final graph = operation.serialize(["Christoph", 19, "Hello!"], engine);
-    expect(
-        jsonEncode(graph), """{"name":"Christoph","age":19,"note":"Hello!"}""");
+    expect(jsonEncode(graph), """{"name":"Christoph","age":19,"note":"Hello!"}""");
   });
 }

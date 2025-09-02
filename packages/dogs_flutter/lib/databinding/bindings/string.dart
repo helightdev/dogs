@@ -30,10 +30,7 @@ class StringFlutterBinder extends FlutterWidgetBinder<String>
   const StringFlutterBinder();
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<String> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<String> controller) {
     return StringBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as StringBindingFieldController,
@@ -53,8 +50,7 @@ class StringFlutterBinder extends FlutterWidgetBinder<String>
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is StringFlutterBinder && runtimeType == other.runtimeType;
+      identical(this, other) || other is StringFlutterBinder && runtimeType == other.runtimeType;
 
   @override
   int get hashCode => 0;
@@ -65,11 +61,7 @@ class StringBindingFieldController extends FieldBindingController<String> {
   final FocusNode focusNode = FocusNode();
   String _lastText = "";
 
-  StringBindingFieldController(
-    super.parent,
-    super.binder,
-    super.bindingContext,
-  ) {
+  StringBindingFieldController(super.parent, super.binder, super.bindingContext) {
     textController.addListener(_onTextChanged);
     focusNode.addListener(_onFocusChanged);
   }
@@ -118,10 +110,7 @@ class StringBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(
-      context,
-      controller,
-    );
+    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     return ValueListenableBuilder(
@@ -130,9 +119,7 @@ class StringBindingFieldWidget extends StatelessWidget {
         return TextField(
           controller: controller.textController,
           focusNode: controller.focusNode,
-          decoration: inputDecoration.copyWith(
-            errorText: theme.toErrorText(error),
-          ),
+          decoration: inputDecoration.copyWith(errorText: theme.toErrorText(error)),
 
           // Apply all the text field properties directly from the TextFieldStyle
           obscureText: textFieldStyle.obscureText ?? false,
@@ -142,8 +129,7 @@ class StringBindingFieldWidget extends StatelessWidget {
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,
           style: textFieldStyle.textStyle,
-          textCapitalization:
-              textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
           enabled: textFieldStyle.enabled,
           readOnly: textFieldStyle.readOnly ?? false,
           autofocus: textFieldStyle.autofocus ?? false,

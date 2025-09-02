@@ -30,9 +30,7 @@ abstract class FieldBindingController<T> extends ChangeNotifier {
   bool get hasStateError => false;
 
   /// Streaming error notifier for this field.
-  ValueNotifier<AnnotationResult> errorListenable = ValueNotifier(
-    AnnotationResult.empty(),
-  );
+  ValueNotifier<AnnotationResult> errorListenable = ValueNotifier(AnnotationResult.empty());
 
   /// Disposes of any resources held by this controller.
   @override

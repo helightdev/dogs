@@ -12,8 +12,8 @@ class DogsGeneratorSettings {
     var settings = DogsGeneratorSettings();
 
     try {
-      var pubspecString = await buildStep
-          .readAsString(AssetId(buildStep.inputId.package, "pubspec.yaml"));
+      var pubspecString =
+          await buildStep.readAsString(AssetId(buildStep.inputId.package, "pubspec.yaml"));
       var pubspec = PubSpec.fromYamlString(pubspecString);
       var dogsRegion = pubspec.unParsedYaml?["dogs"];
       if (dogsRegion != null) {
@@ -41,8 +41,7 @@ class DogsGeneratorSettings {
         }
       }
     } catch (ex) {
-      log.warning(
-          "Can't resolve package pubspec.yaml with error: $ex. Using default values.");
+      log.warning("Can't resolve package pubspec.yaml with error: $ex. Using default values.");
     }
     return settings;
   }

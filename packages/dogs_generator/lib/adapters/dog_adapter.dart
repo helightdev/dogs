@@ -23,8 +23,7 @@ import 'package:collection/collection.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/builder.dart';
 
-abstract class DogsAdapter<TAnnotation>
-    extends SubjectAdapter<TAnnotation, Element2> {
+abstract class DogsAdapter<TAnnotation> extends SubjectAdapter<TAnnotation, Element2> {
   DogsAdapter({required super.archetype})
       : super(descriptorExtension: 'dogs', annotation: TAnnotation);
 }

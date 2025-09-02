@@ -25,8 +25,7 @@ void main() {
       "a": 1,
       "b": 2,
     };
-    final transformed =
-        Projections.field("a", (TraverseResult e) => "${e.value}")(buffer);
+    final transformed = Projections.field("a", (TraverseResult e) => "${e.value}")(buffer);
     expect(transformed["a"], "1");
     expect(buffer["a"], 1);
   });
@@ -38,8 +37,7 @@ void main() {
         "c": 2,
       }
     };
-    final transformed =
-        Projections.field("a.b", (TraverseResult e) => "${e.value}")(buffer);
+    final transformed = Projections.field("a.b", (TraverseResult e) => "${e.value}")(buffer);
     expect(transformed["a"]["b"], "1");
     expect(buffer["a"]["b"], 1);
   });
@@ -51,8 +49,8 @@ void main() {
         "c": 2,
       }
     };
-    final transformed = Projections.iterable(
-        "a.b", (TraverseResult e) => (e.value as int) * 2)(buffer);
+    final transformed =
+        Projections.iterable("a.b", (TraverseResult e) => (e.value as int) * 2)(buffer);
     expect(transformed["a"]["b"], [2, 4, 6]);
     expect(buffer["a"]["b"], [1, 2, 3]);
   });

@@ -22,14 +22,12 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 class BuiltCollectionFactories {
-  static final builtList =
-      TreeBaseConverterFactory.createIterableFactory<BuiltList>(
+  static final builtList = TreeBaseConverterFactory.createIterableFactory<BuiltList>(
     wrap: <T>(Iterable<T> entries) => BuiltList<T>.of(entries),
     unwrap: <T>(BuiltList value) => value,
   );
 
-  static final builtSet =
-      TreeBaseConverterFactory.createIterableFactory<BuiltSet>(
+  static final builtSet = TreeBaseConverterFactory.createIterableFactory<BuiltSet>(
     wrap: <T>(Iterable<T> entries) => BuiltSet<T>.of(entries),
     unwrap: <T>(BuiltSet value) => value,
   );
@@ -37,25 +35,20 @@ class BuiltCollectionFactories {
   static final builtMap = TreeBaseConverterFactory.createNargsFactory<BuiltMap>(
       nargs: 2, consume: <K, V>() => BuiltMapNTreeArgConverter<K, V>());
 
-  static final builtListMultimap =
-      TreeBaseConverterFactory.createNargsFactory<BuiltListMultimap>(
-          nargs: 2,
-          consume: <K, V>() => BuiltListMultimapNTreeArgConverter<K, V>());
+  static final builtListMultimap = TreeBaseConverterFactory.createNargsFactory<BuiltListMultimap>(
+      nargs: 2, consume: <K, V>() => BuiltListMultimapNTreeArgConverter<K, V>());
 
-  static final builtSetMultimap =
-      TreeBaseConverterFactory.createNargsFactory<BuiltSetMultimap>(
-          nargs: 2,
-          consume: <K, V>() => BuiltSetMultimapNTreeArgConverter<K, V>());
+  static final builtSetMultimap = TreeBaseConverterFactory.createNargsFactory<BuiltSetMultimap>(
+      nargs: 2, consume: <K, V>() => BuiltSetMultimapNTreeArgConverter<K, V>());
 }
 
 class BuiltMapNTreeArgConverter<K, V> extends NTreeArgConverter<BuiltMap> {
   @override
   BuiltMap deserialize(value, DogEngine engine) {
-    return BuiltMap<K, V>(
-        (value as Map).map<K, V>((key, value) => MapEntry<K, V>(
-              deserializeArg(key, 0, engine),
-              deserializeArg(value, 1, engine),
-            )));
+    return BuiltMap<K, V>((value as Map).map<K, V>((key, value) => MapEntry<K, V>(
+          deserializeArg(key, 0, engine),
+          deserializeArg(value, 1, engine),
+        )));
   }
 
   @override
@@ -67,42 +60,32 @@ class BuiltMapNTreeArgConverter<K, V> extends NTreeArgConverter<BuiltMap> {
   }
 }
 
-class BuiltListMultimapNTreeArgConverter<K, V>
-    extends NTreeArgConverter<BuiltListMultimap> {
+class BuiltListMultimapNTreeArgConverter<K, V> extends NTreeArgConverter<BuiltListMultimap> {
   @override
   BuiltListMultimap deserialize(value, DogEngine engine) {
-    return BuiltListMultimap<K, V>((value as Map).map<K, Iterable<V>>(
-        (key, value) => MapEntry<K, Iterable<V>>(
-            deserializeArg(key, 0, engine),
-            (value as Iterable)
-                .map((p0) => deserializeArg(p0, 1, engine) as V)
-                .toList())));
+    return BuiltListMultimap<K, V>((value as Map).map<K, Iterable<V>>((key, value) =>
+        MapEntry<K, Iterable<V>>(deserializeArg(key, 0, engine),
+            (value as Iterable).map((p0) => deserializeArg(p0, 1, engine) as V).toList())));
   }
 
   @override
   serialize(BuiltListMultimap value, DogEngine engine) {
     return value.toMap().map((key, value) => MapEntry(
-        serializeArg(key, 0, engine),
-        value.map((p0) => serializeArg(p0, 1, engine)).toList()));
+        serializeArg(key, 0, engine), value.map((p0) => serializeArg(p0, 1, engine)).toList()));
   }
 }
 
-class BuiltSetMultimapNTreeArgConverter<K, V>
-    extends NTreeArgConverter<BuiltSetMultimap> {
+class BuiltSetMultimapNTreeArgConverter<K, V> extends NTreeArgConverter<BuiltSetMultimap> {
   @override
   BuiltSetMultimap deserialize(value, DogEngine engine) {
-    return BuiltSetMultimap<K, V>((value as Map).map<K, Iterable<V>>(
-        (key, value) => MapEntry<K, Iterable<V>>(
-            deserializeArg(key, 0, engine),
-            (value as Iterable)
-                .map((p0) => deserializeArg(p0, 1, engine) as V)
-                .toList())));
+    return BuiltSetMultimap<K, V>((value as Map).map<K, Iterable<V>>((key, value) =>
+        MapEntry<K, Iterable<V>>(deserializeArg(key, 0, engine),
+            (value as Iterable).map((p0) => deserializeArg(p0, 1, engine) as V).toList())));
   }
 
   @override
   serialize(BuiltSetMultimap value, DogEngine engine) {
     return value.toMap().map((key, value) => MapEntry(
-        serializeArg(key, 0, engine),
-        value.map((p0) => serializeArg(p0, 1, engine)).toList()));
+        serializeArg(key, 0, engine), value.map((p0) => serializeArg(p0, 1, engine)).toList()));
   }
 }

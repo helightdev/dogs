@@ -38,7 +38,6 @@ extension DogCborExtension on DogEngine {
   /// expected to be a base64 encoded string.
   T fromCborString<T>(String encoded,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    return fromCbor<T>(base64Decode(encoded),
-        kind: kind, type: type, tree: tree);
+    return fromCbor<T>(base64Decode(encoded), kind: kind, type: type, tree: tree);
   }
 }

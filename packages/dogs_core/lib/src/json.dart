@@ -22,8 +22,7 @@ import "package:dogs_core/dogs_core.dart";
 extension DogJsonExtension on DogEngine {
   /// Converts a [value] to its JSON representation using the
   /// converter associated with [T] or [tree].
-  String toJson<T>(T value,
-      {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
+  String toJson<T>(T value, {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
     final native = toNative<T>(value, kind: kind, type: type, tree: tree);
     return conv.jsonEncode(native);
   }

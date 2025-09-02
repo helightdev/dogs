@@ -31,19 +31,13 @@ class BindingStyle
   BindingStyle asAncestor() => BindingStyle(extensions: extensions);
 
   static List<BindingStyleExtension> mergeExtensions(dynamic a, dynamic b) {
-    final merged = List<BindingStyleExtension>.from(
-      a as List<BindingStyleExtension>,
-    );
+    final merged = List<BindingStyleExtension>.from(a as List<BindingStyleExtension>);
     for (var extension in (b as List<BindingStyleExtension>)) {
-      final index = merged.indexWhere(
-        (e) => e.runtimeType == extension.runtimeType,
-      );
+      final index = merged.indexWhere((e) => e.runtimeType == extension.runtimeType);
       if (index == -1) {
         merged.add(extension);
       } else {
-        merged[index] = (extension as Mergeable).merge(
-          merged[index] as Mergeable,
-        );
+        merged[index] = (extension as Mergeable).merge(merged[index] as Mergeable);
       }
     }
     return merged;

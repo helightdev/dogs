@@ -47,15 +47,13 @@ class Regex extends FieldValidator<RegexCacheEntry>
 
   @override
   RegexCacheEntry getCachedValue(DogStructureField field) {
-    return RegexCacheEntry(
-        RegExp(pattern), field.iterableKind != IterableKind.none);
+    return RegexCacheEntry(RegExp(pattern), field.iterableKind != IterableKind.none);
   }
 
   @override
   void verifyUsage(DogStructureField field) {
     if (field.serial.typeArgument != String) {
-      throw DogException(
-          "Field '${field.name}' must be a String/-List/-Iterable to use @Regex().");
+      throw DogException("Field '${field.name}' must be a String/-List/-Iterable to use @Regex().");
     }
   }
 
@@ -63,8 +61,7 @@ class Regex extends FieldValidator<RegexCacheEntry>
   bool validate(RegexCacheEntry cached, value, DogEngine engine) {
     if (cached.isIterable) {
       if (value == null) return true;
-      return (value as Iterable)
-          .every((e) => _validateSingle(cached.matcher, e));
+      return (value as Iterable).every((e) => _validateSingle(cached.matcher, e));
     } else {
       return _validateSingle(cached.matcher, value);
     }
@@ -95,9 +92,7 @@ class Regex extends FieldValidator<RegexCacheEntry>
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
-      AnnotationMessage(
-          id: messageId ?? defaultMessageId,
-          message: message ?? "Invalid format")
+      AnnotationMessage(id: messageId ?? defaultMessageId, message: message ?? "Invalid format")
     ]);
   }
 }

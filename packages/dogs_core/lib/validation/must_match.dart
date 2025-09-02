@@ -17,8 +17,7 @@
 import "package:dogs_core/dogs_core.dart";
 
 /// Requires a field to match another field.
-class MustMatch extends ContextFieldValidator<MustMatchCacheEntry>
-    implements StructureMetadata {
+class MustMatch extends ContextFieldValidator<MustMatchCacheEntry> implements StructureMetadata {
   /// The name of the other field to match.
   final String otherFieldName;
 
@@ -29,13 +28,12 @@ class MustMatch extends ContextFieldValidator<MustMatchCacheEntry>
   static const String messageId = "must-match";
 
   @override
-  MustMatchCacheEntry getCachedValue(
-      DogStructure structure, DogStructureField field) {
+  MustMatchCacheEntry getCachedValue(DogStructure structure, DogStructureField field) {
     final selfIndex = structure.fields.indexOf(field);
     final otherIndex = structure.indexOfFieldName(otherFieldName)!;
     final proxy = structure.proxy;
-    return MustMatchCacheEntry(field.name, structure.fields[otherIndex].name,
-        selfIndex, otherIndex, proxy);
+    return MustMatchCacheEntry(
+        field.name, structure.fields[otherIndex].name, selfIndex, otherIndex, proxy);
   }
 
   @override
@@ -46,8 +44,7 @@ class MustMatch extends ContextFieldValidator<MustMatchCacheEntry>
   }
 
   @override
-  AnnotationResult annotate(
-      dynamic cached, dynamic instance, DogEngine engine) {
+  AnnotationResult annotate(dynamic cached, dynamic instance, DogEngine engine) {
     final isValid = validate(cached, instance, engine);
     if (isValid) return AnnotationResult.empty();
     final entry = cached as MustMatchCacheEntry;
@@ -56,10 +53,7 @@ class MustMatch extends ContextFieldValidator<MustMatchCacheEntry>
           id: messageId,
           message: "Must match field %otherField%",
           target: entry.fieldName,
-          variables: {
-            "field": entry.fieldName,
-            "otherField": entry.otherFieldName
-          })
+          variables: {"field": entry.fieldName, "otherField": entry.otherFieldName})
     ]);
   }
 }
@@ -82,6 +76,6 @@ class MustMatchCacheEntry {
   final DogStructureProxy proxy;
 
   // ignore: public_member_api_docs
-  MustMatchCacheEntry(this.fieldName, this.otherFieldName, this.selfIndex,
-      this.otherIndex, this.proxy);
+  MustMatchCacheEntry(
+      this.fieldName, this.otherFieldName, this.selfIndex, this.otherIndex, this.proxy);
 }

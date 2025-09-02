@@ -30,8 +30,7 @@ class DateTimeWrapper {
   DateTimeWrapper(this.dateTime);
 }
 
-class DateTimeWrapperConverter extends DogConverter<DateTime>
-    with OperationMapMixin<DateTime> {
+class DateTimeWrapperConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
   @override
   Map<Type, OperationMode<DateTime> Function()> get modes => {
         NativeSerializerMode: () => NativeSerializerMode.create(
@@ -55,12 +54,10 @@ class CustomCodec extends DogNativeCodec {
       return DogList(value.map((e) => fromNative(e)).toList());
     }
     if (value is Map) {
-      return DogMap(value
-          .map((key, value) => MapEntry(fromNative(key), fromNative(value))));
+      return DogMap(value.map((key, value) => MapEntry(fromNative(key), fromNative(value))));
     }
 
-    throw ArgumentError.value(
-        value, null, "Can't coerce native value to dart object graph");
+    throw ArgumentError.value(value, null, "Can't coerce native value to dart object graph");
   }
 
   @override
@@ -99,8 +96,7 @@ void main() {
     final engine = DogEngine();
     final converter = DogStructureConverterImpl(structure);
     final forked = engine.fork(codec: CustomCodec());
-    final nativeOpmode =
-        forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
+    final nativeOpmode = forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
     final encoded = nativeOpmode.serialize(["Hello", CustomNative()], forked);
     final decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<String?>());
@@ -135,16 +131,14 @@ void main() {
     forked.registerAssociatedConverter(DateTimeWrapperConverter());
 
     // Test forked
-    final nativeOpmode =
-        forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
+    final nativeOpmode = forked.modeRegistry.nativeSerialization.forConverter(converter, forked);
     final encoded = nativeOpmode.serialize([DateTime.now()], forked);
     expect(encoded["a"], isA<DateTimeWrapper>());
     final decoded = nativeOpmode.deserialize(encoded, forked);
     expect(decoded[0], isA<DateTime>());
 
     // Test original
-    final nativeOpmode2 =
-        engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
+    final nativeOpmode2 = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
     final encoded2 = nativeOpmode2.serialize([DateTime.now()], engine);
     expect(encoded2["a"], isA<String>());
     final decoded2 = nativeOpmode2.deserialize(encoded2, engine);

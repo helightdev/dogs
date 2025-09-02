@@ -74,9 +74,7 @@ class DogNative extends DogGraphValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DogString &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is DogString && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -113,9 +111,7 @@ class DogString extends DogGraphValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DogString &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is DogString && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -141,9 +137,7 @@ class DogInt extends DogGraphValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DogInt &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is DogInt && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -169,9 +163,7 @@ class DogDouble extends DogGraphValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DogDouble &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is DogDouble && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -197,9 +189,7 @@ class DogBool extends DogGraphValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DogBool &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is DogBool && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;
@@ -221,8 +211,7 @@ class DogNull extends DogGraphValue {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DogNull && runtimeType == other.runtimeType;
+      identical(this, other) || other is DogNull && runtimeType == other.runtimeType;
 
   @override
   int get hashCode => 0;
@@ -283,8 +272,8 @@ class DogMap extends DogGraphValue {
       "{${value.entries.map((e) => "${e.key.coerceString()}: ${e.value.coerceString()}").join(", ")}}";
 
   @override
-  Map<dynamic, dynamic> coerceNative() => value
-      .map((key, value) => MapEntry(key.coerceNative(), value.coerceNative()));
+  Map<dynamic, dynamic> coerceNative() =>
+      value.map((key, value) => MapEntry(key.coerceNative(), value.coerceNative()));
 
   @override
   bool operator ==(Object other) =>
@@ -298,13 +287,12 @@ class DogMap extends DogGraphValue {
 
   /// Merges this map with the given [map].
   DogMap merge(DogMap map) {
-    return DogMap(mergeMaps(value, map.value)
-        .map((key, value) => MapEntry(key.clone(), value.clone())));
+    return DogMap(
+        mergeMaps(value, map.value).map((key, value) => MapEntry(key.clone(), value.clone())));
   }
 
   @override
-  DogGraphValue clone() =>
-      DogMap(value.map((key, value) => MapEntry(key.clone(), value.clone())));
+  DogGraphValue clone() => DogMap(value.map((key, value) => MapEntry(key.clone(), value.clone())));
 
   @override
   String describe(int indent) {

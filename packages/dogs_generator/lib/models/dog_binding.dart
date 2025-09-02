@@ -27,10 +27,7 @@ class DogBinding {
 
   @override
   int get hashCode =>
-      name.hashCode ^
-      package.hashCode ^
-      converterNames.hashCode ^
-      converterPackage.hashCode;
+      name.hashCode ^ package.hashCode ^ converterNames.hashCode ^ converterPackage.hashCode;
 
   @override
   String toString() {

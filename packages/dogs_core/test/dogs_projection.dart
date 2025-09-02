@@ -13,10 +13,7 @@ void main() {
 
   group("Projection Tests", () {
     test("Value Construction", () {
-      final value = Projection(tree: person)
-          .setValue("name", "John")
-          .setValue("age", 30)
-          .perform();
+      final value = Projection(tree: person).setValue("name", "John").setValue("age", 30).perform();
       expect(
           value,
           unorderedDeepEquals({
@@ -30,9 +27,8 @@ void main() {
         "name": "John",
         "age": 30,
       };
-      final value = Projection(tree: person)
-          .unwrapType("a", tree: person)
-          .performMap({"a": initialPerson});
+      final value =
+          Projection(tree: person).unwrapType("a", tree: person).performMap({"a": initialPerson});
       expect(value["a"], unorderedDeepEquals(initialPerson));
     });
 

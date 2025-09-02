@@ -142,8 +142,7 @@ sealed class SchemaType {
   }
 
   /// Creates a schema type representing an object with the given fields.
-  static SchemaType object({List<SchemaField> fields = const []}) =>
-      SchemaObject(fields: fields);
+  static SchemaType object({List<SchemaField> fields = const []}) => SchemaObject(fields: fields);
 
   /// Creates a schema type representing a string-keyed map with values of the given item type.
   static SchemaType map(SchemaType itemType) {
@@ -161,14 +160,12 @@ sealed class SchemaType {
   /// Reads a SchemaType from a property map.
   static SchemaType fromProperties(Map<String, dynamic> properties) {
     final typeValue = properties["type"];
-    final types =
-        typeValue is List ? typeValue.cast<String>() : <String>[typeValue];
+    final types = typeValue is List ? typeValue.cast<String>() : <String>[typeValue];
     final (coreType, nullable) = SchemaCoreType.fromJsonSchema(types);
 
     switch (coreType) {
       case SchemaCoreType.string:
-        return SchemaPrimitive(SchemaCoreType.string,
-            format: properties[SchemaProperties.format])
+        return SchemaPrimitive(SchemaCoreType.string, format: properties[SchemaProperties.format])
           ..nullable = nullable
           ..properties = _cleanProperties(properties);
       case SchemaCoreType.number:
@@ -194,11 +191,8 @@ sealed class SchemaType {
             ..nullable = nullable
             ..properties = _cleanProperties(properties);
         } else {
-          final fields = (properties["properties"] as Map<String, dynamic>?)
-                  ?.entries
-                  .map((entry) {
-                final fieldType =
-                    fromProperties(entry.value as Map<String, dynamic>);
+          final fields = (properties["properties"] as Map<String, dynamic>?)?.entries.map((entry) {
+                final fieldType = fromProperties(entry.value as Map<String, dynamic>);
                 return SchemaField(entry.key, fieldType);
               }).toList() ??
               [];
@@ -213,10 +207,8 @@ sealed class SchemaType {
     }
   }
 
-  static Map<String, dynamic> _cleanProperties(
-      Map<String, dynamic> properties) {
-    return Map.fromEntries(
-        properties.entries.where((e) => !_isTypeProperty(e.key)));
+  static Map<String, dynamic> _cleanProperties(Map<String, dynamic> properties) {
+    return Map.fromEntries(properties.entries.where((e) => !_isTypeProperty(e.key)));
   }
 
   static bool _isTypeProperty(String key) {
@@ -401,8 +393,7 @@ class SchemaObject extends SchemaType {
         return MapEntry(e.name, buffer);
       }));
 
-      map["required"] =
-          fields.where((e) => !e.type.nullable).map((e) => e.name).toList();
+      map["required"] = fields.where((e) => !e.type.nullable).map((e) => e.name).toList();
     }
   }
 
@@ -516,8 +507,7 @@ enum SchemaCoreType {
   }
 
   /// Converts a list of JSON schema types to a [SchemaCoreType] and a nullable flag.
-  static (SchemaCoreType type, bool nullable) fromJsonSchema(
-      List<String> types) {
+  static (SchemaCoreType type, bool nullable) fromJsonSchema(List<String> types) {
     final nullable = types.contains("null");
     final nonNullTypes = types.where((type) => type != "null").toList();
     if (nonNullTypes.length == 1) {

@@ -36,8 +36,7 @@ SchemaType any() => SchemaType.any;
 /// Creates a schema type representing an object with the given properties.
 SchemaType object(Map<String, SchemaType> properties) {
   return SchemaType.object(
-      fields:
-          properties.entries.map((e) => SchemaField(e.key, e.value)).toList());
+      fields: properties.entries.map((e) => SchemaField(e.key, e.value)).toList());
 }
 
 /// Creates a schema type representing an array of the given item type.
@@ -69,8 +68,7 @@ extension SchemaTypeExtension on SchemaType {
   SchemaType optional() => this..nullable = true;
 
   /// Adds a custom property to the schema.
-  SchemaType property(String key, dynamic value) =>
-      this..properties[key] = value;
+  SchemaType property(String key, dynamic value) => this..properties[key] = value;
 
   /// Sets the minimum values for the schema.
   /// Depending on the type, this may set different properties:

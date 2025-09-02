@@ -39,10 +39,7 @@ class ListFlutterBinder extends FlutterWidgetBinder<dynamic>
   const ListFlutterBinder(this.childBinder, this.childType, this.converter);
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<dynamic> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<dynamic> controller) {
     return ListBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as ListBindingFieldController,
@@ -54,14 +51,7 @@ class ListFlutterBinder extends FlutterWidgetBinder<dynamic>
     FieldBindingParent parent,
     FieldBindingContext<dynamic> context,
   ) {
-    return ListBindingFieldController(
-      parent,
-      this,
-      context,
-      childBinder,
-      childType,
-      converter,
-    );
+    return ListBindingFieldController(parent, this, context, childBinder, childType, converter);
   }
 
   @override
@@ -102,8 +92,7 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
   int _nextId = 0;
 
   @override
-  bool get hasStateError =>
-      fields.values.any((x) => x.errorListenable.value.hasErrors);
+  bool get hasStateError => fields.values.any((x) => x.errorListenable.value.hasErrors);
 
   @override
   DogEngine get engine => parent.engine;
@@ -111,10 +100,7 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
   String _createNewField() {
     final id = (_nextId++).toString();
     final field = DogStructureField(typeTree, null, id, false, true, []);
-    final serializerMode = engine.modeRegistry.nativeSerialization.forConverter(
-      converter,
-      engine,
-    );
+    final serializerMode = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
     final validator = field.getFieldValidator(engine: engine);
     FieldBindingContext creator<CAPTURE>() => FieldBindingContext<CAPTURE>(
       engine: engine,
@@ -247,13 +233,9 @@ class ListBindingFieldController extends FieldBindingController<dynamic>
 
   @override
   void handleErrors(AnnotationResult result) {
-    var hasErroredField = fields.values.any(
-      (x) => x.errorListenable.value.hasErrors,
-    );
+    var hasErroredField = fields.values.any((x) => x.errorListenable.value.hasErrors);
     if (hasErroredField) {
-      result =
-          result.remove(DatabindRequiredGuard.messageId) +
-          FormatMessages.fieldHasError;
+      result = result.remove(DatabindRequiredGuard.messageId) + FormatMessages.fieldHasError;
     }
     super.handleErrors(result);
   }
@@ -294,10 +276,8 @@ class ListBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final listStyle =
-        theme.style.getExtension<ListBindingStyle>() ?? ListBindingStyle();
-    final viewFactory =
-        listStyle.viewFactory ?? DefaultListBindingViewFactory();
+    final listStyle = theme.style.getExtension<ListBindingStyle>() ?? ListBindingStyle();
+    final viewFactory = listStyle.viewFactory ?? DefaultListBindingViewFactory();
 
     return ListenableBuilder(
       listenable: controller,
@@ -328,10 +308,7 @@ class ListBindingFieldWidget extends StatelessWidget {
 
 class ListAutoFactory extends OperationModeFactory<FlutterWidgetBinder> {
   @override
-  FlutterWidgetBinder? forConverter(
-    DogConverter<dynamic> converter,
-    DogEngine engine,
-  ) {
+  FlutterWidgetBinder? forConverter(DogConverter<dynamic> converter, DogEngine engine) {
     if (converter is IterableTreeBaseConverterMixin) {
       final itemBinder = engine.modeRegistry.getConverter<FlutterWidgetBinder>(
         converter.converter,

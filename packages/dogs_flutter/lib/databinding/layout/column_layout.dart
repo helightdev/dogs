@@ -24,10 +24,7 @@ class ColumnAutoStructureBindingLayout extends StructureMetadata
   });
 
   @override
-  Widget buildStructureWidget(
-    BuildContext context,
-    StructureBindingController controller,
-  ) {
+  Widget buildStructureWidget(BuildContext context, StructureBindingController controller) {
     final fields = controller.fields.map((e) {
       return FieldBinding(field: e.fieldName);
     }).toList();
@@ -36,11 +33,7 @@ class ColumnAutoStructureBindingLayout extends StructureMetadata
       mainAxisSize: mainAxisSize,
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
-      children: [
-        if (header != null) header!,
-        ...fields,
-        if (footer != null) footer!,
-      ],
+      children: [if (header != null) header!, ...fields, if (footer != null) footer!],
     );
   }
 }

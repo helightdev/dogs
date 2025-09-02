@@ -17,8 +17,7 @@
 import "package:dogs_core/dogs_core.dart";
 
 /// A [FieldValidator] that restricts the size of an [Iterable].
-class SizeRange extends FieldValidator
-    implements SchemaFieldVisitor, StructureMetadata {
+class SizeRange extends FieldValidator implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum number of items. (inclusive)
   final int? min;
 
@@ -45,8 +44,7 @@ class SizeRange extends FieldValidator
   @override
   void verifyUsage(DogStructureField field) {
     if (field.iterableKind == IterableKind.none) {
-      throw DogException(
-          "Field '${field.name}' must be a List/Iterable to use @SizeRange().");
+      throw DogException("Field '${field.name}' must be a List/Iterable to use @SizeRange().");
     }
   }
 
@@ -71,8 +69,7 @@ class SizeRange extends FieldValidator
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(messages: [
-      AnnotationMessage(
-          id: messageId, message: "Must have between %min% and %max% items")
+      AnnotationMessage(id: messageId, message: "Must have between %min% and %max% items")
     ]).withVariables({
       "min": min.toString(),
       "max": max.toString(),

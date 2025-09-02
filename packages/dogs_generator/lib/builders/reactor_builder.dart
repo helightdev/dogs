@@ -23,17 +23,13 @@ class DogReactorBuilder extends SubjectReactorBuilder {
   }
 
   @override
-  FutureOr<void> buildReactor(
-      List<SubjectDescriptor> descriptors, SubjectCodeContext code) async {
-    code.additionalImports
-        .add(AliasImport.root("package:dogs_core/dogs_core.dart"));
+  FutureOr<void> buildReactor(List<SubjectDescriptor> descriptors, SubjectCodeContext code) async {
+    code.additionalImports.add(AliasImport.root("package:dogs_core/dogs_core.dart"));
 
     List<String> descriptorNames = [];
     for (var descriptor in descriptors) {
-      var constructedNames =
-          ((descriptor.meta["constructedNames"] ?? []) as List).cast<String>();
-      var variableNames =
-          ((descriptor.meta["variableNames"] ?? []) as List).cast<String>();
+      var constructedNames = ((descriptor.meta["constructedNames"] ?? []) as List).cast<String>();
+      var variableNames = ((descriptor.meta["variableNames"] ?? []) as List).cast<String>();
       for (var name in constructedNames) {
         var type = await getDartType(step, descriptor.uri, name);
         descriptorNames.add("${code.cachedCounter.get(type)}()");

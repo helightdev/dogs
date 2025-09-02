@@ -23,10 +23,7 @@ class IntFlutterBinder extends FlutterWidgetBinder<int>
   const IntFlutterBinder();
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<int> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<int> controller) {
     return IntBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as IntBindingFieldController,
@@ -46,8 +43,7 @@ class IntFlutterBinder extends FlutterWidgetBinder<int>
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is IntFlutterBinder && runtimeType == other.runtimeType;
+      identical(this, other) || other is IntFlutterBinder && runtimeType == other.runtimeType;
 
   @override
   int get hashCode => 0;
@@ -136,10 +132,7 @@ class IntBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(
-      context,
-      controller,
-    );
+    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     // For int fields, we default to number keyboard
@@ -151,9 +144,7 @@ class IntBindingFieldWidget extends StatelessWidget {
         return TextField(
           controller: controller.textController,
           focusNode: controller.focusNode,
-          decoration: inputDecoration.copyWith(
-            errorText: theme.toErrorText(error),
-          ),
+          decoration: inputDecoration.copyWith(errorText: theme.toErrorText(error)),
           // Apply all the text field properties directly from the TextFieldStyle
           obscureText: textFieldStyle.obscureText ?? false,
           keyboardType: textFieldStyle.keyboardType ?? defaultKeyboardType,
@@ -162,8 +153,7 @@ class IntBindingFieldWidget extends StatelessWidget {
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,
           style: textFieldStyle.textStyle,
-          textCapitalization:
-              textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
           enabled: textFieldStyle.enabled,
           readOnly: textFieldStyle.readOnly ?? false,
           autofocus: textFieldStyle.autofocus ?? false,

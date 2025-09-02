@@ -33,8 +33,7 @@ class DefaultTreeBaseFactories {
   );
 
   /// Factory for [Iterable]s.
-  static final iterable =
-      TreeBaseConverterFactory.createIterableFactory<Iterable>(
+  static final iterable = TreeBaseConverterFactory.createIterableFactory<Iterable>(
     wrap: <T>(Iterable<T> entries) => entries,
     unwrap: <T>(Iterable value) => value,
   );
@@ -66,8 +65,7 @@ class MapNTreeArgConverter<K, V> extends NTreeArgConverter<Map> {
       final Map<K, V> map = {};
       for (var entry in value) {
         if (entry is Map) {
-          map[deserializeArg(entry["key"], 0, engine)] =
-              deserializeArg(entry["value"], 1, engine);
+          map[deserializeArg(entry["key"], 0, engine)] = deserializeArg(entry["value"], 1, engine);
         } else {
           throw ArgumentError("Expected map entry");
         }

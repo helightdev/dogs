@@ -20,8 +20,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dogs_core/dogs_core.dart';
 
 /// Override the [DateTimeConverter] to use [Timestamp] instead of [String] as the native representation.
-class DateTimeToTimestampConverter extends DogConverter<DateTime>
-    with OperationMapMixin<DateTime> {
+class DateTimeToTimestampConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
   DateTimeToTimestampConverter()
       : super(isAssociated: true, struct: DogStructure.synthetic("DateTime"));
 
@@ -35,8 +34,7 @@ class DateTimeToTimestampConverter extends DogConverter<DateTime>
 }
 
 /// Override the [Uint8ListConverter] to use [Blob] instead of [String] as the native representation.
-class Uint8ListToBlobConverter extends DogConverter<Uint8List>
-    with OperationMapMixin<Uint8List> {
+class Uint8ListToBlobConverter extends DogConverter<Uint8List> with OperationMapMixin<Uint8List> {
   Uint8ListToBlobConverter()
       : super(isAssociated: true, struct: DogStructure.synthetic("Uint8List"));
 

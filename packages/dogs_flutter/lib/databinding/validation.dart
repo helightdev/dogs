@@ -12,16 +12,10 @@ class BindingsErrorBuffer {
   AnnotationResult classErrors = AnnotationResult.empty();
   bool hasErrors = false;
 
-  BindingsErrorBuffer(
-    DogStructure structure,
-    IsolatedClassValidator classValidator,
-    this.onChanged,
-  ) : _structure = structure,
+  BindingsErrorBuffer(DogStructure structure, IsolatedClassValidator classValidator, this.onChanged)
+    : _structure = structure,
       _classValidator = classValidator {
-    _results = List.filled(
-      _classValidator.validatorCount,
-      AnnotationResult.empty(),
-    );
+    _results = List.filled(_classValidator.validatorCount, AnnotationResult.empty());
     fieldErrors = Map.fromEntries(
       _structure.fields.map((e) => MapEntry(e.name, AnnotationResult.empty())),
     );

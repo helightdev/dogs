@@ -26,8 +26,7 @@ class StructureHarbinger<T> {
   final DogEngine engine;
 
   /// Resolved list of all field converters for the structure.
-  late List<({DogStructureField field, DogConverter? converter})>
-      fieldConverters;
+  late List<({DogStructureField field, DogConverter? converter})> fieldConverters;
 
   /// Creates a new [StructureHarbinger] for the supplied [structure] and [engine].
   StructureHarbinger(this.structure, this.engine) {
@@ -59,8 +58,7 @@ class StructureHarbinger<T> {
     }
 
     // This value is native, we don't need a converter
-    if (field.type.isQualified &&
-        engine.codec.isNative(field.type.qualified.typeArgument)) {
+    if (field.type.isQualified && engine.codec.isNative(field.type.qualified.typeArgument)) {
       if (nativeConverters) {
         return engine.codec.bridgeConverters[field.type.qualified.typeArgument];
       }
@@ -68,8 +66,7 @@ class StructureHarbinger<T> {
     }
 
     // Try resolving the type directly
-    final directConverter =
-        engine.findAssociatedConverter(field.type.qualifiedOrBase.typeArgument);
+    final directConverter = engine.findAssociatedConverter(field.type.qualifiedOrBase.typeArgument);
     if (directConverter != null) return directConverter;
 
     // Resolve using tree converter

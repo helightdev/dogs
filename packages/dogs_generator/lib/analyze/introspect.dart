@@ -37,23 +37,19 @@ bool isDogPrimitiveType(DartType type) {
       _boolChecker.isExactlyType(type);
 }
 
-Future<DartType> getSerialType(
-    DartType target, SubjectGenContext<Element2> context) async {
+Future<DartType> getSerialType(DartType target, SubjectGenContext<Element2> context) async {
   return await getItemType(target, context.step);
 }
 
-Future<IterableKind> getIterableType(
-    DartType target, SubjectGenContext<Element2> context) async {
+Future<IterableKind> getIterableType(DartType target, SubjectGenContext<Element2> context) async {
   var typeTree = getTypeTree(target);
-  if (_listChecker.isAssignableFromType(target) &&
-      typeTree.base.isDartCoreList) {
+  if (_listChecker.isAssignableFromType(target) && typeTree.base.isDartCoreList) {
     return IterableKind.list;
   }
   if (_setChecker.isAssignableFromType(target) && typeTree.base.isDartCoreSet) {
     return IterableKind.set;
   }
-  if (_iterableChecker.isAssignableFromType(target) &&
-      typeTree.base.isDartCoreIterable) {
+  if (_iterableChecker.isAssignableFromType(target) && typeTree.base.isDartCoreIterable) {
     return IterableKind.list;
   }
   return IterableKind.none;
@@ -67,8 +63,7 @@ String getStructureMetadataSourceArray(Element2 element) {
     throw ArgumentError.value(element, "element", "Element is not Annotatable");
   }
   var annotatable = element as Annotatable;
-  for (var value
-      in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
+  for (var value in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
     annotations.add(value.toSource().substring(1));
   }
   return "[${annotations.join(", ")}]";
@@ -84,11 +79,9 @@ String getStructureMetadataSourceArrayAliased(
   var annotatable = element as Annotatable;
 
   var annotations = <String>[];
-  for (var value
-      in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
+  for (var value in annotatable.metadata2.annotations.whereTypeChecker(conditionChecker)) {
     var cszp = "$szPrefix${counter.getAndIncrement()}";
-    var import = AliasImport.library(
-        (value.element2 as ConstructorElement2).library2, cszp);
+    var import = AliasImport.library((value.element2 as ConstructorElement2).library2, cszp);
     imports.add(import);
     annotations.add("$cszp.${value.toSource().substring(1)}");
   }

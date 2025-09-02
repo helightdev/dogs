@@ -30,8 +30,7 @@ abstract class GeneratedEnumDogConverter<T extends Enum> extends DogConverter<T>
 
   /// Creates a new associated [GeneratedEnumDogConverter] with the given [serialName].
   GeneratedEnumDogConverter.structured({required String serialName})
-      : super(
-            isAssociated: true, struct: DogStructure<T>.synthetic(serialName));
+      : super(isAssociated: true, struct: DogStructure<T>.synthetic(serialName));
 
   /// Function that converts a enum value to a string.
   EnumToString<T?> get toStr;
@@ -87,21 +86,18 @@ mixin EnumConverter<T> on DogConverter<T> {
 }
 
 /// A runtime string-based [EnumConverter] implementation
-class RuntimeEnumConverter extends SimpleDogConverter<String>
-    with EnumConverter<String> {
+class RuntimeEnumConverter extends SimpleDogConverter<String> with EnumConverter<String> {
   @override
   final List<String> values;
 
   /// Creates a new [RuntimeEnumConverter] with the given [values] and [serialName].
-  RuntimeEnumConverter(this.values, String serialName)
-      : super(serialName: serialName);
+  RuntimeEnumConverter(this.values, String serialName) : super(serialName: serialName);
 
   @override
   String deserialize(value, DogEngine engine) {
     if (!values.contains(value)) {
       throw DogSerializerException(
-          message:
-              "Value '$value' is not a valid enum value. Valid values are: $values",
+          message: "Value '$value' is not a valid enum value. Valid values are: $values",
           converter: this);
     }
     return value as String;
@@ -118,8 +114,7 @@ class RuntimeEnumConverter extends SimpleDogConverter<String>
     if (values.contains(value)) {
       return value;
     }
-    throw ArgumentError(
-        "Value '$value' is not a valid enum value. Valid values are: $values");
+    throw ArgumentError("Value '$value' is not a valid enum value. Valid values are: $values");
   }
 
   @override

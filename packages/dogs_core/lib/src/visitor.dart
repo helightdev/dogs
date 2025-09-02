@@ -24,8 +24,7 @@ abstract interface class DogVisitor<T> {
 
 /// A mixin that provides a default implementation for [ExpandedDogVisitor].
 /// Override the methods to provide custom behavior for each type of value.
-mixin ExpandedGraphDogVisitorMixin<T> on DogVisitor<T>
-    implements ExpandedDogVisitor<T> {
+mixin ExpandedGraphDogVisitorMixin<T> on DogVisitor<T> implements ExpandedDogVisitor<T> {
   @override
   T visit(DogGraphValue v) => switch (v) {
         DogNative() => visitNative(v),

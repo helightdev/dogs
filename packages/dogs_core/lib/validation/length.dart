@@ -18,8 +18,7 @@ import "package:dogs_core/dogs_core.dart";
 import "package:dogs_core/validation/utils.dart";
 
 /// A [FieldValidator] that restricts the length of a [String].
-class LengthRange extends FieldValidator<bool>
-    implements SchemaFieldVisitor, StructureMetadata {
+class LengthRange extends FieldValidator<bool> implements SchemaFieldVisitor, StructureMetadata {
   /// The minimum length. (inclusive)
   final int? min;
 
@@ -88,24 +87,20 @@ class LengthRange extends FieldValidator<bool>
     if (isValid) return AnnotationResult.empty();
     if (max == null) {
       return AnnotationResult(messages: [
-        AnnotationMessage(
-            id: messageMinId, message: "Must be at least %min% characters long")
+        AnnotationMessage(id: messageMinId, message: "Must be at least %min% characters long")
       ]).withVariables({
         "min": min.toString(),
       });
     } else if (min == null) {
       return AnnotationResult(messages: [
-        AnnotationMessage(
-            id: messageMaxId, message: "Must be at most %max% characters long")
+        AnnotationMessage(id: messageMaxId, message: "Must be at most %max% characters long")
       ]).withVariables({
         "max": max.toString(),
       });
     }
 
     return AnnotationResult(messages: [
-      AnnotationMessage(
-          id: messageId,
-          message: "Must be between %min% and %max% characters long")
+      AnnotationMessage(id: messageId, message: "Must be between %min% and %max% characters long")
     ]).withVariables({
       "min": min.toString(),
       "max": max.toString(),

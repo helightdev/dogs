@@ -49,55 +49,46 @@ late InterfaceElement2 setBuilderInterface;
 bool hasBuiltInterop = false;
 
 Future tryInitializeBuiltInterop(BuildStep step) async {
-  var builtValueAsset =
-      AssetId.resolve(Uri.parse("package:built_value/built_value.dart"));
-  var builtCollectionAsset = AssetId.resolve(
-      Uri.parse("package:built_collection/built_collection.dart"));
-  if (!(await step.canRead(builtValueAsset) &&
-      await step.canRead(builtCollectionAsset))) {
+  var builtValueAsset = AssetId.resolve(Uri.parse("package:built_value/built_value.dart"));
+  var builtCollectionAsset =
+      AssetId.resolve(Uri.parse("package:built_collection/built_collection.dart"));
+  if (!(await step.canRead(builtValueAsset) && await step.canRead(builtCollectionAsset))) {
     hasBuiltInterop = false;
     return;
   }
 
   var builtValueLibrary = await step.resolver.libraryFor(builtValueAsset);
-  var builtCollectionLibrary =
-      await step.resolver.libraryFor(builtCollectionAsset);
+  var builtCollectionLibrary = await step.resolver.libraryFor(builtCollectionAsset);
   _builtValueLibrary = LibraryReader(builtValueLibrary);
   _builtCollectionLibrary = LibraryReader(builtCollectionLibrary);
 
   builtInterface = _builtValueLibrary.findType("Built") as InterfaceElement2;
-  builtBuilderInterface =
-      _builtValueLibrary.findType("Builder") as InterfaceElement2;
-  listBuilderInterface =
-      _builtCollectionLibrary.findType("ListBuilder") as InterfaceElement2;
-  mapBuilderInterface =
-      _builtCollectionLibrary.findType("MapBuilder") as InterfaceElement2;
-  setBuilderInterface =
-      _builtCollectionLibrary.findType("SetBuilder") as InterfaceElement2;
+  builtBuilderInterface = _builtValueLibrary.findType("Builder") as InterfaceElement2;
+  listBuilderInterface = _builtCollectionLibrary.findType("ListBuilder") as InterfaceElement2;
+  mapBuilderInterface = _builtCollectionLibrary.findType("MapBuilder") as InterfaceElement2;
+  setBuilderInterface = _builtCollectionLibrary.findType("SetBuilder") as InterfaceElement2;
 
   builtChecker = TypeChecker.fromStatic(builtInterface.thisType);
   builtBuilderChecker = TypeChecker.fromStatic(builtBuilderInterface.thisType);
   listBuilderChecker = TypeChecker.fromStatic(listBuilderInterface.thisType);
   mapBuilderChecker = TypeChecker.fromStatic(mapBuilderInterface.thisType);
   setBuilderChecker = TypeChecker.fromStatic(setBuilderInterface.thisType);
-  builtValueFieldChecker = TypeChecker.fromStatic(
-      _builtValueLibrary.findType("BuiltValueField")!.thisType);
-  builtValueEnumChecker = TypeChecker.fromStatic(
-      _builtValueLibrary.findType("EnumClass")!.thisType);
+  builtValueFieldChecker =
+      TypeChecker.fromStatic(_builtValueLibrary.findType("BuiltValueField")!.thisType);
+  builtValueEnumChecker =
+      TypeChecker.fromStatic(_builtValueLibrary.findType("EnumClass")!.thisType);
 
   hasBuiltInterop = true;
 }
 
-Future<IRStructure> structurizeBuilt(SubjectCodeContext codeContext,
-    SubjectGenContext context, ClassElement2 element) async {
+Future<IRStructure> structurizeBuilt(
+    SubjectCodeContext codeContext, SubjectGenContext context, ClassElement2 element) async {
   var counter = codeContext.cachedCounter;
   var builtInterfaceImpl = element.thisType.asInstanceOf2(builtInterface)!;
-  var builderElement =
-      builtInterfaceImpl.typeArguments[1].element3! as ClassElement2;
+  var builderElement = builtInterfaceImpl.typeArguments[1].element3! as ClassElement2;
 
-  var getters = builderElement.getters2
-      .where((element) => element.isPublic && !element.isStatic)
-      .toList();
+  var getters =
+      builderElement.getters2.where((element) => element.isPublic && !element.isStatic).toList();
 
   var fields = <IRStructureField>[];
   for (var builderGetter in getters) {
@@ -145,26 +136,22 @@ Future<IRStructure> structurizeBuilt(SubjectCodeContext codeContext,
   );
 }
 
-Future<void> writeBuiltInteropConverter(ClassElement2 element,
-    SubjectCodeContext codeContext, SubjectGenContext context) async {
-  codeContext.additionalImports
-      .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
-  codeContext.additionalImports
-      .add(AliasImport.gen("package:dogs_built/dogs_built.dart"));
+Future<void> writeBuiltInteropConverter(
+    ClassElement2 element, SubjectCodeContext codeContext, SubjectGenContext context) async {
+  codeContext.additionalImports.add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+  codeContext.additionalImports.add(AliasImport.gen("package:dogs_built/dogs_built.dart"));
   codeContext.additionalImports
       .add(AliasImport.gen("package:built_collection/built_collection.dart"));
 
   var builtInterfaceImpl = element.thisType.asInstanceOf2(builtInterface)!;
-  var builderElement =
-      builtInterfaceImpl.typeArguments[1].element3! as ClassElement2;
+  var builderElement = builtInterfaceImpl.typeArguments[1].element3! as ClassElement2;
 
   var structure = await structurizeBuilt(codeContext, context, element);
   var typeRef = codeContext.typeName(element.thisType);
   var emitter = DartEmitter();
   var clazz = Class((builder) {
     builder.name = "${element.displayName}Converter";
-    builder.extend =
-        Reference("$genAlias.GeneratedBuiltInteropConverter<$typeRef>");
+    builder.extend = Reference("$genAlias.GeneratedBuiltInteropConverter<$typeRef>");
 
     builder.constructors.add(Constructor((constr) => constr
       ..initializers.add(Code(
@@ -178,8 +165,7 @@ Future<void> writeBuiltInteropConverter(ClassElement2 element,
         ..name = "obj"))
       ..static = true
       ..lambda = true
-      ..body = Code(
-          "[${structure.fields.map((e) => "obj.${e.accessor}").join(",")}]")));
+      ..body = Code("[${structure.fields.map((e) => "obj.${e.accessor}").join(",")}]")));
 
     for (var value in structure.fields.map((e) => e.accessor)) {
       builder.methods.add(Method((builder) => builder
@@ -204,17 +190,13 @@ Future<void> writeBuiltInteropConverter(ClassElement2 element,
       ..body = Code(
           "return (${typeRef}Builder()\n${builderElement.getters2.where((element) => element.isPublic && !element.isStatic).mapIndexed((i, e) {
         if (listBuilderChecker.isAssignableFromType(e.returnType)) {
-          var innerType = e.returnType
-              .asInstanceOf2(listBuilderInterface)!
-              .typeArguments[0];
+          var innerType = e.returnType.asInstanceOf2(listBuilderInterface)!.typeArguments[0];
           return "..${e.displayName} = list[$i] == null ? null : gen.ListBuilder<${codeContext.typeName(innerType)}>(list[$i])";
         } else if (setBuilderChecker.isAssignableFromType(e.returnType)) {
-          var innerType =
-              e.returnType.asInstanceOf2(setBuilderInterface)!.typeArguments[0];
+          var innerType = e.returnType.asInstanceOf2(setBuilderInterface)!.typeArguments[0];
           return "..${e.displayName} = list[$i] == null ? null : gen.SetBuilder<${codeContext.typeName(innerType)}>(list[$i])";
         } else if (mapBuilderChecker.isAssignableFromType(e.returnType)) {
-          var typeArguments =
-              e.returnType.asInstanceOf2(mapBuilderInterface)!.typeArguments;
+          var typeArguments = e.returnType.asInstanceOf2(mapBuilderInterface)!.typeArguments;
           return "..${e.displayName} = list[$i] == null ? null : gen.MapBuilder<${codeContext.typeName(typeArguments[0])}, ${codeContext.typeName(typeArguments[1])}>(list[$i])";
         }
         return "..${e.displayName} = list[$i]";

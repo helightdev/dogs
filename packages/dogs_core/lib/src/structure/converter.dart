@@ -64,8 +64,7 @@ abstract class DefaultStructureConverter<T> extends DogConverter<T> {
 /// Mock implementation for [DefaultStructureConverter].
 class DogStructureConverterImpl<T> extends DefaultStructureConverter<T> {
   /// Mock implementation for [DefaultStructureConverter].
-  DogStructureConverterImpl(DogStructure<T> structure)
-      : super(struct: structure);
+  DogStructureConverterImpl(DogStructure<T> structure) : super(struct: structure);
 
   @override
   String toString() {

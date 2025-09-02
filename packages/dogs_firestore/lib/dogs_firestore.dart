@@ -16,9 +16,7 @@ extension DogFirestoreExtension on FirebaseFirestore {
   }
 }
 
-extension DogCollectionReferenceExtension<T>
-    on CollectionReference<Map<String, dynamic>> {
+extension DogCollectionReferenceExtension<T> on CollectionReference<Map<String, dynamic>> {
   /// Applies a DOGs based document converter to this collection reference using [withConverter].
-  CollectionReference<R> withStructure<R>() =>
-      DogFirestoreEngine.instance.applyConverter<R>(this);
+  CollectionReference<R> withStructure<R>() => DogFirestoreEngine.instance.applyConverter<R>(this);
 }

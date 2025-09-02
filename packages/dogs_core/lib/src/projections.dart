@@ -171,8 +171,7 @@ extension ProjectionExtension on DogEngine {
       }
     }
 
-    return createProjectionDocument(
-        properties: properties, objects: objects, shallow: true);
+    return createProjectionDocument(properties: properties, objects: objects, shallow: true);
   }
 
   @Deprecated("Use Projection<T>().perform() instead")
@@ -210,8 +209,7 @@ extension ProjectionExtension on DogEngine {
   @Deprecated("Use Projection<T>().perform() instead")
 
   /// Creates a shallow projection from the given values, see [createProjection].
-  TARGET projectShallow<TARGET>(Object value,
-      [Object? a, Object? b, Object? c]) {
+  TARGET projectShallow<TARGET>(Object value, [Object? a, Object? b, Object? c]) {
     // Combine additional args into an iterable value
     if (a != null || b != null || c != null) {
       value = [
@@ -232,8 +230,7 @@ extension ProjectionExtension on DogEngine {
       }
     }
 
-    return createProjection(TARGET,
-        properties: properties, objects: objects, shallow: true);
+    return createProjection(TARGET, properties: properties, objects: objects, shallow: true);
   }
 }
 
@@ -256,8 +253,7 @@ final class Projection<T> {
   final bool useFieldMap;
 
   /// Creates a new projection with the given [engine] or the global [dogs] engine.
-  Projection(
-      {DogEngine? engine, this.tree, this.type, this.useFieldMap = false})
+  Projection({DogEngine? engine, this.tree, this.type, this.useFieldMap = false})
       : engine = engine ?? dogs;
 
   /// Creates a new projection that uses field maps for instantiating the final object.
@@ -295,8 +291,7 @@ final class Projection<T> {
   /// Merges the given [value] into the projection as a field map.
   Projection<T> mergeFields<S>(S value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final fieldMap =
-        engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
+    final fieldMap = engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
     transformers.add((v) {
       final result = <String, dynamic>{};
       result.addAll(v);
@@ -309,8 +304,7 @@ final class Projection<T> {
   /// Sets the value at the given [path] to the native map representation of [instance].
   Projection<T> set<S>(String path, S value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final native =
-        engine.toNative<S>(value, kind: kind, type: type, tree: tree);
+    final native = engine.toNative<S>(value, kind: kind, type: type, tree: tree);
     transformers.add((v) => Projections.$set(v, path, native));
     return this;
   }
@@ -318,8 +312,7 @@ final class Projection<T> {
   /// Sets the value at the given [path] to the field map representation of [value].
   Projection<T> setFields<S>(String path, S value,
       {IterableKind kind = IterableKind.none, Type? type, TypeTree? tree}) {
-    final fieldMap =
-        engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
+    final fieldMap = engine.toFieldMap<S>(value, kind: kind, type: type, tree: tree);
     transformers.add((v) => Projections.$set(v, path, fieldMap));
     return this;
   }
@@ -363,8 +356,7 @@ final class Projection<T> {
     transformers.add((v) {
       final result = Projections.$get(v, path);
       if (!result.exists) return v;
-      final newValue =
-          engine.toNative(result.value, kind: kind, type: type, tree: tree);
+      final newValue = engine.toNative(result.value, kind: kind, type: type, tree: tree);
       return Projections.$set(v, path, newValue);
     });
     return this;
@@ -380,8 +372,7 @@ final class Projection<T> {
     transformers.add((v) {
       final result = Projections.$get(v, path);
       if (!result.exists) return v;
-      final newValue =
-          engine.toFieldMap(result.value, kind: kind, type: type, tree: tree);
+      final newValue = engine.toFieldMap(result.value, kind: kind, type: type, tree: tree);
       return Projections.$set(v, path, newValue);
     });
     return this;
@@ -433,8 +424,7 @@ class Projections {
 
   /// Sets the value at [path] in the given [map] to [value]. Returns a new map
   /// with the updated values and leaves the original map untouched.
-  static Map<String, dynamic> $set(
-      Map<String, dynamic> map, String path, dynamic value) {
+  static Map<String, dynamic> $set(Map<String, dynamic> map, String path, dynamic value) {
     final subPaths = path.split(".");
     final result = <String, dynamic>{};
     var current = result;
@@ -456,8 +446,7 @@ class Projections {
   /// Moves the value at [from] to [to] in the given [map]. If [delete] is true,
   /// the value at [from] is deleted after being moved. Returns a new map with
   /// the updated values and leaves the original map untouched.
-  static Map<String, dynamic> $move(
-      Map<String, dynamic> map, String from, String to, bool delete) {
+  static Map<String, dynamic> $move(Map<String, dynamic> map, String from, String to, bool delete) {
     final isWildcard = from.endsWith(".*");
     if (isWildcard) {
       final path = from.substring(0, from.length - 2);
@@ -477,8 +466,7 @@ class Projections {
         throw ArgumentError("Target path '$to' is not a map");
       }
 
-      final targetMap = $clone(
-          (target.value as Map<String, dynamic>?) ?? <String, dynamic>{});
+      final targetMap = $clone((target.value as Map<String, dynamic>?) ?? <String, dynamic>{});
       targetMap.addAll(value.value as Map<String, dynamic>);
       return $set(map, to, targetMap);
     } else {
@@ -521,8 +509,7 @@ class Projections {
 
   static dynamic _deepClone(dynamic value) {
     if (value is Map) {
-      return value.map<String, dynamic>(
-          (key, value) => MapEntry(key, _deepClone(value)));
+      return value.map<String, dynamic>((key, value) => MapEntry(key, _deepClone(value)));
     } else if (value is List) {
       return value.map((e) => _deepClone(e)).toList();
     } else {
@@ -531,28 +518,24 @@ class Projections {
   }
 
   /// Applies a field transformer to the given [path].
-  static ProjectionTransformer field(
-      String path, dynamic Function(TraverseResult e) function) {
+  static ProjectionTransformer field(String path, dynamic Function(TraverseResult e) function) {
     return (data) {
       final result = $get(data, path);
-      final functionResult =
-          function((value: result.value, exists: result.exists));
+      final functionResult = function((value: result.value, exists: result.exists));
       return $set(data, path, functionResult);
     };
   }
 
   /// Applies a field transformer to the given [path] that executes on iterable values.
-  static ProjectionTransformer iterable(
-      String path, dynamic Function(TraverseResult e) function) {
+  static ProjectionTransformer iterable(String path, dynamic Function(TraverseResult e) function) {
     return (data) {
       final result = $get(data, path);
       if (!result.exists) return function((value: null, exists: false));
       if (result.value is! Iterable) {
         throw ArgumentError("Value at path '$path' is not iterable");
       }
-      final transformedData = (result.value as Iterable)
-          .map((e) => function((value: e, exists: true)))
-          .toList();
+      final transformedData =
+          (result.value as Iterable).map((e) => function((value: e, exists: true))).toList();
       return $set(data, path, transformedData);
     };
   }

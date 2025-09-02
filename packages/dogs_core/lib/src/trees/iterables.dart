@@ -25,20 +25,17 @@ class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   }
 
   @override
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    final argumentConverters = TreeBaseConverterFactory.argumentConverters(
-        tree, engine, allowPolymorphic);
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
+    final argumentConverters =
+        TreeBaseConverterFactory.argumentConverters(tree, engine, allowPolymorphic);
     if (argumentConverters.length > 1) {
       throw ArgumentError("Lists can only have one generic type argument");
     }
-    return _IterableTreeBaseConverter<BASE>(
-        this, argumentConverters.first, tree.arguments.first);
+    return _IterableTreeBaseConverter<BASE>(this, argumentConverters.first, tree.arguments.first);
   }
 }
 
-class _IterableTreeBaseConverter<BASE> extends DogConverter
-    with IterableTreeBaseConverterMixin {
+class _IterableTreeBaseConverter<BASE> extends DogConverter with IterableTreeBaseConverterMixin {
   _IterableTreeBaseConverterFactory<BASE> factory;
 
   @override
@@ -47,8 +44,7 @@ class _IterableTreeBaseConverter<BASE> extends DogConverter
   @override
   TypeTree itemSubtree;
 
-  _IterableTreeBaseConverter(this.factory, this.converter, this.itemSubtree)
-      : super();
+  _IterableTreeBaseConverter(this.factory, this.converter, this.itemSubtree) : super();
 
   @override
   iterableCreator<T>(Iterable entries) {
@@ -84,22 +80,19 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
 
   @override
   void initialise(DogEngine engine) {
-    operation = engine.modeRegistry.nativeSerialization
-        .forConverter(mixin.converter, engine);
+    operation = engine.modeRegistry.nativeSerialization.forConverter(mixin.converter, engine);
   }
 
   @override
   deserialize(value, DogEngine engine) {
     if (value == null) return mixin.create([]);
-    final entries =
-        (value as Iterable).map((e) => operation.deserialize(e, engine));
+    final entries = (value as Iterable).map((e) => operation.deserialize(e, engine));
     return mixin.create(entries);
   }
 
   @override
   serialize(value, DogEngine engine) {
-    final entries =
-        mixin.destruct(value).map((e) => operation.serialize(e, engine));
+    final entries = mixin.destruct(value).map((e) => operation.serialize(e, engine));
     return entries.toList();
   }
 
@@ -108,8 +101,7 @@ class IterableTreeNativeOperation extends NativeSerializerMode<dynamic>
 }
 
 /// The validation operation implementation for [IterableTreeBaseConverterMixin].
-class IterableTreeValidationMode extends ValidationMode<dynamic>
-    with TypeCaptureMixin<dynamic> {
+class IterableTreeValidationMode extends ValidationMode<dynamic> with TypeCaptureMixin<dynamic> {
   /// The converter used to validate instances of this iterable type.
   final DogConverter converter;
 
@@ -124,8 +116,7 @@ class IterableTreeValidationMode extends ValidationMode<dynamic>
 
   @override
   void initialise(DogEngine engine) {
-    operation =
-        engine.modeRegistry.validation.forConverterNullable(converter, engine);
+    operation = engine.modeRegistry.validation.forConverterNullable(converter, engine);
   }
 
   @override
@@ -170,8 +161,7 @@ mixin IterableTreeBaseConverterMixin on DogConverter {
       itemSubtree.qualifiedOrBase.consumeTypeArg(iterableDestructor, value);
 
   @override
-  OperationMode<dynamic>? resolveOperationMode(
-      DogEngine engine, Type opmodeType) {
+  OperationMode<dynamic>? resolveOperationMode(DogEngine engine, Type opmodeType) {
     if (opmodeType == NativeSerializerMode) {
       return IterableTreeNativeOperation(this);
     }

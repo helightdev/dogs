@@ -60,8 +60,7 @@ class NotBlank extends FieldValidator<bool> implements StructureMetadata {
   AnnotationResult annotate(bool cached, value, DogEngine engine) {
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
-    return AnnotationResult(messages: [
-      AnnotationMessage(id: messageId, message: "Must not be blank")
-    ]);
+    return AnnotationResult(
+        messages: [AnnotationMessage(id: messageId, message: "Must not be blank")]);
   }
 }

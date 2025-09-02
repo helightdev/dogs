@@ -29,10 +29,7 @@ class BoolFlutterBinder extends FlutterWidgetBinder<bool>
   const BoolFlutterBinder();
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<bool> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<bool> controller) {
     return BoolBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as BoolBindingFieldController,
@@ -52,8 +49,7 @@ class BoolFlutterBinder extends FlutterWidgetBinder<bool>
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BoolFlutterBinder && runtimeType == other.runtimeType;
+      identical(this, other) || other is BoolFlutterBinder && runtimeType == other.runtimeType;
 
   @override
   int get hashCode => 0;

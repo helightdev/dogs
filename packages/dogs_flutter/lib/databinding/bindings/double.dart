@@ -23,10 +23,7 @@ class DoubleFlutterBinder extends FlutterWidgetBinder<double>
   const DoubleFlutterBinder();
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<double> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<double> controller) {
     return DoubleBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as DoubleBindingFieldController,
@@ -46,8 +43,7 @@ class DoubleFlutterBinder extends FlutterWidgetBinder<double>
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DoubleFlutterBinder && runtimeType == other.runtimeType;
+      identical(this, other) || other is DoubleFlutterBinder && runtimeType == other.runtimeType;
 
   @override
   int get hashCode => 0;
@@ -59,11 +55,7 @@ class DoubleBindingFieldController extends FieldBindingController<double> {
   String _lastText = "";
   AnnotationResult? _formatError;
 
-  DoubleBindingFieldController(
-    super.parent,
-    super.binder,
-    super.bindingContext,
-  ) {
+  DoubleBindingFieldController(super.parent, super.binder, super.bindingContext) {
     textController.addListener(_onTextChanged);
     focusNode.addListener(_onFocusChanged);
   }
@@ -140,10 +132,7 @@ class DoubleBindingFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = BindingTheme.of(context);
-    final inputDecoration = theme.style.buildMaterialDecoration(
-      context,
-      controller,
-    );
+    final inputDecoration = theme.style.buildMaterialDecoration(context, controller);
     final textFieldStyle = theme.style.getTextFieldStyle();
 
     // For double fields, we default to number keyboard with decimal
@@ -155,9 +144,7 @@ class DoubleBindingFieldWidget extends StatelessWidget {
         return TextField(
           controller: controller.textController,
           focusNode: controller.focusNode,
-          decoration: inputDecoration.copyWith(
-            errorText: theme.toErrorText(error),
-          ),
+          decoration: inputDecoration.copyWith(errorText: theme.toErrorText(error)),
           // Apply all the text field properties directly from the TextFieldStyle
           obscureText: textFieldStyle.obscureText ?? false,
           keyboardType: textFieldStyle.keyboardType ?? defaultKeyboardType,
@@ -166,8 +153,7 @@ class DoubleBindingFieldWidget extends StatelessWidget {
           maxLength: textFieldStyle.maxLength,
           textAlign: textFieldStyle.textAlign ?? TextAlign.start,
           style: textFieldStyle.textStyle,
-          textCapitalization:
-              textFieldStyle.textCapitalization ?? TextCapitalization.none,
+          textCapitalization: textFieldStyle.textCapitalization ?? TextCapitalization.none,
           enabled: textFieldStyle.enabled,
           readOnly: textFieldStyle.readOnly ?? false,
           autofocus: textFieldStyle.autofocus ?? false,

@@ -97,8 +97,7 @@ class NativeStructureFieldContext {
 }
 
 /// A [NativeSerializerMode] that supplies native serialization for [DogStructure]s.
-class StructureNativeSerialization<T> extends NativeSerializerMode<T>
-    with TypeCaptureMixin<T> {
+class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeCaptureMixin<T> {
   /// The structure this serializer is for.
   final DogStructure<T> structure;
 
@@ -138,8 +137,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
       final isOptional = field.optional;
       final proxy = structure.proxy;
       final fieldType = field.type.qualifiedOrBase;
-      final fieldSerializerHooks =
-          field.annotationsOf<FieldSerializationHook>().toList();
+      final fieldSerializerHooks = field.annotationsOf<FieldSerializationHook>().toList();
       final NativeStructureFieldContext snFieldContext;
 
       // Partially evaluate the serialization and deserialization and create
@@ -160,8 +158,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 map[fieldName] = fieldValue;
               }
               for (var hook in fieldSerializerHooks) {
-                hook.postFieldSerialization(
-                    snContext, snFieldContext, map, engine);
+                hook.postFieldSerialization(snContext, snFieldContext, map, engine);
               }
             } on DogFieldSerializerException {
               rethrow;
@@ -191,16 +188,14 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 if (isOptional) {
                   args.add(null);
                 } else {
-                  args.add(engine.codec.primitiveCoercion
-                      .coerce(fieldType, null, fieldName));
+                  args.add(engine.codec.primitiveCoercion.coerce(fieldType, null, fieldName));
                 }
               } else {
                 if (fieldType.isAssignable(mapValue)) {
                   args.add(mapValue);
                 } else {
                   if (fieldType.isAssignable(mapValue)) return fieldType;
-                  return engine.codec.primitiveCoercion
-                      .coerce(fieldType, fieldType, fieldName);
+                  return engine.codec.primitiveCoercion.coerce(fieldType, fieldType, fieldName);
                 }
               }
             } on DogFieldSerializerException {
@@ -219,8 +214,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
         );
       } else {
         final converter = e.converter!;
-        final operation = engine.modeRegistry.nativeSerialization
-            .forConverter(converter, engine);
+        final operation = engine.modeRegistry.nativeSerialization.forConverter(converter, engine);
         final isKeepIterables = converter.keepIterables;
         snFieldContext = NativeStructureFieldContext._(
           i,
@@ -239,8 +233,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 map[fieldName] = operation.serialize(fieldValue, engine);
               }
               for (var hook in fieldSerializerHooks) {
-                hook.postFieldSerialization(
-                    snContext, snFieldContext, map, engine);
+                hook.postFieldSerialization(snContext, snFieldContext, map, engine);
               }
             } on DogFieldSerializerException {
               rethrow;
@@ -271,8 +264,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T>
                 } else if (operation.canSerializeNull) {
                   args.add(operation.deserialize(null, engine));
                 } else {
-                  throw DogException(
-                      "Expected a value at ${field.name} but got $mapValue");
+                  throw DogException("Expected a value at ${field.name} but got $mapValue");
                 }
               } else {
                 args.add(operation.deserialize(mapValue, engine));

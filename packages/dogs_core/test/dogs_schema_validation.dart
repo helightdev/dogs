@@ -30,16 +30,9 @@ void main() {
       "tags": ["tag1", "tag2", "tag3", "tag4"]
     };
 
-    expect(
-        converter.structure
-            .getFieldByName("name")!
-            .annotationsOf<LengthRange>(),
-        isNotEmpty);
-    expect(converter.structure.getFieldByName("age")!.annotationsOf<Range>(),
-        isNotEmpty);
-    expect(
-        converter.structure.getFieldByName("tags")!.annotationsOf<SizeRange>(),
-        isNotEmpty);
+    expect(converter.structure.getFieldByName("name")!.annotationsOf<LengthRange>(), isNotEmpty);
+    expect(converter.structure.getFieldByName("age")!.annotationsOf<Range>(), isNotEmpty);
+    expect(converter.structure.getFieldByName("tags")!.annotationsOf<SizeRange>(), isNotEmpty);
     expect(converter.isValid(example1), true);
     expect(converter.isValid(example2), false);
     expect(converter.annotate(example2).messages, hasLength(3));

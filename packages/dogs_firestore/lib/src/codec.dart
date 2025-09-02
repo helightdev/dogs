@@ -32,12 +32,10 @@ class FirebaseNativeCodec extends DogNativeCodec {
       return DogList(value.map((e) => fromNative(e)).toList());
     }
     if (value is Map) {
-      return DogMap(value
-          .map((key, value) => MapEntry(fromNative(key), fromNative(value))));
+      return DogMap(value.map((key, value) => MapEntry(fromNative(key), fromNative(value))));
     }
 
-    throw ArgumentError.value(
-        value, null, "Can't coerce native value to dart object graph");
+    throw ArgumentError.value(value, null, "Can't coerce native value to dart object graph");
   }
 
   @override

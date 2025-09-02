@@ -32,13 +32,11 @@ class IRStructure {
   List<IRStructureField> fields;
   String metadataSource;
 
-  IRStructure(this.type, this.conformity, this.serialName, this.fields,
-      this.metadataSource);
+  IRStructure(this.type, this.conformity, this.serialName, this.fields, this.metadataSource);
 
   String code(List<String> getters) {
     var fieldsArr = "[${fields.map((e) => e.code).join(", ")}]";
-    var dataclassInsert =
-        conformity == StructureConformity.dataclass ? (", _hash, _equals") : "";
+    var dataclassInsert = conformity == StructureConformity.dataclass ? (", _hash, _equals") : "";
     var proxyDef =
         "$genAlias.ObjectFactoryStructureProxy<$type>(_activator, [${getters.join(", ")}], _values$dataclassInsert)";
     return "$genAlias.DogStructure<$type>('$serialName', $genAlias.$conformity, $fieldsArr, $metadataSource, $proxyDef)";
@@ -82,8 +80,7 @@ class StructurizeResult {
   List<String> fieldNames;
   String activator;
 
-  StructurizeResult(
-      this.imports, this.structure, this.fieldNames, this.activator);
+  StructurizeResult(this.imports, this.structure, this.fieldNames, this.activator);
 }
 
 class StructurizeCounter {
@@ -96,8 +93,7 @@ class StructurizeCounter {
 
 String szPrefix = "sz";
 TypeChecker propertyNameChecker = TypeChecker.typeNamed(PropertyName);
-TypeChecker propertySerializerChecker =
-    TypeChecker.typeNamed(PropertySerializer);
+TypeChecker propertySerializerChecker = TypeChecker.typeNamed(PropertySerializer);
 TypeChecker dataclassChecker = TypeChecker.typeNamed(Dataclass);
 TypeChecker mapChecker = TypeChecker.typeNamed(Map);
 TypeChecker beanIgnoreChecker = TypeChecker.typeNamed(beanIgnore.runtimeType);
@@ -142,8 +138,7 @@ Future<StructurizeResult> structurizeConstructor(
       fieldType = e.type;
       fieldElement = e.field2;
     } else if (e is SuperFormalParameterElement2) {
-      FieldFormalParameterElement2 resolveUntilFieldFormal(
-          FormalParameterElement e) {
+      FieldFormalParameterElement2 resolveUntilFieldFormal(FormalParameterElement e) {
         if (e is FieldFormalParameterElement2) return e;
         if (e is SuperFormalParameterElement2) {
           return resolveUntilFieldFormal(e.superConstructorParameter2!);
@@ -158,8 +153,7 @@ Future<StructurizeResult> structurizeConstructor(
     } else {
       var parameterType = e.type;
       var namedField = element.getField2(e.displayName);
-      var namedGetter =
-          element.lookUpGetter2(name: e.displayName, library: element.library2);
+      var namedGetter = element.lookUpGetter2(name: e.displayName, library: element.library2);
       if (namedField != null && namedGetter == null) {
         fieldName = e.displayName;
         fieldType = namedField.type;
@@ -198,10 +192,8 @@ Future<StructurizeResult> structurizeConstructor(
 
     var propertySerializer = "null";
     if (propertySerializerChecker.hasAnnotationOf(fieldElement)) {
-      var serializerAnnotation =
-          propertySerializerChecker.annotationsOf(fieldElement).first;
-      propertySerializer =
-          counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
+      var serializerAnnotation = propertySerializerChecker.annotationsOf(fieldElement).first;
+      propertySerializer = counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
     }
 
     fields.add(IRStructureField(
@@ -284,10 +276,8 @@ Future<StructurizeResult> structurizeBean(
 
     var propertySerializer = "null";
     if (propertySerializerChecker.hasAnnotationOf(field)) {
-      var serializerAnnotation =
-          propertySerializerChecker.annotationsOf(field).first;
-      propertySerializer =
-          counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
+      var serializerAnnotation = propertySerializerChecker.annotationsOf(field).first;
+      propertySerializer = counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
     }
 
     fields.add(IRStructureField(
@@ -306,8 +296,7 @@ Future<StructurizeResult> structurizeBean(
 
   // Create proxy arguments
   var getters = fields.map((e) => e.accessor).toList();
-  var activator =
-      "var obj = ${counter.get(element.thisType)}();${fields.where((element) {
+  var activator = "var obj = ${counter.get(element.thisType)}();${fields.where((element) {
     var field = classElement.getField2(element.name)!;
     return field.getter2 != null && field.setter2 != null;
   }).mapIndexed((i, e) {
@@ -318,7 +307,7 @@ Future<StructurizeResult> structurizeBean(
     }
     return "obj.${e.name} = list[$i];";
   }).join("\n")} return obj;";
-  var structure = IRStructure(counter.get(type), StructureConformity.bean,
-      serialName, fields, getRetainedAnnotationSourceArray(element, counter));
+  var structure = IRStructure(counter.get(type), StructureConformity.bean, serialName, fields,
+      getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
 }

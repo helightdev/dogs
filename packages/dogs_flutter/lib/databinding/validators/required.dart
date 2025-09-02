@@ -1,7 +1,6 @@
 import 'package:dogs_core/dogs_core.dart';
 
-class DatabindRequiredGuard extends FieldValidator
-    implements StructureMetadata {
+class DatabindRequiredGuard extends FieldValidator implements StructureMetadata {
   const DatabindRequiredGuard();
 
   static const String messageId = "databind-required";
@@ -21,9 +20,7 @@ class DatabindRequiredGuard extends FieldValidator
     final isValid = validate(cached, value, engine);
     if (isValid) return AnnotationResult.empty();
     return AnnotationResult(
-      messages: [
-        AnnotationMessage(id: messageId, message: "Field is required"),
-      ],
+      messages: [AnnotationMessage(id: messageId, message: "Field is required")],
     );
   }
 }

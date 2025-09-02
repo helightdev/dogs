@@ -9,10 +9,7 @@ class EnumFlutterBinder extends FlutterWidgetBinder<String>
   const EnumFlutterBinder(this.converter);
 
   @override
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<String> controller,
-  ) {
+  Widget buildBindingField(BuildContext context, FieldBindingController<String> controller) {
     return EnumBindingFieldWidget(
       key: Key(controller.fieldName),
       controller: controller as EnumBindingFieldController,
@@ -46,12 +43,7 @@ class EnumBindingFieldController extends FieldBindingController<String> {
   String? value;
   final EnumConverter converter;
 
-  EnumBindingFieldController(
-    super.parent,
-    super.binder,
-    super.bindingContext,
-    this.converter,
-  ) {
+  EnumBindingFieldController(super.parent, super.binder, super.bindingContext, this.converter) {
     focusNode.addListener(_onFocusChanged);
   }
 
@@ -98,11 +90,7 @@ class EnumBindingFieldWidget extends StatelessWidget {
               includeHint: false,
               includeHelper: false,
             )
-            .copyWith(
-              errorText: theme.toErrorText(error),
-              border: InputBorder.none,
-              isDense: true,
-            );
+            .copyWith(errorText: theme.toErrorText(error), border: InputBorder.none, isDense: true);
         return InputDecorator(
           decoration: outerDecoration,
           child: ListenableBuilder(
@@ -127,10 +115,7 @@ class EnumBindingFieldWidget extends StatelessWidget {
 
 class EnumAutoFactory extends OperationModeFactory<FlutterWidgetBinder> {
   @override
-  FlutterWidgetBinder? forConverter(
-    DogConverter<dynamic> converter,
-    DogEngine engine,
-  ) {
+  FlutterWidgetBinder? forConverter(DogConverter<dynamic> converter, DogEngine engine) {
     if (converter is EnumConverter) {
       return EnumFlutterBinder(converter);
     }

@@ -27,9 +27,7 @@ import 'package:flutter/widgets.dart';
 /// This controller handles field validation, error states, and value management for
 /// a structured data type [T]. It provides a way to bind form fields to a data structure
 /// while maintaining validation and error handling.
-class StructureBindingController<T>
-    with MetadataMixin
-    implements FieldBindingParent {
+class StructureBindingController<T> with MetadataMixin implements FieldBindingParent {
   /// The underlying data structure definition that describes the shape of the data.
   final DogStructure structure;
 
@@ -60,8 +58,7 @@ class StructureBindingController<T>
   final StreamController<(String, dynamic)> _fieldValueChangeController =
       StreamController.broadcast(sync: true);
 
-  Stream<(String, dynamic)> get fieldValueChangeStream =>
-      _fieldValueChangeController.stream;
+  Stream<(String, dynamic)> get fieldValueChangeStream => _fieldValueChangeController.stream;
 
   final List<String> _fieldNames = [];
   late final IsolatedClassValidator _classValidator;
@@ -71,17 +68,9 @@ class StructureBindingController<T>
   ///
   /// The controller will be initialized with the provided structure and engine, and
   /// optionally populated with [initialValues].
-  StructureBindingController(
-    this.structure,
-    this.engine, {
-    this.initialValues = const {},
-  }) {
+  StructureBindingController(this.structure, this.engine, {this.initialValues = const {}}) {
     for (var e in structure.fields) {
-      final (binder, context) = FlutterWidgetBinder.resolveBinder(
-        engine,
-        structure,
-        e,
-      );
+      final (binder, context) = FlutterWidgetBinder.resolveBinder(engine, structure, e);
       final controller = binder.createBindingController(this, context);
       factories.add(binder);
       fields.add(controller);
@@ -89,9 +78,7 @@ class StructureBindingController<T>
     }
     _classValidator = structure.getClassValidator(
       engine: engine,
-      fieldValidators: fields
-          .map((e) => e.bindingContext.fieldValidator)
-          .toList(),
+      fieldValidators: fields.map((e) => e.bindingContext.fieldValidator).toList(),
     );
     _errorBuffer = BindingsErrorBuffer(structure, _classValidator, () {
       classErrorListenable.value = _errorBuffer.classErrors;
@@ -118,11 +105,7 @@ class StructureBindingController<T>
     if (initialValues != null) {
       initial.addAll(initialValues);
     }
-    return StructureBindingController<T>(
-      structure,
-      engine,
-      initialValues: initial,
-    );
+    return StructureBindingController<T>(structure, engine, initialValues: initial);
   }
 
   /// Creates a new [StructureBindingController] from a [SchemaType].
@@ -181,10 +164,7 @@ class StructureBindingController<T>
 
   @override
   void requestFieldValidation(String fieldName, dynamic fieldValue) {
-    final (results, isGuard) = _classValidator.annotateFieldExtended(
-      fieldName,
-      fieldValue,
-    );
+    final (results, isGuard) = _classValidator.annotateFieldExtended(fieldName, fieldValue);
     _errorBuffer.putAll(results);
     _errorBuffer.recalculateFieldErrors();
     field(fieldName).handleErrors(_errorBuffer.fieldErrors[fieldName]!);
@@ -236,10 +216,7 @@ class StructureBindingController<T>
     }
     var field = fields[index];
     final currentValue = field.getValue();
-    final controller = binder.createBindingController(
-      this,
-      field.bindingContext,
-    );
+    final controller = binder.createBindingController(this, field.bindingContext);
     factories[index] = binder;
     fields[index] = controller;
     controller.setValue(currentValue);
@@ -298,10 +275,7 @@ class StructureBindingController<T>
       field.performValidation(trigger);
 
       final fieldValue = field.getValue();
-      final (results, isGuard) = _classValidator.annotateFieldExtended(
-        field.fieldName,
-        fieldValue,
-      );
+      final (results, isGuard) = _classValidator.annotateFieldExtended(field.fieldName, fieldValue);
       _errorBuffer.putAll(results);
 
       if (field.hasStateError) {
@@ -341,9 +315,7 @@ class StructureBindingController<T>
     _errorBuffer.clearCustom();
     _errorBuffer.recalculateFieldErrors();
 
-    runValidation(
-      ValidationTrigger.onInteraction,
-    ); // Loading counts as an interaction
+    runValidation(ValidationTrigger.onInteraction); // Loading counts as an interaction
   }
 
   /// Adds a custom runtime error to the error buffer and recalculates field errors.
@@ -353,10 +325,8 @@ class StructureBindingController<T>
   }
 }
 
-typedef AnnotationTransformer =
-    AnnotationResult Function(AnnotationResult result);
-typedef MessageTransformer =
-    AnnotationMessage Function(AnnotationMessage message);
+typedef AnnotationTransformer = AnnotationResult Function(AnnotationResult result);
+typedef MessageTransformer = AnnotationMessage Function(AnnotationMessage message);
 
 /// Extension methods for [AnnotationResult].
 extension AnnotationResultExtensions on AnnotationResult {
@@ -368,11 +338,7 @@ extension AnnotationResultExtensions on AnnotationResult {
     return func(this);
   }
 
-  AnnotationResult replace(
-    String id, {
-    MessageTransformer? func,
-    String? message,
-  }) {
+  AnnotationResult replace(String id, {MessageTransformer? func, String? message}) {
     final newMessages = messages.map((e) {
       if (e.id == id) {
         if (func != null) {
@@ -441,11 +407,7 @@ class StructureViewer<T> {
 
   StructureViewer(this.engine, this.structure) {
     factories = structure.fields.map((e) {
-      final (binder, context) = FlutterWidgetBinder.resolveBinder(
-        engine,
-        structure,
-        e,
-      );
+      final (binder, context) = FlutterWidgetBinder.resolveBinder(engine, structure, e);
       return binder;
     }).toList();
   }
@@ -479,9 +441,7 @@ class StructureViewer<T> {
     if (index < 0 || index >= factories.length) {
       throw ArgumentError("No field with index $index");
     }
-    return factories[index].buildView(
-      structure.proxy.getFieldValues(value)[index],
-    );
+    return factories[index].buildView(structure.proxy.getFieldValues(value)[index]);
   }
 
   Widget fieldNamed(T value, String name) {

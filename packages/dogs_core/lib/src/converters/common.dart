@@ -21,12 +21,10 @@ import "package:dogs_core/dogs_core.dart";
 
 /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
 /// Iso8601 string.
-class DateTimeConverter extends DogConverter<DateTime>
-    with OperationMapMixin<DateTime> {
+class DateTimeConverter extends DogConverter<DateTime> with OperationMapMixin<DateTime> {
   /// [DogConverter] for [DateTime] instances which encodes the timestamp as a
   /// Iso8601 string.
-  DateTimeConverter()
-      : super(struct: DogStructure<DateTime>.synthetic("DateTime"));
+  DateTimeConverter() : super(struct: DogStructure<DateTime>.synthetic("DateTime"));
 
   @override
   Map<Type, OperationMode<DateTime> Function()> get modes => {
@@ -42,12 +40,10 @@ class DateTimeConverter extends DogConverter<DateTime>
 
 /// [DogConverter] for [Duration] instances which encode a duration as a
 /// Iso8601 string.
-class DurationConverter extends DogConverter<Duration>
-    with OperationMapMixin<Duration> {
+class DurationConverter extends DogConverter<Duration> with OperationMapMixin<Duration> {
   /// [DogConverter] for [Duration] instances which encode a duration as a
   /// Iso8601 string.
-  DurationConverter()
-      : super(struct: DogStructure<Duration>.synthetic("Duration"));
+  DurationConverter() : super(struct: DogStructure<Duration>.synthetic("Duration"));
 
   @override
   Map<Type, OperationMode<Duration> Function()> get modes => {
@@ -57,8 +53,7 @@ class DurationConverter extends DogConverter<Duration>
       };
 
   @override
-  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
-      SchemaType.integer;
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) => SchemaType.integer;
 
   // From https://github.com/google/built_value.dart/blob/master/built_value/lib/iso_8601_duration_serializer.dart
   Duration _parseDuration(String value) {
@@ -96,18 +91,15 @@ class DurationConverter extends DogConverter<Duration>
     final days = duration.inDays;
     final hours = (duration - Duration(days: days)).inHours;
     final minutes = (duration - Duration(days: days, hours: hours)).inMinutes;
-    final seconds =
-        (duration - Duration(days: days, hours: hours, minutes: minutes))
-            .inSeconds;
-    final remainder = duration -
-        Duration(days: days, hours: hours, minutes: minutes, seconds: seconds);
+    final seconds = (duration - Duration(days: days, hours: hours, minutes: minutes)).inSeconds;
+    final remainder =
+        duration - Duration(days: days, hours: hours, minutes: minutes, seconds: seconds);
 
     if (remainder != Duration.zero) {
-      throw ArgumentError.value(duration, "duration",
-          "Contains sub-second data which cannot be serialized.");
+      throw ArgumentError.value(
+          duration, "duration", "Contains sub-second data which cannot be serialized.");
     }
-    final buffer = StringBuffer(_durationToken)
-      ..write(days == 0 ? "" : "$days$_dayToken");
+    final buffer = StringBuffer(_durationToken)..write(days == 0 ? "" : "$days$_dayToken");
     if (!(hours == 0 && minutes == 0 && seconds == 0)) {
       buffer
         ..write(_timeToken)
@@ -152,12 +144,10 @@ class UriConverter extends DogConverter<Uri> with OperationMapMixin<Uri> {
 
 /// [DogConverter] for [Uint8List] instances which encodes the binary data
 /// as a base64 string using [base64Encode].
-class Uint8ListConverter extends DogConverter<Uint8List>
-    with OperationMapMixin<Uint8List> {
+class Uint8ListConverter extends DogConverter<Uint8List> with OperationMapMixin<Uint8List> {
   /// [DogConverter] for [Uint8List] instances which encodes the binary data
   /// as a base64 string using [base64Encode].
-  Uint8ListConverter()
-      : super(struct: DogStructure<Uint8List>.synthetic("Uint8List"));
+  Uint8ListConverter() : super(struct: DogStructure<Uint8List>.synthetic("Uint8List"));
 
   @override
   Map<Type, OperationMode<Uint8List> Function()> get modes => {

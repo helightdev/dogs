@@ -11,8 +11,7 @@ class LinkBuilder extends DogsAdapter<DogLinked> {
   LinkBuilder() : super(archetype: "link");
 
   @override
-  Future<SubjectDescriptor> generateDescriptor(
-      SubjectGenContext<Element2> context) async {
+  Future<SubjectDescriptor> generateDescriptor(SubjectGenContext<Element2> context) async {
     var binding = SubjectDescriptor(uri: context.step.inputId.uri.toString());
 
     var constructedNames = <String>[];

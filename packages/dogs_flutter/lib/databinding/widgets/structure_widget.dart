@@ -62,8 +62,5 @@ class _StructureBindingState<T> extends State<StructureBinding<T>> {
 }
 
 abstract interface class AutoStructureBindingLayout {
-  Widget buildStructureWidget(
-    BuildContext context,
-    StructureBindingController controller,
-  );
+  Widget buildStructureWidget(BuildContext context, StructureBindingController controller);
 }

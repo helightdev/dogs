@@ -17,8 +17,8 @@
 /// Deeply converts a map with dynamic keys to a map with string keys.
 Object? substituteNullValues(Object? value) => switch (value) {
       null => r"$null$",
-      Map() => value.map<String, dynamic>((key, value) =>
-          MapEntry(key.toString(), substituteNullValues(value))),
+      Map() => value.map<String, dynamic>(
+          (key, value) => MapEntry(key.toString(), substituteNullValues(value))),
       List() => value.map((e) => substituteNullValues(e)).toList(),
       _ => value
     };
@@ -26,8 +26,8 @@ Object? substituteNullValues(Object? value) => switch (value) {
 /// Undoes the conversion of [substituteNullValues].
 Object? unsusbstituteNullValues(Object? value) => switch (value) {
       r"$null$" => null,
-      Map() => value.map<String, dynamic>(
-          (key, value) => MapEntry(key, unsusbstituteNullValues(value))),
+      Map() =>
+        value.map<String, dynamic>((key, value) => MapEntry(key, unsusbstituteNullValues(value))),
       List() => value.map((e) => unsusbstituteNullValues(e)).toList(),
       _ => value
     };

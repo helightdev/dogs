@@ -41,21 +41,16 @@ abstract class TreeBaseConverterFactory implements DogLinkable {
   /// [PolymorphicConverter]. This property must be respected by the
   /// implementation of this method and should be passed on to child
   /// converters.
-  DogConverter getConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic);
+  DogConverter getConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic);
 
   @internal
 
   /// Cached polymorphic converter.
-  static final PolymorphicConverter polymorphicConverter =
-      PolymorphicConverter();
+  static final PolymorphicConverter polymorphicConverter = PolymorphicConverter();
 
   /// Returns the converter for a [tree].
-  static DogConverter treeConverter(
-      TypeTree tree, DogEngine engine, bool allowPolymorphic) {
-    if (tree.isTerminal &&
-        tree.base.typeArgument == dynamic &&
-        !tree.isSynthetic) {
+  static DogConverter treeConverter(TypeTree tree, DogEngine engine, bool allowPolymorphic) {
+    if (tree.isTerminal && tree.base.typeArgument == dynamic && !tree.isSynthetic) {
       return polymorphicConverter;
     }
     return engine.getTreeConverter(tree, allowPolymorphic);

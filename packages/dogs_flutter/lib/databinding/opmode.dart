@@ -30,23 +30,17 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
     DogStructureField field,
   ) {
     var binder = field.firstAnnotationOf<FlutterWidgetBinder>();
-    final converter = field.findConverter(
-      structure,
-      engine: engine,
-      nativeConverters: true,
-    )!;
-    binder ??= engine.modeRegistry
-        .entry<FlutterWidgetBinder>()
-        .forConverterNullable(converter, engine);
+    final converter = field.findConverter(structure, engine: engine, nativeConverters: true)!;
+    binder ??= engine.modeRegistry.entry<FlutterWidgetBinder>().forConverterNullable(
+      converter,
+      engine,
+    );
     binder ??= FallbackFlutterBinder.shared;
     FieldBindingContext creator<CAPTURE>() => FieldBindingContext<CAPTURE>(
       engine: engine,
       converter: converter,
       field: field,
-      serializerMode: engine.modeRegistry.nativeSerialization.forConverter(
-        converter,
-        engine,
-      ),
+      serializerMode: engine.modeRegistry.nativeSerialization.forConverter(converter, engine),
       fieldValidator: field.getFieldValidator(
         guardValidator: field.optional ? null : DatabindRequiredGuard(),
       ),
@@ -61,10 +55,7 @@ abstract class FlutterWidgetBinder<T> implements OperationMode<T> {
     FieldBindingContext<T> context,
   );
 
-  Widget buildBindingField(
-    BuildContext context,
-    FieldBindingController<T> controller,
-  );
+  Widget buildBindingField(BuildContext context, FieldBindingController<T> controller);
 
   Widget buildView(T? value) {
     if (value == null) return SizedBox.shrink();

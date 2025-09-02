@@ -7,8 +7,7 @@ SchemaType _extractItemSchemaType(SchemaType type) => switch (type) {
     };
 
 /// A contributor that adds standard collection validation annotations
-class CollectionValidationContributor
-    extends SchemaStructureMaterializationContributor {
+class CollectionValidationContributor extends SchemaStructureMaterializationContributor {
   @override
   DogStructureField transformField(DogStructureField field, SchemaType schema) {
     final minItems = schema[SchemaProperties.minItems];
@@ -27,8 +26,7 @@ class CollectionValidationContributor
 }
 
 /// A contributor that adds standard string validation annotations
-class StringValidationContributor
-    extends SchemaStructureMaterializationContributor {
+class StringValidationContributor extends SchemaStructureMaterializationContributor {
   @override
   DogStructureField transformField(DogStructureField field, SchemaType schema) {
     final target = _extractItemSchemaType(schema);
@@ -57,8 +55,7 @@ class StringValidationContributor
 }
 
 /// A contributor that adds standard number validation annotations
-class NumberValidationContributor
-    extends SchemaStructureMaterializationContributor {
+class NumberValidationContributor extends SchemaStructureMaterializationContributor {
   @override
   DogStructureField transformField(DogStructureField field, SchemaType schema) {
     final target = _extractItemSchemaType(schema);

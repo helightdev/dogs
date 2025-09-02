@@ -11,8 +11,7 @@ class SchemaObjectUnroller {
 
   /// Unrolls the given [type], returning a list of all encountered [SchemaObject]s
   /// and the unrolled root [SchemaType], which will be a [SchemaReference].
-  static (List<SchemaObject> objects, SchemaType unrolled) unroll(
-      SchemaType type) {
+  static (List<SchemaObject> objects, SchemaType unrolled) unroll(SchemaType type) {
     final unroller = SchemaObjectUnroller._();
     final unrolled = unroller._visit(type, false);
     return (unroller._objects.values.toList(), unrolled);
@@ -38,14 +37,12 @@ class SchemaObjectUnroller {
         cloned.properties = <String, dynamic>{};
         for (var inheritedProperty in SchemaProperties.$inheritedProperties) {
           if (type.properties.containsKey(inheritedProperty)) {
-            cloned.properties[inheritedProperty] =
-                type.properties[inheritedProperty];
+            cloned.properties[inheritedProperty] = type.properties[inheritedProperty];
           }
         }
 
         final String hashName =
-            cloned.properties[SchemaProperties.serialName] ??
-                "*${cloned.toSha256()}";
+            cloned.properties[SchemaProperties.serialName] ?? "*${cloned.toSha256()}";
         if (!_objects.containsKey(hashName)) {
           cloned.properties[SchemaProperties.serialName] = hashName;
           _objects[hashName] = _visit(cloned, true) as SchemaObject;
@@ -65,13 +62,10 @@ class SchemaObjectUnroller {
 /// Allows customization of the materialization process by transforming fields
 abstract class SchemaStructureMaterializationContributor {
   /// May be used to transform the generated [DogStructureField] before it is added to the [DogStructure].
-  DogStructureField transformField(
-          DogStructureField field, SchemaType schema) =>
-      field;
+  DogStructureField transformField(DogStructureField field, SchemaType schema) => field;
 
   /// May be used to transform the generated [DogStructure] before it is used in the [MaterializedConverter].
-  DogStructure<Object> transformStructure(
-          DogStructure<Object> structure, SchemaType schema) =>
+  DogStructure<Object> transformStructure(DogStructure<Object> structure, SchemaType schema) =>
       structure;
 }
 
@@ -126,14 +120,12 @@ class DogsMaterializer {
     };
     final (objects, unrolled) = SchemaObjectUnroller.unroll(type);
     if (unrolled is! SchemaReference) {
-      throw DogException(
-          "Root type must have a serial name, most likely the root is not an object."
+      throw DogException("Root type must have a serial name, most likely the root is not an object."
           "Currently only objects are supported as schema roots.");
     }
     final String rootSerialName = unrolled.serialName;
     for (var object in objects) {
-      final String serialName =
-          object.properties[SchemaProperties.serialName]!!;
+      final String serialName = object.properties[SchemaProperties.serialName]!!;
       final fieldNames = object.fields.map((e) => e.name).toList();
       var structure = DogStructure<Object>(
           serialName,
@@ -155,10 +147,9 @@ class DogsMaterializer {
     }
     final converter = usedEngine.findConverterBySerialName(rootSerialName)!;
     final structure = usedEngine.findStructureBySerialName(rootSerialName)!;
-    final nativeMode = usedEngine.modeRegistry.nativeSerialization
-        .forConverter(converter, usedEngine);
-    final serializer = MaterializedConverter(
-        usedEngine, converter, nativeMode, structure, type);
+    final nativeMode =
+        usedEngine.modeRegistry.nativeSerialization.forConverter(converter, usedEngine);
+    final serializer = MaterializedConverter(usedEngine, converter, nativeMode, structure, type);
     return serializer;
   }
 
@@ -187,13 +178,12 @@ class DogsMaterializer {
           _materializeTypeTree(engine, type.itemType, polymorphic),
         ]),
       SchemaArray() => _materializeArray(engine, type, polymorphic),
-      SchemaReference(serialName: final serialName) =>
-        SyntheticTypeCapture(serialName) as TypeTree
+      SchemaReference(serialName: final serialName) => SyntheticTypeCapture(serialName) as TypeTree
     };
   }
 
-  static TypeTree _materializeArray(DogEngine engine, SchemaArray type,
-      TypeTree<dynamic> Function() polymorphic) {
+  static TypeTree _materializeArray(
+      DogEngine engine, SchemaArray type, TypeTree<dynamic> Function() polymorphic) {
     final uniqueItems = type[SchemaProperties.uniqueItems] as bool? ?? false;
     if (uniqueItems) {
       return TypeTreeN<Set>([
@@ -205,11 +195,9 @@ class DogsMaterializer {
     ]);
   }
 
-  static DogStructureField _materializeField(
-      DogEngine fork, SchemaField field) {
+  static DogStructureField _materializeField(DogEngine fork, SchemaField field) {
     var isPolymorphic = false;
-    final materializedTypeTree =
-        _materializeTypeTree(fork, field.type.removeNullable(), () {
+    final materializedTypeTree = _materializeTypeTree(fork, field.type.removeNullable(), () {
       isPolymorphic = true;
       return QualifiedTypeTree.terminal<dynamic>();
     });
@@ -220,12 +208,12 @@ class DogsMaterializer {
 
     final enumProperty = field.type[SchemaProperties.$enum] as List<String>?;
     if (enumProperty != null) {
-      annotations.add(UseConverterInstance(
-          RuntimeEnumConverter(enumProperty, "${field.name}Enum")));
+      annotations
+          .add(UseConverterInstance(RuntimeEnumConverter(enumProperty, "${field.name}Enum")));
     }
 
-    final structureField = DogStructureField(materializedTypeTree, null,
-        field.name, field.type.nullable, true, annotations);
+    final structureField = DogStructureField(
+        materializedTypeTree, null, field.name, field.type.nullable, true, annotations);
     return structureField;
   }
 }

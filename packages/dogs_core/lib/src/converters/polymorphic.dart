@@ -30,8 +30,8 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
 
   @override
   Map<Type, OperationMode Function()> get modes => {
-        NativeSerializerMode: () => NativeSerializerMode.create(
-            serializer: serialize, deserializer: deserialize),
+        NativeSerializerMode: () =>
+            NativeSerializerMode.create(serializer: serialize, deserializer: deserialize),
       };
 
   /// Performs a native deserialization of [value].
@@ -39,9 +39,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     if (value == null) return null;
     final codec = engine.codec;
     // Keep native values as is if they serializeNativeValues is true
-    if (value is! Map &&
-        codec.isNative(value.runtimeType) &&
-        serializeNativeValues) {
+    if (value is! Map && codec.isNative(value.runtimeType) && serializeNativeValues) {
       return value;
     }
 
@@ -60,14 +58,13 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
 
     // If no type value is specified, try to decode the value as a map
     if (typeValue == null) {
-      return value.map(
-          (key, value) => MapEntry(key as String, deserialize(value, engine)));
+      return value.map((key, value) => MapEntry(key as String, deserialize(value, engine)));
     }
 
     // Try to decode the value using the type specified by the type value
     final structure = engine.findStructureBySerialName(typeValue)!;
-    final operation = engine.modeRegistry.nativeSerialization
-        .forType(structure.typeArgument, engine);
+    final operation =
+        engine.modeRegistry.nativeSerialization.forType(structure.typeArgument, engine);
 
     // Decide if the value is encoded using a value discriminator or not and
     // deserialize accordingly.
@@ -87,14 +84,11 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
     final codec = engine.codec;
 
     // Keep native values as is if they serializeNativeValues is true
-    if (value is! Map &&
-        codec.isNative(value.runtimeType) &&
-        serializeNativeValues) {
+    if (value is! Map && codec.isNative(value.runtimeType) && serializeNativeValues) {
       return value;
     }
     final type = value.runtimeType;
-    final operation =
-        engine.modeRegistry.nativeSerialization.forTypeNullable(type, engine);
+    final operation = engine.modeRegistry.nativeSerialization.forTypeNullable(type, engine);
     // Try to handle serialization of non serializable types
     if (operation == null) {
       if (value is Iterable) {
@@ -102,8 +96,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
         return value.map((e) => serialize(e, engine)).toList();
       } else if (value is Map<String, dynamic>) {
         // Try to serialize the value of a runtime map
-        return value
-            .map((key, value) => MapEntry(key, serialize(value, engine)));
+        return value.map((key, value) => MapEntry(key, serialize(value, engine)));
       }
       throw DogSerializerException(
           message: "No operation mode found for type '$type'. "
@@ -119,10 +112,7 @@ class PolymorphicConverter extends DogConverter with OperationMapMixin {
       nativeValue[codec.typeDiscriminator] = structure.serialName;
       return nativeValue;
     } else {
-      return {
-        codec.typeDiscriminator: structure.serialName,
-        codec.valueDiscriminator: nativeValue
-      };
+      return {codec.typeDiscriminator: structure.serialName, codec.valueDiscriminator: nativeValue};
     }
   }
 }

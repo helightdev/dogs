@@ -3,22 +3,16 @@ import 'package:flutter/painting.dart';
 
 List<double> _parseDoubleTuple4(dynamic value, {required String typeName}) {
   if (value is! List) {
-    throw DogSerializerException(
-      message: "Invalid $typeName value, expected a list",
-    );
+    throw DogSerializerException(message: "Invalid $typeName value, expected a list");
   }
   if (value.length != 4) {
-    throw DogSerializerException(
-      message: "Invalid $typeName value, expected 4 values",
-    );
+    throw DogSerializerException(message: "Invalid $typeName value, expected 4 values");
   }
   final [a, b, c, d] = value;
   if (a is num && b is num && c is num && d is num) {
     return [a.toDouble(), b.toDouble(), c.toDouble(), d.toDouble()];
   }
-  throw DogSerializerException(
-    message: "Invalid $typeName value, expected numeric values",
-  );
+  throw DogSerializerException(message: "Invalid $typeName value, expected numeric values");
 }
 
 @linkSerializer
@@ -34,10 +28,7 @@ class FlutterOffsetConverter extends SimpleDogConverter<Offset> {
         return Offset(dx.toDouble(), dy.toDouble());
       }
     }
-    throw DogSerializerException(
-      message: "Invalid offset value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid offset value", converter: this);
   }
 
   @override
@@ -59,10 +50,7 @@ class FlutterSizeConverter extends SimpleDogConverter<Size> {
         return Size(width.toDouble(), height.toDouble());
       }
     }
-    throw DogSerializerException(
-      message: "Invalid size value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid size value", converter: this);
   }
 
   @override
@@ -86,10 +74,7 @@ class FlutterRectConverter extends SimpleDogConverter<Rect> {
   }
 
   static Rect fromValue(dynamic fieldValue) {
-    final [left, top, right, bottom] = _parseDoubleTuple4(
-      fieldValue,
-      typeName: "rect",
-    );
+    final [left, top, right, bottom] = _parseDoubleTuple4(fieldValue, typeName: "rect");
     return Rect.fromLTRB(left, top, right, bottom);
   }
 }
@@ -109,10 +94,7 @@ class FlutterEdgeInsetsConverter extends SimpleDogConverter<EdgeInsets> {
   }
 
   static EdgeInsets fromValue(dynamic fieldValue) {
-    final [left, top, right, bottom] = _parseDoubleTuple4(
-      fieldValue,
-      typeName: "edge insets",
-    );
+    final [left, top, right, bottom] = _parseDoubleTuple4(fieldValue, typeName: "edge insets");
     return EdgeInsets.fromLTRB(left, top, right, bottom);
   }
 }
@@ -126,10 +108,7 @@ class FlutterRadiusConverter extends SimpleDogConverter<Radius> {
     if (value is num) {
       return Radius.circular(value.toDouble());
     }
-    throw DogSerializerException(
-      message: "Invalid radius value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid radius value", converter: this);
   }
 
   @override
@@ -156,12 +135,7 @@ class FlutterBorderRadiusConverter extends SimpleDogConverter<BorderRadius> {
 
   @override
   serialize(BorderRadius value, DogEngine engine) {
-    return [
-      value.topLeft.x,
-      value.topRight.x,
-      value.bottomLeft.x,
-      value.bottomRight.x,
-    ];
+    return [value.topLeft.x, value.topRight.x, value.bottomLeft.x, value.bottomRight.x];
   }
 
   static BorderRadius fromValue(dynamic fieldValue) {
@@ -186,9 +160,7 @@ class FlutterRRectConverter extends SimpleDogConverter<RRect> {
   RRect deserialize(value, DogEngine engine) {
     if (value is Map<String, dynamic>) {
       final rect = FlutterRectConverter.fromValue(value["dimensions"]);
-      final borderRadius = FlutterBorderRadiusConverter.fromValue(
-        value["radii"],
-      );
+      final borderRadius = FlutterBorderRadiusConverter.fromValue(value["radii"]);
       return RRect.fromRectAndCorners(
         rect,
         topLeft: borderRadius.topLeft,
@@ -197,22 +169,14 @@ class FlutterRRectConverter extends SimpleDogConverter<RRect> {
         bottomRight: borderRadius.bottomRight,
       );
     }
-    throw DogSerializerException(
-      message: "Invalid RRect value",
-      converter: this,
-    );
+    throw DogSerializerException(message: "Invalid RRect value", converter: this);
   }
 
   @override
   serialize(RRect value, DogEngine engine) {
     return <String, dynamic>{
       "dimensions": [value.left, value.top, value.right, value.bottom],
-      "radii": [
-        value.tlRadius.x,
-        value.trRadius.x,
-        value.blRadius.x,
-        value.brRadius.x,
-      ],
+      "radii": [value.tlRadius.x, value.trRadius.x, value.blRadius.x, value.brRadius.x],
     };
   }
 }

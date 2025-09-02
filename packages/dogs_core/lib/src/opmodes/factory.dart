@@ -29,13 +29,11 @@ abstract class OperationModeFactory<T extends OperationMode>
 
   /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [schema].
   static OperationModeFactory<T>
-      converterSingleton<TARGET extends DogConverter, T extends OperationMode>(
-              T mode) =>
+      converterSingleton<TARGET extends DogConverter, T extends OperationMode>(T mode) =>
           SingletonConverterOperationModeFactory(TARGET, mode);
 
   /// A [OperationModeFactory] that returns a singleton [OperationMode] for a specific type.
-  static OperationModeFactory<T> typeSingleton<TARGET, T extends OperationMode>(
-          T mode) =>
+  static OperationModeFactory<T> typeSingleton<TARGET, T extends OperationMode>(T mode) =>
       SingletonTypeOperationModeFactory(TARGET, mode);
 
   /// A [OperationModeFactory] that composes multiple other factories.
@@ -89,8 +87,7 @@ class SingletonConverterOperationModeFactory<T extends OperationMode>
 }
 
 /// A [OperationModeFactory] that returns a singleton [OperationMode] for a specific type.
-class SingletonTypeOperationModeFactory<T extends OperationMode>
-    extends OperationModeFactory<T> {
+class SingletonTypeOperationModeFactory<T extends OperationMode> extends OperationModeFactory<T> {
   /// The type of the object to return the [mode] for.
   final Type targetType;
 
@@ -103,8 +100,7 @@ class SingletonTypeOperationModeFactory<T extends OperationMode>
   @override
   T? forConverter(DogConverter converter, DogEngine engine) {
     if (converter.struct?.typeArgument == targetType) return mode;
-    if (converter.typeArgument != dynamic &&
-        converter.typeArgument == targetType) {
+    if (converter.typeArgument != dynamic && converter.typeArgument == targetType) {
       return mode;
     }
     return null;
@@ -112,8 +108,7 @@ class SingletonTypeOperationModeFactory<T extends OperationMode>
 }
 
 /// A [OperationModeFactory] that composes multiple other factories.
-class ComposableOperationModeFactory<T extends OperationMode>
-    extends OperationModeFactory<T> {
+class ComposableOperationModeFactory<T extends OperationMode> extends OperationModeFactory<T> {
   final List<OperationModeFactory> _factories;
 
   /// A [OperationModeFactory] that composes multiple other factories.

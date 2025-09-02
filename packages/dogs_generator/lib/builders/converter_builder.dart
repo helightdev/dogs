@@ -14,19 +14,15 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
   ConverterBuilder() : super(archetype: "conv");
 
   @override
-  Future<SubjectDescriptor> generateDescriptor(
-      SubjectGenContext<Element2> context) async {
+  Future<SubjectDescriptor> generateDescriptor(SubjectGenContext<Element2> context) async {
     var binding = context.defaultDescriptor();
     binding.meta["constructedNames"] =
         context.matches.map((e) => "${e.displayName}Converter").toList();
     return binding;
   }
 
-  static Future generateForEnum(
-      EnumElement2 element,
-      DogsGeneratorSettings settings,
-      SubjectGenContext<Element2> genContext,
-      SubjectCodeContext codeContext) async {
+  static Future generateForEnum(EnumElement2 element, DogsGeneratorSettings settings,
+      SubjectGenContext<Element2> genContext, SubjectCodeContext codeContext) async {
     var emitter = DartEmitter();
     var converterName = "${element.displayName}Converter";
 
@@ -35,28 +31,24 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
 
     var serializableValue = serializableChecker.firstAnnotationOf(element);
     if (serializableValue != null) {
-      var serialNameOverride =
-          serializableValue.getField("serialName")?.toStringValue();
+      var serialNameOverride = serializableValue.getField("serialName")?.toStringValue();
       if (serialNameOverride != null) serialName = serialNameOverride;
     }
 
     String? fallbackFieldName;
-    final fieldValueMap =
-        Map.fromEntries(element.fields2.where((e) => e.isEnumConstant).map((e) {
+    final fieldValueMap = Map.fromEntries(element.fields2.where((e) => e.isEnumConstant).map((e) {
       final actual = e.displayName;
       var serializedName = e.displayName;
       serializedName = settings.enumCase.recase(serializedName);
 
       final propertyName = propertyNameChecker.firstAnnotationOf(e);
       if (propertyName != null) {
-        serializedName =
-            propertyName.getField("name")?.toStringValue() ?? serializedName;
+        serializedName = propertyName.getField("name")?.toStringValue() ?? serializedName;
       }
 
       final enumProperty = enumPropertyChecker.firstAnnotationOf(e);
       if (enumProperty != null) {
-        serializedName =
-            enumProperty.getField("name")?.toStringValue() ?? serializedName;
+        serializedName = enumProperty.getField("name")?.toStringValue() ?? serializedName;
         if (enumProperty.getField("fallback")?.toBoolValue() ?? false) {
           fallbackFieldName = actual;
         }
@@ -71,9 +63,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.extend = Reference(
           "$genAlias.GeneratedEnumDogConverter<${codeContext.typeName(element.thisType)}>");
 
-      builder.constructors.add(Constructor((builder) => builder
-        ..initializers
-            .add(Code("super.structured(serialName: '$serialName')"))));
+      builder.constructors.add(Constructor((builder) =>
+          builder..initializers.add(Code("super.structured(serialName: '$serialName')"))));
 
       builder.methods.add(Method((builder) => builder
         ..name = "values"
@@ -81,14 +72,13 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
         ..returns = Reference("List<String>")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
-        ..body = Code(
-            "[${fieldValueMap.values.map((e) => "'${sqsLiteralEscape(e)}'").join(",")}]")));
+        ..body =
+            Code("[${fieldValueMap.values.map((e) => "'${sqsLiteralEscape(e)}'").join(",")}]")));
 
       builder.methods.add(Method((builder) => builder
         ..name = "toStr"
         ..type = MethodType.getter
-        ..returns = Reference(
-            "$genAlias.EnumToString<${codeContext.typeName(element.thisType)}> ")
+        ..returns = Reference("$genAlias.EnumToString<${codeContext.typeName(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code("""
@@ -101,8 +91,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
       builder.methods.add(Method((builder) => builder
         ..name = "fromStr"
         ..type = MethodType.getter
-        ..returns = Reference(
-            "$genAlias.EnumFromString<${codeContext.typeName(element.thisType)}> ")
+        ..returns =
+            Reference("$genAlias.EnumFromString<${codeContext.typeName(element.thisType)}> ")
         ..annotations.add(CodeExpression(Code("override")))
         ..lambda = true
         ..body = Code("""
@@ -118,13 +108,9 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  static Future generateForClass(
-      ClassElement2 element,
-      DogsGeneratorSettings settings,
-      SubjectGenContext<Element2> genContext,
-      SubjectCodeContext codeContext) async {
-    codeContext.additionalImports
-        .add(AliasImport.gen("package:lyell/lyell.dart"));
+  static Future generateForClass(ClassElement2 element, DogsGeneratorSettings settings,
+      SubjectGenContext<Element2> genContext, SubjectCodeContext codeContext) async {
+    codeContext.additionalImports.add(AliasImport.gen("package:lyell/lyell.dart"));
 
     var constructorName = "";
     var constructor = element.unnamedConstructor2;
@@ -135,39 +121,36 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     StructurizeResult structurized;
     if (constructor != null && constructor.formalParameters.isNotEmpty) {
       // Create constructor based serializable
-      structurized = await structurizeConstructor(element.thisType, settings,
-          constructor, genContext, codeContext.cachedCounter);
+      structurized = await structurizeConstructor(
+          element.thisType, settings, constructor, genContext, codeContext.cachedCounter);
       codeContext.additionalImports.addAll(structurized.imports);
     } else if (constructor != null) {
       // Create bean like property based serializable
-      structurized = await structurizeBean(element.thisType, settings, element,
-          genContext, codeContext.cachedCounter);
+      structurized = await structurizeBean(
+          element.thisType, settings, element, genContext, codeContext.cachedCounter);
       codeContext.additionalImports.addAll(structurized.imports);
       writeBeanFactory(element, structurized, codeContext);
     } else {
       throw Exception("No accessible constructor");
     }
 
-    writeGeneratedConverter(
-        element, structurized, constructorName, codeContext);
+    writeGeneratedConverter(element, structurized, constructorName, codeContext);
     if (structurized.fieldNames.isNotEmpty &&
         structurized.structure.conformity != StructureConformity.bean) {
-      writeGeneratedBuilder(
-          element, structurized, constructorName, codeContext);
-      writeGeneratedExtension(
-          element, structurized, constructorName, codeContext);
+      writeGeneratedBuilder(element, structurized, constructorName, codeContext);
+      writeGeneratedExtension(element, structurized, constructorName, codeContext);
     }
   }
 
-  static void writeBeanFactory(ClassElement2 element,
-      StructurizeResult structurized, SubjectCodeContext codeContext) {
+  static void writeBeanFactory(
+      ClassElement2 element, StructurizeResult structurized, SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var factoryName = "${element.displayName}Factory";
     var clazz = Class((builder) {
       builder.name = factoryName;
       builder.methods.add(Method((builder) {
-        builder.optionalParameters.addAll(structurized.structure.fields
-            .map((e) => Parameter((builder) => builder
+        builder.optionalParameters
+            .addAll(structurized.structure.fields.map((e) => Parameter((builder) => builder
               ..named = true
               ..required = !e.optional
               ..type = Reference(e.type + (e.optional ? "?" : ""))
@@ -186,11 +169,8 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  static void writeGeneratedConverter(
-      ClassElement2 element,
-      StructurizeResult structurized,
-      String constructorName,
-      SubjectCodeContext codeContext) {
+  static void writeGeneratedConverter(ClassElement2 element, StructurizeResult structurized,
+      String constructorName, SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var converterName = "${element.displayName}Converter";
     var clazz = Class((builder) {
@@ -205,8 +185,8 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
             .trim());
       }
 
-      builder.extend = Reference(
-          "$genAlias.DefaultStructureConverter<${codeContext.className(element)}>");
+      builder.extend =
+          Reference("$genAlias.DefaultStructureConverter<${codeContext.className(element)}>");
 
       builder.constructors.add(Constructor((constr) => constr
         ..initializers.add(Code(
@@ -221,11 +201,8 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  static void _defaultProxyMethods(
-      StructurizeResult structurized,
-      ClassBuilder builder,
-      SubjectCodeContext codeContext,
-      ClassElement2 element) {
+  static void _defaultProxyMethods(StructurizeResult structurized, ClassBuilder builder,
+      SubjectCodeContext codeContext, ClassElement2 element) {
     for (var value in structurized.fieldNames) {
       builder.methods.add(Method((builder) => builder
         ..name = "_\$$value"
@@ -246,8 +223,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         ..name = "obj"))
       ..static = true
       ..lambda = true
-      ..body =
-          Code("[${structurized.fieldNames.map((e) => "obj.$e").join(",")}]")));
+      ..body = Code("[${structurized.fieldNames.map((e) => "obj.$e").join(",")}]")));
 
     builder.methods.add(Method((builder) => builder
       ..name = "_activator"
@@ -260,11 +236,8 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
       ..body = Code(structurized.activator)));
   }
 
-  static void _dataclassProxyMethods(
-      ClassBuilder builder,
-      SubjectCodeContext codeContext,
-      ClassElement2 element,
-      StructurizeResult structurized) {
+  static void _dataclassProxyMethods(ClassBuilder builder, SubjectCodeContext codeContext,
+      ClassElement2 element, StructurizeResult structurized) {
     builder.methods.add(Method((builder) => builder
       ..name = "_hash"
       ..returns = Reference("int")
@@ -305,11 +278,8 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
       }).join("&&")})")));
   }
 
-  static void writeGeneratedBuilder(
-      ClassElement2 element,
-      StructurizeResult structurized,
-      String constructorName,
-      SubjectCodeContext codeContext) {
+  static void writeGeneratedBuilder(ClassElement2 element, StructurizeResult structurized,
+      String constructorName, SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var copyWithFrontendName = "${element.displayName}\$Copy";
     var copyClazz = Class((builder) {
@@ -394,8 +364,8 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
         builder.body = Code(bodyBuilder.toString());
       }));
 
-      var hasRebuildHook = TypeChecker.typeNamed(PostRebuildHook)
-          .isAssignableFromType(element.thisType);
+      var hasRebuildHook =
+          TypeChecker.typeNamed(PostRebuildHook).isAssignableFromType(element.thisType);
 
       builder.methods.add(Method((builder) => builder
         ..name = "build"
@@ -413,18 +383,14 @@ return instance;""")));
     codeContext.codeBuffer.writeln(clazz.accept(emitter));
   }
 
-  static void writeGeneratedExtension(
-      ClassElement2 element,
-      StructurizeResult structurized,
-      String constructorName,
-      SubjectCodeContext codeContext) {
+  static void writeGeneratedExtension(ClassElement2 element, StructurizeResult structurized,
+      String constructorName, SubjectCodeContext codeContext) {
     var emitter = DartEmitter();
     var extensionName = "${element.displayName}DogsExtension";
     var builderName = "${element.displayName}Builder";
     var clazz = Extension((builder) {
       builder.name = extensionName;
-      var structureType =
-          Reference(codeContext.cachedCounter.get(element.thisType));
+      var structureType = Reference(codeContext.cachedCounter.get(element.thisType));
       builder.on = structureType;
 
       builder.methods.add(Method((builder) => builder
@@ -464,10 +430,9 @@ return instance;""")));
   }
 
   @override
-  FutureOr<void> generateSubject(SubjectGenContext<Element2> genContext,
-      SubjectCodeContext codeContext) async {
-    codeContext.additionalImports
-        .add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
+  FutureOr<void> generateSubject(
+      SubjectGenContext<Element2> genContext, SubjectCodeContext codeContext) async {
+    codeContext.additionalImports.add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
 
     var settings = await DogsGeneratorSettings.load(genContext.step);
     try {

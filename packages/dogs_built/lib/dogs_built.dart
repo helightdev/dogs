@@ -40,9 +40,7 @@ class DogBuiltRuntimeConverter extends DogConverter with OperationMapMixin {
   final Serializers mapper;
 
   DogBuiltRuntimeConverter(this.serializer, this.mapper)
-      : super(
-            struct: DogStructure.synthetic(serializer.wireName),
-            isAssociated: false);
+      : super(struct: DogStructure.synthetic(serializer.wireName), isAssociated: false);
 
   @override
   Map<Type, OperationMode Function()> get modes => {
@@ -78,19 +76,15 @@ DogPlugin BuiltInteropPlugin({
             "You should not register BuiltInteropPlugin multiple times.");
       }
 
-      serializers =
-          (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+      serializers = (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
+      engine.registerTreeBaseFactory(TypeToken<BuiltList>(), BuiltCollectionFactories.builtList);
+      engine.registerTreeBaseFactory(TypeToken<BuiltSet>(), BuiltCollectionFactories.builtSet);
+      engine.registerTreeBaseFactory(TypeToken<BuiltMap>(), BuiltCollectionFactories.builtMap);
       engine.registerTreeBaseFactory(
-          TypeToken<BuiltList>(), BuiltCollectionFactories.builtList);
+          TypeToken<BuiltListMultimap>(), BuiltCollectionFactories.builtListMultimap);
       engine.registerTreeBaseFactory(
-          TypeToken<BuiltSet>(), BuiltCollectionFactories.builtSet);
-      engine.registerTreeBaseFactory(
-          TypeToken<BuiltMap>(), BuiltCollectionFactories.builtMap);
-      engine.registerTreeBaseFactory(TypeToken<BuiltListMultimap>(),
-          BuiltCollectionFactories.builtListMultimap);
-      engine.registerTreeBaseFactory(TypeToken<BuiltSetMultimap>(),
-          BuiltCollectionFactories.builtSetMultimap);
+          TypeToken<BuiltSetMultimap>(), BuiltCollectionFactories.builtSetMultimap);
 
       engine.setMeta<BuiltInteropCompatibility>(BuiltInteropCompatibility(
         serializers: serializers,
@@ -101,8 +95,7 @@ DogPlugin BuiltInteropPlugin({
         for (var type in serializer.types) {
           if (engine.findStructureByType(type) == null) {
             // TODO: Maybe not all built_value serializers should be registered. May lead to problems with built_collection tree types.
-            DogBuiltRuntimeConverter converter =
-                DogBuiltRuntimeConverter(serializer, serializers);
+            DogBuiltRuntimeConverter converter = DogBuiltRuntimeConverter(serializer, serializers);
             engine.registerAssociatedConverter(converter, type: type);
             engine.registerStructure(converter.struct!, type: type);
             engine.registerShelvedConverter(converter);

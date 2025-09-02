@@ -47,10 +47,7 @@ class Person {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Person &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          age == other.age;
+      other is Person && runtimeType == other.runtimeType && name == other.name && age == other.age;
 
   @override
   int get hashCode => name.hashCode ^ age.hashCode;
@@ -82,10 +79,7 @@ class LatLng {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LatLng &&
-          runtimeType == other.runtimeType &&
-          lat == other.lat &&
-          lng == other.lng;
+      other is LatLng && runtimeType == other.runtimeType && lat == other.lat && lng == other.lng;
 
   @override
   int get hashCode => lat.hashCode ^ lng.hashCode;

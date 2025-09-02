@@ -37,8 +37,7 @@ class DogFirestoreEngine {
 
   String collectionName<T>() {
     var structure = engine.findStructureByType(T)!;
-    var collectionAnnotation =
-        structure.annotationsOf<Collection>().firstOrNull;
+    var collectionAnnotation = structure.annotationsOf<Collection>().firstOrNull;
     if (collectionAnnotation != null) {
       return collectionAnnotation.name ?? structure.serialName;
     }
@@ -47,8 +46,7 @@ class DogFirestoreEngine {
 
   bool checkSubcollection<T, R>() {
     var structure = engine.findStructureByType(R)!;
-    var collectionAnnotation =
-        structure.annotationsOf<Collection>().firstOrNull;
+    var collectionAnnotation = structure.annotationsOf<Collection>().firstOrNull;
     if (collectionAnnotation != null) {
       return collectionAnnotation.subcollectionOf == T;
     }
@@ -57,22 +55,19 @@ class DogFirestoreEngine {
 
   bool checkRootCollection<T>() {
     var structure = engine.findStructureByType(T)!;
-    var collectionAnnotation =
-        structure.annotationsOf<Collection>().firstOrNull;
+    var collectionAnnotation = structure.annotationsOf<Collection>().firstOrNull;
     if (collectionAnnotation != null) {
       return collectionAnnotation.subcollectionOf == null;
     }
     return true;
   }
 
-  CollectionReference<T> applyConverter<T>(
-      CollectionReference<Map<String, dynamic>> collection) {
+  CollectionReference<T> applyConverter<T>(CollectionReference<Map<String, dynamic>> collection) {
     return collection.withConverter<T>(
         fromFirestore: (snapshot, options) {
           return mode.forType(T, engine).deserialize(snapshot, engine);
         },
-        toFirestore: (value, options) =>
-            mode.forType(T, engine).serialize(value, engine));
+        toFirestore: (value, options) => mode.forType(T, engine).serialize(value, engine));
   }
 
   CollectionReference<T> collection<T>([String? path]) {

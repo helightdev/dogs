@@ -42,13 +42,10 @@ abstract class NativeSerializerMode<T> implements OperationMode<T> {
           required T Function(dynamic value, DogEngine engine) deserializer,
           bool canSerializeNull = false}) =>
       _InlineNativeSerializer(
-          serializer: serializer,
-          deserializer: deserializer,
-          canSerializeNull: canSerializeNull);
+          serializer: serializer, deserializer: deserializer, canSerializeNull: canSerializeNull);
 }
 
-class _InlineNativeSerializer<T> extends NativeSerializerMode<T>
-    with TypeCaptureMixin<T> {
+class _InlineNativeSerializer<T> extends NativeSerializerMode<T> with TypeCaptureMixin<T> {
   dynamic Function(T value, DogEngine engine) serializer;
   T Function(dynamic value, DogEngine engine) deserializer;
   @override

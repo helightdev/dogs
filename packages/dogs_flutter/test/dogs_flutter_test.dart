@@ -29,12 +29,7 @@ void main() {
     });
 
     test("Serialize EdgeInsets", () {
-      final edgeInsets = EdgeInsets.only(
-        left: 10,
-        top: 20,
-        right: 30,
-        bottom: 40,
-      );
+      final edgeInsets = EdgeInsets.only(left: 10, top: 20, right: 30, bottom: 40);
       final encoded = dogs.toJson<EdgeInsets>(edgeInsets);
       final decoded = dogs.fromJson<EdgeInsets>(encoded);
       expect(decoded, edgeInsets);
@@ -76,11 +71,7 @@ void main() {
     });
 
     test("Serialize Single Activator", () {
-      var activator = SingleActivator(
-        LogicalKeyboardKey.keyA,
-        control: true,
-        shift: true,
-      );
+      var activator = SingleActivator(LogicalKeyboardKey.keyA, control: true, shift: true);
       final encoded = dogs.toJson<SingleActivator>(activator);
       final decoded = dogs.fromJson<SingleActivator>(encoded);
       expect(decoded.trigger, activator.trigger);

@@ -3,22 +3,17 @@ import 'package:dogs_flutter/databinding/style.dart';
 import 'package:dogs_flutter/schema/custom_tags.dart';
 import 'package:flutter/widgets.dart';
 
-class SchemaBindingStyleContributor
-    implements SchemaStructureMaterializationContributor {
+class SchemaBindingStyleContributor implements SchemaStructureMaterializationContributor {
   @override
   DogStructureField transformField(DogStructureField field, SchemaType schema) {
     if (DogsFlutterSchemaTags.bindingStyleTags.any((e) => schema[e] != null)) {
       Widget? prefix;
       if (schema[DogsFlutterSchemaTags.bindingStylePrefix] != null) {
-        prefix = Text(
-          schema[DogsFlutterSchemaTags.bindingStylePrefix] as String,
-        );
+        prefix = Text(schema[DogsFlutterSchemaTags.bindingStylePrefix] as String);
       }
       Widget? suffix;
       if (schema[DogsFlutterSchemaTags.bindingStyleSuffix] != null) {
-        suffix = Text(
-          schema[DogsFlutterSchemaTags.bindingStyleSuffix] as String,
-        );
+        suffix = Text(schema[DogsFlutterSchemaTags.bindingStyleSuffix] as String);
       }
 
       final style = BindingStyle(
@@ -34,10 +29,7 @@ class SchemaBindingStyleContributor
   }
 
   @override
-  DogStructure<Object> transformStructure(
-    DogStructure<Object> structure,
-    SchemaType schema,
-  ) {
+  DogStructure<Object> transformStructure(DogStructure<Object> structure, SchemaType schema) {
     return structure;
   }
 }

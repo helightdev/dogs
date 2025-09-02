@@ -13,8 +13,7 @@ import 'package:dogs_flutter/structure/theme.dart' as gen3;
 import 'package:dogs_core/src/converter.dart' as gen4;
 import 'package:dogs_flutter/databinding/style.dart';
 
-class BindingStyleConverter
-    extends gen.DefaultStructureConverter<gen2.BindingStyle> {
+class BindingStyleConverter extends gen.DefaultStructureConverter<gen2.BindingStyle> {
   BindingStyleConverter()
     : super(
         struct: const gen.DogStructure<gen2.BindingStyle>(
@@ -209,8 +208,7 @@ class BindingStyleBuilder implements BindingStyle$Copy {
       this.suffix = suffix as gen1.Widget?;
     }
     if (extensions != #sentinel) {
-      this.extensions =
-          extensions as gen0.List<gen2.BindingStyleExtension<dynamic>>;
+      this.extensions = extensions as gen0.List<gen2.BindingStyleExtension<dynamic>>;
     }
     return build();
   }

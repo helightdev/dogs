@@ -56,8 +56,7 @@ void main() {
     expect(structure.proxy.getField(a, 0), "Workout");
     expect(structure.proxy.getField(a, 1), "Lets get fit");
     expect(structure.proxy.getField(a, 2), true);
-    expect(structure.proxy.getField(a, 3),
-        containsAllInOrder(["sport", "lifestyle"]));
+    expect(structure.proxy.getField(a, 3), containsAllInOrder(["sport", "lifestyle"]));
     expect(structure.proxy.getField(a, 3), isA<Set>());
 
     final b = structure.proxy.instantiate([
