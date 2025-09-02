@@ -18,7 +18,8 @@ import "package:dogs_core/dogs_core.dart";
 
 /// Factory for [OperationMode]s.
 abstract class OperationModeFactory<T extends OperationMode>
-    with TypeCaptureMixin<T> {
+    with TypeCaptureMixin<T>
+    implements DogLinkable {
   /// Factory for [OperationMode]s.
   const OperationModeFactory();
 
@@ -61,6 +62,11 @@ abstract class OperationModeFactory<T extends OperationMode>
         this,
         if (slot == ModeFactoryInsertionSlot.last) insertion,
       ]);
+
+  @override
+  void link(DogEngine engine, bool emitChanges) {
+    engine.insertModeFactory(this, emitChangeToStream: false);
+  }
 }
 
 /// A [OperationModeFactory] that returns a single [OperationMode] for a [DogConverter] of [schema].

@@ -20,7 +20,7 @@ import "package:meta/meta.dart";
 /// Base class for converters used by the [DogEngine].
 /// Contains structure information about the type being serialized and provides
 /// an [OperationMode] mapping for all supported operation modes.
-abstract class DogConverter<T> extends TypeCapture<T> {
+abstract class DogConverter<T> extends TypeCapture<T> implements DogLinkable {
   /// If the converter is associated with the type [T].
   /// Used by the [DogEngine.registerAutomatic] to determine if a converter
   /// should be automatically registered to [T].
@@ -55,6 +55,11 @@ abstract class DogConverter<T> extends TypeCapture<T> {
   /// visitor. For such cases, use [SchemaType.clone] to create a new instance.
   SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
       SchemaType.any;
+
+  @override
+  void link(DogEngine engine, bool emitChanges) {
+    engine.registerAutomatic(this, emitChanges);
+  }
 }
 
 // TODO: Future replacement for @serializable
@@ -80,13 +85,17 @@ class Serializable {
 const serializable = Structure(serializable: true);
 
 @internal
-class LinkSerializer {
-  const LinkSerializer();
+class DogLinked {
+  const DogLinked();
 }
 
 /// Manually marks a custom dog converter implementation for linking.
 /// The dogs_generator will then include an instance of this converter.
-const linkSerializer = LinkSerializer();
+const linkSerializer = DogLinked();
+
+/// Automatically links a [DogLinkable] object when running the generated
+/// dogs plugin.
+const dogsLinked = DogLinked();
 
 /// Supplier function for default values.
 typedef DefaultValueSupplier = dynamic Function();

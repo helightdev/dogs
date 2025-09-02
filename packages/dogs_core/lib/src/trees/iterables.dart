@@ -20,7 +20,9 @@ class _IterableTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   final BASE Function<T>(Iterable<T> entries) wrap;
   final Iterable Function<T>(BASE value) unwrap;
 
-  _IterableTreeBaseConverterFactory(this.wrap, this.unwrap);
+  _IterableTreeBaseConverterFactory(this.wrap, this.unwrap) {
+    baseType = TypeToken<BASE>();
+  }
 
   @override
   DogConverter getConverter(

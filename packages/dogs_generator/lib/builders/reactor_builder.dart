@@ -30,30 +30,36 @@ class DogReactorBuilder extends SubjectReactorBuilder {
 
     List<String> descriptorNames = [];
     for (var descriptor in descriptors) {
-      var names = (descriptor.meta["converterNames"] as List).cast<String>();
-      for (var name in names) {
+      var constructedNames =
+          ((descriptor.meta["constructedNames"] ?? []) as List).cast<String>();
+      var variableNames =
+          ((descriptor.meta["variableNames"] ?? []) as List).cast<String>();
+      for (var name in constructedNames) {
         var type = await getDartType(step, descriptor.uri, name);
-        descriptorNames.add(code.cachedCounter.get(type));
+        descriptorNames.add("${code.cachedCounter.get(type)}()");
       }
-
+      for (var name in variableNames) {
+        var alias = code.cachedCounter.getImportAlias(descriptor.uri);
+        descriptorNames.add("${alias.prefix}.$name");
+      }
       code.codeBuffer.writeln("export '${descriptor.uri}';");
     }
-    var converterNameArr = "[${descriptorNames.map((e) => "$e()").join(", ")}]";
+    var converterNameArr = "[${descriptorNames.join(", ")}]";
     if (!isLibrary) {
       code.codeBuffer.writeln("""
        
 DogPlugin GeneratedModelsPlugin() => (engine) {
-  engine.registerAllConverters($converterNameArr);
+  engine.linkAll($converterNameArr);
 };""");
     } else {
       var fieldName = ReCase("$packageName converters").camelCase;
       var funcName = ReCase("$packageName Generated Models Plugin").pascalCase;
       code.codeBuffer.writeln("""
       
-final $fieldName = <DogConverter>$converterNameArr;
+final $fieldName = <DogLinkable>$converterNameArr;
       
 DogPlugin $funcName() => (engine) {
-  engine.registerAllConverters($fieldName);
+  engine.linkAll($fieldName);
 };""");
       print("Wrote: ${code.codeBuffer}");
     }

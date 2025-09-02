@@ -13,6 +13,8 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+import "dart:developer";
+
 import "package:dogs_core/dogs_core.dart";
 import "package:meta/meta.dart";
 
@@ -21,7 +23,19 @@ part "trees/iterables.dart";
 part "trees/nargs.dart";
 
 /// A factory for [DogConverter]s that are derived from a [TypeTree].
-abstract class TreeBaseConverterFactory {
+abstract class TreeBaseConverterFactory implements DogLinkable {
+  /// The base type this factory handles. Must be set before linking.
+  TypeCapture? baseType;
+
+  @override
+  void link(DogEngine engine, bool emitChanges) {
+    if (baseType == null) {
+      log("Cannot link TreeBaseConverterFactory without a baseType, please manually register the factory.");
+      return;
+    }
+    engine.registerTreeBaseFactory(baseType!, this);
+  }
+
   /// Resolves the converter for a [tree].
   /// [allowPolymorphic] defines if the returned converter may be a
   /// [PolymorphicConverter]. This property must be respected by the

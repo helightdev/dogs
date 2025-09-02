@@ -20,7 +20,9 @@ class _NargsTreeBaseConverterFactory<BASE> extends TreeBaseConverterFactory {
   final int nargs;
   final Function captureFactory;
 
-  _NargsTreeBaseConverterFactory(this.nargs, this.captureFactory);
+  _NargsTreeBaseConverterFactory(this.nargs, this.captureFactory) {
+    baseType = TypeToken<BASE>();
+  }
 
   @override
   DogConverter getConverter(

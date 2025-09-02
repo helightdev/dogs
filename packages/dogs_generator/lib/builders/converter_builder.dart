@@ -17,7 +17,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
   Future<SubjectDescriptor> generateDescriptor(
       SubjectGenContext<Element2> context) async {
     var binding = context.defaultDescriptor();
-    binding.meta["converterNames"] =
+    binding.meta["constructedNames"] =
         context.matches.map((e) => "${e.displayName}Converter").toList();
     return binding;
   }

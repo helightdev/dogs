@@ -412,6 +412,14 @@ class DogEngine with MetadataMixin {
     populateChange();
   }
 
+  /// Registers multiple linkables using [DogLinkable.link].
+  void linkAll(Iterable<DogLinkable> linkables) {
+    for (var linkable in linkables) {
+      linkable.link(this, false);
+    }
+    populateChange();
+  }
+
   /// Registers and associates a single [TreeBaseConverterFactory] with [Type].
   void registerTreeBaseFactory(
       TypeCapture type, TreeBaseConverterFactory factory) {
@@ -637,4 +645,10 @@ enum IterableKind {
 
   /// A value that is not iterable or none of the above types
   none
+}
+
+/// Interfaces for classes that support linking using [dogsLinked]
+abstract interface class DogLinkable {
+  /// Links this instance to the given [engine].
+  void link(DogEngine engine, bool emitChanges);
 }

@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+import 'dart:collection';
+
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/dogs_validation.dart';
 
@@ -280,3 +282,35 @@ class CombinedEnumTestModel with Dataclass<CombinedEnumTestModel> {
     return CombinedEnumTestModel(enumA: EnumA.c, enumB: EnumB.c);
   }
 }
+
+class CustomList<E> extends ListBase<E>{
+
+  List<E> backing = [];
+
+  CustomList();
+  CustomList.from(this.backing);
+
+  @override
+  int get length => backing.length;
+
+  @override
+  set length(int newLength) {
+    backing.length = newLength;
+  }
+
+  @override
+  E operator [](int index) {
+    return backing[index];
+  }
+
+  @override
+  void operator []=(int index, E value) {
+    backing[index] = value;
+  }
+}
+
+@dogsLinked
+final customListConverter = TreeBaseConverterFactory.createIterableFactory<CustomList>(
+  wrap: <T>(entries) => CustomList<T>.from(entries.toList()),
+  unwrap: <T>(list) => list
+);
