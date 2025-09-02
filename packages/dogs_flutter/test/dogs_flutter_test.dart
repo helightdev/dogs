@@ -30,9 +30,9 @@ void main() {
       expect(decoded, rect);
       dogs.describe<Rect>();
 
-      final authored = [0,10,20,25.5];
+      final authored = [0, 10, 20, 25.5];
       final decodedAuthored = dogs.fromNative<Rect>(authored);
-      expect(decodedAuthored, Rect.fromLTRB(0,10,20,25.5));
+      expect(decodedAuthored, Rect.fromLTRB(0, 10, 20, 25.5));
     });
 
     test("Serialize EdgeInsets", () {
@@ -42,9 +42,9 @@ void main() {
       expect(decoded, edgeInsets);
       dogs.describe<EdgeInsets>();
 
-      final authored = [10,20,30,40.5];
+      final authored = [10, 20, 30, 40.5];
       final decodedAuthored = dogs.fromNative<EdgeInsets>(authored);
-      expect(decodedAuthored, EdgeInsets.fromLTRB(10,20,30,40.5));
+      expect(decodedAuthored, EdgeInsets.fromLTRB(10, 20, 30, 40.5));
     });
 
     test("Serialize RRect", () {
@@ -72,7 +72,12 @@ void main() {
     });
 
     test("Serialize BoxConstraints", () {
-      final constraints = BoxConstraints(minWidth: 10, maxWidth: 100, minHeight: 20, maxHeight: 200);
+      final constraints = BoxConstraints(
+        minWidth: 10,
+        maxWidth: 100,
+        minHeight: 20,
+        maxHeight: 200,
+      );
       final encoded = dogs.toJson<BoxConstraints>(constraints);
       final decoded = dogs.fromJson<BoxConstraints>(encoded);
       expect(decoded, constraints);

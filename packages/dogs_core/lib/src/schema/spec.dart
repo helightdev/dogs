@@ -26,22 +26,23 @@ import "package:meta/meta.dart";
 /// Extension methods for schema generation on [DogEngine].
 extension SchemaGenerateExtension on DogEngine {
   /// Generates a schema for the given type [T].
-  SchemaType describe<T>({SchemaConfig config = const SchemaConfig()}) {
-    if (SchemaPass.current != null) {
-      final converter = findAssociatedConverter(T);
-      if (converter == null) {
-        throw DogException("No converter found for type $T");
-      }
-      return converter.describeOutput(this, config);
+  SchemaType describe<T>({TypeTree? tree, SchemaConfig config = const SchemaConfig()}) {
+    final DogConverter? converter;
+    if (tree == null) {
+      converter = findAssociatedConverter(T);
+    } else {
+      converter = getTreeConverter(tree);
     }
 
-    final converter = findAssociatedConverter(T);
     if (converter == null) {
       throw DogException("No converter found for type $T");
     }
-    return SchemaPass.run((pass) {
+
+    if (SchemaPass.current != null) {
       return converter.describeOutput(this, config);
-    });
+    }
+
+    return SchemaPass.run((pass) => converter!.describeOutput(this, config));
   }
 
   /// Materializes a [type] schema, creating a [MaterializedConverter] that
