@@ -24,10 +24,15 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+typedef StyleBuilder = BindingStyle Function(BindingStyle);
+typedef FieldBindingWrapper =
+    Widget Function(BuildContext context, Widget inner);
+
 class FieldBinding extends StatefulWidget {
   final FieldBindingController? controller;
   final String? field;
-  final BindingStyle Function(BindingStyle)? styleBuilder;
+  final StyleBuilder? styleBuilder;
+  final FieldBindingWrapper? wrapper;
   final BindingStyle? style;
   final ValidationTrigger? validationTrigger;
   final AnnotationTransformer? annotationTransformer;
@@ -42,6 +47,7 @@ class FieldBinding extends StatefulWidget {
     this.validationTrigger,
     this.annotationTransformer,
     this.binder,
+    this.wrapper,
   });
 
   @override
@@ -80,11 +86,10 @@ class _FieldBindingState extends State<FieldBinding> {
     }
 
     generatedStyle = BindingStyle(label: controller!.fieldName);
-    fieldStyleData =
-        controller!.bindingContext.field
-            .annotationsOf<BindingStyleModifier>()
-            .map((e) => e.createStyleOverrides())
-            .toList();
+    fieldStyleData = controller!.bindingContext.field
+        .annotationsOf<BindingStyleModifier>()
+        .map((e) => e.createStyleOverrides())
+        .toList();
     styleBuilder =
         widget.styleBuilder ?? (style) => widget.style?.merge(style) ?? style;
   }
@@ -132,7 +137,12 @@ class _FieldBindingState extends State<FieldBinding> {
       annotationTransformer: annotationTransformer,
       child: Builder(
         builder: (context) {
-          return currentBinder.buildBindingField(context, currentController);
+          var child = currentBinder.buildBindingField(
+            context,
+            currentController,
+          );
+          if (widget.wrapper != null) child = widget.wrapper!(context, child);
+          return child;
         },
       ),
     );
@@ -151,8 +161,8 @@ class BindingTheme extends InheritedWidget {
   });
 
   static BindingTheme of(BuildContext context) {
-    final BindingTheme? result =
-        context.dependOnInheritedWidgetOfExactType<BindingTheme>();
+    final BindingTheme? result = context
+        .dependOnInheritedWidgetOfExactType<BindingTheme>();
     assert(result != null, 'No BindingContext found in context');
     return result!;
   }

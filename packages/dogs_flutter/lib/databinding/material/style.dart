@@ -5,14 +5,27 @@ import 'package:flutter/material.dart';
 
 class MaterialBindingStyle extends BindingStyleExtension<MaterialBindingStyle>
     implements StructureMetadata, BindingStyleModifier {
-  final InputDecorationTheme? inputTheme;
+  final InputDecorationThemeData? inputTheme;
+  final InputDecorationThemeData? sectionTheme;
   final ButtonStyle? buttonStyle;
 
-  const MaterialBindingStyle({this.inputTheme, this.buttonStyle});
+  const MaterialBindingStyle({
+    this.inputTheme,
+    this.buttonStyle,
+    this.sectionTheme,
+  });
 
-  const MaterialBindingStyle.inputTheme(this.inputTheme) : buttonStyle = null;
+  const MaterialBindingStyle.inputTheme(this.inputTheme)
+    : buttonStyle = null,
+      sectionTheme = null;
 
-  const MaterialBindingStyle.buttonStyle(this.buttonStyle) : inputTheme = null;
+  const MaterialBindingStyle.buttonStyle(this.buttonStyle)
+    : inputTheme = null,
+      sectionTheme = null;
+
+  const MaterialBindingStyle.sectionTheme(this.sectionTheme)
+    : inputTheme = null,
+      buttonStyle = null;
 
   @override
   MaterialBindingStyle merge(MaterialBindingStyle? other) {
@@ -20,6 +33,8 @@ class MaterialBindingStyle extends BindingStyleExtension<MaterialBindingStyle>
     return MaterialBindingStyle(
       inputTheme: inputTheme?.merge(other.inputTheme) ?? other.inputTheme,
       buttonStyle: buttonStyle?.merge(other.buttonStyle) ?? other.buttonStyle,
+      sectionTheme:
+          sectionTheme?.merge(other.sectionTheme) ?? other.sectionTheme,
     );
   }
 
@@ -35,14 +50,7 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     bool includeHelper = true,
     bool includeHint = true,
   }) {
-    final currentTheme = Theme.of(context);
-    final theme =
-        getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
-    final inputTheme =
-        theme.inputTheme?.merge(
-          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
-        ) ??
-        currentTheme.inputDecorationTheme;
+    var (inputTheme, style, theme) = resolveTheme(context);
     final decoration = InputDecoration()
         .applyDefaults(inputTheme)
         .copyWith(
@@ -61,17 +69,25 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     Object? labelOverride = #none,
     String? errorText,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
+    var (inputTheme, style, theme) = resolveTheme(context);
+    if (style.sectionTheme != null) {
+      inputTheme = style.sectionTheme!.merge(inputTheme);
+    } else {
+      inputTheme = inputTheme.copyWith(border: OutlineInputBorder());
+    }
+    var decoration = InputDecoration()
+        .applyDefaults(inputTheme)
+        .copyWith(
           labelText: labelOverride == #none ? label : labelOverride.toString(),
           errorText: errorText,
-          helperText: helper
-        ),
-        child: widget,
-      ),
+          helperText: helper,
+          prefix: prefix,
+          suffix: suffix,
+        );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: InputDecorator(decoration: decoration, child: widget),
     );
   }
 
@@ -86,22 +102,12 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
     }
 
     if (label == null) return null;
-    final currentTheme = Theme.of(context);
-    final theme =
-        getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
-    final inputTheme =
-        theme.inputTheme?.merge(
-          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
-        ) ??
-        InputDecorationTheme(data: currentTheme.inputDecorationTheme);
+    final (inputTheme, bindingStyle, theme) = resolveTheme(context);
     var style = inputTheme.labelStyle;
-
     if (isError) {
       style =
-          inputTheme.errorStyle ??
-          TextStyle(color: currentTheme.colorScheme.error);
+          inputTheme.errorStyle ?? TextStyle(color: theme.colorScheme.error);
     }
-
     return Text(label, style: style);
   }
 
@@ -114,37 +120,33 @@ extension BindingStyleDataMaterialExtension on BindingStyle {
 
   Widget? buildMaterialHelperText(BuildContext context) {
     if (helper == null) return null;
-    final currentTheme = Theme.of(context);
-    final theme =
-        getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
-    final inputTheme =
-        theme.inputTheme?.merge(
-          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
-        ) ??
-        InputDecorationTheme(data: currentTheme.inputDecorationTheme);
+    final (inputTheme, style, theme) = resolveTheme(context);
     return Text(helper!, style: inputTheme.helperStyle);
   }
 
   Widget? buildMaterialErrorText(BuildContext context, String? error) {
     if (error == null) return null;
-    final currentTheme = Theme.of(context);
-    final theme =
-        getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
-    final inputTheme =
-        theme.inputTheme?.merge(
-          InputDecorationTheme(data: currentTheme.inputDecorationTheme),
-        ) ??
-        InputDecorationTheme(data: currentTheme.inputDecorationTheme);
-
+    final (inputTheme, style, theme) = resolveTheme(context);
     return DefaultTextStyle(
-      style:
-          inputTheme.errorStyle ??
-          TextStyle(color: currentTheme.colorScheme.error),
+      style: inputTheme.errorStyle ?? TextStyle(color: theme.colorScheme.error),
       child: Text(error),
     );
   }
 
   ButtonStyle? getMaterialButtonStyle() {
     return getExtension<MaterialBindingStyle>()?.buttonStyle;
+  }
+
+  (InputDecorationThemeData, MaterialBindingStyle, ThemeData) resolveTheme(
+    BuildContext context,
+  ) {
+    final currentTheme = Theme.of(context);
+    final style =
+        getExtension<MaterialBindingStyle>() ?? MaterialBindingStyle();
+    var inputTheme = currentTheme.inputDecorationTheme;
+    if (style.inputTheme != null) {
+      inputTheme = style.inputTheme!.merge(inputTheme);
+    }
+    return (inputTheme, style, currentTheme);
   }
 }

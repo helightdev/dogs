@@ -38,7 +38,7 @@ class Person with Dataclass<Person> {
 
   @LengthRange(min: 3)
   @MaterialBindingStyle.inputTheme(
-    InputDecorationTheme(border: OutlineInputBorder()),
+    InputDecorationThemeData(border: OutlineInputBorder()),
   )
   String password;
 

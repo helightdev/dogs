@@ -34,7 +34,7 @@ class PersonConverter extends gen.DefaultStructureConverter<gen8.Person> {
             gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'tag', true, false, []),
             gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'password', false, false, [
               gen1.LengthRange(min: 3),
-              gen3.MaterialBindingStyle.inputTheme(gen4.InputDecorationTheme(border: gen5.OutlineInputBorder())),
+              gen3.MaterialBindingStyle.inputTheme(gen4.InputDecorationThemeData(border: gen5.OutlineInputBorder())),
             ]),
             gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'confirm', false, false, [
               gen6.MustMatch('password'),
