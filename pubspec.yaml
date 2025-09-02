@@ -22,7 +22,7 @@ melos:
     copy-readme:
       name: copy-readme
       description: 'Copies the root-Readme to the dogs package'
-      run: cp README.md packages/dogs/README.md
+      run: cp README.md packages/dogs_core/README.md
     analyze:
       name: analyze
       description: 'Runs the dart analyzer'
