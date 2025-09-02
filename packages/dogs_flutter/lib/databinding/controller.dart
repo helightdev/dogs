@@ -27,7 +27,7 @@ import 'package:flutter/widgets.dart';
 /// This controller handles field validation, error states, and value management for
 /// a structured data type [T]. It provides a way to bind form fields to a data structure
 /// while maintaining validation and error handling.
-class StructureBindingController<T> implements FieldBindingParent {
+class StructureBindingController<T> with MetadataMixin implements FieldBindingParent {
   /// The underlying data structure definition that describes the shape of the data.
   final DogStructure structure;
 
