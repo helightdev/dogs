@@ -1,5 +1,6 @@
 import 'package:dogs_core/dogs_converter_utils.dart';
 import 'package:dogs_core/dogs_core.dart';
+import 'package:dogs_core/dogs_schema.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,9 +67,14 @@ class FlutterLogicalKeyConverter extends SimpleDogConverter<LogicalKeyboardKey> 
   }
 
   @override
-  serialize(LogicalKeyboardKey value, DogEngine engine) {
-    return {"id": value.keyId, "label": value.keyLabel};
-  }
+  serialize(LogicalKeyboardKey value, DogEngine engine) => {
+    "id": value.keyId,
+    "label": value.keyLabel,
+  };
+
+  @override
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) =>
+      object({"id": integer(), "label": string()});
 }
 
 @linkSerializer
@@ -90,15 +96,24 @@ class FlutterSingleActivatorConverter extends SimpleDogConverter<SingleActivator
   }
 
   @override
-  serialize(SingleActivator value, DogEngine engine) {
-    return {
-      "k": engine.toNative<LogicalKeyboardKey>(value.trigger),
-      "c": value.control,
-      "s": value.shift,
-      "a": value.alt,
-      "m": value.meta,
-      "r": value.includeRepeats,
-      "n": value.numLock.index,
-    };
-  }
+  serialize(SingleActivator value, DogEngine engine) => {
+    "k": engine.toNative<LogicalKeyboardKey>(value.trigger),
+    "c": value.control,
+    "s": value.shift,
+    "a": value.alt,
+    "m": value.meta,
+    "r": value.includeRepeats,
+    "n": value.numLock.index,
+  };
+
+  @override
+  SchemaType describeOutput(DogEngine engine, SchemaConfig config) => object({
+    "k": engine.describe<LogicalKeyboardKey>(),
+    "c": boolean(),
+    "s": boolean(),
+    "a": boolean(),
+    "m": boolean(),
+    "r": boolean(),
+    "n": integer(),
+  });
 }

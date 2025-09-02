@@ -14,7 +14,7 @@ export 'package:dogs_flutter/converters/geometric.dart';
 export 'package:dogs_flutter/converters/various.dart';
 export 'package:dogs_flutter/databinding/style.conv.g.dart';
 
-final dogsFlutterConverters = <DogConverter>[
+final dogsFlutterConverters = <DogLinkable>[
   gen0.FlutterOffsetConverter(),
   gen0.FlutterSizeConverter(),
   gen0.FlutterRectConverter(),
@@ -22,6 +22,9 @@ final dogsFlutterConverters = <DogConverter>[
   gen0.FlutterRadiusConverter(),
   gen0.FlutterBorderRadiusConverter(),
   gen0.FlutterRRectConverter(),
+  gen0.FlutterBoxConstraintsConverter(),
+  gen0.FlutterAlignmentConverter(),
+  gen0.FlutterMatrix4Converter(),
   gen1.FlutterColorConverter(),
   gen1.FlutterLogicalKeyConverter(),
   gen1.FlutterSingleActivatorConverter(),
@@ -29,5 +32,5 @@ final dogsFlutterConverters = <DogConverter>[
 ];
 
 DogPlugin DogsFlutterGeneratedModelsPlugin() => (engine) {
-  engine.registerAllConverters(dogsFlutterConverters);
+  engine.linkAll(dogsFlutterConverters);
 };
