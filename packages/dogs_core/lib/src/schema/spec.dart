@@ -27,6 +27,14 @@ import "package:meta/meta.dart";
 extension SchemaGenerateExtension on DogEngine {
   /// Generates a schema for the given type [T].
   SchemaType describe<T>({SchemaConfig config = const SchemaConfig()}) {
+    if (SchemaPass.current != null) {
+      final converter = findAssociatedConverter(T);
+      if (converter == null) {
+        throw DogException("No converter found for type $T");
+      }
+      return converter.describeOutput(this, config);
+    }
+
     final converter = findAssociatedConverter(T);
     if (converter == null) {
       throw DogException("No converter found for type $T");
