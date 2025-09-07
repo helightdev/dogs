@@ -12,14 +12,14 @@ icon: octicons/book-16
 
     ---
     Generates a structure for the target. `serialName` can be specified to change the identifier used.
-    `serializable: false` can be used to only generate structures.
+    `serializable: true` can be used to also make the structure serializable.
 
 -   ![](https://img.shields.io/badge/class-seagreen){ .lg .middle }
     ![](https://img.shields.io/badge/enum-orange){ .lg .middle }
     __Serializable / serializable__
 
     ---
-    Aliases for serializable `Structures`. `serialName` can be specified to change the identifier used.
+    Aliases for serializable `Structure`s. `serialName` can be specified to change the identifier used.
 
 -   ![](https://img.shields.io/badge/enum--constant-orange){ .lg .middle }
     __EnumProperty__
