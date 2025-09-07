@@ -1,5 +1,5 @@
 ---
-icon: octicons/book-16
+icon: octicons/zap-16
 ---
 
 ``` { .dart .focus hl_lines="3 6-9" }
@@ -60,5 +60,3 @@ IconButton(
 
 We then add a button to share the entry as JSON. The `dogs.toJson` method is used to convert the entry to a JSON string,
 that is then display in a dialog.
-
-

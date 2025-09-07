@@ -208,3 +208,16 @@ iframe {
     padding: 0;
     background-color: black;
 }
+
+div.cards li {
+    border-radius: var(--md-border-radius) !important;
+}
+
+div.cards hr {
+    margin-top: 0.5em !important;
+    margin-bottom: 0.5em !important;
+}
+
+div.cards strong:first-of-type {
+    margin-left: 4px;
+}

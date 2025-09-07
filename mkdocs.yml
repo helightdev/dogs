@@ -28,6 +28,7 @@ nav:
     - index.md
     - installation.md
     - quickstart.md
+    - annotation_catalog.md
     - "Basics":
       - basics/serializables.md
       - basics/serialization.md

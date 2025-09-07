@@ -17,52 +17,22 @@ Map<Type, OperationMode<DateTime> Function()> get modes => {
 ```
 
 ## Mode Registry
-Operation modes are always resolved through the `OperationModeRegistry`. This registry serves
+Operation modes are always resolved through the engine's `OperationModeRegistry`. This registry serves
 as a central cache and mapping from converters and types to operation mode entries. Child engines
 will always have their independent operation mode registry.
 
-!!! success "Modes do not need to be registered!"
-    The registration is handled on the fly by the `OperationModeRegistry`. If a mode is not found
-    in the registry, the registry will try to infer the operation mode using the `OperationModeFactory`
-
-## Operation Mode Factories
-If an operation mode is not found in the registry, the registry will try infer the operation mode
-using the `OperationModeFactory` list of its engine. Those factories can provide operation modes
-for converters that do not define the required operation modes themselves. Using this mechanism,
-packages can provide operation modes for converters that are not under their control. This feature
-is used by the `dogs_forms` package to provide operation modes for the `AutoFormFieldFactory`.
-
-The `OperationModeFactory` class defines several static functions that can be used to create
-and combine factories for specific converter or structure types.
-```dart title="Default factory composition for dogs_forms"
-final defaultFormFactories = OperationModeFactory.compose<AutoFormFieldFactory>([
-  OperationModeFactory.converterSingleton<NativeRetentionConverter<String>,
-      AutoFormFieldFactory>(const TextFieldFormFieldFactory()),
-  // [...]
-  ListFieldOperationModeFactory<String>(const TextFieldFormFieldFactory()),
-  ListFieldOperationModeFactory<int>(const IntTextFieldFormFieldFactory()),
-  // [...]
-  EnumOpmodeFactory(),
-  StructureOpmodeFactory(),
-]);
-
-```
+Operation modes are always first looked up in the registry. For misses, the registry will first try to resolve
+the operation mode through the converter itself. If the converter does not provide the requested
+operation mode, the registry will try to infer the operation mode using the `OperationModeFactory`s registered in
+the current engine instance.
 
 ## Examples
 ### NativeSerializerMode
 The native operation mode is the most basic operation mode. It is used to serialize and deserialize
-objects to and from dart maps that can be directly serialized to json. Most of the dogs library
+objects to and from dart maps that can be directly serialized to JSON. Most of the dogs library
 is built around this operation mode.
-
-!!! tip "Not only for serialization!"
-    The operation modes are not only used to serialize and deserialize objects,
-    but can also to provide additional functionality like validation and introspection.
 
 ### ValidationMode
 The validation operation mode is used to validate objects. It is used by the `@validate` annotation
 and can be used to validate objects before they are serialized, or to validate objects that have
 been deserialized.
-
-### AutoFormFieldFactory
-While the name may be a bit misleading, the auto form field factory is also an operation mode that
-is used to derive flutter form fields from structures.

@@ -1,4 +1,4 @@
-# Schemas ![Static Badge](https://img.shields.io/badge/experimental-orange)
+# Schemas ![](https://img.shields.io/badge/experimental-orange)
 
 The library can **generate schema definitions** for all converters that support it and can **also regenerate**
 'materialize' **structures** from those **schema definitions**. The schema definition format is JSON-based and a
