@@ -1,4 +1,4 @@
-# Converters
+# Custom Converters
 
 Dog provides a number of built-in converters for common types. However, you may need to create your
 own converters for custom types. This section will explain how to create custom converters and how
