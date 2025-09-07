@@ -1,3 +1,7 @@
+## 3.1.5-dev.7
+
+ - Update a dependency to the latest release.
+
 ## 3.1.5-dev.6
 
  - **REFACTOR**: remove library names for consistency across files and reformat the workspace.

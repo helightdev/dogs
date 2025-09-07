@@ -1,3 +1,7 @@
+## 10.0.0-dev.7
+
+ - **REFACTOR**: rearrange files for a more consistent layout and extract annotations from converter.dart.
+
 ## 10.0.0-dev.6
 
  - **REFACTOR**: remove library names for consistency across files and reformat the workspace.

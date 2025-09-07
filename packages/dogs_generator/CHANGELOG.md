@@ -1,3 +1,7 @@
+## 7.0.0-dev.7
+
+ - Update a dependency to the latest release.
+
 ## 7.0.0-dev.6
 
  - **REFACTOR**: improve code formatting and readability.

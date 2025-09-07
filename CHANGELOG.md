@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v10.0.0-dev.7`](#dogs_core---v1000-dev7)
+ - [`dogs_flutter` - `v0.0.1-dev.9`](#dogs_flutter---v001-dev9)
+ - [`dogs_generator` - `v7.0.0-dev.7`](#dogs_generator---v700-dev7)
+ - [`dogs_built` - `v3.1.5-dev.7`](#dogs_built---v315-dev7)
+ - [`dogs_firestore` - `v0.3.0-dev.7`](#dogs_firestore---v030-dev7)
+ - [`dogs_cbor` - `v2.3.5-dev.7`](#dogs_cbor---v235-dev7)
+ - [`dogs_toml` - `v2.3.5-dev.7`](#dogs_toml---v235-dev7)
+ - [`dogs_yaml` - `v2.3.5-dev.7`](#dogs_yaml---v235-dev7)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v7.0.0-dev.7`
+ - `dogs_built` - `v3.1.5-dev.7`
+ - `dogs_firestore` - `v0.3.0-dev.7`
+ - `dogs_cbor` - `v2.3.5-dev.7`
+ - `dogs_toml` - `v2.3.5-dev.7`
+ - `dogs_yaml` - `v2.3.5-dev.7`
+
+---
+
+#### `dogs_core` - `v10.0.0-dev.7`
+
+ - **REFACTOR**: rearrange files for a more consistent layout and extract annotations from converter.dart.
+
+#### `dogs_flutter` - `v0.0.1-dev.9`
+
+ - **REFACTOR**: rearrange files for a more consistent layout and extract annotations from converter.dart.
+
+
 ## 2025-09-03
 
 ### Changes
