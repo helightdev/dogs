@@ -1,3 +1,7 @@
+## 0.0.1-dev.10
+
+ - Update a dependency to the latest release.
+
 ## 0.0.1-dev.9
 
  - **REFACTOR**: rearrange files for a more consistent layout and extract annotations from converter.dart.

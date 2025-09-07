@@ -11,6 +11,59 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 Packages with breaking changes:
 
+ - [`dogs_built` - `v3.1.5`](#dogs_built---v315)
+ - [`dogs_cbor` - `v2.3.5`](#dogs_cbor---v235)
+ - [`dogs_core` - `v10.0.0`](#dogs_core---v1000)
+ - [`dogs_generator` - `v7.0.0`](#dogs_generator---v700)
+ - [`dogs_toml` - `v2.3.5`](#dogs_toml---v235)
+ - [`dogs_yaml` - `v2.3.5`](#dogs_yaml---v235)
+
+Packages with other changes:
+
+ - [`dogs_firestore` - `v0.3.0`](#dogs_firestore---v030)
+ - [`dogs_flutter` - `v0.0.1-dev.10`](#dogs_flutter---v001-dev10)
+
+Packages graduated to a stable release (see pre-releases prior to the stable version for changelog entries):
+
+ - `dogs_built` - `v3.1.5`
+ - `dogs_cbor` - `v2.3.5`
+ - `dogs_core` - `v10.0.0`
+ - `dogs_firestore` - `v0.3.0`
+ - `dogs_generator` - `v7.0.0`
+ - `dogs_toml` - `v2.3.5`
+ - `dogs_yaml` - `v2.3.5`
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_flutter` - `v0.0.1-dev.10`
+
+---
+
+#### `dogs_built` - `v3.1.5`
+
+#### `dogs_cbor` - `v2.3.5`
+
+#### `dogs_core` - `v10.0.0`
+
+#### `dogs_generator` - `v7.0.0`
+
+#### `dogs_toml` - `v2.3.5`
+
+#### `dogs_yaml` - `v2.3.5`
+
+#### `dogs_firestore` - `v0.3.0`
+
+
+## 2025-09-07
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
  - There are no breaking changes in this release.
 
 Packages with other changes:

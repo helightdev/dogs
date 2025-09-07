@@ -1,3 +1,7 @@
+## 10.0.0
+
+ - Graduate package to a stable release. See pre-releases prior to this version for changelog entries.
+
 ## 10.0.0-dev.7
 
  - **REFACTOR**: rearrange files for a more consistent layout and extract annotations from converter.dart.
