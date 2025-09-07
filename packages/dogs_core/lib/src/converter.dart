@@ -15,7 +15,6 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
-import "package:meta/meta.dart";
 
 /// Base class for converters used by the [DogEngine].
 /// Contains structure information about the type being serialized and provides
