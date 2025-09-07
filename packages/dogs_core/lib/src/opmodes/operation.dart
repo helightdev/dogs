@@ -18,8 +18,8 @@ import "dart:collection";
 
 import "package:dogs_core/dogs_core.dart";
 
-export "modes/native.dart";
-export "modes/validation.dart";
+export "native.dart";
+export "../validation/opmode.dart";
 
 /// An operation mode exposed by a [DogConverter].
 ///

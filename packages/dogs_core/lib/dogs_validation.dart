@@ -16,11 +16,11 @@
 
 library;
 
-export "validation/blank.dart";
-export "validation/description.dart";
-export "validation/length.dart";
-export "validation/must_match.dart" hide MustMatchCacheEntry;
-export "validation/range.dart";
-export "validation/regex.dart" hide RegexCacheEntry;
-export "validation/size.dart";
-export "validation/validated.dart" hide ValidatedCacheEntry;
+export "src/validation/validators/blank.dart";
+export "src/schema/annotations/description.dart";
+export "src/validation/validators/length.dart";
+export "src/validation/validators/must_match.dart" hide MustMatchCacheEntry;
+export "src/validation/validators/range.dart";
+export "src/validation/validators/regex.dart" hide RegexCacheEntry;
+export "src/validation/validators/size.dart";
+export "src/validation/validators/validated.dart" hide ValidatedCacheEntry;

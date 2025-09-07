@@ -17,7 +17,7 @@
  */
 
 import 'package:dogs_core/dogs_core.dart';
-import 'package:dogs_core/validation/length.dart';
+import 'package:dogs_core/dogs_validation.dart';
 import 'package:smoke_test_0/special.dart';
 
 abstract class ABInterface {}

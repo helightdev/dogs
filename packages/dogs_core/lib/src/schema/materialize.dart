@@ -3,7 +3,7 @@ import "dart:math";
 
 import "package:dogs_core/dogs_core.dart";
 import "package:dogs_core/dogs_schema.dart";
-import "package:dogs_core/src/schema/contributors.dart";
+import "package:dogs_core/src/validation/contributors.dart";
 
 /// Unrolls schema objects, extracting all nested objects into separate definitions.
 class SchemaObjectUnroller {

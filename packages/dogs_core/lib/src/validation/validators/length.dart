@@ -15,7 +15,7 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
-import "package:dogs_core/validation/utils.dart";
+import "package:dogs_core/src/validation/utils.dart";
 
 /// A [FieldValidator] that restricts the length of a [String].
 class LengthRange extends FieldValidator<bool> implements SchemaFieldVisitor, StructureMetadata {

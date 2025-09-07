@@ -10,7 +10,7 @@ import 'dart:core' as gen0;
 import 'package:flutter/src/widgets/framework.dart' as gen1;
 import 'package:dogs_flutter/databinding/style.dart' as gen2;
 import 'package:dogs_flutter/structure/theme.dart' as gen3;
-import 'package:dogs_core/src/converter.dart' as gen4;
+import 'package:dogs_core/src/annotations.dart' as gen4;
 import 'package:dogs_flutter/databinding/style.dart';
 
 class BindingStyleConverter extends gen.DefaultStructureConverter<gen2.BindingStyle> {
@@ -20,55 +20,14 @@ class BindingStyleConverter extends gen.DefaultStructureConverter<gen2.BindingSt
           'BindingStyle',
           gen.StructureConformity.basic,
           [
+            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'label', true, false, []),
+            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'hint', true, false, []),
+            gen.DogStructureField(gen.QualifiedTerminal<gen0.String>(), null, 'helper', true, false, []),
+            gen.DogStructureField(gen.QualifiedTerminal<gen1.Widget>(), null, 'prefix', true, true, []),
+            gen.DogStructureField(gen.QualifiedTerminal<gen1.Widget>(), null, 'suffix', true, true, []),
             gen.DogStructureField(
-              gen.QualifiedTerminal<gen0.String>(),
-              null,
-              'label',
-              true,
-              false,
-              [],
-            ),
-            gen.DogStructureField(
-              gen.QualifiedTerminal<gen0.String>(),
-              null,
-              'hint',
-              true,
-              false,
-              [],
-            ),
-            gen.DogStructureField(
-              gen.QualifiedTerminal<gen0.String>(),
-              null,
-              'helper',
-              true,
-              false,
-              [],
-            ),
-            gen.DogStructureField(
-              gen.QualifiedTerminal<gen1.Widget>(),
-              null,
-              'prefix',
-              true,
-              true,
-              [],
-            ),
-            gen.DogStructureField(
-              gen.QualifiedTerminal<gen1.Widget>(),
-              null,
-              'suffix',
-              true,
-              true,
-              [],
-            ),
-            gen.DogStructureField(
-              gen.QualifiedTypeTreeN<
-                gen0.List<gen2.BindingStyleExtension<dynamic>>,
-                gen0.List<dynamic>
-              >([
-                gen.QualifiedTypeTreeN<
-                  gen2.BindingStyleExtension<dynamic>,
-                  gen2.BindingStyleExtension<dynamic>
-                >([gen.QualifiedTerminal<dynamic>()]),
+              gen.QualifiedTypeTreeN<gen0.List<gen2.BindingStyleExtension<dynamic>>, gen0.List<dynamic>>([
+                gen.QualifiedTypeTreeN<gen2.BindingStyleExtension<dynamic>, gen2.BindingStyleExtension<dynamic>>([gen.QualifiedTerminal<dynamic>()]),
               ]),
               null,
               'extensions',
@@ -78,14 +37,7 @@ class BindingStyleConverter extends gen.DefaultStructureConverter<gen2.BindingSt
             ),
           ],
           [gen4.Structure()],
-          gen.ObjectFactoryStructureProxy<gen2.BindingStyle>(_activator, [
-            _$label,
-            _$hint,
-            _$helper,
-            _$prefix,
-            _$suffix,
-            _$extensions,
-          ], _values),
+          gen.ObjectFactoryStructureProxy<gen2.BindingStyle>(_activator, [_$label, _$hint, _$helper, _$prefix, _$suffix, _$extensions], _values),
         ),
       );
 
@@ -101,36 +53,15 @@ class BindingStyleConverter extends gen.DefaultStructureConverter<gen2.BindingSt
 
   static dynamic _$extensions(gen2.BindingStyle obj) => obj.extensions;
 
-  static List<dynamic> _values(gen2.BindingStyle obj) => [
-    obj.label,
-    obj.hint,
-    obj.helper,
-    obj.prefix,
-    obj.suffix,
-    obj.extensions,
-  ];
+  static List<dynamic> _values(gen2.BindingStyle obj) => [obj.label, obj.hint, obj.helper, obj.prefix, obj.suffix, obj.extensions];
 
   static gen2.BindingStyle _activator(List list) {
-    return gen2.BindingStyle(
-      label: list[0],
-      hint: list[1],
-      helper: list[2],
-      prefix: list[3],
-      suffix: list[4],
-      extensions: list[5],
-    );
+    return gen2.BindingStyle(label: list[0], hint: list[1], helper: list[2], prefix: list[3], suffix: list[4], extensions: list[5]);
   }
 }
 
 abstract class BindingStyle$Copy {
-  gen2.BindingStyle call({
-    gen0.String? label,
-    gen0.String? hint,
-    gen0.String? helper,
-    gen1.Widget? prefix,
-    gen1.Widget? suffix,
-    gen0.List<gen2.BindingStyleExtension<dynamic>>? extensions,
-  });
+  gen2.BindingStyle call({gen0.String? label, gen0.String? hint, gen0.String? helper, gen1.Widget? prefix, gen1.Widget? suffix, gen0.List<gen2.BindingStyleExtension<dynamic>>? extensions});
 }
 
 class BindingStyleBuilder implements BindingStyle$Copy {
@@ -184,14 +115,7 @@ class BindingStyleBuilder implements BindingStyle$Copy {
   gen0.List<gen2.BindingStyleExtension<dynamic>> get extensions => $values[5];
 
   @override
-  gen2.BindingStyle call({
-    Object? label = #sentinel,
-    Object? hint = #sentinel,
-    Object? helper = #sentinel,
-    Object? prefix = #sentinel,
-    Object? suffix = #sentinel,
-    Object? extensions = #sentinel,
-  }) {
+  gen2.BindingStyle call({Object? label = #sentinel, Object? hint = #sentinel, Object? helper = #sentinel, Object? prefix = #sentinel, Object? suffix = #sentinel, Object? extensions = #sentinel}) {
     if (label != #sentinel) {
       this.label = label as gen0.String?;
     }

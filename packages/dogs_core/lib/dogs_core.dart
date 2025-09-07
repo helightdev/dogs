@@ -21,6 +21,7 @@ library;
 // Include lyell
 export "package:lyell/lyell.dart";
 
+export "src/annotations.dart";
 export "src/codec.dart";
 export "src/converter.dart";
 export "src/converters/common.dart";

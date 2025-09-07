@@ -15,7 +15,7 @@
  */
 
 import "package:dogs_core/dogs_core.dart";
-import "package:dogs_core/validation/utils.dart";
+import "package:dogs_core/src/validation/utils.dart";
 
 /// A [FieldValidator] that restricts a numeric type to be positive.
 const positive = Range(min: 0, minExclusive: true);
