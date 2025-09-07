@@ -2,7 +2,7 @@
 name: Question
 about: Ask a question regarding Dogs
 title: '[Question]'
-labels: 'type: help wanted'
+labels: 'help-wanted'
 assignees: ''
 
 ---
