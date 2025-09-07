@@ -1,7 +1,7 @@
 name: Bug Report
 description: Report a bug
 title: '[Bug] '
-labels: ['bug']
+labels: [ 'bug' ]
 assignees:
   - helightdev
 body:
@@ -40,8 +40,8 @@ body:
         2. Click on '....'
         3. Scroll down to '....'
         4. See error
-      validations:
-        required: false
+    validations:
+      required: false
   - type: textarea
     id: expected_behavior
     attributes:
