@@ -16,6 +16,7 @@ import 'conformities.dart';
 import 'models.dart';
 
 part "parts/conformities.dart";
+part 'parts/dynamic.dart';
 part "parts/encodings.dart";
 part "parts/models.dart";
 part "parts/operations.dart";
@@ -35,6 +36,7 @@ Future main() async {
     test("Validators", testValidators);
     test("Trees", testTrees);
     test("Projection", testProjection);
+    group("Dynamic", testDynamic);
 
     group("Encodings", () {
       test("Json", () {

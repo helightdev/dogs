@@ -126,6 +126,10 @@ extension DogEngineShortcuts on DogEngine {
       final converter = getTreeConverter(tree);
       result =
           modeRegistry.nativeSerialization.forConverter(converter, this).serialize(value, this);
+    } else if (T == dynamic && type == null) {
+      final converter = findConverter(PolymorphicConverter)!;
+      result =
+          modeRegistry.nativeSerialization.forConverter(converter, this).serialize(value, this);
     } else {
       result = convertIterableToNative(value, type ?? T, kind);
     }
@@ -152,7 +156,13 @@ extension DogEngineShortcuts on DogEngine {
       return modeRegistry.nativeSerialization
           .forConverter(converter, this)
           .deserialize(value, this);
+    } else if (T == dynamic && type == null) {
+      final converter = findConverter(PolymorphicConverter)!;
+      return modeRegistry.nativeSerialization
+          .forConverter(converter, this)
+          .deserialize(value, this);
     }
+
     return convertIterableFromNative(value, type ?? T, kind);
   }
 
