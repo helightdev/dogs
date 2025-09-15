@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-15
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_core` - `v10.1.0`](#dogs_core---v1010)
+ - [`dogs_generator` - `v7.0.1`](#dogs_generator---v701)
+ - [`dogs_flutter` - `v0.0.1-dev.11`](#dogs_flutter---v001-dev11)
+ - [`dogs_built` - `v3.1.6`](#dogs_built---v316)
+ - [`dogs_firestore` - `v0.3.0+1`](#dogs_firestore---v0301)
+ - [`dogs_cbor` - `v2.3.6`](#dogs_cbor---v236)
+ - [`dogs_toml` - `v2.3.6`](#dogs_toml---v236)
+ - [`dogs_yaml` - `v2.3.6`](#dogs_yaml---v236)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_generator` - `v7.0.1`
+ - `dogs_flutter` - `v0.0.1-dev.11`
+ - `dogs_built` - `v3.1.6`
+ - `dogs_firestore` - `v0.3.0+1`
+ - `dogs_cbor` - `v2.3.6`
+ - `dogs_toml` - `v2.3.6`
+ - `dogs_yaml` - `v2.3.6`
+
+---
+
+#### `dogs_core` - `v10.1.0`
+
+ - **FIX**: handle exceptions when collecting structure converters.
+ - **FEAT**: properly enable dynamic serialization again for plain serialization calls.
+
+
 ## 2025-09-07
 
 ### Changes

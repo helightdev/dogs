@@ -1,3 +1,8 @@
+## 10.1.0
+
+ - **FIX**: handle exceptions when collecting structure converters.
+ - **FEAT**: properly enable dynamic serialization again for plain serialization calls.
+
 ## 10.0.0
 
  - Graduate package to a stable release. See pre-releases prior to this version for changelog entries.
