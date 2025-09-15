@@ -31,8 +31,19 @@ class StructureHarbinger<T> {
   /// Creates a new [StructureHarbinger] for the supplied [structure] and [engine].
   StructureHarbinger(this.structure, this.engine) {
     fieldConverters = structure.fields.map((e) {
-      final fieldConverter = getConverter(engine, structure, e);
-      return (field: e, converter: fieldConverter);
+      try {
+        final fieldConverter = getConverter(engine, structure, e);
+        return (field: e, converter: fieldConverter);
+      } on DogException catch (exception, trace) {
+        throw DogFieldSerializerException(
+          "Exception occurred while collecting structure converters",
+          null,
+          structure,
+          e,
+          exception,
+          trace,
+        );
+      }
     }).toList();
   }
 
