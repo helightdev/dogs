@@ -194,8 +194,7 @@ class StructureNativeSerialization<T> extends NativeSerializerMode<T> with TypeC
                 if (fieldType.isAssignable(mapValue)) {
                   args.add(mapValue);
                 } else {
-                  if (fieldType.isAssignable(mapValue)) return fieldType;
-                  return engine.codec.primitiveCoercion.coerce(fieldType, fieldType, fieldName);
+                  args.add(engine.codec.primitiveCoercion.coerce(fieldType, mapValue, fieldName));
                 }
               }
             } on DogFieldSerializerException {

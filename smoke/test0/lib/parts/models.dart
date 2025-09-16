@@ -97,6 +97,12 @@ void testModels() {
     expect(classMap.containsKey("a"), false);
     expect(classMap.containsKey("b"), false);
   });
+
+  test("Structure Coercion", () {
+    final parsed = dogs.fromNative<CoerceTestModel>(CoerceTestModel.variant0Input);
+    final expected = CoerceTestModel.variant0();
+    expect(parsed.a, expected.a);
+  });
 }
 
 void testSingleModel<T>(T Function() a, T Function() b) => group("$T", () {

@@ -22,7 +22,6 @@ import 'package:dogs_core/dogs_validation.dart';
 import 'models.dart';
 
 class ConvertableA {
-
   int a;
   int b;
 
@@ -31,38 +30,35 @@ class ConvertableA {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ConvertableA &&
-          runtimeType == other.runtimeType &&
-          a == other.a &&
-          b == other.b;
+      other is ConvertableA && runtimeType == other.runtimeType && a == other.a && b == other.b;
 
   @override
   int get hashCode => a.hashCode ^ b.hashCode;
 }
 
 @linkSerializer
-class ConvertableAConverter extends DogConverter<ConvertableA> with OperationMapMixin<ConvertableA> {
-
+class ConvertableAConverter extends DogConverter<ConvertableA>
+    with OperationMapMixin<ConvertableA> {
   @override
   Map<Type, OperationMode<ConvertableA> Function()> get modes => {
-    NativeSerializerMode: () => NativeSerializerMode.create(
-        serializer: (value, engine) => [value.a, value.b],
-        deserializer: (value, engine) => ConvertableA(value[0], value[1]),
-    ),
-  };
+        NativeSerializerMode: () => NativeSerializerMode.create(
+              serializer: (value, engine) => [value.a, value.b],
+              deserializer: (value, engine) => ConvertableA(value[0], value[1]),
+            ),
+      };
 
-  ConvertableAConverter() : super(
-    struct: DogStructure<ConvertableA>.synthetic("ConvertableA")
-  );
+  ConvertableAConverter() : super(struct: DogStructure<ConvertableA>.synthetic("ConvertableA"));
 }
 
 @serializable
 enum EnumA {
-  a,b,c,longNameValue;
+  a,
+  b,
+  c,
+  longNameValue;
 }
 
 abstract class CustomBase {
-
   // This should also be copied!
   @PropertyName("_id")
   final String id;
@@ -73,7 +69,6 @@ abstract class CustomBase {
 }
 
 abstract class SecondLevelBase extends CustomBase {
-
   @LengthRange(max: 100)
   final String name;
 
@@ -85,7 +80,6 @@ abstract class SecondLevelBase extends CustomBase {
 
 @serializable
 class CustomBaseImpl extends SecondLevelBase with Dataclass<CustomBaseImpl> {
-
   final String tag;
 
   CustomBaseImpl({
@@ -101,12 +95,10 @@ class CustomBaseImpl extends SecondLevelBase with Dataclass<CustomBaseImpl> {
   factory CustomBaseImpl.variant1() {
     return CustomBaseImpl(id: "id1", name: "Helga", tag: "tag");
   }
-
 }
 
 @serializable
 class InitializersModel with Dataclass<InitializersModel> {
-
   final String id;
 
   InitializersModel(String? id) : id = id ?? "default";
@@ -121,8 +113,7 @@ class InitializersModel with Dataclass<InitializersModel> {
 }
 
 @serializable
-class ConstructorBodyModel with Dataclass<ConstructorBodyModel>{
-
+class ConstructorBodyModel with Dataclass<ConstructorBodyModel> {
   late String id;
   late String data;
 
@@ -142,11 +133,10 @@ class ConstructorBodyModel with Dataclass<ConstructorBodyModel>{
 
 @serializable
 class GetterModel with Dataclass<GetterModel> {
-
   late String id;
   String? _buffer;
 
-  GetterModel(String? id, String data)  {
+  GetterModel(String? id, String data) {
     this.id = id ?? "default";
     _buffer = data;
   }
@@ -165,7 +155,6 @@ class GetterModel with Dataclass<GetterModel> {
 
 @serializable
 class DefaultValueModel with Dataclass<DefaultValueModel> {
-
   @DefaultValue("default")
   String a;
 
@@ -190,13 +179,14 @@ class DefaultValueModel with Dataclass<DefaultValueModel> {
   }
 
   static int bSupplier() => 420;
-  static ModelA cSupplier() => ModelA.variant0();
 
+  static ModelA cSupplier() => ModelA.variant0();
 }
 
 @Serializable(serialName: "MyCustomSerialName")
 class CustomSerialName {
   String value;
+
   CustomSerialName(this.value);
 }
 
@@ -263,7 +253,6 @@ enum EnumB {
   c;
 }
 
-
 @serializable
 class CombinedEnumTestModel with Dataclass<CombinedEnumTestModel> {
   EnumA enumA;
@@ -283,11 +272,28 @@ class CombinedEnumTestModel with Dataclass<CombinedEnumTestModel> {
   }
 }
 
-class CustomList<E> extends ListBase<E>{
+@serializable
+class CoerceTestModel with Dataclass<CoerceTestModel> {
+  final int a;
+  final double b;
 
+  CoerceTestModel(this.a, this.b);
+
+  static CoerceTestModel variant0() {
+    return CoerceTestModel(42, 3);
+  }
+
+  static Map<String,dynamic> variant0Input = {
+    "a": 42.2,
+    "b": 3
+  };
+}
+
+class CustomList<E> extends ListBase<E> {
   List<E> backing = [];
 
   CustomList();
+
   CustomList.from(this.backing);
 
   @override
@@ -311,6 +317,4 @@ class CustomList<E> extends ListBase<E>{
 
 @dogsLinked
 final customListConverter = TreeBaseConverterFactory.createIterableFactory<CustomList>(
-  wrap: <T>(entries) => CustomList<T>.from(entries.toList()),
-  unwrap: <T>(list) => list
-);
+    wrap: <T>(entries) => CustomList<T>.from(entries.toList()), unwrap: <T>(list) => list);
