@@ -56,13 +56,12 @@ class _TestFormState extends State<TestForm> {
       "subfield2": integer(),
       "address": object({"street": string(), "city": string()}),
     }).serialName("SubSchema").formHelper("Helper").formLabel("My Label"),
-    "list":
-        array(integer())
-            .formLabel("My List")
-            .formHelper("Hello World!")
-            .itemLabel("Item")
-            .addButtonLabel("Add Item")
-            .optional(),
+    "list": array(integer())
+        .formLabel("My List")
+        .formHelper("Hello World!")
+        .itemLabel("Item")
+        .addButtonLabel("Add Item")
+        .optional(),
 
     "complexList": object({
       "field1": string(),

@@ -26,10 +26,9 @@ void main() async {
 
 ValueNotifier<ThemeMode> themeMode = ValueNotifier(ThemeMode.dark);
 
-HighlighterTheme get highlighterTheme =>
-    themeMode.value == ThemeMode.dark
-        ? highlighterThemeDark
-        : highlighterThemLight;
+HighlighterTheme get highlighterTheme => themeMode.value == ThemeMode.dark
+    ? highlighterThemeDark
+    : highlighterThemLight;
 
 final router = GoRouter(
   routes: [
@@ -179,8 +178,8 @@ class _BinderPreviewState extends State<BinderPreview> {
                       ).convert(jsonDecode(json));
                       showDialog(
                         context: context,
-                        builder:
-                            (context) => CodeExportDialog(code: prettyJson),
+                        builder: (context) =>
+                            CodeExportDialog(code: prettyJson),
                       );
                     },
                     child: Text("Submit"),
@@ -219,24 +218,23 @@ class DogsDemoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: themeMode,
-      builder:
-          (context, value, child) => MaterialApp.router(
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.indigo,
-                brightness: Brightness.light,
-              ),
-            ),
-            darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.indigo,
-                brightness: Brightness.dark,
-              ),
-            ),
-            themeMode: value,
-            routerConfig: router,
+      builder: (context, value, child) => MaterialApp.router(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.light,
           ),
+        ),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.dark,
+          ),
+        ),
+        themeMode: value,
+        routerConfig: router,
+      ),
     );
   }
 }

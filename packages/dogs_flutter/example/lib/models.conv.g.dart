@@ -189,14 +189,14 @@ class PersonConverter extends gen.DefaultStructureConverter<gen8.Person> {
 
   static bool _equals(gen8.Person a, gen8.Person b) =>
       (a.name == b.name &&
-          a.surname == b.surname &&
-          a.age == b.age &&
-          a.balance == b.balance &&
-          a.isActive == b.isActive &&
-          a.plate == b.plate &&
-          a.tag == b.tag &&
-          a.password == b.password &&
-          a.confirm == b.confirm);
+      a.surname == b.surname &&
+      a.age == b.age &&
+      a.balance == b.balance &&
+      a.isActive == b.isActive &&
+      a.plate == b.plate &&
+      a.tag == b.tag &&
+      a.password == b.password &&
+      a.confirm == b.confirm);
 }
 
 abstract class Person$Copy {
