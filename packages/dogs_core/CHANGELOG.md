@@ -1,3 +1,7 @@
+## 10.1.1
+
+ - **FIX**: primitive coercion logic for primitive fields.
+
 ## 10.1.0
 
  - **FIX**: handle exceptions when collecting structure converters.
