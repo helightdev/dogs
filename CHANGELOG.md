@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-09-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_generator` - `v7.1.0`](#dogs_generator---v710)
+
+---
+
+#### `dogs_generator` - `v7.1.0`
+
+ - **FEAT**: add nullable accessors option to DogsGeneratorSettings.
+
+
 ## 2025-09-16
 
 ### Changes

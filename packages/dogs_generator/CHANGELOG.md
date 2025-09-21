@@ -1,3 +1,7 @@
+## 7.1.0
+
+ - **FEAT**: add nullable accessors option to DogsGeneratorSettings.
+
 ## 7.0.2
 
  - Update a dependency to the latest release.
