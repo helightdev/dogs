@@ -137,7 +137,7 @@ class ConverterBuilder extends DogsAdapter<Serializable> {
     writeGeneratedConverter(element, structurized, constructorName, codeContext);
     if (structurized.fieldNames.isNotEmpty &&
         structurized.structure.conformity != StructureConformity.bean) {
-      writeGeneratedBuilder(element, structurized, constructorName, codeContext);
+      writeGeneratedBuilder(element, structurized, constructorName, codeContext, settings);
       writeGeneratedExtension(element, structurized, constructorName, codeContext);
     }
   }
@@ -279,7 +279,7 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
   }
 
   static void writeGeneratedBuilder(ClassElement2 element, StructurizeResult structurized,
-      String constructorName, SubjectCodeContext codeContext) {
+      String constructorName, SubjectCodeContext codeContext, DogsGeneratorSettings settings) {
     var emitter = DartEmitter();
     var copyWithFrontendName = "${element.displayName}\$Copy";
     var copyClazz = Class((builder) {
@@ -328,13 +328,13 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
           ..type = MethodType.setter
           ..requiredParameters.add(Parameter((builder) => builder
             ..name = "value"
-            ..type = Reference(element.type + (element.optional ? "?" : ""))))
+            ..type = Reference(element.type + ((element.optional || settings.nullableAccessors) ? "?" : ""))))
           ..body = Code("\$values[$index] = value;")));
 
         builder.methods.add(Method((builder) => builder
           ..name = element.accessor
           ..type = MethodType.getter
-          ..returns = Reference(element.type + (element.optional ? "?" : ""))
+          ..returns = Reference(element.type + ((element.optional || settings.nullableAccessors) ? "?" : ""))
           ..lambda = true
           ..body = Code("\$values[$index]")));
       }

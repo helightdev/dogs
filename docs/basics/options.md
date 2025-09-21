@@ -11,6 +11,7 @@ dogs:
   property_case: keep
   name_case: keep
   enum_case: keep
+  nullable_accessors: false
 ```
 
 ## Options
@@ -23,6 +24,8 @@ Defines the casing style for generated property names.
 Defines the casing style for generated class and enum serial names.
 #### `enum_case` (default: `keep`)
 Defines the casing style for generated enum values.
+#### `nullable_accessors` (default: `false`)
+Forces builder accessor nullability regardless of the field nullability.
 
 ## Casing Options
 - `keep`: Keep the original name.

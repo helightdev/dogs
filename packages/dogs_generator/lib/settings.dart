@@ -4,6 +4,7 @@ import 'package:recase/recase.dart';
 
 class DogsGeneratorSettings {
   bool isLibrary = false;
+  bool nullableAccessors = false;
   CasingType propertyCase = CasingType.keep;
   CasingType nameCase = CasingType.keep;
   CasingType enumCase = CasingType.keep;
@@ -38,6 +39,11 @@ class DogsGeneratorSettings {
         var enumCasingValue = map["enum_case"];
         if (enumCasingValue is String) {
           settings.enumCase = CasingType.fromString(enumCasingValue);
+        }
+        
+        var nullableAccessorsValue = map["nullable_accessors"];
+        if (nullableAccessorsValue is bool) {
+          settings.nullableAccessors = nullableAccessorsValue;
         }
       }
     } catch (ex) {
