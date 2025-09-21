@@ -328,13 +328,15 @@ If you wish to use class-level generics, please implement a TreeBaseConverterFac
           ..type = MethodType.setter
           ..requiredParameters.add(Parameter((builder) => builder
             ..name = "value"
-            ..type = Reference(element.type + ((element.optional || settings.nullableAccessors) ? "?" : ""))))
+            ..type = Reference(
+                element.type + ((element.optional || settings.nullableAccessors) ? "?" : ""))))
           ..body = Code("\$values[$index] = value;")));
 
         builder.methods.add(Method((builder) => builder
           ..name = element.accessor
           ..type = MethodType.getter
-          ..returns = Reference(element.type + ((element.optional || settings.nullableAccessors) ? "?" : ""))
+          ..returns = Reference(
+              element.type + ((element.optional || settings.nullableAccessors) ? "?" : ""))
           ..lambda = true
           ..body = Code("\$values[$index]")));
       }

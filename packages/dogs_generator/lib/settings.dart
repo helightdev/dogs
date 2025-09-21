@@ -40,7 +40,7 @@ class DogsGeneratorSettings {
         if (enumCasingValue is String) {
           settings.enumCase = CasingType.fromString(enumCasingValue);
         }
-        
+
         var nullableAccessorsValue = map["nullable_accessors"];
         if (nullableAccessorsValue is bool) {
           settings.nullableAccessors = nullableAccessorsValue;
