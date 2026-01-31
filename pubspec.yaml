@@ -17,6 +17,10 @@ workspace:
   - formats/dogs_toml
   - formats/dogs_yaml
 
+
+dependency_overrides:
+  test_api: ^0.7.9
+
 melos:
   scripts:
     copy-readme:

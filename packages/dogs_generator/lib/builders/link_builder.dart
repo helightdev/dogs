@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_generator/dogs_generator.dart';
@@ -11,7 +11,7 @@ class LinkBuilder extends DogsAdapter<DogLinked> {
   LinkBuilder() : super(archetype: "link");
 
   @override
-  Future<SubjectDescriptor> generateDescriptor(SubjectGenContext<Element2> context) async {
+  Future<SubjectDescriptor> generateDescriptor(SubjectGenContext<Element> context) async {
     var binding = SubjectDescriptor(uri: context.step.inputId.uri.toString());
 
     var constructedNames = <String>[];
@@ -19,9 +19,9 @@ class LinkBuilder extends DogsAdapter<DogLinked> {
 
     for (var match in context.matches) {
       switch (match) {
-        case InterfaceElement2():
+        case InterfaceElement():
           constructedNames.add(match.displayName);
-        case TopLevelVariableElement2():
+        case TopLevelVariableElement():
           variableNames.add(match.displayName);
         case _:
           log.warning(
@@ -37,7 +37,7 @@ class LinkBuilder extends DogsAdapter<DogLinked> {
 
   @override
   FutureOr<void> generateSubject(
-      SubjectGenContext<Element2> genContext, SubjectCodeContext codeContext) {
+      SubjectGenContext<Element> genContext, SubjectCodeContext codeContext) {
     bool didGenerate = false;
     // Reserved
     codeContext.noGenerate = !didGenerate;

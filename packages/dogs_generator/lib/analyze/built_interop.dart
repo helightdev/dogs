@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -39,12 +39,12 @@ late TypeChecker setBuilderChecker;
 late TypeChecker builtValueFieldChecker;
 late TypeChecker builtValueEnumChecker;
 
-late InterfaceElement2 builtInterface;
-late InterfaceElement2 builtBuilderInterface;
+late InterfaceElement builtInterface;
+late InterfaceElement builtBuilderInterface;
 
-late InterfaceElement2 listBuilderInterface;
-late InterfaceElement2 mapBuilderInterface;
-late InterfaceElement2 setBuilderInterface;
+late InterfaceElement listBuilderInterface;
+late InterfaceElement mapBuilderInterface;
+late InterfaceElement setBuilderInterface;
 
 bool hasBuiltInterop = false;
 
@@ -62,11 +62,11 @@ Future tryInitializeBuiltInterop(BuildStep step) async {
   _builtValueLibrary = LibraryReader(builtValueLibrary);
   _builtCollectionLibrary = LibraryReader(builtCollectionLibrary);
 
-  builtInterface = _builtValueLibrary.findType("Built") as InterfaceElement2;
-  builtBuilderInterface = _builtValueLibrary.findType("Builder") as InterfaceElement2;
-  listBuilderInterface = _builtCollectionLibrary.findType("ListBuilder") as InterfaceElement2;
-  mapBuilderInterface = _builtCollectionLibrary.findType("MapBuilder") as InterfaceElement2;
-  setBuilderInterface = _builtCollectionLibrary.findType("SetBuilder") as InterfaceElement2;
+  builtInterface = _builtValueLibrary.findType("Built") as InterfaceElement;
+  builtBuilderInterface = _builtValueLibrary.findType("Builder") as InterfaceElement;
+  listBuilderInterface = _builtCollectionLibrary.findType("ListBuilder") as InterfaceElement;
+  mapBuilderInterface = _builtCollectionLibrary.findType("MapBuilder") as InterfaceElement;
+  setBuilderInterface = _builtCollectionLibrary.findType("SetBuilder") as InterfaceElement;
 
   builtChecker = TypeChecker.fromStatic(builtInterface.thisType);
   builtBuilderChecker = TypeChecker.fromStatic(builtBuilderInterface.thisType);
@@ -82,17 +82,17 @@ Future tryInitializeBuiltInterop(BuildStep step) async {
 }
 
 Future<IRStructure> structurizeBuilt(
-    SubjectCodeContext codeContext, SubjectGenContext context, ClassElement2 element) async {
+    SubjectCodeContext codeContext, SubjectGenContext context, ClassElement element) async {
   var counter = codeContext.cachedCounter;
-  var builtInterfaceImpl = element.thisType.asInstanceOf2(builtInterface)!;
-  var builderElement = builtInterfaceImpl.typeArguments[1].element3! as ClassElement2;
+  var builtInterfaceImpl = element.thisType.asInstanceOf(builtInterface)!;
+  var builderElement = builtInterfaceImpl.typeArguments[1].element! as ClassElement;
 
   var getters =
-      builderElement.getters2.where((element) => element.isPublic && !element.isStatic).toList();
+      builderElement.getters.where((element) => element.isPublic && !element.isStatic).toList();
 
   var fields = <IRStructureField>[];
   for (var builderGetter in getters) {
-    var fieldGetter = element.getGetter2(builderGetter.displayName)!;
+    var fieldGetter = element.getGetter(builderGetter.displayName)!;
     var fieldName = fieldGetter.displayName;
     var fieldType = fieldGetter.returnType;
     var serialType = await getSerialType(fieldType, context);
@@ -101,7 +101,7 @@ Future<IRStructure> structurizeBuilt(
     var optional = fieldType.nullabilitySuffix == NullabilitySuffix.question;
     if (fieldType is DynamicType) optional = true;
 
-    var builtValueFieldAnnotation = fieldGetter.metadata2.annotations
+    var builtValueFieldAnnotation = fieldGetter.metadata.annotations
         .whereTypeChecker(builtValueFieldChecker)
         .firstOrNull
         ?.computeConstantValue();
@@ -137,14 +137,14 @@ Future<IRStructure> structurizeBuilt(
 }
 
 Future<void> writeBuiltInteropConverter(
-    ClassElement2 element, SubjectCodeContext codeContext, SubjectGenContext context) async {
+    ClassElement element, SubjectCodeContext codeContext, SubjectGenContext context) async {
   codeContext.additionalImports.add(AliasImport.gen("package:dogs_core/dogs_core.dart"));
   codeContext.additionalImports.add(AliasImport.gen("package:dogs_built/dogs_built.dart"));
   codeContext.additionalImports
       .add(AliasImport.gen("package:built_collection/built_collection.dart"));
 
-  var builtInterfaceImpl = element.thisType.asInstanceOf2(builtInterface)!;
-  var builderElement = builtInterfaceImpl.typeArguments[1].element3! as ClassElement2;
+  var builtInterfaceImpl = element.thisType.asInstanceOf(builtInterface)!;
+  var builderElement = builtInterfaceImpl.typeArguments[1].element! as ClassElement;
 
   var structure = await structurizeBuilt(codeContext, context, element);
   var typeRef = codeContext.typeName(element.thisType);
@@ -188,15 +188,15 @@ Future<void> writeBuiltInteropConverter(
       ..static = true
       ..lambda = false
       ..body = Code(
-          "return (${typeRef}Builder()\n${builderElement.getters2.where((element) => element.isPublic && !element.isStatic).mapIndexed((i, e) {
+          "return (${typeRef}Builder()\n${builderElement.getters.where((element) => element.isPublic && !element.isStatic).mapIndexed((i, e) {
         if (listBuilderChecker.isAssignableFromType(e.returnType)) {
-          var innerType = e.returnType.asInstanceOf2(listBuilderInterface)!.typeArguments[0];
+          var innerType = e.returnType.asInstanceOf(listBuilderInterface)!.typeArguments[0];
           return "..${e.displayName} = list[$i] == null ? null : gen.ListBuilder<${codeContext.typeName(innerType)}>(list[$i])";
         } else if (setBuilderChecker.isAssignableFromType(e.returnType)) {
-          var innerType = e.returnType.asInstanceOf2(setBuilderInterface)!.typeArguments[0];
+          var innerType = e.returnType.asInstanceOf(setBuilderInterface)!.typeArguments[0];
           return "..${e.displayName} = list[$i] == null ? null : gen.SetBuilder<${codeContext.typeName(innerType)}>(list[$i])";
         } else if (mapBuilderChecker.isAssignableFromType(e.returnType)) {
-          var typeArguments = e.returnType.asInstanceOf2(mapBuilderInterface)!.typeArguments;
+          var typeArguments = e.returnType.asInstanceOf(mapBuilderInterface)!.typeArguments;
           return "..${e.displayName} = list[$i] == null ? null : gen.MapBuilder<${codeContext.typeName(typeArguments[0])}, ${codeContext.typeName(typeArguments[1])}>(list[$i])";
         }
         return "..${e.displayName} = list[$i]";
