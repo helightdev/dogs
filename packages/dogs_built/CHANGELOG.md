@@ -1,3 +1,7 @@
+## 3.1.8
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
 ## 3.1.7
 
  - Update a dependency to the latest release.

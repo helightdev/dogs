@@ -1,3 +1,7 @@
+## 10.1.2
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
 ## 10.1.1
 
  - **FIX**: primitive coercion logic for primitive fields.

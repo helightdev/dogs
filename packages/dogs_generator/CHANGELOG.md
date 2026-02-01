@@ -1,3 +1,7 @@
+## 7.1.1
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
 ## 7.1.0
 
  - **FEAT**: add nullable accessors option to DogsGeneratorSettings.

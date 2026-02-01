@@ -3,6 +3,58 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-02-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_built` - `v3.1.8`](#dogs_built---v318)
+ - [`dogs_cbor` - `v2.3.8`](#dogs_cbor---v238)
+ - [`dogs_core` - `v10.1.2`](#dogs_core---v1012)
+ - [`dogs_flutter` - `v0.0.1-dev.13`](#dogs_flutter---v001-dev13)
+ - [`dogs_generator` - `v7.1.1`](#dogs_generator---v711)
+ - [`dogs_firestore` - `v0.3.0+3`](#dogs_firestore---v0303)
+ - [`dogs_toml` - `v2.3.8`](#dogs_toml---v238)
+ - [`dogs_yaml` - `v2.3.8`](#dogs_yaml---v238)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.3.0+3`
+ - `dogs_toml` - `v2.3.8`
+ - `dogs_yaml` - `v2.3.8`
+
+---
+
+#### `dogs_built` - `v3.1.8`
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
+#### `dogs_cbor` - `v2.3.8`
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
+#### `dogs_core` - `v10.1.2`
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
+#### `dogs_flutter` - `v0.0.1-dev.13`
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
+#### `dogs_generator` - `v7.1.1`
+
+ - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
+
+
 ## 2025-09-21
 
 ### Changes
