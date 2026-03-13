@@ -20,6 +20,7 @@ import 'package:dogs_core/dogs_core.dart';
 import 'package:dogs_core/dogs_validation.dart';
 import 'package:smoke_test_0/special.dart';
 
+@polymorphic
 abstract class ABInterface {}
 
 @serializable
@@ -112,7 +113,6 @@ class ModelE with Dataclass<ModelE> {
   @polymorphic
   final List<Object> objectPolymorphicList;
 
-  @polymorphic
   final List<ABInterface> restrictedPolymorphicList;
 
   ModelE(this.polymorphicList, this.objectPolymorphicList,

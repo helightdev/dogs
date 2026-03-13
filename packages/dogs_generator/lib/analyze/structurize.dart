@@ -99,6 +99,7 @@ TypeChecker mapChecker = TypeChecker.typeNamed(Map);
 TypeChecker beanIgnoreChecker = TypeChecker.typeNamed(beanIgnore.runtimeType);
 TypeChecker serializableChecker = TypeChecker.typeNamed(Serializable);
 TypeChecker enumPropertyChecker = TypeChecker.typeNamed(EnumProperty);
+TypeChecker polymorphicChecker = TypeChecker.typeNamedLiterally("_Polymorphic");
 
 Future<StructurizeResult> structurizeConstructor(
     DartType type,
@@ -196,17 +197,26 @@ Future<StructurizeResult> structurizeConstructor(
       propertySerializer = counter.get(serializerAnnotation.getField("type")!.toTypeValue()!);
     }
 
+    var typeTree = getTypeTree(fieldType);
+    var sourceArray = getRetainedAnnotationSourceArray(fieldElement, counter);
+
+    var isPolymorphic = _inheritsPolymorphic(typeTree);
+    if (isPolymorphic) {
+      sourceArray = _addToSourceArray(sourceArray, "gen.polymorphic");
+    }
+
+
     fields.add(IRStructureField(
         fieldName,
         counter.get(fieldType),
-        getTypeTree(fieldType).code(counter),
+        typeTree.code(counter),
         propertySerializer,
         counter.get(serialType),
         iterableType,
         propertyName,
         optional,
         !isDogPrimitiveType(serialType),
-        getRetainedAnnotationSourceArray(fieldElement, counter),
+        sourceArray,
         mapChecker.isAssignableFrom(fieldType.element!)));
   }
 
@@ -228,6 +238,29 @@ Future<StructurizeResult> structurizeConstructor(
       fields,
       getRetainedAnnotationSourceArray(element, counter));
   return StructurizeResult(imports, structure, getters, activator);
+}
+
+bool _inheritsPolymorphic(GeneratedTypeTree tree) {
+    var typeElement = tree.base.element;
+    if (typeElement != null) {
+      if (polymorphicChecker.hasAnnotationOf(typeElement)) {
+        return true;
+      }
+    }
+    for (var element in tree.parameters) {
+      if (_inheritsPolymorphic(element)) {
+        return true;
+      }
+    }
+    return false;
+}
+
+String _addToSourceArray(String sourceArray, String newSource) {
+  if (sourceArray == "[]") {
+    return "[$newSource]";
+  } else {
+    return "${sourceArray.substring(0, sourceArray.length - 1)}, $newSource]";
+  }
 }
 
 Future<StructurizeResult> structurizeBean(
