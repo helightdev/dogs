@@ -3,9 +3,14 @@ repository: https://github.com/DarwinFramework/dogs
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
+  flutter: '>=3.7.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
-  melos: ^7.0.0
+  melos: ^7.4.0
 
 workspace:
   - packages/dogs_core

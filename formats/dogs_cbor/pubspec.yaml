@@ -9,7 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  cbor: ^5.1.2
+  cbor: ^6.5.1
   dogs_core: ^10.1.2
 
 dev_dependencies:

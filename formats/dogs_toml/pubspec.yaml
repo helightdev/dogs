@@ -10,7 +10,7 @@ resolution: workspace
 
 dependencies:
   dogs_core: ^10.1.2
-  toml: ^0.15.0
+  toml: ^0.18.0
 
 dev_dependencies:
   lints: ^5.1.1
