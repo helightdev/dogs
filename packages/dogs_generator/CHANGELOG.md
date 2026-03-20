@@ -1,3 +1,8 @@
+## 7.2.0
+
+ - **FEAT**: Harder version bump.
+ - **FEAT**: add support for inheritable polymorphic annotations.
+
 ## 7.1.1
 
  - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.

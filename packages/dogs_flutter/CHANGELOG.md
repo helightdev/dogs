@@ -1,3 +1,7 @@
+## 0.0.1-dev.14
+
+ - **FEAT**: Harder version bump.
+
 ## 0.0.1-dev.13
 
  - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.

@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2026-03-20
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`dogs_built` - `v3.2.0`](#dogs_built---v320)
+ - [`dogs_cbor` - `v2.4.0`](#dogs_cbor---v240)
+ - [`dogs_core` - `v10.2.0`](#dogs_core---v1020)
+ - [`dogs_flutter` - `v0.0.1-dev.14`](#dogs_flutter---v001-dev14)
+ - [`dogs_generator` - `v7.2.0`](#dogs_generator---v720)
+ - [`dogs_firestore` - `v0.3.0+4`](#dogs_firestore---v0304)
+ - [`dogs_toml` - `v2.3.9`](#dogs_toml---v239)
+ - [`dogs_yaml` - `v2.3.9`](#dogs_yaml---v239)
+
+Packages with dependency updates only:
+
+> Packages listed below depend on other packages in this workspace that have had changes. Their versions have been incremented to bump the minimum dependency versions of the packages they depend upon in this project.
+
+ - `dogs_firestore` - `v0.3.0+4`
+ - `dogs_toml` - `v2.3.9`
+ - `dogs_yaml` - `v2.3.9`
+
+---
+
+#### `dogs_built` - `v3.2.0`
+
+ - **FEAT**: Harder version bump.
+
+#### `dogs_cbor` - `v2.4.0`
+
+ - **FEAT**: Harder version bump.
+
+#### `dogs_core` - `v10.2.0`
+
+ - **FEAT**: Harder version bump.
+
+#### `dogs_flutter` - `v0.0.1-dev.14`
+
+ - **FEAT**: Harder version bump.
+
+#### `dogs_generator` - `v7.2.0`
+
+ - **FEAT**: Harder version bump.
+ - **FEAT**: add support for inheritable polymorphic annotations.
+
+
 ## 2026-02-01
 
 ### Changes

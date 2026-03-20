@@ -1,3 +1,7 @@
+## 10.2.0
+
+ - **FEAT**: Harder version bump.
+
 ## 10.1.2
 
  - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.

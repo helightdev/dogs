@@ -1,3 +1,7 @@
+## 3.2.0
+
+ - **FEAT**: Harder version bump.
+
 ## 3.1.8
 
  - **REFACTOR**: Update analyzer and build. Override test because I can't for gods sake fix the dependency conflicts with pinned flutter versions.
