@@ -2,7 +2,13 @@ version: 2
 updates:
   - package-ecosystem: "pub"
     directories:
-      - "/packages/*"
-      - "/formats/*"
+      - "/packages/dogs_core/"
+      - "/packages/dogs_generator/"
+      - "/packages/dogs_built/"
+      - "/packages/dogs_flutter/"
+      - "/packages/dogs_firestore/"
+      - "/formats/dogs_toml/"
+      - "/formats/dogs_cbor/"
+      - "/formats/dogs_yaml/"
     schedule:
       interval: "daily"
