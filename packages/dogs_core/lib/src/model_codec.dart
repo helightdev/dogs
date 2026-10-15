@@ -99,20 +99,33 @@ class JsonReadWith extends StructureMetadata {
   const JsonReadWith(this.read);
 }
 
+/// Converts a non-null value to its string representation.
+String? jsonStringify(Object? value) => value?.toString();
+
+/// Converts booleans to 0/1, retains integers, and defaults other values to 0.
+int jsonFlagInt(Object? value) => value is bool
+    ? (value ? 1 : 0)
+    : value is int
+        ? value
+        : 0;
+
+/// Truncates a numeric value toward zero; rejects non-numeric values.
+int jsonInteger(Object? value) => (value as num).toInt();
+
 /// Common explicit conversions that are not inferred from Dart field types.
+///
+/// Prefer the top-level [jsonStringify], [jsonFlagInt], and [jsonInteger]
+/// tear-offs with [JsonConvert] / [JsonListConvert]. These static methods
+/// remain as aliases.
 class JsonConversions {
   /// Converts a non-null value to its string representation.
-  static String? stringify(Object? value) => value?.toString();
+  static String? stringify(Object? value) => jsonStringify(value);
 
   /// Converts booleans to 0/1, retains integers, and defaults other values to 0.
-  static int flagInt(Object? value) => value is bool
-      ? (value ? 1 : 0)
-      : value is int
-          ? value
-          : 0;
+  static int flagInt(Object? value) => jsonFlagInt(value);
 
   /// Truncates a numeric value toward zero; rejects non-numeric values.
-  static int integer(Object? value) => (value as num).toInt();
+  static int integer(Object? value) => jsonInteger(value);
 }
 
 /// Controls nested-object/list diagnostics without adding a codec dependency.
