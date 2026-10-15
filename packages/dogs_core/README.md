@@ -132,9 +132,9 @@ final request = models.toJson(city); // {'id': 1, 'name': 'Erbil'}
 registered nested models and lists recursively.
 `@JsonModel(emptyListsOnNull: true)` supplies fresh typed empty lists for
 missing or null list fields on that model. `@JsonReadValue(value)` fixes a transient constructor field;
-`@JsonConvert(jsonStringify)` coerces mixed scalars to strings;
-`@JsonConvert(jsonFlagInt)` converts a boolean flag to an integer;
-`@JsonListConvert(jsonInteger)` converts list elements; and
+`@JsonConvert(JsonConversions.stringify)` coerces mixed scalars to strings;
+`@JsonConvert(JsonConversions.flagInt)` converts a boolean flag to an integer;
+`@JsonListConvert(JsonConversions.integer)` converts list elements; and
 `@JsonReadWith(myReader)` handles a rule needing the full input map. Callback
 arguments must be constant top-level or static function tear-offs for generated
 metadata.

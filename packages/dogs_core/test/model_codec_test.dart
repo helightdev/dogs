@@ -149,17 +149,17 @@ DogStructure<ConvertedValue> convertedStructure() => DogStructure<ConvertedValue
       [
         DogStructureField.string("text", optional: true, annotations: const [
           JsonAliases(["legacy_text", "text"]),
-          JsonConvert(jsonStringify)
+          JsonConvert(JsonConversions.stringify)
         ]),
-        DogStructureField.int("flag", annotations: const [JsonConvert(jsonFlagInt)]),
+        DogStructureField.int("flag", annotations: const [JsonConvert(JsonConversions.flagInt)]),
         DogStructureField.int("whole", optional: true, annotations: const [
           DefaultValue(0, onNull: true),
-          JsonConvert(jsonInteger)
+          JsonConvert(JsonConversions.integer)
         ]),
         DogStructureField.int("numbers",
             optional: true,
             iterable: IterableKind.list,
-            annotations: const [JsonListConvert(jsonInteger)]),
+            annotations: const [JsonListConvert(JsonConversions.integer)]),
         DogStructureField.string("summary",
             optional: true, annotations: const [JsonReadWith(readSummary)]),
       ],
@@ -542,7 +542,7 @@ void main() {
           engine,
           numberStructure(annotations: const [
             DefaultValue(defaultNumber, onNull: true),
-            JsonConvert(jsonInteger)
+            JsonConvert(JsonConversions.integer)
           ]));
       expect(codec.fromJson<NumberValue>({}).value, 7);
       expect(codec.fromJson<NumberValue>({"value": null}).value, 7);
