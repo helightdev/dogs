@@ -8,11 +8,15 @@ class JsonModel extends Structure implements SerializationHook {
   /// Converts non-null input values to strings before construction.
   final bool stringify;
 
+  /// Returns a fresh empty list for missing or null list fields on this model.
+  final bool emptyListsOnNull;
+
   /// Optional custom factory used when this model is decoded as a child.
   final Object Function(Map<String, dynamic>)? reader;
 
   /// Declares a serializable model with optional read and write rules.
-  const JsonModel({this.outputKeys, this.stringify = false, this.reader})
+  const JsonModel(
+      {this.outputKeys, this.stringify = false, this.emptyListsOnNull = false, this.reader})
       : super(serializable: true);
 
   @override
@@ -185,6 +189,7 @@ class DogModelCodec {
   dynamic readStructure(DogStructure descriptor, Map<String, dynamic> json,
       {Map<String, dynamic> values = const {}, bool stringify = false}) {
     final strings = stringify || (descriptor.firstAnnotationOf<JsonModel>()?.stringify ?? false);
+    final emptyListsOnNull = descriptor.firstAnnotationOf<JsonModel>()?.emptyListsOnNull ?? false;
     final fields = <dynamic>[];
     for (final field in descriptor.fields) {
       if (values.containsKey(field.name)) {
@@ -220,7 +225,7 @@ class DogModelCodec {
       final nested = engine.findStructureByType(field.serial.typeArgument);
       final listConverter = field.firstAnnotationOf<JsonListConvert>();
       if (field.iterableKind == IterableKind.list &&
-          (nested != null || listConverter != null || defaultValue != null)) {
+          (nested != null || listConverter != null || defaultValue != null || emptyListsOnNull)) {
         fields.add(field.serial.consumeType(<T>() {
           final result = guard.list<T>(input, key, (item) {
             if (listConverter != null) return listConverter.convert(item) as T;
@@ -229,10 +234,13 @@ class DogModelCodec {
             }
             return item as T;
           });
-          if (result != null || !useDefault) return result;
-          final provided = defaultValue.value;
-          final supplied = provided is DefaultValueSupplier ? provided() : provided;
-          return List<T>.from(supplied as Iterable);
+          if (result != null) return result;
+          if (useDefault) {
+            final provided = defaultValue.value;
+            final supplied = provided is DefaultValueSupplier ? provided() : provided;
+            return List<T>.from(supplied as Iterable);
+          }
+          return emptyListsOnNull ? <T>[] : null;
         }));
         continue;
       }

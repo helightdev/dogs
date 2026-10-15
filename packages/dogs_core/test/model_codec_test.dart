@@ -118,7 +118,7 @@ DogStructure<AliasValue> aliasStructure() => DogStructure<AliasValue>(
       ),
     );
 
-DogStructure<TreeValue> treeStructure() => DogStructure<TreeValue>(
+DogStructure<TreeValue> treeStructure({bool emptyListsOnNull = true}) => DogStructure<TreeValue>(
       "TreeValue",
       StructureConformity.basic,
       [
@@ -130,13 +130,12 @@ DogStructure<TreeValue> treeStructure() => DogStructure<TreeValue>(
           optional: true,
           iterable: IterableKind.list,
           annotations: const [
-            JsonAliases(["children", "old_children"]),
-            DefaultValue([], onNull: true)
+            JsonAliases(["children", "old_children"])
           ],
         ),
         DogStructureField.create<TreeValue>("nested", optional: true),
       ],
-      const [JsonModel()],
+      [JsonModel(emptyListsOnNull: emptyListsOnNull)],
       ObjectFactoryStructureProxy<TreeValue>(
         (values) => TreeValue(child: values[0], children: values[1], nested: values[2]),
         [(value) => value.child, (value) => value.children, (value) => value.nested],
@@ -160,14 +159,11 @@ DogStructure<ConvertedValue> convertedStructure() => DogStructure<ConvertedValue
         DogStructureField.int("numbers",
             optional: true,
             iterable: IterableKind.list,
-            annotations: const [
-              DefaultValue([], onNull: true),
-              JsonListConvert(JsonConversions.integer)
-            ]),
+            annotations: const [JsonListConvert(JsonConversions.integer)]),
         DogStructureField.string("summary",
             optional: true, annotations: const [JsonReadWith(readSummary)]),
       ],
-      const [JsonModel()],
+      const [JsonModel(emptyListsOnNull: true)],
       ObjectFactoryStructureProxy<ConvertedValue>(
         (values) => ConvertedValue(
             text: values[0],
@@ -365,6 +361,13 @@ void main() {
       expect(nullable.children, isEmpty);
       expect(const TreeValue().children, isNull);
       expect(codec.engine, same(engine));
+    });
+
+    test("list fields retain null when class-level empty lists are disabled", () {
+      final (:codec, :engine) = codecFixture();
+      registerModel(engine, treeStructure(emptyListsOnNull: false));
+      expect(codec.fromJson<TreeValue>({}).children, isNull);
+      expect(codec.fromJson<TreeValue>({"children": null}).children, isNull);
     });
 
     test("list aliases choose an empty first list before a populated fallback", () {

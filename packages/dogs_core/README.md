@@ -130,8 +130,8 @@ final request = models.toJson(city); // {'id': 1, 'name': 'Erbil'}
 
 `@JsonModel` also marks the class for DOGs generation. The codec reads
 registered nested models and lists recursively.
-`@DefaultValue([], onNull: true)` supplies a fresh typed list for missing or
-null input. `@JsonReadValue(value)` fixes a transient constructor field;
+`@JsonModel(emptyListsOnNull: true)` supplies fresh typed empty lists for
+missing or null list fields on that model. `@JsonReadValue(value)` fixes a transient constructor field;
 `@JsonConvert(JsonConversions.flagInt)` converts a boolean flag to an integer;
 `@JsonListConvert(JsonConversions.integer)` converts list elements; and
 `@JsonReadWith(myReader)` handles a rule needing the full input map. Callback
