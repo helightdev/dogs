@@ -1,8 +1,9 @@
 ## Unreleased
 
 - Add an opt-in `DogModelCodec` for strict JSON model reads, typed nested models, input aliases, explicit conversions, and filtered raw maps.
-- Add `JsonModel`, `JsonAliases`, `JsonReadValue`, `JsonConvert`, `JsonListConvert`, and `JsonReadWith` metadata.
+- Add `JsonModel`, `JsonAliases`, `JsonReadValue`, `JsonConvert`, `JsonListConvert`, `JsonParser`, `JsonListParser`, and `JsonReadWith` metadata.
 - Add `JsonConversions` with reusable static converter tear-offs (`stringify`, `flagInt`, `integer`) for `JsonConvert` / `JsonListConvert`.
+- Add `JsonParser` / `JsonListParser` for fromJson-style nested map parsing with a default field key or optional custom `key`.
 - Allow `JsonModel(emptyListsOnNull: true)` to default all list fields on an opted-in model without per-field annotations.
 - Allow `DefaultValue(onNull: true)` to supply a default for explicit null input; the existing missing-only behavior remains the default.
 

@@ -47,6 +47,21 @@ class NumberEnvelope {
   final NumberValue? number;
 }
 
+class ParsedChild {
+  const ParsedChild({this.id, this.label});
+
+  final int? id;
+  final String? label;
+}
+
+class ParsedHolder {
+  const ParsedHolder({this.child, this.payload, this.children});
+
+  final ParsedChild? child;
+  final ParsedChild? payload;
+  final List<ParsedChild>? children;
+}
+
 class RecordingGuard extends DogModelGuard {
   final objectKeys = <String>[];
   final listKeys = <String>[];
@@ -74,6 +89,11 @@ Object readNumberChild(Map<String, dynamic> json) {
 
 Object? readSummary(Map<String, dynamic> json) =>
     "${json.containsKey("text") ? json["text"] : "missing"}:${json["suffix"] ?? ""}";
+
+ParsedChild parseChild(Map<String, dynamic> json) => ParsedChild(
+      id: json["id"] as int?,
+      label: json["label"]?.toString(),
+    );
 
 num defaultNumber() => 7.9;
 
@@ -212,6 +232,34 @@ DogStructure<NumberEnvelope> envelopeStructure() => DogStructure<NumberEnvelope>
           [(value) => value.number], (value) => [value.number]),
     );
 
+DogStructure<ParsedHolder> parsedStructure() => DogStructure<ParsedHolder>(
+      "ParsedHolder",
+      StructureConformity.basic,
+      [
+        DogStructureField.create<ParsedChild>("child", optional: true, annotations: const [
+          JsonParser(parseChild),
+        ]),
+        DogStructureField.create<ParsedChild>("payload", optional: true, annotations: const [
+          JsonAliases(["legacy_payload", "payload"]),
+          JsonParser(parseChild),
+        ]),
+        DogStructureField.create<ParsedChild>(
+          "children",
+          optional: true,
+          iterable: IterableKind.list,
+          annotations: const [
+            JsonListParser(parseChild, key: "items"),
+          ],
+        ),
+      ],
+      const [JsonModel(emptyListsOnNull: true)],
+      ObjectFactoryStructureProxy<ParsedHolder>(
+        (values) => ParsedHolder(child: values[0], payload: values[1], children: values[2]),
+        [(value) => value.child, (value) => value.payload, (value) => value.children],
+        (value) => [value.child, value.payload, value.children],
+      ),
+    );
+
 ({DogEngine engine, DogModelCodec codec}) codecFixture(
     {DogModelGuard guard = const DogModelGuard()}) {
   final engine = DogEngine();
@@ -221,6 +269,7 @@ DogStructure<NumberEnvelope> envelopeStructure() => DogStructure<NumberEnvelope>
   registerModel(engine, numberStructure());
   registerModel(engine, textStructure());
   registerModel(engine, envelopeStructure());
+  registerModel(engine, parsedStructure());
   return (engine: engine, codec: DogModelCodec(engine: engine, guard: guard));
 }
 
@@ -547,6 +596,102 @@ void main() {
       expect(codec.fromJson<NumberValue>({}).value, 7);
       expect(codec.fromJson<NumberValue>({"value": null}).value, 7);
       expect(codec.fromJson<NumberValue>({"value": 2.9}).value, 2);
+    });
+
+    test("JsonParser uses the field name by default and keeps nulls", () {
+      final (:codec, :engine) = codecFixture();
+      final input = Map<String, dynamic>.unmodifiable({
+        "child": Map<String, dynamic>.unmodifiable({"id": 3, "label": 9}),
+      });
+      final value = codec.fromJson<ParsedHolder>(input);
+      expect(value.child?.id, 3);
+      expect(value.child?.label, "9");
+      expect(value.payload, isNull);
+      expect(codec.fromJson<ParsedHolder>({}).child, isNull);
+      expect(codec.fromJson<ParsedHolder>({"child": null}).child, isNull);
+      expect(input.containsKey("payload"), isFalse);
+      expect(codec.engine, same(engine));
+    });
+
+    test("JsonParser custom keys override aliases and report the backend key", () {
+      final (:codec, :engine) = codecFixture();
+      registerModel(
+          engine,
+          DogStructure<ParsedHolder>(
+            "ParsedHolder",
+            StructureConformity.basic,
+            [
+              DogStructureField.create<ParsedChild>("child", optional: true, annotations: const [
+                JsonAliases(["legacy_child", "child"]),
+                JsonParser(parseChild, key: "product"),
+              ]),
+              DogStructureField.create<ParsedChild>("payload", optional: true),
+              DogStructureField.create<ParsedChild>(
+                "children",
+                optional: true,
+                iterable: IterableKind.list,
+              ),
+            ],
+            const [JsonModel()],
+            ObjectFactoryStructureProxy<ParsedHolder>(
+              (values) => ParsedHolder(child: values[0], payload: values[1], children: values[2]),
+              [(value) => value.child, (value) => value.payload, (value) => value.children],
+              (value) => [value.child, value.payload, value.children],
+            ),
+          ));
+      expect(
+          codec.fromJson<ParsedHolder>({
+            "legacy_child": {"id": 1},
+            "product": {"id": 2, "label": "ok"},
+          }).child?.id,
+          2);
+      expect(
+          () => codec.fromJson<ParsedHolder>({"product": "bad"}),
+          throwsA(isA<FormatException>()
+              .having((error) => error.message, "custom key", contains("product"))));
+      expect(codec.engine, same(engine));
+    });
+
+    test("JsonParser falls back through aliases when no custom key is set", () {
+      final (:codec, :engine) = codecFixture();
+      expect(
+          codec.fromJson<ParsedHolder>({
+            "legacy_payload": {"id": 8, "label": true},
+            "payload": {"id": 9},
+          }).payload?.label,
+          "true");
+      expect(
+          codec.fromJson<ParsedHolder>({
+            "legacy_payload": null,
+            "payload": {"id": 9},
+          }).payload?.id,
+          9);
+      expect(codec.engine, same(engine));
+    });
+
+    test("JsonListParser reads a custom key and defaults empty lists", () {
+      final (:codec, :engine) = codecFixture();
+      final items = List<Object?>.unmodifiable([
+        Map<String, dynamic>.unmodifiable({"id": 1, "label": "a"}),
+        Map<String, dynamic>.unmodifiable({"id": 2, "label": 4}),
+      ]);
+      final input = Map<String, dynamic>.unmodifiable({"items": items});
+      final value = codec.fromJson<ParsedHolder>(input);
+      expect(value.children?.map((child) => child.id).toList(), <int>[1, 2]);
+      expect(value.children?.map((child) => child.label).toList(), <String>["a", "4"]);
+      expect(codec.fromJson<ParsedHolder>({}).children, isEmpty);
+      expect(codec.fromJson<ParsedHolder>({"items": null}).children, isEmpty);
+      expect(input["items"], same(items));
+      expect(
+          () => codec.fromJson<ParsedHolder>({
+                "items": [
+                  {"id": 1},
+                  "bad"
+                ]
+              }),
+          throwsA(isA<FormatException>()
+              .having((error) => error.message, "indexed parse", contains("items[1]"))));
+      expect(codec.engine, same(engine));
     });
 
     test("missing-only defaults retain explicit null while onNull opts in", () {

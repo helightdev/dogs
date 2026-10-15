@@ -90,6 +90,38 @@ class JsonListConvert extends StructureMetadata {
   const JsonListConvert(this.convert);
 }
 
+/// Parses a nested JSON object with a fromJson-style factory.
+///
+/// Reads [key] from the parent map, or the generated field name when [key] is
+/// omitted. When [key] is omitted and [JsonAliases] is present, alias lookup
+/// is used instead.
+class JsonParser extends StructureMetadata {
+  /// Constant tear-off receiving the nested object map.
+  final Object? Function(Map<String, dynamic>) parse;
+
+  /// Backend key to read; defaults to the generated field name when omitted.
+  final String? key;
+
+  /// Declares an explicit nested object parse, including unregistered types.
+  const JsonParser(this.parse, {this.key});
+}
+
+/// Parses each JSON list element as a nested object map.
+///
+/// Reads [key] from the parent map, or the generated field name when [key] is
+/// omitted. When [key] is omitted and [JsonAliases] is present, alias lookup
+/// is used instead.
+class JsonListParser extends StructureMetadata {
+  /// Constant tear-off receiving each nested object map element.
+  final Object? Function(Map<String, dynamic>) parse;
+
+  /// Backend key to read; defaults to the generated field name when omitted.
+  final String? key;
+
+  /// Declares an explicit nested list parse, including unregistered types.
+  const JsonListParser(this.parse, {this.key});
+}
+
 /// Reads a field using the full original input map for cross-field rules.
 class JsonReadWith extends StructureMetadata {
   /// A constant top-level or static function receiving the unmodified input.
@@ -210,12 +242,27 @@ class DogModelCodec {
         continue;
       }
       final aliases = field.firstAnnotationOf<JsonAliases>();
-      final value = aliases == null ? json[field.name] : aliases.readValue(json);
-      final key = aliases?.keys.length == 1 ? aliases!.keys.single : field.name;
+      final parser = field.firstAnnotationOf<JsonParser>();
+      final listParser = field.firstAnnotationOf<JsonListParser>();
+      final customKey = parser?.key ?? listParser?.key;
+      final Object? value;
+      final String key;
+      final bool missing;
+      if (customKey != null) {
+        key = customKey;
+        value = json[customKey];
+        missing = !json.containsKey(customKey);
+      } else if (aliases != null) {
+        key = aliases.readKey(json) ?? field.name;
+        value = aliases.readValue(json);
+        missing = !aliases.keys.any(json.containsKey);
+      } else {
+        key = field.name;
+        value = json[field.name];
+        missing = !json.containsKey(field.name);
+      }
       final input = {key: value};
       final defaultValue = field.firstAnnotationOf<DefaultValue>();
-      final missing =
-          aliases == null ? !json.containsKey(field.name) : !aliases.keys.any(json.containsKey);
       final useDefault =
           defaultValue != null && (missing || (defaultValue.onNull && value == null));
       final converter = field.firstAnnotationOf<JsonConvert>();
@@ -225,12 +272,30 @@ class DogModelCodec {
         fields.add(converter.convert(supplied));
         continue;
       }
+      if (parser != null) {
+        fields.add(field.serial.consumeType(<T>() {
+          if (useDefault) {
+            final provided = defaultValue.value;
+            final supplied = provided is DefaultValueSupplier ? provided() : provided;
+            return supplied as T?;
+          }
+          return guard.object<T>(input, key, (data) => parser.parse(data) as T);
+        }));
+        continue;
+      }
       final nested = engine.findStructureByType(field.serial.typeArgument);
       final listConverter = field.firstAnnotationOf<JsonListConvert>();
       if (field.iterableKind == IterableKind.list &&
-          (nested != null || listConverter != null || defaultValue != null || emptyListsOnNull)) {
+          (nested != null ||
+              listConverter != null ||
+              listParser != null ||
+              defaultValue != null ||
+              emptyListsOnNull)) {
         fields.add(field.serial.consumeType(<T>() {
           final result = guard.list<T>(input, key, (item) {
+            if (listParser != null) {
+              return listParser.parse(item as Map<String, dynamic>) as T;
+            }
             if (listConverter != null) return listConverter.convert(item) as T;
             if (nested != null) {
               return readChild(nested, item as Map<String, dynamic>) as T;

@@ -134,7 +134,10 @@ registered nested models and lists recursively.
 missing or null list fields on that model. `@JsonReadValue(value)` fixes a transient constructor field;
 `@JsonConvert(JsonConversions.stringify)` coerces mixed scalars to strings;
 `@JsonConvert(JsonConversions.flagInt)` converts a boolean flag to an integer;
-`@JsonListConvert(JsonConversions.integer)` converts list elements; and
+`@JsonListConvert(JsonConversions.integer)` converts list elements;
+`@JsonParser(Item.fromJson)` parses a nested object map (optional `key:` overrides
+the field name; otherwise aliases apply);
+`@JsonListParser(Item.fromJson)` does the same for list elements; and
 `@JsonReadWith(myReader)` handles a rule needing the full input map. Callback
 arguments must be constant top-level or static function tear-offs for generated
 metadata.
