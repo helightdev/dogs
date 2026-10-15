@@ -1,5 +1,14 @@
 import "package:dogs_core/dogs_core.dart";
 
+/// Sentinel for an unset [JsonKey.value], so explicit `null` stays expressible.
+class JsonKeyUnset {
+  /// Creates the shared unset sentinel.
+  const JsonKeyUnset();
+}
+
+/// Marker used when [JsonKey.value] is omitted.
+const jsonKeyUnset = JsonKeyUnset();
+
 /// Declares JSON model rules without changing native DOGs coercion defaults.
 class JsonModel extends Structure implements SerializationHook {
   /// Fields allowed in [DogModelCodec.toJson], or all fields when null.
@@ -23,8 +32,9 @@ class JsonModel extends Structure implements SerializationHook {
   void beforeDeserialization(Map<String, dynamic> map, DogStructure structure, DogEngine engine) {
     final source = Map<String, dynamic>.from(map);
     for (final field in structure.fields) {
-      final aliases = field.firstAnnotationOf<JsonAliases>();
-      if (aliases != null) map[field.name] = aliases.readValue(source);
+      final key = field.firstAnnotationOf<JsonKey>();
+      final aliases = key?.aliases;
+      if (aliases != null) map[field.name] = key!.readAliasValue(source);
     }
     if (stringify) map.updateAll((key, value) => value?.toString());
   }
@@ -37,16 +47,52 @@ class JsonModel extends Structure implements SerializationHook {
   }
 }
 
-/// Reads the first non-null input key, in declaration order.
-class JsonAliases extends StructureMetadata {
-  /// Accepted input names; the generated field name remains the output name.
-  final List<String> keys;
+/// Unified field JSON rules for [DogModelCodec].
+///
+/// Use one annotation per field instead of separate alias/convert/parser types.
+/// [convert] always runs on the whole field value. [each] converts list elements.
+/// [parse] reads a nested object map, or each list element map when the field is
+/// a list.
+class JsonKey extends StructureMetadata with FieldSerializationHook {
+  /// Alternative input names; the generated field name remains the output name.
+  final List<String>? aliases;
 
-  /// Declares alternative input names, including the canonical name if wanted.
-  const JsonAliases(this.keys);
+  /// Explicit input key; defaults to the generated field name when omitted.
+  final String? name;
 
-  /// Returns the first key with a non-null value, or null if none match.
-  String? readKey(Map<String, dynamic> json) {
+  /// Converts the whole field value before construction.
+  final Object? Function(Object?)? convert;
+
+  /// Converts each list element before construction.
+  final Object? Function(Object?)? each;
+
+  /// Parses a nested object map, or each list element map for list fields.
+  final Object? Function(Map<String, dynamic>)? parse;
+
+  /// Reads using the full parent input map.
+  final Object? Function(Map<String, dynamic>)? read;
+
+  /// Forces this decode value when not [jsonKeyUnset], including explicit null.
+  final Object? value;
+
+  /// Declares field-level JSON rules for aliases, conversion, and nested parses.
+  const JsonKey({
+    this.aliases,
+    this.name,
+    this.convert,
+    this.each,
+    this.parse,
+    this.read,
+    this.value = jsonKeyUnset,
+  });
+
+  /// Whether [value] was supplied, including an explicit null.
+  bool hasFixedValue() => !identical(value, jsonKeyUnset);
+
+  /// Returns the first alias key with a non-null value, or null if none match.
+  String? readAliasKey(Map<String, dynamic> json) {
+    final keys = aliases;
+    if (keys == null) return null;
     for (final key in keys) {
       if (json[key] != null) return key;
     }
@@ -54,87 +100,19 @@ class JsonAliases extends StructureMetadata {
   }
 
   /// Reads from the original map so aliases never affect each other.
-  Object? readValue(Map<String, dynamic> json) => json[readKey(json)];
-}
-
-/// Forces a value when decoding, independently of incoming JSON.
-class JsonReadValue extends StructureMetadata with FieldSerializationHook {
-  /// The value supplied to the constructor.
-  final Object? value;
-
-  /// Keeps transient constructor state independent of backend fields.
-  const JsonReadValue(this.value);
+  Object? readAliasValue(Map<String, dynamic> json) => json[readAliasKey(json)];
 
   @override
   void beforeFieldDeserialization(NativeStructureContext context,
       NativeStructureFieldContext fieldContext, Map<String, dynamic> map, DogEngine engine) {
-    map[fieldContext.key] = value;
+    if (hasFixedValue()) map[fieldContext.key] = value;
   }
-}
-
-/// Converts a raw JSON field value before constructor type checking.
-class JsonConvert extends StructureMetadata {
-  /// A constant top-level or static function; also receives null inputs.
-  final Object? Function(Object?) convert;
-
-  /// Declares a reusable field conversion instead of a per-model map override.
-  const JsonConvert(this.convert);
-}
-
-/// Converts each element of a JSON list with typed, indexed error handling.
-class JsonListConvert extends StructureMetadata {
-  /// A constant top-level or static function applied to each list element.
-  final Object? Function(Object?) convert;
-
-  /// Declares an element conversion; combine with [DefaultValue] for defaults.
-  const JsonListConvert(this.convert);
-}
-
-/// Parses a nested JSON object with a fromJson-style factory.
-///
-/// Reads [key] from the parent map, or the generated field name when [key] is
-/// omitted. When [key] is omitted and [JsonAliases] is present, alias lookup
-/// is used instead.
-class JsonParser extends StructureMetadata {
-  /// Constant tear-off receiving the nested object map.
-  final Object? Function(Map<String, dynamic>) parse;
-
-  /// Backend key to read; defaults to the generated field name when omitted.
-  final String? key;
-
-  /// Declares an explicit nested object parse, including unregistered types.
-  const JsonParser(this.parse, {this.key});
-}
-
-/// Parses each JSON list element as a nested object map.
-///
-/// Reads [key] from the parent map, or the generated field name when [key] is
-/// omitted. When [key] is omitted and [JsonAliases] is present, alias lookup
-/// is used instead.
-class JsonListParser extends StructureMetadata {
-  /// Constant tear-off receiving each nested object map element.
-  final Object? Function(Map<String, dynamic>) parse;
-
-  /// Backend key to read; defaults to the generated field name when omitted.
-  final String? key;
-
-  /// Declares an explicit nested list parse, including unregistered types.
-  const JsonListParser(this.parse, {this.key});
-}
-
-/// Reads a field using the full original input map for cross-field rules.
-class JsonReadWith extends StructureMetadata {
-  /// A constant top-level or static function receiving the unmodified input.
-  final Object? Function(Map<String, dynamic>) read;
-
-  /// Declares a custom rule that depends on more than one backend field.
-  const JsonReadWith(this.read);
 }
 
 /// Common explicit conversions that are not inferred from Dart field types.
 ///
-/// Use the static methods as constant tear-offs with [JsonConvert] /
-/// [JsonListConvert], for example `@JsonConvert(JsonConversions.stringify)`.
+/// Use the static methods as constant tear-offs with [JsonKey], for example
+/// `@JsonKey(convert: JsonConversions.stringify)`.
 class JsonConversions {
   /// Converts a non-null value to its string representation.
   static String? stringify(Object? value) => value?.toString();
@@ -231,31 +209,26 @@ class DogModelCodec {
         fields.add(values[field.name]);
         continue;
       }
-      final fixed = field.firstAnnotationOf<JsonReadValue>();
-      if (fixed != null) {
-        fields.add(fixed.value);
+      final keyMeta = field.firstAnnotationOf<JsonKey>();
+      if (keyMeta != null && keyMeta.hasFixedValue()) {
+        fields.add(keyMeta.value);
         continue;
       }
-      final readWith = field.firstAnnotationOf<JsonReadWith>();
-      if (readWith != null) {
-        fields.add(readWith.read(json));
+      if (keyMeta?.read != null) {
+        fields.add(keyMeta!.read!(json));
         continue;
       }
-      final aliases = field.firstAnnotationOf<JsonAliases>();
-      final parser = field.firstAnnotationOf<JsonParser>();
-      final listParser = field.firstAnnotationOf<JsonListParser>();
-      final customKey = parser?.key ?? listParser?.key;
       final Object? value;
       final String key;
       final bool missing;
-      if (customKey != null) {
-        key = customKey;
-        value = json[customKey];
-        missing = !json.containsKey(customKey);
-      } else if (aliases != null) {
-        key = aliases.readKey(json) ?? field.name;
-        value = aliases.readValue(json);
-        missing = !aliases.keys.any(json.containsKey);
+      if (keyMeta?.name != null) {
+        key = keyMeta!.name!;
+        value = json[key];
+        missing = !json.containsKey(key);
+      } else if (keyMeta?.aliases != null) {
+        key = keyMeta!.readAliasKey(json) ?? field.name;
+        value = keyMeta.readAliasValue(json);
+        missing = !keyMeta.aliases!.any(json.containsKey);
       } else {
         key = field.name;
         value = json[field.name];
@@ -265,38 +238,37 @@ class DogModelCodec {
       final defaultValue = field.firstAnnotationOf<DefaultValue>();
       final useDefault =
           defaultValue != null && (missing || (defaultValue.onNull && value == null));
-      final converter = field.firstAnnotationOf<JsonConvert>();
-      if (converter != null) {
+      if (keyMeta?.convert != null) {
         final provided = useDefault ? defaultValue.value : value;
         final supplied = useDefault && provided is DefaultValueSupplier ? provided() : provided;
-        fields.add(converter.convert(supplied));
+        fields.add(keyMeta!.convert!(supplied));
         continue;
       }
-      if (parser != null) {
+      final isList = field.iterableKind == IterableKind.list;
+      if (keyMeta?.parse != null && !isList) {
         fields.add(field.serial.consumeType(<T>() {
           if (useDefault) {
             final provided = defaultValue.value;
             final supplied = provided is DefaultValueSupplier ? provided() : provided;
             return supplied as T?;
           }
-          return guard.object<T>(input, key, (data) => parser.parse(data) as T);
+          return guard.object<T>(input, key, (data) => keyMeta!.parse!(data) as T);
         }));
         continue;
       }
       final nested = engine.findStructureByType(field.serial.typeArgument);
-      final listConverter = field.firstAnnotationOf<JsonListConvert>();
-      if (field.iterableKind == IterableKind.list &&
+      if (isList &&
           (nested != null ||
-              listConverter != null ||
-              listParser != null ||
+              keyMeta?.each != null ||
+              keyMeta?.parse != null ||
               defaultValue != null ||
               emptyListsOnNull)) {
         fields.add(field.serial.consumeType(<T>() {
           final result = guard.list<T>(input, key, (item) {
-            if (listParser != null) {
-              return listParser.parse(item as Map<String, dynamic>) as T;
+            if (keyMeta?.parse != null) {
+              return keyMeta!.parse!(item as Map<String, dynamic>) as T;
             }
-            if (listConverter != null) return listConverter.convert(item) as T;
+            if (keyMeta?.each != null) return keyMeta!.each!(item) as T;
             if (nested != null) {
               return readChild(nested, item as Map<String, dynamic>) as T;
             }

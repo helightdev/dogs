@@ -108,18 +108,18 @@ DogStructure<AliasValue> aliasStructure() => DogStructure<AliasValue>(
       StructureConformity.basic,
       [
         DogStructureField.int("id", optional: true, annotations: const [
-          JsonAliases(["legacy_id", "id"])
+          JsonKey(aliases: ["legacy_id", "id"])
         ]),
         DogStructureField.string("name", optional: true, annotations: const [
-          JsonAliases(["legacy_name", "name"])
+          JsonKey(aliases: ["legacy_name", "name"])
         ]),
         DogStructureField.string("echo", optional: true, annotations: const [
-          JsonAliases(["name"])
+          JsonKey(aliases: ["name"])
         ]),
         DogStructureField.bool("flag", optional: true, annotations: const [
-          JsonAliases(["legacy_flag", "flag"])
+          JsonKey(aliases: ["legacy_flag", "flag"])
         ]),
-        DogStructureField.bool("ignored", annotations: const [JsonReadValue(false)]),
+        DogStructureField.bool("ignored", annotations: const [JsonKey(value: false)]),
       ],
       const [
         JsonModel(outputKeys: ["id", "name"])
@@ -143,14 +143,14 @@ DogStructure<TreeValue> treeStructure({bool emptyListsOnNull = true}) => DogStru
       StructureConformity.basic,
       [
         DogStructureField.create<AliasValue>("child", optional: true, annotations: const [
-          JsonAliases(["payload"])
+          JsonKey(aliases: ["payload"])
         ]),
         DogStructureField.create<AliasValue>(
           "children",
           optional: true,
           iterable: IterableKind.list,
           annotations: const [
-            JsonAliases(["children", "old_children"])
+            JsonKey(aliases: ["children", "old_children"])
           ],
         ),
         DogStructureField.create<TreeValue>("nested", optional: true),
@@ -168,20 +168,19 @@ DogStructure<ConvertedValue> convertedStructure() => DogStructure<ConvertedValue
       StructureConformity.basic,
       [
         DogStructureField.string("text", optional: true, annotations: const [
-          JsonAliases(["legacy_text", "text"]),
-          JsonConvert(JsonConversions.stringify)
+          JsonKey(aliases: ["legacy_text", "text"], convert: JsonConversions.stringify),
         ]),
-        DogStructureField.int("flag", annotations: const [JsonConvert(JsonConversions.flagInt)]),
+        DogStructureField.int("flag", annotations: const [JsonKey(convert: JsonConversions.flagInt)]),
         DogStructureField.int("whole", optional: true, annotations: const [
           DefaultValue(0, onNull: true),
-          JsonConvert(JsonConversions.integer)
+          JsonKey(convert: JsonConversions.integer)
         ]),
         DogStructureField.int("numbers",
             optional: true,
             iterable: IterableKind.list,
-            annotations: const [JsonListConvert(JsonConversions.integer)]),
+            annotations: const [JsonKey(each: JsonConversions.integer)]),
         DogStructureField.string("summary",
-            optional: true, annotations: const [JsonReadWith(readSummary)]),
+            optional: true, annotations: const [JsonKey(read: readSummary)]),
       ],
       const [JsonModel(emptyListsOnNull: true)],
       ObjectFactoryStructureProxy<ConvertedValue>(
@@ -237,18 +236,17 @@ DogStructure<ParsedHolder> parsedStructure() => DogStructure<ParsedHolder>(
       StructureConformity.basic,
       [
         DogStructureField.create<ParsedChild>("child", optional: true, annotations: const [
-          JsonParser(parseChild),
+          JsonKey(parse: parseChild),
         ]),
         DogStructureField.create<ParsedChild>("payload", optional: true, annotations: const [
-          JsonAliases(["legacy_payload", "payload"]),
-          JsonParser(parseChild),
+          JsonKey(aliases: ["legacy_payload", "payload"], parse: parseChild),
         ]),
         DogStructureField.create<ParsedChild>(
           "children",
           optional: true,
           iterable: IterableKind.list,
           annotations: const [
-            JsonListParser(parseChild, key: "items"),
+            JsonKey(name: "items", parse: parseChild),
           ],
         ),
       ],
@@ -591,14 +589,14 @@ void main() {
           engine,
           numberStructure(annotations: const [
             DefaultValue(defaultNumber, onNull: true),
-            JsonConvert(JsonConversions.integer)
+            JsonKey(convert: JsonConversions.integer)
           ]));
       expect(codec.fromJson<NumberValue>({}).value, 7);
       expect(codec.fromJson<NumberValue>({"value": null}).value, 7);
       expect(codec.fromJson<NumberValue>({"value": 2.9}).value, 2);
     });
 
-    test("JsonParser uses the field name by default and keeps nulls", () {
+    test("JsonKey parse uses the field name by default and keeps nulls", () {
       final (:codec, :engine) = codecFixture();
       final input = Map<String, dynamic>.unmodifiable({
         "child": Map<String, dynamic>.unmodifiable({"id": 3, "label": 9}),
@@ -613,7 +611,7 @@ void main() {
       expect(codec.engine, same(engine));
     });
 
-    test("JsonParser custom keys override aliases and report the backend key", () {
+    test("JsonKey name overrides aliases and reports the backend key", () {
       final (:codec, :engine) = codecFixture();
       registerModel(
           engine,
@@ -622,8 +620,7 @@ void main() {
             StructureConformity.basic,
             [
               DogStructureField.create<ParsedChild>("child", optional: true, annotations: const [
-                JsonAliases(["legacy_child", "child"]),
-                JsonParser(parseChild, key: "product"),
+                JsonKey(aliases: ["legacy_child", "child"], name: "product", parse: parseChild),
               ]),
               DogStructureField.create<ParsedChild>("payload", optional: true),
               DogStructureField.create<ParsedChild>(
@@ -652,7 +649,7 @@ void main() {
       expect(codec.engine, same(engine));
     });
 
-    test("JsonParser falls back through aliases when no custom key is set", () {
+    test("JsonKey parse falls back through aliases when no name is set", () {
       final (:codec, :engine) = codecFixture();
       expect(
           codec.fromJson<ParsedHolder>({
@@ -669,7 +666,7 @@ void main() {
       expect(codec.engine, same(engine));
     });
 
-    test("JsonListParser reads a custom key and defaults empty lists", () {
+    test("JsonKey list parse reads a custom name and defaults empty lists", () {
       final (:codec, :engine) = codecFixture();
       final items = List<Object?>.unmodifiable([
         Map<String, dynamic>.unmodifiable({"id": 1, "label": "a"}),
