@@ -10,12 +10,23 @@ import 'package:dogs_generator/settings.dart';
 import 'package:lyell_gen/lyell_gen.dart';
 import 'package:source_gen/source_gen.dart';
 
+import '../output_layout.dart';
+import 'converter_source_builder.dart';
+
 class ConverterBuilder extends DogsAdapter<Serializable> {
-  ConverterBuilder() : super(archetype: "conv");
+  final DogsOutputLayout outputLayout;
+
+  ConverterBuilder({this.outputLayout = const DogsOutputLayout()}) : super(archetype: "conv") {
+    if (outputLayout.directory != null) {
+      subjectBuilder = ConverterSourceBuilder(this, outputLayout);
+    }
+  }
 
   @override
   Future<SubjectDescriptor> generateDescriptor(SubjectGenContext<Element> context) async {
-    var binding = context.defaultDescriptor();
+    var binding =
+        SubjectDescriptor(uri: outputLayout.converterAsset(context.step.inputId).uri.toString());
+    binding.meta["outputDirectory"] = outputLayout.directory;
     binding.meta["constructedNames"] =
         context.matches.map((e) => "${e.displayName}Converter").toList();
     return binding;

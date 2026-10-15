@@ -1,3 +1,7 @@
+## Unreleased
+
+- Add the `output_directory` builder option to place converters and the generated registry under `lib/<directory>`, preserving source subdirectories.
+
 ## 7.2.0
 
  - **FEAT**: Harder version bump.

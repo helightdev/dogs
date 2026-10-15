@@ -100,6 +100,47 @@ class Person with Dataclass<Person> {
 [Package on pub.dev](https://pub.dev/packages/dogs_core)  
 [Documentation](https://dogs.helight.dev)
 
+## Declarative JSON model mapping
+
+`DogModelCodec` is an opt-in reader for APIs that need strict Dart casts and
+stable request keys. It uses the existing generated structures and does not
+change native `DogEngine.fromNative` behavior. Import `dogs_models.dart` to use
+its annotations:
+
+```dart
+import 'package:dogs_core/dogs_models.dart';
+import 'dogs.g.dart';
+
+@JsonModel(outputKeys: ['id', 'name'])
+class City {
+  @JsonAliases(['legacy_id', 'id'])
+  final int? id;
+
+  final String? name;
+
+  City({this.id, this.name});
+}
+
+final models = DogModelCodec(
+  engine: configureDogs(plugins: [GeneratedModelsPlugin()]),
+);
+final city = models.fromJson<City>({'legacy_id': 1, 'name': 'Erbil'});
+final request = models.toJson(city); // {'id': 1, 'name': 'Erbil'}
+```
+
+`@JsonModel` also marks the class for DOGs generation. The codec reads
+registered nested models and lists recursively.
+`@DefaultValue([], onNull: true)` supplies a fresh typed list for missing or
+null input. `@JsonReadValue(value)` fixes a transient constructor field;
+`@JsonConvert(JsonConversions.flagInt)` converts a boolean flag to an integer;
+`@JsonListConvert(JsonConversions.integer)` converts list elements; and
+`@JsonReadWith(myReader)` handles a rule needing the full input map. Callback
+arguments must be constant function tear-offs for generated metadata.
+
+`toJson` returns raw constructor values, including nulls and nested model
+instances. Use `engine.toNative` for a recursively serialized object graph.
+Applications can subclass `DogModelGuard` to customize nested parsing errors.
+
 ## Flutter <a href="https://pub.dev/packages/dogs_flutter"><img src="https://img.shields.io/pub/v/dogs_flutter?label=dogs_flutter" alt="pub"></a>
 
 Use our flutter integration to easily create forms for any serializable object, without having

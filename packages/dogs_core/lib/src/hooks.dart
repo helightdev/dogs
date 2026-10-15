@@ -136,13 +136,16 @@ class DefaultValue extends StructureMetadata with FieldSerializationHook {
   /// If the default value should be kept even if the field is present in the serialized map.
   final bool keep;
 
+  /// Whether an explicitly null input also receives the default value.
+  final bool onNull;
+
   /// Creates a new [DefaultValue] with the given [value].
   /// The [value] may be any constant dart value or a `dynamic Function()` which will
   /// be evaluated as the supplier of the default value.
   ///
   /// If [keep] is set to `true`, the default value will be kept in the serialized map,
   /// otherwise it will be removed if the field is equal to the default value.
-  const DefaultValue(this.value, {this.keep = false});
+  const DefaultValue(this.value, {this.keep = false, this.onNull = false});
 
   dynamic _getNativeDefault(NativeStructureFieldContext fieldContext, DogEngine engine) {
     final provided = value is DefaultValueSupplier ? value() : value;
@@ -153,7 +156,7 @@ class DefaultValue extends StructureMetadata with FieldSerializationHook {
   @override
   void beforeFieldDeserialization(NativeStructureContext context,
       NativeStructureFieldContext fieldContext, Map<String, dynamic> map, DogEngine engine) {
-    if (!map.containsKey(fieldContext.key)) {
+    if (!map.containsKey(fieldContext.key) || (onNull && map[fieldContext.key] == null)) {
       map[fieldContext.key] = _getNativeDefault(fieldContext, engine);
     }
   }
